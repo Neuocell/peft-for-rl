@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "description": "Per-matrix oracle LoRA ranks from the JustRL full-FT update relative to DeepSeek-R1-Distill-Qwen-1.5B base.",
+  "source": {
+    "metrics_file": "/home/wangls/Tina_orthres_run/outputs/justrl_fullft_spectral_diagnostics_20260823/layers.csv",
+    "metrics_sha256": "ab0bfca92f5ebcfcf402a4315f7ca54c0e58de5ebf9aaa4d5140d6dcdb450cac",
+    "base_model": "DeepSeek-R1-Distill-Qwen-1.5B",
+    "tuned_model": "hbx/JustRL-DeepSeek-1.5B",
+    "metric": "delta_stable_rank",
+    "integer_rule": "ceil"
+  },
+  "model": {
+    "num_hidden_layers": 28,
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+  },
+  "lora_scaling_ratio": 2.0,
+  "summary": {
+    "module_count": 196,
+    "rank_sum": 3111,
+    "rank_mean": 15.872448979591837,
+    "rank_min": 3,
+    "rank_max": 44,
+    "ab_parameter_count": 19881472,
+    "uniform_r32_ab_parameter_count": 36929536,
+    "parameter_ratio_vs_uniform_r32": 0.53836235581189
+  },
+  "ranks_by_layer": {
+    "0": {"q_proj": 12, "k_proj": 14, "v_proj": 6, "o_proj": 22, "gate_proj": 42, "up_proj": 34, "down_proj": 36},
+    "1": {"q_proj": 30, "k_proj": 18, "v_proj": 10, "o_proj": 12, "gate_proj": 22, "up_proj": 20, "down_proj": 15},
+    "2": {"q_proj": 24, "k_proj": 29, "v_proj": 7, "o_proj": 12, "gate_proj": 35, "up_proj": 15, "down_proj": 21},
+    "3": {"q_proj": 36, "k_proj": 24, "v_proj": 11, "o_proj": 14, "gate_proj": 39, "up_proj": 15, "down_proj": 17},
+    "4": {"q_proj": 34, "k_proj": 25, "v_proj": 10, "o_proj": 10, "gate_proj": 44, "up_proj": 20, "down_proj": 24},
+    "5": {"q_proj": 30, "k_proj": 23, "v_proj": 11, "o_proj": 11, "gate_proj": 27, "up_proj": 13, "down_proj": 14},
+    "6": {"q_proj": 23, "k_proj": 22, "v_proj": 8, "o_proj": 10, "gate_proj": 38, "up_proj": 21, "down_proj": 28},
+    "7": {"q_proj": 30, "k_proj": 20, "v_proj": 13, "o_proj": 14, "gate_proj": 40, "up_proj": 26, "down_proj": 34},
+    "8": {"q_proj": 24, "k_proj": 25, "v_proj": 11, "o_proj": 13, "gate_proj": 41, "up_proj": 28, "down_proj": 33},
+    "9": {"q_proj": 38, "k_proj": 27, "v_proj": 12, "o_proj": 15, "gate_proj": 39, "up_proj": 25, "down_proj": 33},
+    "10": {"q_proj": 37, "k_proj": 23, "v_proj": 14, "o_proj": 17, "gate_proj": 35, "up_proj": 27, "down_proj": 29},
+    "11": {"q_proj": 38, "k_proj": 24, "v_proj": 14, "o_proj": 13, "gate_proj": 28, "up_proj": 21, "down_proj": 22},
+    "12": {"q_proj": 23, "k_proj": 25, "v_proj": 10, "o_proj": 10, "gate_proj": 27, "up_proj": 22, "down_proj": 23},
+    "13": {"q_proj": 26, "k_proj": 19, "v_proj": 12, "o_proj": 13, "gate_proj": 23, "up_proj": 23, "down_proj": 25},
+    "14": {"q_proj": 26, "k_proj": 28, "v_proj": 9, "o_proj": 9, "gate_proj": 23, "up_proj": 20, "down_proj": 21},
+    "15": {"q_proj": 27, "k_proj": 20, "v_proj": 16, "o_proj": 12, "gate_proj": 19, "up_proj": 19, "down_proj": 18},
+    "16": {"q_proj": 28, "k_proj": 22, "v_proj": 12, "o_proj": 9, "gate_proj": 18, "up_proj": 15, "down_proj": 14},
+    "17": {"q_proj": 13, "k_proj": 5, "v_proj": 8, "o_proj": 6, "gate_proj": 9, "up_proj": 8, "down_proj": 10},
+    "18": {"q_proj": 11, "k_proj": 12, "v_proj": 6, "o_proj": 7, "gate_proj": 9, "up_proj": 7, "down_proj": 9},
+    "19": {"q_proj": 14, "k_proj": 12, "v_proj": 5, "o_proj": 6, "gate_proj": 10, "up_proj": 7, "down_proj": 8},
+    "20": {"q_proj": 19, "k_proj": 15, "v_proj": 6, "o_proj": 6, "gate_proj": 11, "up_proj": 7, "down_proj": 8},
+    "21": {"q_proj": 11, "k_proj": 11, "v_proj": 5, "o_proj": 5, "gate_proj": 9, "up_proj": 6, "down_proj": 6},
+    "22": {"q_proj": 8, "k_proj": 10, "v_proj": 3, "o_proj": 4, "gate_proj": 8, "up_proj": 5, "down_proj": 6},
+    "23": {"q_proj": 8, "k_proj": 10, "v_proj": 3, "o_proj": 4, "gate_proj": 6, "up_proj": 4, "down_proj": 5},
+    "24": {"q_proj": 10, "k_proj": 7, "v_proj": 4, "o_proj": 4, "gate_proj": 5, "up_proj": 4, "down_proj": 5},
+    "25": {"q_proj": 6, "k_proj": 3, "v_proj": 3, "o_proj": 3, "gate_proj": 4, "up_proj": 4, "down_proj": 5},
+    "26": {"q_proj": 13, "k_proj": 9, "v_proj": 3, "o_proj": 3, "gate_proj": 3, "up_proj": 3, "down_proj": 4},
+    "27": {"q_proj": 8, "k_proj": 4, "v_proj": 3, "o_proj": 4, "gate_proj": 3, "up_proj": 3, "down_proj": 3}
+  }
+}

@@ -1,49 +1,53 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Clean RLVR training entry for paper-facing PEFT experiments.
-# Defaults are intentionally explicit and isolated from historical run scripts.
+# Paper-clean RLVR entry for PEFT-for-RL.
+# This script runs against the verl package integrated in this repository.
 
-cd /home/wangls/CHERRL
-export PATH="/home/wangls/miniconda3/envs/cherrl/bin:${PATH}"
-export CONDA_PREFIX="/home/wangls/miniconda3/envs/cherrl"
-export CONDA_DEFAULT_ENV="cherrl"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+RUNTIME_ROOT="${RUNTIME_ROOT:-${REPO_ROOT}/runs}"
+PROJECT_NAME="${PROJECT_NAME:-peft-for-rl}"
+METHOD="${METHOD:-lora}"
+DATASET="${DATASET:-dapo_heldout637_seed42}"
+RUN_TAG="${RUN_TAG:-$(date +%Y%m%d_%H%M%S)}"
+
+cd "${REPO_ROOT}"
+
+if [[ -n "${CONDA_PREFIX:-}" && -x "${CONDA_PREFIX}/bin/python" ]]; then
+  export PATH="${CONDA_PREFIX}/bin:${PATH}"
+fi
+
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1,2,3}"
 export TOKENIZERS_PARALLELISM=false
 export VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
 export RAY_ADDRESS="${RAY_ADDRESS:-local}"
 
-METHOD="${METHOD:-lora}"
-DATASET="${DATASET:-dapo_heldout637_seed42}"
-RUN_TAG="${RUN_TAG:-$(date +%Y%m%d_%H%M%S)}"
-
-PROJECT_NAME="${PROJECT_NAME:-DAPO-Math-17k-paper-clean}"
-MODEL_PATH="${MODEL_PATH:-/home/wangls/Tina_orthres_run/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base}"
-CUSTOM_REWARD_PATH="${CUSTOM_REWARD_PATH:-/home/wangls/CHERRL/verl/utils/reward_score/boxed_math_accuracy.py}"
+MODEL_PATH="${MODEL_PATH:?Set MODEL_PATH to the base model path}"
+CUSTOM_REWARD_PATH="${CUSTOM_REWARD_PATH:-${REPO_ROOT}/verl/utils/reward_score/boxed_math_accuracy.py}"
 
 case "${DATASET}" in
   dapo_heldout637_seed42)
-    TRAIN_FILE="${TRAIN_FILE:-/home/wangls/Tina_orthres_run/datasets/verl_dapo/data/dapo_math_boxed_heldout637_seed42_v1/train.parquet}"
-    TEST_FILE="${TEST_FILE:-/home/wangls/Tina_orthres_run/datasets/verl_dapo/data/dapo_math_boxed_heldout637_seed42_v1/heldout.parquet}"
+    TRAIN_FILE="${TRAIN_FILE:-${RUNTIME_ROOT}/datasets/verl_dapo/data/dapo_math_boxed_heldout637_seed42_v1/train.parquet}"
+    TEST_FILE="${TEST_FILE:-${RUNTIME_ROOT}/datasets/verl_dapo/data/dapo_math_boxed_heldout637_seed42_v1/heldout.parquet}"
     DEFAULT_TOTAL_STEPS=270
     ;;
   dapo_heldout1021)
-    TRAIN_FILE="${TRAIN_FILE:-/home/wangls/Tina_orthres_run/datasets/verl_dapo/data/dapo_math_boxed_heldout1021_v1/train.parquet}"
-    TEST_FILE="${TEST_FILE:-/home/wangls/Tina_orthres_run/datasets/verl_dapo/data/dapo_math_boxed_heldout1021_v1/heldout.parquet}"
+    TRAIN_FILE="${TRAIN_FILE:-${RUNTIME_ROOT}/datasets/verl_dapo/data/dapo_math_boxed_heldout1021_v1/train.parquet}"
+    TEST_FILE="${TEST_FILE:-${RUNTIME_ROOT}/datasets/verl_dapo/data/dapo_math_boxed_heldout1021_v1/heldout.parquet}"
     DEFAULT_TOTAL_STEPS=264
     ;;
   dapo_heldout1019)
-    TRAIN_FILE="${TRAIN_FILE:-/home/wangls/Tina_orthres_run/datasets/verl_dapo/data/dapo_math_boxed_heldout1019_v1/train.parquet}"
-    TEST_FILE="${TEST_FILE:-/home/wangls/Tina_orthres_run/datasets/verl_dapo/data/dapo_math_boxed_heldout1019_v1/heldout.parquet}"
+    TRAIN_FILE="${TRAIN_FILE:-${RUNTIME_ROOT}/datasets/verl_dapo/data/dapo_math_boxed_heldout1019_v1/train.parquet}"
+    TEST_FILE="${TEST_FILE:-${RUNTIME_ROOT}/datasets/verl_dapo/data/dapo_math_boxed_heldout1019_v1/heldout.parquet}"
     DEFAULT_TOTAL_STEPS=264
     ;;
   dapo_full_boxed)
-    TRAIN_FILE="${TRAIN_FILE:-/home/wangls/Tina_orthres_run/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet}"
+    TRAIN_FILE="${TRAIN_FILE:-${RUNTIME_ROOT}/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet}"
     TEST_FILE="${TEST_FILE:-${TRAIN_FILE}}"
     DEFAULT_TOTAL_STEPS=279
     ;;
   open_rs3)
-    TRAIN_FILE="${TRAIN_FILE:-/home/wangls/Tina_orthres_run/datasets/verl/open_rs3_justrl_answer.parquet}"
+    TRAIN_FILE="${TRAIN_FILE:-${RUNTIME_ROOT}/datasets/verl/open_rs3_justrl_answer.parquet}"
     TEST_FILE="${TEST_FILE:-${TRAIN_FILE}}"
     DEFAULT_TOTAL_STEPS=109
     ;;
@@ -79,6 +83,14 @@ DATA_SEED="${DATA_SEED:-42}"
 PPO_DATA_LOADER_SEED="${PPO_DATA_LOADER_SEED:-42}"
 TRAIN_SHUFFLE="${TRAIN_SHUFFLE:-True}"
 ACTOR_SHUFFLE="${ACTOR_SHUFFLE:-False}"
+ADALORA_INIT_R="${ADALORA_INIT_R:-0}"
+ADALORA_TARGET_R="${ADALORA_TARGET_R:-0}"
+ADALORA_TINIT="${ADALORA_TINIT:-0}"
+ADALORA_TFINAL="${ADALORA_TFINAL:-0}"
+ADALORA_DELTA_T="${ADALORA_DELTA_T:-20}"
+ADALORA_BETA1="${ADALORA_BETA1:-0.85}"
+ADALORA_BETA2="${ADALORA_BETA2:-0.85}"
+ADALORA_ORTH_REG_WEIGHT="${ADALORA_ORTH_REG_WEIGHT:-1e-3}"
 
 SAVE_FREQ="${SAVE_FREQ:-20}"
 MAX_ACTOR_CKPT_TO_KEEP="${MAX_ACTOR_CKPT_TO_KEEP:-20}"
@@ -88,7 +100,7 @@ RESUME_MODE="${RESUME_MODE:-disable}"
 NGPUS_PER_NODE="${NGPUS_PER_NODE:-4}"
 NNODES="${NNODES:-1}"
 RAY_NUM_CPUS="${RAY_NUM_CPUS:-64}"
-RAY_TEMP_DIR="${RAY_TEMP_DIR:-/home/wangls/ray_pc_${METHOD}_${RUN_TAG}}"
+RAY_TEMP_DIR="${RAY_TEMP_DIR:-${RUNTIME_ROOT}/ray_pc_${METHOD}_${RUN_TAG}}"
 
 TARGET_MODULES="${TARGET_MODULES:-all-linear}"
 OFFLOAD="${OFFLOAD:-True}"
@@ -150,6 +162,17 @@ SPO_NUM_CAYLEY_NEUMANN_TERMS="${SPO_NUM_CAYLEY_NEUMANN_TERMS:-5}"
 SPO_CAYLEY_NEUMANN_EPS="${SPO_CAYLEY_NEUMANN_EPS:-0.9}"
 SPO_SEED="${SPO_SEED:-42}"
 
+TINY_LORA_RANK="${TINY_LORA_RANK:-2}"
+TINY_LORA_PROJECTION_DIM="${TINY_LORA_PROJECTION_DIM:-1}"
+TINY_LORA_TIE_FACTOR="${TINY_LORA_TIE_FACTOR:-16}"
+TINY_LORA_TIE_STRATEGY="${TINY_LORA_TIE_STRATEGY:-tiled}"
+TINY_LORA_SEED="${TINY_LORA_SEED:-42}"
+TINY_LORA_SVD_DEVICE="${TINY_LORA_SVD_DEVICE:-auto}"
+TINY_LORA_SVD_METHOD="${TINY_LORA_SVD_METHOD:-lowrank}"
+TINY_LORA_SVD_OVERSAMPLE="${TINY_LORA_SVD_OVERSAMPLE:-4}"
+TINY_LORA_SVD_NITER="${TINY_LORA_SVD_NITER:-2}"
+TINY_LORA_PROJECTION_STD="${TINY_LORA_PROJECTION_STD:-1.0}"
+
 GEORA_SPARSITY_RATIO="${GEORA_SPARSITY_RATIO:-0.2}"
 GEORA_OVERSAMPLE="${GEORA_OVERSAMPLE:-8}"
 GEORA_NITER="${GEORA_NITER:-2}"
@@ -157,44 +180,27 @@ GEORA_SVD_DEVICE="${GEORA_SVD_DEVICE:-auto}"
 GEORA_RESIDUAL_ANCHOR="${GEORA_RESIDUAL_ANCHOR:-True}"
 GEORA_INIT_SCALE="${GEORA_INIT_SCALE:-1.0}"
 GEORA_SEED="${GEORA_SEED:-42}"
+RLPO_SVD_DEVICE="${RLPO_SVD_DEVICE:-auto}"
 
 case "${METHOD}" in
-  lora)
-    PEFT_TYPE="lora"
+  lora) PEFT_TYPE="lora" ;;
+  rlpo) PEFT_TYPE="rlpo" ;;
+  adalora)
+    PEFT_TYPE="adalora"
     ;;
-  geora)
-    PEFT_TYPE="geora"
-    ;;
-  oft)
-    PEFT_TYPE="oft"
-    LORA_RANK=0
-    ;;
-  skew)
-    PEFT_TYPE="skew"
-    LORA_RANK=0
-    USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
-    ;;
-  boet)
-    PEFT_TYPE="boet"
-    LORA_RANK=0
-    USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
-    ;;
-  biso)
-    PEFT_TYPE="biso"
-    LORA_RANK=0
-    USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
-    ;;
+  geora) PEFT_TYPE="geora" ;;
+  oft) PEFT_TYPE="oft"; LORA_RANK=0 ;;
+  skew) PEFT_TYPE="skew"; LORA_RANK=0; USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}" ;;
+  boet) PEFT_TYPE="boet"; LORA_RANK=0; USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}" ;;
+  biso) PEFT_TYPE="biso"; LORA_RANK=0; USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}" ;;
   biso_mask)
     PEFT_TYPE="biso"
     LORA_RANK=0
     USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
     BISO_SELECTIVE_MODE="${BISO_SELECTIVE_MODE_OVERRIDE:-geora_block_mask}"
     ;;
-  spo)
-    PEFT_TYPE="spo"
-    LORA_RANK=0
-    USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
-    ;;
+  spo) PEFT_TYPE="spo"; LORA_RANK=0; USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}" ;;
+  tinylora) PEFT_TYPE="tinylora"; LORA_RANK=0; USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}" ;;
   *)
     echo "Unsupported METHOD=${METHOD}" >&2
     exit 2
@@ -202,8 +208,8 @@ case "${METHOD}" in
 esac
 
 EXP_NAME="${EXP_NAME:-paper_clean_${DATASET}_${METHOD}_b${TRAIN_PROMPT_BSZ}m${TRAIN_PROMPT_MINI_BSZ}n${N_RESP_PER_PROMPT}_lr${LR}_wd0_${RUN_TAG}}"
-CKPTS_DIR="${CKPTS_DIR:-/home/wangls/Tina_orthres_run/ckpts/verl/${PROJECT_NAME}/${EXP_NAME}}"
-LOG_DIR="${LOG_DIR:-/home/wangls/Tina_orthres_run/logs/paper_clean}"
+CKPTS_DIR="${CKPTS_DIR:-${RUNTIME_ROOT}/ckpts/verl/${PROJECT_NAME}/${EXP_NAME}}"
+LOG_DIR="${LOG_DIR:-${RUNTIME_ROOT}/logs/paper_clean}"
 mkdir -p "${LOG_DIR}"
 
 if [[ "${RESUME_MODE}" == "disable" && -d "${CKPTS_DIR}" ]] && find "${CKPTS_DIR}" -maxdepth 1 -type d -name 'global_step_*' | grep -q .; then
@@ -236,6 +242,7 @@ printf '%s\n' \
   "METHOD=${METHOD}" \
   "PEFT_TYPE=${PEFT_TYPE}" \
   "DATASET=${DATASET}" \
+  "REPO_ROOT=${REPO_ROOT}" \
   "TRAIN_FILE=${TRAIN_FILE}" \
   "TEST_FILE=${TEST_FILE}" \
   "TRAIN_ROWS=${TRAIN_ROWS}" \
@@ -248,14 +255,10 @@ printf '%s\n' \
   "LR=${LR}" \
   "LR_WARMUP_STEPS=${LR_WARMUP_STEPS}" \
   "WEIGHT_DECAY=${WEIGHT_DECAY}" \
-  "SPO_BLOCK_SIZE=${SPO_BLOCK_SIZE}" \
-  "SPO_DEPTH=${SPO_DEPTH}" \
-  "SPO_ALPHA=${SPO_ALPHA}" \
-  "SPO_INIT_STD=${SPO_INIT_STD}" \
-  "SPO_USE_CAYLEY_NEUMANN=${SPO_USE_CAYLEY_NEUMANN}" \
-  "SPO_NUM_CAYLEY_NEUMANN_TERMS=${SPO_NUM_CAYLEY_NEUMANN_TERMS}" \
-  "SPO_CAYLEY_NEUMANN_EPS=${SPO_CAYLEY_NEUMANN_EPS}" \
-  "SPO_SEED=${SPO_SEED}" \
+  "TINY_LORA_RANK=${TINY_LORA_RANK}" \
+  "TINY_LORA_PROJECTION_DIM=${TINY_LORA_PROJECTION_DIM}" \
+  "TINY_LORA_TIE_FACTOR=${TINY_LORA_TIE_FACTOR}" \
+  "TINY_LORA_TIE_STRATEGY=${TINY_LORA_TIE_STRATEGY}" \
   "DATA_SEED=${DATA_SEED}" \
   "PPO_DATA_LOADER_SEED=${PPO_DATA_LOADER_SEED}" \
   "TRAIN_SHUFFLE=${TRAIN_SHUFFLE}" \
@@ -302,6 +305,25 @@ CMD=(
   "actor_rollout_ref.model.lora_rank=${LORA_RANK}"
   "actor_rollout_ref.model.lora_alpha=${LORA_ALPHA}"
   "+actor_rollout_ref.model.lora_dropout=${LORA_DROPOUT}"
+  "+actor_rollout_ref.model.rlpo_svd_device=${RLPO_SVD_DEVICE}"
+  "+actor_rollout_ref.model.tinylora_rank=${TINY_LORA_RANK}"
+  "+actor_rollout_ref.model.tinylora_projection_dim=${TINY_LORA_PROJECTION_DIM}"
+  "+actor_rollout_ref.model.tinylora_tie_factor=${TINY_LORA_TIE_FACTOR}"
+  "+actor_rollout_ref.model.tinylora_tie_strategy=${TINY_LORA_TIE_STRATEGY}"
+  "+actor_rollout_ref.model.tinylora_seed=${TINY_LORA_SEED}"
+  "+actor_rollout_ref.model.tinylora_svd_device=${TINY_LORA_SVD_DEVICE}"
+  "+actor_rollout_ref.model.tinylora_svd_method=${TINY_LORA_SVD_METHOD}"
+  "+actor_rollout_ref.model.tinylora_svd_oversample=${TINY_LORA_SVD_OVERSAMPLE}"
+  "+actor_rollout_ref.model.tinylora_svd_niter=${TINY_LORA_SVD_NITER}"
+  "+actor_rollout_ref.model.tinylora_projection_std=${TINY_LORA_PROJECTION_STD}"
+  "+actor_rollout_ref.model.adalora_init_r=${ADALORA_INIT_R}"
+  "+actor_rollout_ref.model.adalora_target_r=${ADALORA_TARGET_R}"
+  "+actor_rollout_ref.model.adalora_tinit=${ADALORA_TINIT}"
+  "+actor_rollout_ref.model.adalora_tfinal=${ADALORA_TFINAL}"
+  "+actor_rollout_ref.model.adalora_delta_t=${ADALORA_DELTA_T}"
+  "+actor_rollout_ref.model.adalora_beta1=${ADALORA_BETA1}"
+  "+actor_rollout_ref.model.adalora_beta2=${ADALORA_BETA2}"
+  "+actor_rollout_ref.model.adalora_orth_reg_weight=${ADALORA_ORTH_REG_WEIGHT}"
   "+actor_rollout_ref.model.oft_block_size=${OFT_BLOCK_SIZE}"
   "+actor_rollout_ref.model.oft_rank=${OFT_RANK}"
   "+actor_rollout_ref.model.oft_dropout=${OFT_DROPOUT}"

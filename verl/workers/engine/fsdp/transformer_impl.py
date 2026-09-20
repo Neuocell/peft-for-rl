@@ -48,11 +48,12 @@ from verl.utils.fsdp_utils import (
     MixedPrecisionPolicy,
     apply_fsdp2,
     collect_biso_full_params,
-    collect_lora_params,
     collect_boet_full_params,
+    collect_lora_params,
     collect_peft_full_params,
     collect_skew_full_params,
     collect_spo_full_params,
+    collect_tinylora_full_params,
     fsdp2_clip_grad_norm_,
     fsdp2_load_full_state_dict,
     fsdp_version,
@@ -66,11 +67,13 @@ from verl.utils.fsdp_utils import (
     replace_lora_wrapper,
 )
 from verl.utils.model import convert_weight_keys, extract_multi_modal_inputs
-from verl.utils.peft_geora import apply_geora_initialization
-from verl.utils.peft_boet import apply_boet_adapters
+from verl.utils.peft_adalora import build_adalora_config, update_and_allocate
 from verl.utils.peft_biso import apply_biso_adapters
-from verl.utils.peft_spo import apply_spo_adapters
+from verl.utils.peft_boet import apply_boet_adapters
+from verl.utils.peft_geora import apply_geora_initialization
 from verl.utils.peft_skew import apply_skew_adapters
+from verl.utils.peft_spo import apply_spo_adapters
+from verl.utils.peft_tinylora import apply_tinylora_adapters
 from verl.utils.py_functional import convert_to_regular_types
 from verl.utils.torch_functional import logprobs_from_logits
 from verl.utils.ulysses import gather_outputs_and_unpad, ulysses_pad, ulysses_pad_and_slice_inputs
@@ -135,6 +138,7 @@ class FSDPEngine(BaseEngine):
         self._is_peft = (
             self.model_config.get("lora_adapter_path", None) is not None
             or self.model_config.lora_rank > 0
+            or self._peft_type == "adalora"
             or (
                 self._peft_type == "oft"
                 and (self.model_config.get("oft_block_size", 0) > 0 or self.model_config.get("oft_rank", 0) > 0)
@@ -143,8 +147,18 @@ class FSDPEngine(BaseEngine):
             or (self._peft_type == "boet" and self.model_config.get("boet_rank", 0) > 0)
             or (self._peft_type == "biso" and self.model_config.get("biso_block_size", 0) > 0)
             or (self._peft_type == "spo" and self.model_config.get("spo_block_size", 0) > 0)
+            or (self._peft_type == "tinylora" and self.model_config.get("tinylora_rank", 0) > 0)
         )
         self._is_lora = self._is_peft and self._peft_type in ("lora", "geora")
+        self._is_adalora = self._is_peft and self._peft_type == "adalora"
+        self._adalora_optimizer_step = 0
+        self._last_adalora_metrics: dict[str, float] = {}
+        if self._is_adalora:
+            if self.engine_config.strategy != "fsdp":
+                raise NotImplementedError("Official AdaLoRA allocation currently requires FSDP1, not FSDP2")
+            self.engine_config.use_orig_params = True
+        if self._peft_type == "tinylora":
+            self.engine_config.use_orig_params = True
 
         if self.engine_config.entropy_from_logits_with_chunking:
             entropy_from_logits = verl_F.entropy_from_logits_with_chunking
@@ -230,7 +244,8 @@ class FSDPEngine(BaseEngine):
         torch_dtype = PrecisionType.to_dtype(torch_dtype)
 
         init_context = get_init_weight_context_manager(
-            use_meta_tensor=not self.model_config.hf_config.tie_word_embeddings and self._peft_type != "geora",
+            use_meta_tensor=not self.model_config.hf_config.tie_word_embeddings
+            and self._peft_type not in ("geora", "tinylora"),
             mesh=self.device_mesh,
         )
 
@@ -282,11 +297,13 @@ class FSDPEngine(BaseEngine):
             from peft import PeftModel
 
             from verl.utils.fs import copy_to_local
+            from verl.utils.transformers_compat import patch_peft_tp_adapter_load_for_data_parallel
 
             print(f"Loading pre-trained PEFT adapter to from: {lora_adapter_path}")
             # Copy adapter to local if needed
             local_adapter_path = copy_to_local(lora_adapter_path, use_shm=self.model_config.use_shm)
 
+            patch_peft_tp_adapter_load_for_data_parallel()
             module = PeftModel.from_pretrained(module, local_adapter_path, is_trainable=True)
             peft_config = module.peft_config["default"]
             # Ensure task_type is TaskType enum, not string
@@ -332,6 +349,18 @@ class FSDPEngine(BaseEngine):
                     }
                 )
                 module = get_peft_model(module, OFTConfig(**peft_config))
+            elif self._peft_type == "adalora":
+                adalora_config = build_adalora_config(
+                    self.model_config, total_training_steps=self.optimizer_config.total_training_steps
+                )
+                module = get_peft_model(module, adalora_config)
+                if self.rank == 0:
+                    print(
+                        "Applied official PEFT AdaLoRA: "
+                        f"init_r={adalora_config.init_r}, target_r={adalora_config.target_r}, "
+                        f"tinit={adalora_config.tinit}, tfinal={adalora_config.tfinal}, "
+                        f"deltaT={adalora_config.deltaT}, total_step={adalora_config.total_step}"
+                    )
             elif self._peft_type == "skew":
                 stats = apply_skew_adapters(module, self.model_config)
                 print(
@@ -365,6 +394,15 @@ class FSDPEngine(BaseEngine):
                     f"depth={self.model_config.get('spo_depth', 0)}, "
                     f"cn={self.model_config.get('spo_use_cayley_neumann', True)}, "
                     f"cn_terms={self.model_config.get('spo_num_cayley_neumann_terms', 5)}"
+                )
+            elif self._peft_type == "tinylora":
+                stats = apply_tinylora_adapters(module, self.model_config)
+                print(
+                    "Applied TinyLoRA adapters: "
+                    f"layers={stats.num_layers}, shared_vectors={stats.num_vectors}, "
+                    f"trainable_params={stats.num_parameters}, rank={stats.rank}, "
+                    f"projection_dim={stats.projection_dim}, tie_factor={stats.tie_factor}, "
+                    f"tie_strategy={self.model_config.get('tinylora_tie_strategy', 'tiled')}"
                 )
             else:
                 raise ValueError(f"Unsupported PEFT type: {self._peft_type}")
@@ -594,6 +632,8 @@ class FSDPEngine(BaseEngine):
         ctx = torch.no_grad() if forward_only else nullcontext()
 
         for micro_batch in micro_batches:
+            if self._is_adalora and not forward_only:
+                tu.assign_non_tensor(micro_batch, adalora_loss_scale=1.0 / len(micro_batches))
             with ctx:
                 loss, meta_info = self.forward_step(micro_batch, loss_function=loss_function, forward_only=forward_only)
 
@@ -641,6 +681,12 @@ class FSDPEngine(BaseEngine):
             self.optimizer.zero_grad()
         else:
             self.optimizer.step()
+            if self._is_adalora:
+                self._adalora_optimizer_step += 1
+                self._last_adalora_metrics = update_and_allocate(
+                    self.module,
+                    self._adalora_optimizer_step,
+                )
         return grad_norm.item()
 
     def lr_scheduler_step(self):
@@ -650,6 +696,12 @@ class FSDPEngine(BaseEngine):
         self.lr_scheduler.step()
         lr = self.lr_scheduler.get_last_lr()[0]  # only return the first group
         return lr
+
+    def train_batch(self, data: TensorDict, loss_function: Callable):
+        output = super().train_batch(data, loss_function)
+        if self.is_mp_src_rank_with_outputs() and self._last_adalora_metrics:
+            output["metrics"].update(self._last_adalora_metrics)
+        return output
 
     def to(self, device: str, model: bool = True, optimizer: bool = True, grad: bool = True):
         """
@@ -756,6 +808,9 @@ class FSDPEngine(BaseEngine):
             skip_weight_key_conversion = True
         elif self._peft_type == "spo":
             params = collect_spo_full_params(module=self.module)
+            skip_weight_key_conversion = True
+        elif self._peft_type == "tinylora":
+            params = collect_tinylora_full_params(module=self.module)
             skip_weight_key_conversion = True
         else:
             params = self.module.state_dict()
@@ -1050,6 +1105,14 @@ class FSDPEngineWithLMHead(FSDPEngine):
         # actually, we should avoid assigning like this...
         micro_batch = micro_batch.to(get_device_id())
         model_inputs, output_args = self.prepare_model_inputs(micro_batch=micro_batch)
+        capture_adalora_orthogonal_loss = (
+            self._is_adalora
+            and not forward_only
+            and float(self.model_config.get("adalora_orth_reg_weight", 0.0)) > 0
+        )
+        if capture_adalora_orthogonal_loss:
+            model_inputs["labels"] = torch.full_like(model_inputs["input_ids"], -100)
+            model_inputs["num_items_in_batch"] = 1
 
         with torch.autocast(device_type=device_name, dtype=torch.bfloat16):
             raw_output = self.module(
@@ -1065,6 +1128,22 @@ class FSDPEngineWithLMHead(FSDPEngine):
                 loss, metrics = loss_function(
                     model_output=model_output, data=micro_batch, dp_group=self.get_data_parallel_group()
                 )
+                if capture_adalora_orthogonal_loss:
+                    orthogonal_loss = getattr(raw_output, "loss", None)
+                    if not isinstance(orthogonal_loss, torch.Tensor):
+                        raise RuntimeError("PEFT AdaLoRA forward did not return its official orthogonal loss")
+                    if not torch.isfinite(orthogonal_loss):
+                        raise FloatingPointError(
+                            f"AdaLoRA orthogonal loss is non-finite: {orthogonal_loss.detach()}"
+                        )
+                    orthogonal_weight = float(self.model_config.adalora_orth_reg_weight)
+                    loss = loss + orthogonal_loss * tu.get_non_tensor_data(
+                        data=micro_batch, key="adalora_loss_scale", default=1.0
+                    )
+                    metrics["adalora/orthogonal_regularization"] = (
+                        orthogonal_loss.detach() / orthogonal_weight
+                    ).item()
+                    metrics["adalora/orthogonal_loss"] = orthogonal_loss.detach().item()
             else:
                 assert forward_only, "forward_only must be True when loss_function is None"
                 loss = torch.tensor(1.0, device=device_name)

@@ -608,7 +608,43 @@ def layered_summon_lora_params(fsdp_module) -> OrderedDict:
     return lora_params
 
 
-def collect_lora_params(module: FSDP, layered_summon: bool, base_sync_done: bool) -> OrderedDict:
+@contextmanager
+def _scaled_adalora_factors(peft_model):
+    """Temporarily fold PEFT AdaLoRA's E/ranknum terms into A for vLLM.
+
+    vLLM accepts ordinary A/B LoRA factors, while PEFT SVDLinear evaluates
+    ``B @ (A * E) * scaling / ranknum``. The original actor parameters are
+    restored after collection.
+    """
+
+    saved = []
+    try:
+        for submodule in peft_model.modules():
+            lora_a = getattr(submodule, "lora_A", None)
+            lora_e = getattr(submodule, "lora_E", None)
+            ranknum = getattr(submodule, "ranknum", None)
+            if lora_a is None or lora_e is None or ranknum is None:
+                continue
+            for adapter_name, a_param in lora_a.items():
+                if adapter_name not in lora_e or adapter_name not in ranknum:
+                    continue
+                saved.append((a_param, a_param.detach().clone()))
+                factor = lora_e[adapter_name].detach().to(device=a_param.device, dtype=a_param.dtype)
+                configured_rank = float(getattr(submodule, "r", {}).get(adapter_name, a_param.shape[0]))
+                rank = ranknum[adapter_name].detach().to(device=a_param.device, dtype=a_param.dtype)
+                a_param.data.mul_(factor * configured_rank / (rank + 1e-5))
+        yield
+    finally:
+        for a_param, original in saved:
+            a_param.data.copy_(original)
+
+
+def collect_lora_params(
+    module: FSDP,
+    layered_summon: bool,
+    base_sync_done: bool,
+    adalora: bool = False,
+) -> OrderedDict:
     """
     collect lora params or full params if base model is not ready in vllm
     work with if isinstance(self.module._fsdp_wrapped_module, PeftModel)
@@ -616,9 +652,23 @@ def collect_lora_params(module: FSDP, layered_summon: bool, base_sync_done: bool
     from peft.utils.save_and_load import get_peft_model_state_dict
 
     lora_params = OrderedDict()
+
+    def _vllm_lora_only(params: OrderedDict) -> OrderedDict:
+        converted = OrderedDict()
+        for name, value in params.items():
+            if name.endswith((".lora_A", ".lora_B")):
+                # PEFT AdaLoRA stores A/B directly in ParameterDict, whereas
+                # vLLM's ordinary LoRA loader expects Linear-style keys.
+                converted[f"{name}.weight"] = value
+            elif name.endswith((".lora_A.weight", ".lora_B.weight", ".lora_embedding_A", ".lora_embedding_B")):
+                converted[name] = value
+        return converted
+
     peft_model = getattr(module, "_fsdp_wrapped_module", module)
+    adalora_context = _scaled_adalora_factors(peft_model) if adalora else nullcontext()
     if fsdp_version(module) > 0:
-        if layered_summon:
+        # AdaLoRA factor folding needs complete A/E/ranknum tensors.
+        if layered_summon and not adalora:
             if not base_sync_done:
                 raise ValueError(
                     "To use layered_summon, you must make sure base-model is preloaded in vllm, e.g. let "
@@ -628,19 +678,35 @@ def collect_lora_params(module: FSDP, layered_summon: bool, base_sync_done: bool
         else:
             with FSDP.summon_full_params(module, writeback=False):
                 if base_sync_done:
-                    lora_params = get_peft_model_state_dict(peft_model)
-                    lora_params = {
-                        name: param.full_tensor().detach().cpu()
-                        if hasattr(param, "full_tensor")
-                        else param.detach().cpu()
-                        for name, param in lora_params.items()
-                    }
+                    with adalora_context:
+                        if adalora:
+                            # PEFT rank_pattern keys do not include FSDP's
+                            # wrapper segments. E has already been folded into
+                            # A, so export the complete masked A/B factors.
+                            config = peft_model.peft_config["default"]
+                            saved_rank_pattern = config.rank_pattern
+                            try:
+                                config.rank_pattern = None
+                                lora_params = get_peft_model_state_dict(peft_model)
+                            finally:
+                                config.rank_pattern = saved_rank_pattern
+                        else:
+                            lora_params = get_peft_model_state_dict(peft_model)
+                        if adalora:
+                            lora_params = _vllm_lora_only(lora_params)
+                        # Copy before the AdaLoRA context restores actor A.
+                        lora_params = {
+                            name: param.full_tensor().detach().cpu().clone()
+                            if hasattr(param, "full_tensor")
+                            else param.detach().cpu().clone()
+                            for name, param in lora_params.items()
+                        }
                 else:
                     model = peft_model.base_model.model
                     orig_dev = "cpu" if "cpu" in str(next(model.parameters()).device) else get_device_name()
                     model = model.to("cpu")
                     for name, param in model.state_dict().items():
-                        if any(x in name for x in ["_flat_param", "lora_"]):
+                        if any(x in name for x in ["_flat_param", "lora_", "ranknum"]):
                             continue
                         name = name.replace("_fsdp_wrapped_module.", "").replace(".base_layer", "")
                         lora_params[name] = (
@@ -652,13 +718,17 @@ def collect_lora_params(module: FSDP, layered_summon: bool, base_sync_done: bool
             get_torch_device().empty_cache()
     else:
         if base_sync_done:
-            lora_params = get_peft_model_state_dict(peft_model)
+            with adalora_context:
+                lora_params = get_peft_model_state_dict(peft_model)
+                if adalora:
+                    lora_params = _vllm_lora_only(lora_params)
+                lora_params = OrderedDict((name, param.detach().cpu().clone()) for name, param in lora_params.items())
         else:
             model = peft_model.base_model.model
             orig_dev = "cpu" if "cpu" in str(next(model.parameters()).device) else get_device_name()
             model = model.to("cpu")
             for name, param in model.state_dict().items():
-                if any(x in name for x in ["_flat_param", "lora_"]):
+                if any(x in name for x in ["_flat_param", "lora_", "ranknum"]):
                     continue
                 name = name.replace("_fsdp_wrapped_module.", "").replace(".base_layer", "")
                 lora_params[name] = param.detach().cpu()
@@ -909,6 +979,52 @@ def collect_spo_full_params(module: FSDP) -> OrderedDict:
                 prefix = name[: -len(".base_layer.bias")]
                 wrapped = module_by_name.get(prefix)
                 if isinstance(wrapped, SPOLinear):
+                    _, merged_bias = wrapped.merged_weight_bias()
+                    if merged_bias is not None:
+                        clean_prefix = prefix.replace("_fsdp_wrapped_module.", "")
+                        params[f"{clean_prefix}.bias"] = merged_bias.detach().cpu()
+                    continue
+
+            clean_name = name.replace("_fsdp_wrapped_module.", "").replace(".base_layer", "")
+            tensor = param.full_tensor() if hasattr(param, "full_tensor") else param
+            params[clean_name] = tensor.detach().cpu()
+
+    if fsdp_version(module) > 0:
+        with FSDP.summon_full_params(module, writeback=False):
+            _collect_from_model()
+        get_torch_device().empty_cache()
+    else:
+        _collect_from_model()
+
+    return params
+
+
+def collect_tinylora_full_params(module: FSDP) -> OrderedDict:
+    """Collect base-model weights with TinyLoRA updates folded in."""
+
+    from verl.utils.peft_tinylora import TinyLoRALinear
+
+    params = OrderedDict()
+    model = getattr(module, "_fsdp_wrapped_module", module)
+
+    def _collect_from_model():
+        module_by_name = dict(model.named_modules())
+        for name, param in model.state_dict().items():
+            if "_flat_param" in name or "tinylora_" in name:
+                continue
+
+            if name.endswith(".base_layer.weight"):
+                prefix = name[: -len(".base_layer.weight")]
+                wrapped = module_by_name.get(prefix)
+                if isinstance(wrapped, TinyLoRALinear):
+                    merged_weight, _ = wrapped.merged_weight_bias()
+                    clean_prefix = prefix.replace("_fsdp_wrapped_module.", "")
+                    params[f"{clean_prefix}.weight"] = merged_weight.detach().cpu()
+                    continue
+            if name.endswith(".base_layer.bias"):
+                prefix = name[: -len(".base_layer.bias")]
+                wrapped = module_by_name.get(prefix)
+                if isinstance(wrapped, TinyLoRALinear):
                     _, merged_bias = wrapped.merged_weight_bias()
                     if merged_bias is not None:
                         clean_prefix = prefix.replace("_fsdp_wrapped_module.", "")

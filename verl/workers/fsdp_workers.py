@@ -65,11 +65,12 @@ from verl.utils.fsdp_utils import (
     MixedPrecisionPolicy,
     apply_fsdp2,
     collect_biso_full_params,
-    collect_lora_params,
     collect_boet_full_params,
+    collect_lora_params,
     collect_peft_full_params,
     collect_skew_full_params,
     collect_spo_full_params,
+    collect_tinylora_full_params,
     fsdp2_load_full_state_dict,
     fsdp_version,
     get_fsdp_wrap_policy,
@@ -86,11 +87,20 @@ from verl.utils.fsdp_utils import (
 from verl.utils.import_utils import import_external_libs
 from verl.utils.memory_utils import aggressive_empty_cache
 from verl.utils.model import compute_position_id_with_mask, convert_weight_keys
-from verl.utils.peft_geora import apply_geora_initialization
-from verl.utils.peft_boet import apply_boet_adapters
+from verl.utils.peft_adalora import adalora_config_for_vllm, build_adalora_config
 from verl.utils.peft_biso import apply_biso_adapters
-from verl.utils.peft_spo import apply_spo_adapters
+from verl.utils.peft_boet import apply_boet_adapters
+from verl.utils.peft_geora import apply_geora_initialization
+from verl.utils.peft_gradient_subspace import (
+    apply_gradient_subspace_initialization,
+    freeze_lora_a_factors,
+    initialize_gradient_probe,
+)
+from verl.utils.peft_oracle_lora import load_oracle_lora_patterns
+from verl.utils.peft_rlpo import apply_rlpo_initialization
 from verl.utils.peft_skew import apply_skew_adapters
+from verl.utils.peft_spo import apply_spo_adapters
+from verl.utils.peft_tinylora import apply_tinylora_adapters
 from verl.utils.profiler import DistProfiler, DistProfilerExtension, ProfilerConfig, log_gpu_memory_usage, simple_timer
 from verl.utils.profiler.performance import reduce_timing, topk_reduce_ratio_min_max
 from verl.utils.py_functional import convert_to_regular_types
@@ -200,6 +210,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         self._is_peft = (
             self.config.model.get("lora_adapter_path") is not None
             or self._lora_rank > 0
+            or self._peft_type == "adalora"
             or (
                 self._peft_type == "oft"
                 and (self.config.model.get("oft_block_size", 0) > 0 or self.config.model.get("oft_rank", 0) > 0)
@@ -208,8 +219,17 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             or (self._peft_type == "boet" and self.config.model.get("boet_rank", 0) > 0)
             or (self._peft_type == "biso" and self.config.model.get("biso_block_size", 0) > 0)
             or (self._peft_type == "spo" and self.config.model.get("spo_block_size", 0) > 0)
+            or (self._peft_type == "tinylora" and self.config.model.get("tinylora_rank", 0) > 0)
         )
-        self._is_lora = self._is_peft and self._peft_type in ("lora", "geora")
+        self._is_lora = self._is_peft and self._peft_type in (
+            "lora",
+            "rlpo",
+            "adalora",
+            "geora",
+            "grad_probe",
+            "grad_subspace",
+        )
+        self._is_adalora = self._is_peft and self._peft_type == "adalora"
 
         self.role = role
         assert self.role in ["actor", "rollout", "ref", "actor_rollout", "actor_rollout_ref"]
@@ -388,7 +408,9 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
 
         # NOTE(fix me): tie_word_embedding causes meta_tensor init to hang
         init_context = get_init_weight_context_manager(
-            use_meta_tensor=not actor_model_config.tie_word_embeddings and self._peft_type != "geora",
+            use_meta_tensor=not actor_model_config.tie_word_embeddings
+            and self._peft_type not in ("geora", "rlpo", "grad_probe", "grad_subspace")
+            and self._peft_type != "tinylora",
             mesh=self.device_mesh,
         )
 
@@ -463,11 +485,14 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             if lora_adapter_path is not None:
                 from peft import PeftModel
 
+                from verl.utils.transformers_compat import patch_peft_tp_adapter_load_for_data_parallel
+
                 print(f"Loading pre-trained PEFT adapter to {role} from: {lora_adapter_path}")
 
                 # Copy adapter to local if needed
                 local_adapter_path = copy_to_local(lora_adapter_path, use_shm=self.config.model.get("use_shm", False))
 
+                patch_peft_tp_adapter_load_for_data_parallel()
                 actor_module = PeftModel.from_pretrained(actor_module, local_adapter_path, is_trainable=True)
                 peft_config = actor_module.peft_config["default"]
                 # Ensure task_type is TaskType enum, not string
@@ -490,7 +515,115 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                             "lora_dropout": self.config.model.get("lora_dropout", 0.0),
                         }
                     )
+                    rank_pattern_path = self.config.model.get("lora_rank_pattern_path")
+                    if rank_pattern_path:
+                        patterns = load_oracle_lora_patterns(
+                            rank_pattern_path,
+                            base_rank=self.config.model.lora_rank,
+                            base_alpha=self.config.model.lora_alpha,
+                        )
+                        peft_config.update(
+                            {
+                                "rank_pattern": patterns.rank_pattern,
+                                "alpha_pattern": patterns.alpha_pattern,
+                            }
+                        )
+                        if self.rank == 0:
+                            print(
+                                "Applied oracle LoRA rank pattern: "
+                                f"modules={patterns.module_count}, rank_mean={patterns.rank_mean:.4f}, "
+                                f"rank_range=[{patterns.rank_min}, {patterns.rank_max}], "
+                                f"alpha/r={patterns.scaling_ratio:g}"
+                            )
                     actor_module = get_peft_model(actor_module, LoraConfig(**peft_config))
+                elif self._peft_type == "rlpo":
+                    peft_config.update(
+                        {
+                            "r": self.config.model.lora_rank,
+                            "lora_alpha": self.config.model.lora_alpha,
+                            "lora_dropout": self.config.model.get("lora_dropout", 0.0),
+                        }
+                    )
+                    rank_pattern_path = self.config.model.get("lora_rank_pattern_path")
+                    if rank_pattern_path:
+                        patterns = load_oracle_lora_patterns(
+                            rank_pattern_path,
+                            base_rank=self.config.model.lora_rank,
+                            base_alpha=self.config.model.lora_alpha,
+                        )
+                        peft_config.update(
+                            {
+                                "rank_pattern": patterns.rank_pattern,
+                                "alpha_pattern": patterns.alpha_pattern,
+                            }
+                        )
+                        if self.rank == 0:
+                            print(
+                                "Applied static heterogeneous RLPO rank pattern: "
+                                f"modules={patterns.module_count}, rank_mean={patterns.rank_mean:.4f}, "
+                                f"rank_range=[{patterns.rank_min}, {patterns.rank_max}], "
+                                f"alpha/r={patterns.scaling_ratio:g}"
+                            )
+                    actor_module = get_peft_model(actor_module, LoraConfig(**peft_config))
+                    if self.rank == 0:
+                        stats = apply_rlpo_initialization(actor_module, self.config.model)
+                        print(
+                            "Applied paper-source RLPO initialization: "
+                            f"layers={stats.num_layers}, base_params_inspected={stats.num_parameters}, "
+                            f"rank_mean={stats.rank_mean:.4f}, "
+                            f"rank_range=[{stats.rank_min}, {stats.rank_max}], "
+                            f"svd_total_s={stats.total_s:.3f}, svd_mean_s={stats.mean_s:.3f}, "
+                            f"svd_max_s={stats.max_s:.3f}, "
+                            f"orthogonality_error_max={stats.orthogonality_error_max:.3e}, "
+                            f"b_abs_max={stats.b_abs_max:.3e}"
+                        )
+                elif self._peft_type == "grad_probe":
+                    probe_width = int(self.config.model.get("gradient_probe_width", 8))
+                    peft_config.update(
+                        {
+                            "r": probe_width,
+                            "lora_alpha": probe_width,
+                            "lora_dropout": 0.0,
+                        }
+                    )
+                    actor_module = get_peft_model(actor_module, LoraConfig(**peft_config))
+                    stats = initialize_gradient_probe(actor_module, self.config.model)
+                    if self.rank == 0:
+                        print(
+                            "Applied zero-function RL gradient probe: "
+                            f"layers={stats.num_layers}, width={stats.rank}, "
+                            f"a_abs_max={stats.a_abs_max:.3e}, b_rms_mean={stats.b_rms_mean:.3e}"
+                        )
+                elif self._peft_type == "grad_subspace":
+                    rank_map_path = self.config.model.get("gradient_subspace_rank_map_path")
+                    if not rank_map_path:
+                        raise ValueError(
+                            "gradient_subspace_rank_map_path is required for peft_type=grad_subspace"
+                        )
+                    patterns = load_oracle_lora_patterns(
+                        rank_map_path,
+                        base_rank=self.config.model.lora_rank,
+                        base_alpha=self.config.model.lora_alpha,
+                    )
+                    peft_config.update(
+                        {
+                            "r": self.config.model.lora_rank,
+                            "lora_alpha": self.config.model.lora_alpha,
+                            "lora_dropout": self.config.model.get("lora_dropout", 0.0),
+                            "rank_pattern": patterns.rank_pattern,
+                            "alpha_pattern": patterns.alpha_pattern,
+                        }
+                    )
+                    actor_module = get_peft_model(actor_module, LoraConfig(**peft_config))
+                    if self.rank == 0:
+                        stats = apply_gradient_subspace_initialization(actor_module, self.config.model)
+                        print(
+                            "Applied RL gradient-subspace initialization: "
+                            f"layers={stats.num_layers}, rank_mean={stats.rank_mean:.4f}, "
+                            f"rank_range=[{stats.rank_min}, {stats.rank_max}], "
+                            f"orthogonality_error_max={stats.orthogonality_error_max:.3e}, "
+                            f"b_abs_max={stats.b_abs_max:.3e}"
+                        )
                 elif self._peft_type == "geora":
                     peft_config.update(
                         {
@@ -523,6 +656,18 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                         }
                     )
                     actor_module = get_peft_model(actor_module, OFTConfig(**peft_config))
+                elif self._peft_type == "adalora":
+                    adalora_config = build_adalora_config(
+                        self.config.model, total_training_steps=self.config.actor.optim.total_training_steps
+                    )
+                    actor_module = get_peft_model(actor_module, adalora_config)
+                    if self.rank == 0:
+                        print(
+                            "Applied official PEFT AdaLoRA: "
+                            f"init_r={adalora_config.init_r}, target_r={adalora_config.target_r}, "
+                            f"tinit={adalora_config.tinit}, tfinal={adalora_config.tfinal}, "
+                            f"deltaT={adalora_config.deltaT}, total_step={adalora_config.total_step}"
+                        )
                 elif self._peft_type == "skew":
                     stats = apply_skew_adapters(actor_module, self.config.model)
                     print(
@@ -557,10 +702,42 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                         f"cn={self.config.model.get('spo_use_cayley_neumann', True)}, "
                         f"cn_terms={self.config.model.get('spo_num_cayley_neumann_terms', 5)}"
                     )
+                elif self._peft_type == "tinylora":
+                    stats = apply_tinylora_adapters(actor_module, self.config.model)
+                    if self.rank == 0:
+                        print(
+                            "Applied TinyLoRA adapters: "
+                            f"layers={stats.num_layers}, shared_vectors={stats.num_vectors}, "
+                            f"trainable_params={stats.num_parameters}, rank={stats.rank}, "
+                            f"projection_dim={stats.projection_dim}, tie_factor={stats.tie_factor}, "
+                            f"tie_strategy={self.config.model.get('tinylora_tie_strategy', 'tiled')}"
+                        )
                 else:
                     raise ValueError(f"Unsupported PEFT type: {self._peft_type}")
 
+            if role == "actor" and bool(self.config.model.get("lora_freeze_a", False)):
+                if self._peft_type not in {"lora", "rlpo", "grad_subspace"}:
+                    raise ValueError(f"lora_freeze_a is unsupported for peft_type={self._peft_type}")
+                stats = freeze_lora_a_factors(actor_module)
+                if self.rank == 0:
+                    print(
+                        "Applied fixed-A B-only LoRA training: "
+                        f"layers={stats.num_layers}, frozen_A_params={stats.a_parameters}, "
+                        f"trainable_B_params={stats.b_parameters}, "
+                        f"unexpected_trainable_params={stats.unexpected_trainable_parameters}"
+                    )
+
         self.use_orig_params = fsdp_config.get("use_orig_params", False)
+        if self._is_adalora:
+            self.use_orig_params = True
+        if self._peft_type == "tinylora":
+            # TinyLoRA mixes frozen base tensors with shared trainable vectors.
+            self.use_orig_params = True
+        if self._peft_type == "grad_probe":
+            # FSDP only supports summon_full_params(with_grads=True) with
+            # original parameters. It also keeps each transformer layer as
+            # the collection unit instead of separately wrapping LoRA A/B.
+            self.use_orig_params = True
         if self.config.actor.get("freeze_vision_tower", False):
             vision_tower = get_vl_model_vision_tower(actor_module)
             if vision_tower is not None:
@@ -595,7 +772,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         auto_wrap_policy = get_fsdp_wrap_policy(
             module=actor_module,
             config=fsdp_config.get("wrap_policy", None),
-            is_lora=self._is_peft,
+            is_lora=self._is_peft and self._peft_type != "grad_probe",
         )
 
         # if self._is_rollout and self.config.rollout.name == "hf":
@@ -615,6 +792,8 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         # We force turn off CPUOffload for actor because it causes incorrect results when using grad accumulation
         cpu_offload = None if role == "actor" else CPUOffload(offload_params=True)
         fsdp_strategy = self.config.actor.strategy
+        if self._is_adalora and fsdp_strategy != "fsdp":
+            raise NotImplementedError("Official AdaLoRA allocation currently requires FSDP1, not FSDP2")
         if fsdp_strategy == "fsdp":
             actor_module_fsdp = FSDP(
                 actor_module,
@@ -687,7 +866,12 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                     )
                 actor_optimizer = build_optimizer(param_groups, optim_config)
             else:
-                actor_optimizer = build_optimizer(actor_module_fsdp.parameters(), optim_config)
+                trainable_parameters = [
+                    parameter for parameter in actor_module_fsdp.parameters() if parameter.requires_grad
+                ]
+                if not trainable_parameters:
+                    raise RuntimeError("Actor optimizer found no trainable parameters")
+                actor_optimizer = build_optimizer(trainable_parameters, optim_config)
 
             total_steps = optim_config.get("total_training_steps", 0)
             num_warmup_steps = int(optim_config.get("lr_warmup_steps", -1))
@@ -808,10 +992,13 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         peft_model = getattr(self.actor_module_fsdp, "_fsdp_wrapped_module", self.actor_module_fsdp)
         if hasattr(peft_model, "peft_config") and self._is_lora:
             peft_config = peft_model.peft_config.get("default", None)
+            if self._is_adalora:
+                peft_config = adalora_config_for_vllm(peft_config)
             params = collect_lora_params(
                 module=self.actor_module_fsdp,
                 layered_summon=self.config.rollout.get("layered_summon", False),
                 base_sync_done=self.base_sync_done,
+                adalora=self._is_adalora,
             )
             if not self.base_sync_done:
                 params = {replace_lora_wrapper(k, peft_config): v for k, v in params.items()}
@@ -830,6 +1017,9 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         elif self._peft_type == "spo":
             params = collect_spo_full_params(module=self.actor_module_fsdp)
             skip_weight_key_conversion = True
+        elif self._peft_type == "tinylora":
+            params = collect_tinylora_full_params(module=self.actor_module_fsdp)
+            skip_weight_key_conversion = True
         else:
             params = self.actor_module_fsdp.state_dict()
 
@@ -847,6 +1037,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                 module=self.actor_module_fsdp,
                 layered_summon=self.layered_summon,
                 base_sync_done=False,
+                adalora=self._is_adalora,
             )
             base_model_params = {replace_lora_wrapper(k, peft_config): v for k, v in base_model_params.items()}
             base_model_params = convert_weight_keys(
@@ -974,6 +1165,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
 
         if self._is_actor:
             actor_cfg = omega_conf_to_dataclass(self.config.actor)
+            actor_cfg.model_config = omega_conf_to_dataclass(self.config.model)
             self.actor = DataParallelPPOActor(
                 config=actor_cfg, actor_module=self.actor_module_fsdp, actor_optimizer=self.actor_optimizer
             )
@@ -1068,7 +1260,6 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             lr = self.actor_lr_scheduler.get_last_lr()[0]
             metrics["actor/lr"] = lr.item() if torch.is_tensor(lr) else lr
             self.actor_lr_scheduler.step()
-
             # TODO: here, we should return all metrics
             output = DataProto(meta_info={"metrics": metrics})
 
@@ -1227,7 +1418,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         dist.barrier()
 
         if self._is_peft and hasattr(getattr(self, "actor_module", self.actor_module_fsdp), "peft_config"):
-            lora_save_path = os.path.join(local_path, "lora_adapter")
+            lora_save_path = os.path.join(local_path, "peft_adapter")
             peft_model = getattr(self, "actor_module", self.actor_module_fsdp)
             peft_config = {}
             if dist.get_rank() == 0:

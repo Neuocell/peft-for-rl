@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
+
+export RUNTIME_ROOT="${RUNTIME_ROOT:-${REPO_ROOT}/runs}"
+export EXP_NAME="${EXP_NAME:-gradtop_step100_act90_compact_r8to28_mean18p29_a2_b64m16n8_rem170_v1}"
+export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1,2,3}"
+
+CONDA_ENV_NAME="${CONDA_ENV_NAME:-peft-for-rl}"
+LOG_DIR="${LOG_DIR:-${RUNTIME_ROOT}/logs/verl}"
+LOG_FILE="${LOG_FILE:-${LOG_DIR}/${EXP_NAME}.log}"
+
+mkdir -p "${LOG_DIR}"
+cd "${REPO_ROOT}"
+export PYTHONPATH="${REPO_ROOT}"
+exec >>"${LOG_FILE}" 2>&1
+
+echo "[$(date -Is)] Repository: ${REPO_ROOT}"
+echo "[$(date -Is)] Runtime:    ${RUNTIME_ROOT}"
+echo "[$(date -Is)] Conda env:  ${CONDA_ENV_NAME}"
+echo "[$(date -Is)] Log:        ${LOG_FILE}"
+echo "[$(date -Is)] GPUs:       ${CUDA_VISIBLE_DEVICES}"
+
+exec conda run --no-capture-output -n "${CONDA_ENV_NAME}" \
+    bash "${REPO_ROOT}/examples/verl_train/run_dapo_math_boxed_compact_act90_lora_1p5b_4gpu_8k.sh"

@@ -31,6 +31,8 @@ from verl.trainer.ppo.core_algos import agg_loss, get_policy_loss_fn, kl_penalty
 from verl.utils.attention_utils import index_first_axis, pad_input, rearrange, unpad_input
 from verl.utils.device import get_device_id, get_device_name
 from verl.utils.fsdp_utils import FSDPModule, fsdp2_clip_grad_norm_
+from verl.utils.peft_adalora import find_adalora_model, update_and_allocate
+from verl.utils.peft_gradient_subspace import GradientProbeCollector
 from verl.utils.profiler import GPUMemoryLogger
 from verl.utils.py_functional import append_to_dict
 from verl.utils.seqlen_balancing import prepare_dynamic_batch, restore_dynamic_batch
@@ -44,6 +46,26 @@ __all__ = ["DataParallelPPOActor"]
 
 logger = logging.getLogger(__file__)
 logger.setLevel(os.getenv("VERL_LOGGING_LEVEL", "WARN"))
+
+
+def _aggregate_adalora_loss_metrics(
+    *,
+    weighted_regularization_sum: float,
+    weighted_orthogonal_loss_sum: float,
+    weighted_pg_abs_sum: float,
+    loss_weight_sum: float,
+) -> dict[str, float]:
+    """Build update-level AdaLoRA metrics from weighted micro-batch values."""
+
+    if loss_weight_sum <= 0:
+        raise ValueError("loss_weight_sum must be positive")
+
+    return {
+        "adalora/orthogonal_regularization": weighted_regularization_sum / loss_weight_sum,
+        "adalora/orthogonal_loss": weighted_orthogonal_loss_sum / loss_weight_sum,
+        "adalora/pg_loss_abs": weighted_pg_abs_sum / loss_weight_sum,
+        "adalora/orthogonal_to_pg_abs_ratio": weighted_orthogonal_loss_sum / max(weighted_pg_abs_sum, 1e-8),
+    }
 
 
 class DataParallelPPOActor(BasePPOActor):
@@ -60,6 +82,17 @@ class DataParallelPPOActor(BasePPOActor):
         super().__init__(config)
         self.actor_module = actor_module
         self.actor_optimizer = actor_optimizer
+        self._adalora_optimizer_step = 0
+        self._last_adalora_orth_loss = None
+        self._adalora_model = find_adalora_model(actor_module)
+        model_config = getattr(self.config, "model_config", None)
+        if (
+            actor_optimizer is not None
+            and model_config is not None
+            and model_config.get("peft_type", "lora") == "adalora"
+            and self._adalora_model is None
+        ):
+            raise RuntimeError("AdaLoRA is configured but PEFT AdaLoraModel was not found")
         role = "Ref" if actor_optimizer is None else "Actor"
 
         self.use_remove_padding = self.config.get("use_remove_padding", False)
@@ -90,9 +123,18 @@ class DataParallelPPOActor(BasePPOActor):
             self.scaler = ShardedGradScaler(growth_interval=400)
         else:
             self.scaler = None
+        self._gradient_probe_collector = None
+        if (
+            actor_optimizer is not None
+            and model_config is not None
+            and model_config.get("peft_type", "lora") == "grad_probe"
+        ):
+            if self.scaler is not None:
+                raise NotImplementedError("peft_type=grad_probe currently requires bf16 or fp32, not fp16 scaling")
+            self._gradient_probe_collector = GradientProbeCollector(actor_module, model_config)
 
     def _forward_micro_batch(
-        self, micro_batch, temperature, calculate_entropy=False
+        self, micro_batch, temperature, calculate_entropy=False, capture_adalora_orthogonal_loss=False
     ) -> tuple[torch.Tensor, torch.Tensor]:
         """
         Returns:
@@ -100,6 +142,7 @@ class DataParallelPPOActor(BasePPOActor):
             log_probs: # (bs, response_len)
         """
         response_length = micro_batch["responses"].size(-1)
+        self._last_adalora_orth_loss = None
         multi_modal_inputs = {}
         if "multi_modal_inputs" in micro_batch.keys():
             from verl.utils.model import extract_multi_modal_inputs
@@ -195,10 +238,20 @@ class DataParallelPPOActor(BasePPOActor):
                     extra_args["temperature"] = temperature
                     extra_args["return_dict"] = True
 
+                adalora_loss_kwargs = {}
+                if capture_adalora_orthogonal_loss:
+                    adalora_loss_kwargs = {
+                        "labels": torch.full_like(input_ids_rmpad, -100),
+                        "num_items_in_batch": 1,
+                    }
                 output = self.actor_module(
                     input_ids=input_ids_rmpad,
                     attention_mask=None,
                     position_ids=position_ids_rmpad,
+                    # PEFT only adds its official orthogonal regularizer when
+                    # the wrapped model returns a loss. Ignored labels make
+                    # the causal-LM term exactly zero.
+                    **adalora_loss_kwargs,
                     **multi_modal_inputs,
                     use_cache=False,
                     **extra_args,
@@ -279,10 +332,17 @@ class DataParallelPPOActor(BasePPOActor):
                     extra_args["temperature"] = temperature
                     extra_args["return_dict"] = True
 
+                adalora_loss_kwargs = {}
+                if capture_adalora_orthogonal_loss:
+                    adalora_loss_kwargs = {
+                        "labels": torch.full_like(input_ids, -100),
+                        "num_items_in_batch": 1,
+                    }
                 output = self.actor_module(
                     input_ids=input_ids,
                     attention_mask=attention_mask,
                     position_ids=position_ids,
+                    **adalora_loss_kwargs,
                     **multi_modal_inputs,
                     use_cache=False,
                     **extra_args,
@@ -304,6 +364,11 @@ class DataParallelPPOActor(BasePPOActor):
                         else:
                             entropy = torch.utils.checkpoint.checkpoint(verl_F.entropy_from_logits, logits)
 
+        if capture_adalora_orthogonal_loss:
+            if not isinstance(getattr(output, "loss", None), torch.Tensor):
+                raise RuntimeError("PEFT AdaLoRA forward did not return its official orthogonal loss")
+            self._last_adalora_orth_loss = output.loss
+
         return entropy, log_probs
 
     def _compute_biso_raw_l2(self) -> torch.Tensor | None:
@@ -322,7 +387,7 @@ class DataParallelPPOActor(BasePPOActor):
             return None
         return torch.stack(biso_tensors).mean()
 
-    def _optimizer_step(self):
+    def _optimizer_step(self, *, apply_update: bool = True):
         assert self.config.grad_clip is not None
         if self.scaler is not None:
             self.scaler.unscale_(self.actor_optimizer)
@@ -337,14 +402,14 @@ class DataParallelPPOActor(BasePPOActor):
             grad_norm = grad_norm.full_tensor()
 
         # if grad_norm is not finite, skip the update
-        if self.scaler is not None:
+        if self.scaler is not None and apply_update:
             self.scaler.step(self.actor_optimizer)
             self.scaler.update()
         else:
             if not torch.isfinite(grad_norm):
                 print(f"WARN: rank {torch.distributed.get_rank()} grad_norm is not finite: {grad_norm}")
                 self.actor_optimizer.zero_grad()
-            else:
+            elif apply_update:
                 self.actor_optimizer.step()
         return grad_norm
 
@@ -444,6 +509,15 @@ class DataParallelPPOActor(BasePPOActor):
         # Split to make minibatch iterator for updating the actor
         # See PPO paper for details. https://arxiv.org/abs/1707.06347
         mini_batches = data.split(self.config.ppo_mini_batch_size)
+        if (
+            self._adalora_model is not None
+            and self._adalora_optimizer_step == 0
+            and int(data.meta_info.get("global_steps", 1)) > 1
+        ):
+            raise RuntimeError(
+                "AdaLoRA cannot resume from a trainer checkpoint without RankAllocator EMA state; "
+                "start a fresh run with trainer.resume_mode=disable"
+            )
 
         on_policy = len(mini_batches) == 1 and self.config.ppo_epochs == 1
 
@@ -451,6 +525,10 @@ class DataParallelPPOActor(BasePPOActor):
             "actor/pg_loss": 0.0,
             "actor/kl_loss": 0.0,
         }
+        model_config = getattr(self.config, "model_config", None)
+        is_adalora = model_config is not None and model_config.get("peft_type", "lora") == "adalora"
+        is_gradient_probe = self._gradient_probe_collector is not None
+        adalora_orth_reg_weight = float(model_config.get("adalora_orth_reg_weight", 0.0)) if is_adalora else 0.0
         for _ in range(self.config.ppo_epochs):
             for batch_idx, mini_batch in enumerate(mini_batches):
                 if self.config.use_dynamic_bsz:
@@ -463,6 +541,11 @@ class DataParallelPPOActor(BasePPOActor):
                     micro_batches = mini_batch.split(self.config.ppo_micro_batch_size_per_gpu)
 
                 self.actor_optimizer.zero_grad()
+
+                adalora_regularization_sum = 0.0
+                adalora_orthogonal_loss_sum = 0.0
+                adalora_pg_abs_sum = 0.0
+                adalora_loss_weight_sum = 0.0
 
                 for micro_batch in micro_batches:
                     micro_batch = micro_batch.to(get_device_id())
@@ -484,7 +567,10 @@ class DataParallelPPOActor(BasePPOActor):
 
                     # all return: (bsz, response_length)
                     entropy, log_prob = self._forward_micro_batch(
-                        model_inputs, temperature=temperature, calculate_entropy=calculate_entropy
+                        model_inputs,
+                        temperature=temperature,
+                        calculate_entropy=calculate_entropy,
+                        capture_adalora_orthogonal_loss=adalora_orth_reg_weight > 0,
                     )
 
                     # for fully_async_policy recipe
@@ -552,6 +638,21 @@ class DataParallelPPOActor(BasePPOActor):
                         metrics["actor/kl_loss"] += kl_loss.detach().item() * loss_scale_factor
                         micro_batch_metrics["actor/kl_coef"] = self.config.kl_loss_coef
 
+                    if adalora_orth_reg_weight > 0:
+                        orth_loss = self._last_adalora_orth_loss
+                        if orth_loss is None:
+                            raise RuntimeError(
+                                "PEFT AdaLoRA official orthogonal loss was not returned by model forward"
+                            )
+                        if not torch.isfinite(orth_loss):
+                            raise FloatingPointError(f"AdaLoRA orthogonal loss is non-finite: {orth_loss.detach()}")
+                        policy_loss = policy_loss + orth_loss.to(dtype=policy_loss.dtype)
+                        orthogonal_regularization = orth_loss / adalora_orth_reg_weight
+                        adalora_regularization_sum += orthogonal_regularization.detach().item() * loss_scale_factor
+                        adalora_orthogonal_loss_sum += orth_loss.detach().abs().item() * loss_scale_factor
+                        adalora_pg_abs_sum += pg_loss.detach().abs().item() * loss_scale_factor
+                        adalora_loss_weight_sum += loss_scale_factor
+
                     biso_raw_l2_coef = float(self.config.get("biso_raw_l2_coef", 0.0))
                     if biso_raw_l2_coef > 0:
                         biso_raw_l2 = self._compute_biso_raw_l2()
@@ -574,8 +675,38 @@ class DataParallelPPOActor(BasePPOActor):
                     metrics["actor/pg_loss"] += pg_loss.detach().item() * loss_scale_factor
                     append_to_dict(metrics, micro_batch_metrics)
 
-                grad_norm = self._optimizer_step()
+                probe_metrics = {}
+                if is_gradient_probe:
+                    probe_metrics = self._gradient_probe_collector.capture_and_refresh()
+                grad_norm = self._optimizer_step(apply_update=not is_gradient_probe)
                 mini_batch_metrics = {"actor/grad_norm": grad_norm.detach().item()}
+                mini_batch_metrics.update(probe_metrics)
+                if adalora_loss_weight_sum > 0:
+                    mini_batch_metrics.update(
+                        _aggregate_adalora_loss_metrics(
+                            weighted_regularization_sum=adalora_regularization_sum,
+                            weighted_orthogonal_loss_sum=adalora_orthogonal_loss_sum,
+                            weighted_pg_abs_sum=adalora_pg_abs_sum,
+                            loss_weight_sum=adalora_loss_weight_sum,
+                        )
+                    )
+                # PEFT reads A/B/E gradients, so advance the allocator after a
+                # successful optimizer update and before zero_grad.
+                if is_adalora:
+                    if torch.isfinite(grad_norm):
+                        self._adalora_optimizer_step += 1
+                        mini_batch_metrics.update(
+                            update_and_allocate(
+                                self.actor_module,
+                                self._adalora_optimizer_step,
+                                adalora_model=self._adalora_model,
+                            )
+                        )
+                    else:
+                        mini_batch_metrics["adalora/update_skipped_nonfinite"] = 1.0
                 append_to_dict(metrics, mini_batch_metrics)
         self.actor_optimizer.zero_grad()
+        if is_gradient_probe:
+            trainer_step = int(data.meta_info.get("global_steps", 0))
+            metrics.update(self._gradient_probe_collector.finish_trainer_step(trainer_step))
         return metrics

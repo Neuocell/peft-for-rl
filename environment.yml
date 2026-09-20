@@ -1,0 +1,13 @@
+name: peft-for-rl
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - git
+  - pip:
+      - -r requirements.txt
+      - -r requirements-cuda.txt
+      - -r requirements-eval.txt

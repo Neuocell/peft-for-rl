@@ -81,6 +81,48 @@ class HFModelConfig(BaseConfig):
     lora_rank: int = 0
     lora_alpha: int = 16
     lora_dropout: float = 0.0
+    lora_freeze_a: bool = False
+    lora_rank_pattern_path: Optional[str] = None
+    rlpo_svd_device: str = "auto"
+    adalora_init_r: int = 0
+    adalora_target_r: int = 0
+    adalora_tinit: int = 0
+    adalora_tfinal: int = 0
+    # verl uses snake_case; this maps to PEFT AdaLoraConfig.deltaT.
+    adalora_delta_t: int = 1
+    adalora_beta1: float = 0.85
+    adalora_beta2: float = 0.85
+    # PEFT's 0.5 default targets supervised loss scales. PPO policy losses in
+    # this repository are much smaller, so use an RL-scale default.
+    adalora_orth_reg_weight: float = 1e-3
+    adalora_total_step: int = 0
+    # Zero-function randomized LoRA probe and its exported RL-gradient basis.
+    gradient_probe_width: int = 8
+    gradient_probe_capacity: int = 64
+    gradient_probe_target_energy: float = 0.95
+    gradient_probe_rank_bins: list[int] = field(default_factory=lambda: [8, 12, 16, 20, 24, 28, 32])
+    gradient_probe_seed: int = 42
+    gradient_probe_min_steps: int = 6
+    gradient_probe_max_steps: int = 12
+    gradient_probe_stability_patience: int = 3
+    gradient_probe_overlap_threshold: float = 0.98
+    gradient_probe_rank_tolerance: float = 1.0
+    gradient_probe_output_dir: Optional[str] = None
+    gradient_probe_method: str = "energy"
+    gradient_probe_window_size: int = 3
+    gradient_probe_num_windows: int = 5
+    gradient_probe_calibration_windows: int = 0
+    gradient_probe_validation_windows: int = 0
+    gradient_probe_target_mean_rank: float = 16.0
+    gradient_probe_snr_ridge: float = 0.05
+    gradient_probe_clip_factor: float = 2.5
+    gradient_probe_normalize_rank_utility: bool = False
+    gradient_probe_balance_rank_by_module_type: bool = False
+    gradient_probe_local_atoms: int = 2
+    gradient_probe_gap_cap: float = 4.0
+    gradient_subspace_rank_map_path: Optional[str] = None
+    gradient_subspace_path: Optional[str] = None
+    gradient_subspace_scaling: float = 2.0
     oft_rank: int = 0
     oft_block_size: int = 32
     oft_dropout: float = 0.0
@@ -120,6 +162,16 @@ class HFModelConfig(BaseConfig):
     spo_num_cayley_neumann_terms: int = 5
     spo_cayley_neumann_eps: float = 0.9
     spo_seed: int = 42
+    tinylora_rank: int = 2
+    tinylora_projection_dim: int = 1
+    tinylora_tie_factor: int = 16
+    tinylora_tie_strategy: str = "tiled"
+    tinylora_seed: int = 42
+    tinylora_svd_device: str = "auto"
+    tinylora_svd_method: str = "lowrank"
+    tinylora_svd_oversample: int = 4
+    tinylora_svd_niter: int = 2
+    tinylora_projection_std: float = 1.0
     geora_sparsity_ratio: float = 0.2
     geora_oversample: int = 8
     geora_niter: int = 2
