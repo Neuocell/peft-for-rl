@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import copy
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import torch
+from peft import LoraConfig, PeftModel, get_peft_model
 from safetensors import safe_open
 from safetensors.torch import save_file
 
@@ -17,6 +20,7 @@ from verl.utils.full_gradient_rl_probe import (
     configure_full_gradient_probe_parameters,
     validate_full_gradient_probe_artifact,
 )
+from verl.utils.peft_gradient_subspace import apply_gradient_subspace_initialization
 
 
 class TinyPolicy(torch.nn.Module):
@@ -217,3 +221,52 @@ def test_full_gradient_probe_integration_is_wired() -> None:
     assert (root / "scripts/local/start_full_gradient_rl_probe_4gpu.sh").is_file()
     assert (root / "scripts/local/start_full_gradient_uniform_r8_4gpu.sh").is_file()
     assert (root / "scripts/local/start_full_gradient_adaptive_eqr8_4gpu.sh").is_file()
+
+
+def test_heterogeneous_probe_lora_saves_restores_and_merges(tmp_path: Path) -> None:
+    torch.manual_seed(13)
+    base = TinyPolicy()
+    restored_base = copy.deepcopy(base)
+    model = get_peft_model(
+        base,
+        LoraConfig(
+            r=1,
+            lora_alpha=2,
+            target_modules=["q_proj", "up_proj"],
+            rank_pattern={"q_proj": 1, "up_proj": 2},
+            alpha_pattern={"q_proj": 2, "up_proj": 4},
+        ),
+    )
+    subspace_path = tmp_path / "subspaces.safetensors"
+    save_file(
+        {
+            "model.layers.0.self_attn.q_proj": torch.eye(6)[:1].contiguous(),
+            "model.layers.0.mlp.up_proj": torch.eye(6)[:2].contiguous(),
+        },
+        subspace_path,
+    )
+    apply_gradient_subspace_initialization(
+        model, SimpleNamespace(gradient_subspace_path=str(subspace_path))
+    )
+    inputs = torch.randn(3, 6)
+    with model.disable_adapter():
+        base_output = model(inputs).detach()
+    assert torch.equal(model(inputs), base_output)
+    layers = [module for module in model.modules() if hasattr(module, "lora_A")]
+    assert sorted(module.r["default"] for module in layers) == [1, 2]
+    assert all(module.scaling["default"] == 2 for module in layers)
+
+    optimizer = torch.optim.AdamW(
+        (parameter for parameter in model.parameters() if parameter.requires_grad), lr=0.01
+    )
+    model(inputs).square().mean().backward()
+    optimizer.step()
+    trained_output = model(inputs).detach()
+    assert not torch.equal(trained_output, base_output)
+
+    adapter_dir = tmp_path / "adapter"
+    model.save_pretrained(adapter_dir)
+    restored = PeftModel.from_pretrained(restored_base, adapter_dir)
+    assert torch.allclose(restored(inputs), trained_output, atol=1e-6)
+    merged = restored.merge_and_unload()
+    assert torch.allclose(merged(inputs), trained_output, atol=1e-6)
