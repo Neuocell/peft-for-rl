@@ -157,6 +157,16 @@ capture 为 0.84343、audit F capture 为 0.83815；adaptive 对应为 0.84877 �
 大部分 audit capture 差异来自 atom 排序分数的改变，不能归因于全局 rank 分配。
 匹配 `P*R` 的 uniform 在 GPU 上训练前，这个 rank 分配假设仍未得到训练验证。
 
+### Gain-LCB uniform 50-step 探索基线
+
+`full_gradient_mean_uniform_r8_50_seed42` 已完成 50 步：reward@20 为
+`0.21875`，reward@50 为 `0.41406`，AUC1:20 为 `0.34570`，AUC1:50 为
+`0.34750`，step 2-50 均值为 `0.34550`；平均 response 长度约 6,480、
+entropy `0.91244`、step time `196.46s`，可训练参数为 9,232,384。
+历史 random-B 日志前 50 步均值约 `0.35539`，但平均 rank 约 31.63，
+与这里的 rank 8 不是等预算对照。独立的 `P*R` uniform/adaptive 训练仍在进行，
+不能从这个探索基线推断全局 rank 分配的收益。
+
 ## Checkpoint 与显存口径
 
 gain-LCB uniform 的 step-25 checkpoint 有完整的 4-rank FSDP model shard 和 extra-state，
