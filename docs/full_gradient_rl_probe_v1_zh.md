@@ -90,6 +90,19 @@ bash scripts/local/start_full_gradient_uniform_r8_4gpu.sh
 `candidate-method` 可取 `mean`、`covariance` 或 `hybrid`。三个 uniform-r8 实验必须读取同一个
 probe artifact，并保持 `B=0`、A 可训练、`alpha/r=2`。
 
+比较 `stable_energy` adaptive 的**全局 rank 分配本身**时，uniform 也必须用相同的
+`P*R` 分数选择每个模块的 top-8 atom。默认 uniform 是 `gain_lcb`，用于检验有符号
+step-0 改进分数；二者不能当作只改变 rank map 的实验。匹配分数的对照可另行导出：
+
+```bash
+python scripts/analysis/build_full_gradient_uniform_allocation.py \
+  --artifact-dir runs/analysis/full_gradient_signed_grpo_probe_v1_seed42 \
+  --output-dir runs/analysis/full_gradient_signed_grpo_probe_v1_seed42/mean_uniform_r8_stable_energy \
+  --candidate-method mean \
+  --uniform-rank 8 \
+  --uniform-utility stable_energy
+```
+
 adaptive allocator 先给每个模块分配 `r_min` 个完整 atom，再按 utility/
 `(d_in+d_out)` 在全模型范围分配剩余 atom。`gain_lcb` 使用 discovery 更新方向与 calibration
 梯度的一致改进下界；`stable_energy` 使用模块内相对能量与跨 prompt 稳定比例 `P*R`，避免
@@ -132,3 +145,9 @@ step-1 reward 分别为 0.53906、0.43750、0.43750，不能把单次 AUC 差异
 calibration `P*R` 的 `stable_energy` 分配后，参数为 9,231,360，calibration F capture
 为 0.8488，独立 audit F capture 为 0.8384；uniform 对应的 audit F capture 为 0.7490。
 这些是梯度结构指标，不是训练 reward；新的 adaptive 仍需单独验证。
+
+为隔离 rank 与 atom 选择的影响，离线计算相同 `P*R` top-8 uniform 的 calibration F
+capture 为 0.84343、audit F capture 为 0.83815；adaptive 对应为 0.84877 和 0.83841。
+原 `gain_lcb` uniform 的 audit F capture 只有 0.74903，因此与 adaptive 之间观察到的
+大部分 audit capture 差异来自 atom 排序分数的改变，不能归因于全局 rank 分配。
+匹配 `P*R` 的 uniform 在 GPU 上训练前，这个 rank 分配假设仍未得到训练验证。

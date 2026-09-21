@@ -187,6 +187,24 @@ def test_full_gradient_uniform_allocation_uses_lcb_and_scaling_two(
     assert stable_energy["budget_respected"] is True
     assert stable_energy["trainable_parameters"] <= uniform_r2["trainable_parameters"]
 
+    matched_uniform = build_uniform_allocation(
+        artifact,
+        tmp_path / "uniform-stable-energy",
+        candidate_method="covariance",
+        uniform_rank=1,
+        selection_utility="stable_energy",
+    )
+    assert matched_uniform["selection_utility"] == "stable_energy"
+    assert matched_uniform["trainable_parameters"] == result["trainable_parameters"]
+    with safe_open(
+        artifact / "atom_scores_covariance.safetensors", framework="pt", device="cpu"
+    ) as score_file:
+        for name, item in matched_uniform["modules"].items():
+            utility = score_file.get_tensor(f"{name}.P") * score_file.get_tensor(
+                f"{name}.R"
+            )
+            assert item["atom_indices"] == [int(utility.argmax().item())]
+
 
 def test_full_gradient_probe_integration_is_wired() -> None:
     root = Path(__file__).resolve().parents[1]

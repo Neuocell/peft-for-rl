@@ -20,6 +20,7 @@ def build_uniform_allocation(
     *,
     candidate_method: str,
     uniform_rank: int,
+    selection_utility: str = "gain_lcb",
 ) -> dict:
     validation = validate_full_gradient_probe_artifact(
         artifact_dir, candidate_method=candidate_method
@@ -48,11 +49,12 @@ def build_uniform_allocation(
                     for label in ("F", "S", "R", "P", "U")
                 }
 
+    allocation_scores = _selection_scores(scores, selection_utility)
     selected = {
-        name: torch.argsort(module_scores["U"], descending=True, stable=True)[
+        name: torch.argsort(allocation_scores[name], descending=True, stable=True)[
             :uniform_rank
         ].tolist()
-        for name, module_scores in scores.items()
+        for name in scores
     }
     budget = sum(
         (out_features + in_features) * uniform_rank
@@ -60,7 +62,10 @@ def build_uniform_allocation(
     )
     allocation = _write_allocation(
         output_dir,
-        method=f"full_gradient_signed_grpo_{candidate_method}_uniform_r{uniform_rank}",
+        method=(
+            f"full_gradient_signed_grpo_{candidate_method}_uniform_r{uniform_rank}"
+            + (f"_{selection_utility}" if selection_utility != "gain_lcb" else "")
+        ),
         candidates=candidates,
         scores=scores,
         selected=selected,
@@ -70,10 +75,24 @@ def build_uniform_allocation(
     )
     allocation["probe_validation"] = validation
     allocation["candidate_method"] = candidate_method
+    allocation["selection_utility"] = selection_utility
     (output_dir / "allocation_summary.json").write_text(
         json.dumps(allocation, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     return allocation
+
+
+def _selection_scores(
+    scores: dict[str, dict[str, torch.Tensor]], utility: str
+) -> dict[str, torch.Tensor]:
+    if utility == "gain_lcb":
+        return {name: module_scores["U"] for name, module_scores in scores.items()}
+    if utility == "stable_energy":
+        return {
+            name: module_scores["P"] * module_scores["R"]
+            for name, module_scores in scores.items()
+        }
+    raise ValueError(f"Unknown allocation utility: {utility}")
 
 
 def build_adaptive_allocation(
@@ -116,17 +135,7 @@ def build_adaptive_allocation(
 
     costs = {name: sum(shapes[name]) for name in shapes}
     budget = sum(costs[name] * uniform_rank for name in costs)
-    if adaptive_utility == "gain_lcb":
-        allocation_scores = {
-            name: module_scores["U"] for name, module_scores in scores.items()
-        }
-    elif adaptive_utility == "stable_energy":
-        allocation_scores = {
-            name: module_scores["P"] * module_scores["R"]
-            for name, module_scores in scores.items()
-        }
-    else:
-        raise ValueError(f"Unknown adaptive utility: {adaptive_utility}")
+    allocation_scores = _selection_scores(scores, adaptive_utility)
     selected = _allocate_adaptive(
         allocation_scores,
         costs,
@@ -175,6 +184,11 @@ def main() -> None:
         choices=("gain_lcb", "stable_energy"),
         default="gain_lcb",
     )
+    parser.add_argument(
+        "--uniform-utility",
+        choices=("gain_lcb", "stable_energy"),
+        default="gain_lcb",
+    )
     args = parser.parse_args()
     if args.allocation_mode == "uniform":
         result = build_uniform_allocation(
@@ -182,6 +196,7 @@ def main() -> None:
             args.output_dir.resolve(),
             candidate_method=args.candidate_method,
             uniform_rank=args.uniform_rank,
+            selection_utility=args.uniform_utility,
         )
     else:
         result = build_adaptive_allocation(
@@ -198,6 +213,7 @@ def main() -> None:
                 "candidate_method": result["candidate_method"],
                 "allocation_mode": args.allocation_mode,
                 "adaptive_utility": result.get("adaptive_utility"),
+                "selection_utility": result.get("selection_utility"),
                 "trainable_parameters": result["trainable_parameters"],
                 "rank_mean": result["structure"]["active_rank_mean"],
                 "rank_min": result["structure"]["active_rank_min"],
