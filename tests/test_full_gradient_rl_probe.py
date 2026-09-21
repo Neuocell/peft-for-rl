@@ -221,6 +221,9 @@ def test_full_gradient_probe_integration_is_wired() -> None:
     assert (root / "scripts/local/start_full_gradient_rl_probe_4gpu.sh").is_file()
     assert (root / "scripts/local/start_full_gradient_uniform_r8_4gpu.sh").is_file()
     assert (root / "scripts/local/start_full_gradient_adaptive_eqr8_4gpu.sh").is_file()
+    uniform_launcher = (root / "scripts/local/start_full_gradient_uniform_r8_4gpu.sh").read_text()
+    assert 'export LORA_RANK="${LORA_RANK:-8}"' in uniform_launcher
+    assert 'export LORA_ALPHA="${LORA_ALPHA:-16}"' in uniform_launcher
     adaptive_launcher = (root / "scripts/local/start_full_gradient_adaptive_eqr8_4gpu.sh").read_text()
     assert "export LORA_RANK=32" in adaptive_launcher
     assert "export LORA_ALPHA=64" in adaptive_launcher

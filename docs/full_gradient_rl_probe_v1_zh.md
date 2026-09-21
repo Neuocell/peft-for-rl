@@ -103,6 +103,11 @@ python scripts/analysis/build_full_gradient_uniform_allocation.py \
   --uniform-utility stable_energy
 ```
 
+训练这组匹配对照时设置 `LORA_RANK=32 LORA_ALPHA=64`，使 vLLM 的
+`max_lora_rank` 与 adaptive 一致；`rank_pattern`/`alpha_pattern` 仍物理实现
+uniform-r8，每个模块的有效缩放仍为 2。先前的 gain-LCB uniform 保留原来的
+全局容量 8，属于独立筛选实验，不能仅改 rank map 后直接当成严格的 rank 对照。
+
 adaptive allocator 先给每个模块分配 `r_min` 个完整 atom，再按 utility/
 `(d_in+d_out)` 在全模型范围分配剩余 atom。`gain_lcb` 使用 discovery 更新方向与 calibration
 梯度的一致改进下界；`stable_energy` 使用模块内相对能量与跨 prompt 稳定比例 `P*R`，避免
