@@ -167,6 +167,10 @@ gain-LCB uniform 的 step-25 checkpoint 有完整的 4-rank FSDP model shard 和
 
 stable launcher 的 checkpoint `save_contents`/`load_contents` 均为 `model + extra`：
 模型、调度器和 RNG 可恢复，但未保存优化器状态，恢复训练时优化器会重新建立。
+另以独立日志 `runs/full-gradient-v1/logs/verl/full_gradient_mean_uniform_r8_resume_check_seed42.log`
+执行 4 卡 `resume_mode=auto`、目标 50 步的只加载检查：四个 rank 成功加载
+`global_step_50` 的 model、RNG 和调度器，trainer 明确判定已达到 50 步并退出，
+没有再执行 optimizer update 或改写原训练日志。
 verl 日志的 `perf/max_memory_allocated_gb` 是 actor PyTorch 分配量；另外的
 `record_gpu_memory.py` CSV 记录逐卡整卡占用，包含 vLLM。当前 gain-LCB uniform 的
 整卡采样从训练中途开始，不能视为覆盖完整 50 步的峰值。
