@@ -9,8 +9,9 @@ ALLOCATION_DIR="${ALLOCATION_DIR:-${RUNTIME_ROOT}/analysis/full_gradient_signed_
 export EXP_NAME="${EXP_NAME:-full_gradient_${CANDIDATE_METHOD}_adaptive_eqr8_50_seed42}"
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1,2,3}"
 export PEFT_TYPE=grad_subspace
-export LORA_RANK=8
-export LORA_ALPHA=16
+# vLLM uses the global rank as its capacity ceiling; PEFT modules use rank_pattern.
+export LORA_RANK=32
+export LORA_ALPHA=64
 export LORA_DROPOUT=0.0
 export LORA_FREEZE_A=False
 export GRADIENT_SUBSPACE_RANK_MAP_PATH="${GRADIENT_SUBSPACE_RANK_MAP_PATH:-${ALLOCATION_DIR}/rank_map.json}"
