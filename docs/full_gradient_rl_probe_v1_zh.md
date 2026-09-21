@@ -156,3 +156,17 @@ capture 为 0.84343、audit F capture 为 0.83815；adaptive 对应为 0.84877 �
 原 `gain_lcb` uniform 的 audit F capture 只有 0.74903，因此与 adaptive 之间观察到的
 大部分 audit capture 差异来自 atom 排序分数的改变，不能归因于全局 rank 分配。
 匹配 `P*R` 的 uniform 在 GPU 上训练前，这个 rank 分配假设仍未得到训练验证。
+
+## Checkpoint 与显存口径
+
+gain-LCB uniform 的 step-25 checkpoint 有完整的 4-rank FSDP model shard 和 extra-state，
+另导出标准 PEFT adapter（196 组 A/B，共 392 个权重键，不含 probe 元数据）。
+在 CPU 上从实际 1.5B base model 加载该 adapter 后，FP32 短输入的 merge 前后 logits
+最大绝对误差为 `2.29e-5`，均值为 `3.33e-6`。BF16 merge 的绝对误差更大，
+因此不能拿 BF16 的逐 logit 相等作为验收标准。
+
+stable launcher 的 checkpoint `save_contents`/`load_contents` 均为 `model + extra`：
+模型、调度器和 RNG 可恢复，但未保存优化器状态，恢复训练时优化器会重新建立。
+verl 日志的 `perf/max_memory_allocated_gb` 是 actor PyTorch 分配量；另外的
+`record_gpu_memory.py` CSV 记录逐卡整卡占用，包含 vLLM。当前 gain-LCB uniform 的
+整卡采样从训练中途开始，不能视为覆盖完整 50 步的峰值。
