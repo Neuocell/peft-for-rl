@@ -84,6 +84,7 @@ from verl.utils.fsdp_utils import (
     offload_fsdp_optimizer,
     replace_lora_wrapper,
 )
+from verl.utils.full_gradient_rl_probe import configure_full_gradient_probe_parameters
 from verl.utils.import_utils import import_external_libs
 from verl.utils.memory_utils import aggressive_empty_cache
 from verl.utils.model import compute_position_id_with_mask, convert_weight_keys
@@ -412,6 +413,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         init_context = get_init_weight_context_manager(
             use_meta_tensor=not actor_model_config.tie_word_embeddings
             and self._peft_type not in ("geora", "rlpo", "grad_probe", "grad_subspace")
+            and self._peft_type != "full_gradient_probe"
             and self._peft_type != "spar_probe"
             and self._peft_type != "tinylora",
             mesh=self.device_mesh,
@@ -751,13 +753,22 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                         f"unexpected_trainable_params={stats.unexpected_trainable_parameters}"
                     )
 
+        if role == "actor" and self._peft_type == "full_gradient_probe":
+            stats = configure_full_gradient_probe_parameters(actor_module, self.config.model)
+            if self.rank == 0:
+                print(
+                    "Enabled full-weight signed-GRPO probe: "
+                    f"layers={int(stats['num_layers'])}, "
+                    f"trainable_weight_parameters={int(stats['trainable_weight_parameters'])}"
+                )
+
         self.use_orig_params = fsdp_config.get("use_orig_params", False)
         if self._is_adalora:
             self.use_orig_params = True
         if self._peft_type == "tinylora":
             # TinyLoRA mixes frozen base tensors with shared trainable vectors.
             self.use_orig_params = True
-        if self._peft_type in {"grad_probe", "spar_probe"}:
+        if self._peft_type in {"grad_probe", "spar_probe", "full_gradient_probe"}:
             # FSDP only supports summon_full_params(with_grads=True) with
             # original parameters. It also keeps each transformer layer as
             # the collection unit instead of separately wrapping LoRA A/B.
@@ -796,7 +807,8 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         auto_wrap_policy = get_fsdp_wrap_policy(
             module=actor_module,
             config=fsdp_config.get("wrap_policy", None),
-            is_lora=self._is_peft and self._peft_type != "grad_probe" and self._peft_type != "spar_probe",
+            is_lora=self._is_peft and self._peft_type != "grad_probe"
+            and self._peft_type not in {"spar_probe", "full_gradient_probe"},
         )
 
         # if self._is_rollout and self.config.rollout.name == "hf":
@@ -1317,6 +1329,27 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         if self._is_offload_param:
             offload_fsdp_model_to_cpu(self.actor_module_fsdp)
             log_gpu_memory_usage("After offload actor model during SPAR probe", logger=logger)
+        return output
+
+    @register(dispatch_mode=make_nd_compute_dataproto_dispatch_fn(mesh_name="actor"))
+    @DistProfiler.annotate(color="red", role="full_gradient_probe")
+    def run_full_gradient_probe(self, data: DataProto):
+        """Run prompt-group full-gradient backwards without an optimizer step."""
+
+        assert self._is_actor and self._peft_type == "full_gradient_probe"
+        if self._is_offload_param:
+            load_fsdp_model_to_gpu(self.actor_module_fsdp)
+        with self.ulysses_sharding_manager:
+            data = data.to("cpu")
+            with Timer(name="full_gradient_probe", logger=None) as timer:
+                metrics = self.actor.run_full_gradient_probe(data=data)
+            metrics["full_gradient_probe/backward_time"] = timer.last
+            metrics["perf/max_memory_allocated_gb"] = get_torch_device().max_memory_allocated() / (1024**3)
+            metrics["perf/max_memory_reserved_gb"] = get_torch_device().max_memory_reserved() / (1024**3)
+            output = DataProto(meta_info={"metrics": metrics}).to("cpu")
+        if self._is_offload_param:
+            offload_fsdp_model_to_cpu(self.actor_module_fsdp)
+            log_gpu_memory_usage("After offload actor model during full-gradient probe", logger=logger)
         return output
 
     @register(dispatch_mode=make_nd_compute_dataproto_dispatch_fn(mesh_name="rollout"))

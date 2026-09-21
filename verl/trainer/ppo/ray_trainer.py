@@ -1519,6 +1519,81 @@ class RayPPOTrainer:
         batch.meta_info["global_steps"] = self.global_steps
         return self.actor_rollout_wg.run_spar_probe(batch)
 
+    def _build_full_gradient_probe_batch(self, batch: DataProto) -> tuple[DataProto | None, dict[str, float]]:
+        """Select complete, unseen prompt groups with nonzero GRPO advantages."""
+
+        seen = getattr(self, "_full_gradient_seen_prompt_ids", set())
+        selected_count = int(getattr(self, "_full_gradient_selected_count", 0))
+        model_config = self.config.actor_rollout_ref.model
+        target = (
+            int(model_config.get("full_gradient_probe_discovery_prompts", 16))
+            + int(model_config.get("full_gradient_probe_calibration_prompts", 16))
+            + int(model_config.get("full_gradient_probe_audit_prompts", 8))
+        )
+        min_advantage_rms = float(model_config.get("full_gradient_probe_min_advantage_rms", 1e-6))
+
+        prompt_ids: list[str] = []
+        groups: dict[str, list[int]] = {}
+        for index, item in enumerate(batch):
+            extra_info = item.non_tensor_batch.get("extra_info", {})
+            stable_id = extra_info.get("index") if isinstance(extra_info, dict) else None
+            if stable_id is None:
+                stable_id = item.non_tensor_batch.get("uid", index)
+            prompt_id = str(stable_id)
+            prompt_ids.append(prompt_id)
+            groups.setdefault(prompt_id, []).append(index)
+
+        chosen_ids: list[str] = []
+        chosen_indices: list[int] = []
+        skipped_zero_advantage = 0
+        for prompt_id, indices in groups.items():
+            if prompt_id in seen or selected_count + len(chosen_ids) >= target:
+                continue
+            group_indices = torch.tensor(indices, dtype=torch.long, device=batch.batch["advantages"].device)
+            advantages = batch.batch["advantages"].index_select(0, group_indices).float()
+            mask = batch.batch["response_mask"].index_select(0, group_indices).float()
+            denominator = mask.sum().clamp_min(1)
+            advantage_rms = float(torch.sqrt(((advantages * mask).square().sum()) / denominator).item())
+            if advantage_rms < min_advantage_rms:
+                skipped_zero_advantage += 1
+                continue
+            chosen_ids.append(prompt_id)
+            chosen_indices.extend(indices)
+
+        seen.update(chosen_ids)
+        self._full_gradient_seen_prompt_ids = seen
+        self._full_gradient_selected_count = selected_count + len(chosen_ids)
+        scores = batch.batch["token_level_scores"].sum(dim=-1)
+        positive_rollouts = int((scores >= 0.5).sum().item())
+        selection_metrics = {
+            "full_gradient_probe/batch_prompts": float(len(groups)),
+            "full_gradient_probe/batch_rollouts": float(len(batch)),
+            "full_gradient_probe/batch_positive_rollouts": float(positive_rollouts),
+            "full_gradient_probe/batch_selected_prompts": float(len(chosen_ids)),
+            "full_gradient_probe/batch_zero_advantage_prompts": float(skipped_zero_advantage),
+        }
+        if not chosen_indices:
+            return None, selection_metrics
+
+        selected = batch.select_idxs(chosen_indices)
+        selected.non_tensor_batch["full_gradient_prompt_id"] = np.asarray(
+            [prompt_ids[index] for index in chosen_indices], dtype=object
+        )
+        selected.meta_info.update(
+            {
+                "full_gradient_total_prompts": len(groups),
+                "full_gradient_total_rollouts": len(batch),
+                "full_gradient_positive_rollouts": positive_rollouts,
+            }
+        )
+        dp_size = self._get_dp_size(self.actor_rollout_wg, "actor")
+        return selected.repeat(repeat_times=dp_size, interleave=False), selection_metrics
+
+    def _run_full_gradient_probe(self, batch: DataProto) -> DataProto:
+        batch.meta_info["temperature"] = self.config.actor_rollout_ref.rollout.temperature
+        batch.meta_info["global_steps"] = self.global_steps
+        return self.actor_rollout_wg.run_full_gradient_probe(batch)
+
     def _update_critic(self, batch: DataProto) -> DataProto:
         if self.use_legacy_worker_impl == "disable":
             batch_td = batch.to_tensordict()
@@ -1837,10 +1912,8 @@ class RayPPOTrainer:
                     if self.config.trainer.critic_warmup <= self.global_steps:
                         # update actor
                         with marked_timer("update_actor", timing_raw, color="red"):
-                            is_spar_probe = (
-                                self.config.actor_rollout_ref.model.get("peft_type", "lora") == "spar_probe"
-                            )
-                            if is_spar_probe:
+                            peft_type = self.config.actor_rollout_ref.model.get("peft_type", "lora")
+                            if peft_type == "spar_probe":
                                 spar_batch, selection_metrics = self._build_spar_probe_batch(batch)
                                 metrics.update(selection_metrics)
                                 if spar_batch is not None:
@@ -1849,6 +1922,15 @@ class RayPPOTrainer:
                                     metrics.update(actor_output_metrics)
                                 else:
                                     metrics["spar_probe/artifact_ready"] = 0.0
+                            elif peft_type == "full_gradient_probe":
+                                probe_batch, selection_metrics = self._build_full_gradient_probe_batch(batch)
+                                metrics.update(selection_metrics)
+                                if probe_batch is not None:
+                                    actor_output = self._run_full_gradient_probe(probe_batch)
+                                    actor_output_metrics = reduce_metrics(actor_output.meta_info["metrics"])
+                                    metrics.update(actor_output_metrics)
+                                else:
+                                    metrics["full_gradient_probe/artifact_ready"] = 0.0
                             else:
                                 actor_output = self._update_actor(batch)
                                 actor_output_metrics = reduce_metrics(actor_output.meta_info["metrics"])
@@ -1945,6 +2027,8 @@ class RayPPOTrainer:
                         "actor/gradient_probe/artifact_ready",
                         "spar_probe/artifact_ready",
                         "actor/spar_probe/artifact_ready",
+                        "full_gradient_probe/artifact_ready",
+                        "actor/full_gradient_probe/artifact_ready",
                     )
                 )
                 if probe_artifact_ready:

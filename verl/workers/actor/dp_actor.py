@@ -33,6 +33,7 @@ from verl.trainer.ppo.core_algos import agg_loss, get_policy_loss_fn, kl_penalty
 from verl.utils.attention_utils import index_first_axis, pad_input, rearrange, unpad_input
 from verl.utils.device import get_device_id, get_device_name
 from verl.utils.fsdp_utils import FSDPModule, fsdp2_clip_grad_norm_
+from verl.utils.full_gradient_rl_probe import FullGradientRLProbeCollector
 from verl.utils.peft_adalora import find_adalora_model, update_and_allocate
 from verl.utils.peft_gradient_subspace import GradientProbeCollector
 from verl.utils.peft_spar_lora import SparPositiveProbeCollector
@@ -128,6 +129,7 @@ class DataParallelPPOActor(BasePPOActor):
             self.scaler = None
         self._gradient_probe_collector = None
         self._spar_probe_collector = None
+        self._full_gradient_probe_collector = None
         if (
             actor_optimizer is not None
             and model_config is not None
@@ -144,6 +146,16 @@ class DataParallelPPOActor(BasePPOActor):
             if self.scaler is not None:
                 raise NotImplementedError("peft_type=spar_probe currently requires bf16 or fp32, not fp16 scaling")
             self._spar_probe_collector = SparPositiveProbeCollector(actor_module, model_config)
+        if (
+            actor_optimizer is not None
+            and model_config is not None
+            and model_config.get("peft_type", "lora") == "full_gradient_probe"
+        ):
+            if self.scaler is not None:
+                raise NotImplementedError(
+                    "peft_type=full_gradient_probe currently requires bf16 or fp32, not fp16 scaling"
+                )
+            self._full_gradient_probe_collector = FullGradientRLProbeCollector(actor_module, model_config)
 
         trainable_parameters = sum(parameter.numel() for parameter in actor_module.parameters() if parameter.requires_grad)
         self._static_actor_metrics = {"actor/active_parameter_count": float(trainable_parameters)}
@@ -209,6 +221,73 @@ class DataParallelPPOActor(BasePPOActor):
             )
             # These are cumulative state counters, so reducers must see the
             # latest value rather than an average over intermediate samples.
+            metrics.update(probe_metrics)
+        self.actor_optimizer.zero_grad()
+        return metrics
+
+    def run_full_gradient_probe(self, data: DataProto) -> dict[str, list[float] | float]:
+        """Accumulate one signed-GRPO full-weight gradient per prompt group."""
+
+        collector = self._full_gradient_probe_collector
+        if collector is None:
+            raise RuntimeError("run_full_gradient_probe requires peft_type=full_gradient_probe")
+        self.actor_module.train()
+        collector.record_rollout_batch(data.meta_info)
+        metrics: dict[str, list[float] | float] = dict(self._static_actor_metrics)
+        temperature = float(data.meta_info["temperature"])
+        prompt_ids = data.non_tensor_batch.get("full_gradient_prompt_id")
+        if prompt_ids is None:
+            raise ValueError("Full-gradient probe batch is missing full_gradient_prompt_id")
+
+        groups: dict[str, list[int]] = {}
+        for index, prompt_id in enumerate(prompt_ids):
+            groups.setdefault(str(prompt_id), []).append(index)
+        for prompt_id, indices in groups.items():
+            if collector.ready:
+                break
+            group = data.select_idxs(indices)
+            response_mask = group.batch["response_mask"].float()
+            advantages = group.batch["advantages"].float()
+            token_count = response_mask.sum()
+            if int(token_count.item()) <= 0:
+                continue
+            weighted_advantages = advantages * response_mask
+            advantage_rms = torch.sqrt(
+                weighted_advantages.square().sum() / token_count.clamp_min(1)
+            )
+            if float(advantage_rms.item()) <= 0:
+                continue
+
+            self.actor_optimizer.zero_grad()
+            group_loss = torch.zeros((), device=get_device_id(), dtype=torch.float32)
+            # A response can already approach the actor token budget. Accumulate
+            # the group gradient response-by-response while retaining the exact
+            # token-mean denominator for the complete prompt group.
+            for index in indices:
+                sample = data.select_idxs([index]).to(get_device_id())
+                model_inputs = {**sample.batch, **sample.non_tensor_batch}
+                _, log_prob = self._forward_micro_batch(
+                    model_inputs,
+                    temperature=temperature,
+                    calculate_entropy=False,
+                )
+                sample_loss = -(
+                    log_prob.float()
+                    * model_inputs["advantages"].float()
+                    * model_inputs["response_mask"].float()
+                ).sum() / token_count.to(get_device_id())
+                if not torch.isfinite(sample_loss):
+                    raise FloatingPointError("Full-gradient signed-GRPO probe loss is non-finite")
+                group_loss = group_loss + sample_loss.detach()
+                sample_loss.backward()
+
+            probe_metrics = collector.capture_group(
+                loss=float(group_loss.item()),
+                prompt_id=prompt_id,
+                response_count=len(indices),
+                response_tokens=int(token_count.item()),
+                advantage_rms=float(advantage_rms.item()),
+            )
             metrics.update(probe_metrics)
         self.actor_optimizer.zero_grad()
         return metrics
