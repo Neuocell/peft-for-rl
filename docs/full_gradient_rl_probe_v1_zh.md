@@ -93,3 +93,16 @@ adaptive allocator 先给每个模块分配 `r_min` 个 calibration `U` 最高�
 `U/(d_in+d_out)` 在全模型范围分配剩余 atom。预算严格取同候选方法 uniform-r8 的 A/B
 可训练参数量；rank map 中每个模块仍写入 `alpha=2*rank`，因此有效缩放恒为 2。Audit score
 只用于分配后的泛化诊断，不参与排序。
+
+旧的 random-B energy probe 需要在相同容量下比较。新导出的 `summary.json` 会保存每个模块
+每个 rank 的 A/B 参数成本，可将其主方向统一截断为 rank 8：
+
+```bash
+python scripts/analysis/build_gradient_probe_uniform_allocation.py \
+  --artifact-dir runs/analysis/rl_gradient_probe_b16n8_w8_cap64_e95_s6to12_v1 \
+  --output-dir runs/analysis/rl_gradient_probe_b16n8_w8_cap64_e95_s6to12_v1/uniform_r8 \
+  --uniform-rank 8
+```
+
+该转换只截断已有候选方向，不重新 probe；输出仍为标准 `rank_map.json` 和
+`subspaces.safetensors`，并固定 `alpha/r=2`。

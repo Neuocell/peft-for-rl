@@ -1301,6 +1301,7 @@ class GradientProbeCollector:
             for candidate in model.modules()
             if isinstance(candidate, LoraLinear) and id(candidate) in self.module_names
         }
+        self.parameter_costs = parameter_costs
         if self.probe_method in {"stable_snr", "dominant_atoms"}:
             window_size = int(_get(config, "gradient_probe_window_size", 3))
             num_windows = int(_get(config, "gradient_probe_num_windows", 5))
@@ -1499,6 +1500,12 @@ class GradientProbeCollector:
             "constant_scaling": self.accumulator.scaling_ratio,
             "subspace_path": str(tensor_path),
         }
+        parameter_costs = getattr(self, "parameter_costs", {})
+        module_summary = {}
+        for name, item in self.last_diagnostics.items():
+            module_summary[name] = dict(item)
+            if name in parameter_costs:
+                module_summary[name]["parameter_cost_per_rank"] = parameter_costs[name]
         summary = {
             **rank_map,
             "probe_method": self.probe_method,
@@ -1510,7 +1517,7 @@ class GradientProbeCollector:
             "rank_bins": list(self.accumulator.rank_bins),
             "capacity": getattr(self.accumulator, "capacity", self.accumulator.rank_bins[-1]),
             "metrics": self.last_snapshot_metrics,
-            "modules": self.last_diagnostics,
+            "modules": module_summary,
         }
         if self.probe_method == "stable_snr":
             summary["stable_snr"] = {
