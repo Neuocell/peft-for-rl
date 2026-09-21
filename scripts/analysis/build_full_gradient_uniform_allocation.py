@@ -83,6 +83,7 @@ def build_adaptive_allocation(
     candidate_method: str,
     uniform_rank: int,
     r_min: int,
+    adaptive_utility: str = "gain_lcb",
 ) -> dict:
     """Allocate complete atoms globally under the matching uniform-rank budget."""
 
@@ -115,8 +116,19 @@ def build_adaptive_allocation(
 
     costs = {name: sum(shapes[name]) for name in shapes}
     budget = sum(costs[name] * uniform_rank for name in costs)
+    if adaptive_utility == "gain_lcb":
+        allocation_scores = {
+            name: module_scores["U"] for name, module_scores in scores.items()
+        }
+    elif adaptive_utility == "stable_energy":
+        allocation_scores = {
+            name: module_scores["P"] * module_scores["R"]
+            for name, module_scores in scores.items()
+        }
+    else:
+        raise ValueError(f"Unknown adaptive utility: {adaptive_utility}")
     selected = _allocate_adaptive(
-        {name: module_scores["U"] for name, module_scores in scores.items()},
+        allocation_scores,
         costs,
         r_min=r_min,
         r_max=r_max,
@@ -126,7 +138,7 @@ def build_adaptive_allocation(
         output_dir,
         method=(
             f"full_gradient_signed_grpo_{candidate_method}_adaptive_"
-            f"eqr{uniform_rank}_rmin{r_min}"
+            f"eqr{uniform_rank}_rmin{r_min}_{adaptive_utility}"
         ),
         candidates=candidates,
         scores=scores,
@@ -138,6 +150,7 @@ def build_adaptive_allocation(
     allocation["probe_validation"] = validation
     allocation["candidate_method"] = candidate_method
     allocation["allocation_mode"] = "adaptive"
+    allocation["adaptive_utility"] = adaptive_utility
     allocation["r_min"] = r_min
     (output_dir / "allocation_summary.json").write_text(
         json.dumps(allocation, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -157,6 +170,11 @@ def main() -> None:
     )
     parser.add_argument("--uniform-rank", type=int, default=8)
     parser.add_argument("--r-min", type=int, default=2)
+    parser.add_argument(
+        "--adaptive-utility",
+        choices=("gain_lcb", "stable_energy"),
+        default="gain_lcb",
+    )
     args = parser.parse_args()
     if args.allocation_mode == "uniform":
         result = build_uniform_allocation(
@@ -172,12 +190,14 @@ def main() -> None:
             candidate_method=args.candidate_method,
             uniform_rank=args.uniform_rank,
             r_min=args.r_min,
+            adaptive_utility=args.adaptive_utility,
         )
     print(
         json.dumps(
             {
                 "candidate_method": result["candidate_method"],
                 "allocation_mode": args.allocation_mode,
+                "adaptive_utility": result.get("adaptive_utility"),
                 "trainable_parameters": result["trainable_parameters"],
                 "rank_mean": result["structure"]["active_rank_mean"],
                 "rank_min": result["structure"]["active_rank_min"],

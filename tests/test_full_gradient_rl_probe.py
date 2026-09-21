@@ -165,6 +165,18 @@ def test_full_gradient_uniform_allocation_uses_lcb_and_scaling_two(
         for item in adaptive["modules"].values()
     )
 
+    stable_energy = build_adaptive_allocation(
+        artifact,
+        tmp_path / "adaptive-stable-energy",
+        candidate_method="covariance",
+        uniform_rank=2,
+        r_min=1,
+        adaptive_utility="stable_energy",
+    )
+    assert stable_energy["adaptive_utility"] == "stable_energy"
+    assert stable_energy["budget_respected"] is True
+    assert stable_energy["trainable_parameters"] <= uniform_r2["trainable_parameters"]
+
 
 def test_full_gradient_probe_integration_is_wired() -> None:
     root = Path(__file__).resolve().parents[1]

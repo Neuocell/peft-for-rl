@@ -78,6 +78,7 @@ python scripts/analysis/build_full_gradient_uniform_allocation.py \
   --output-dir runs/analysis/full_gradient_signed_grpo_probe_v1_seed42/mean_adaptive_eqr8 \
   --candidate-method mean \
   --allocation-mode adaptive \
+  --adaptive-utility stable_energy \
   --uniform-rank 8 \
   --r-min 2
 
@@ -89,10 +90,12 @@ bash scripts/local/start_full_gradient_uniform_r8_4gpu.sh
 `candidate-method` 可取 `mean`、`covariance` 或 `hybrid`。三个 uniform-r8 实验必须读取同一个
 probe artifact，并保持 `B=0`、A 可训练、`alpha/r=2`。
 
-adaptive allocator 先给每个模块分配 `r_min` 个 calibration `U` 最高的完整 atom，再按
-`U/(d_in+d_out)` 在全模型范围分配剩余 atom。预算严格取同候选方法 uniform-r8 的 A/B
-可训练参数量；rank map 中每个模块仍写入 `alpha=2*rank`，因此有效缩放恒为 2。Audit score
-只用于分配后的泛化诊断，不参与排序。
+adaptive allocator 先给每个模块分配 `r_min` 个完整 atom，再按 utility/
+`(d_in+d_out)` 在全模型范围分配剩余 atom。`gain_lcb` 使用 discovery 更新方向与 calibration
+梯度的一致改进下界；`stable_energy` 使用模块内相对能量与跨 prompt 稳定比例 `P*R`，避免
+原始层间梯度尺度直接支配全局分配。预算严格取同候选方法 uniform-r8 的 A/B 可训练参数量；
+rank map 中每个模块仍写入 `alpha=2*rank`，因此有效缩放恒为 2。Audit score 只用于分配后的
+泛化诊断，不参与排序。
 
 旧的 random-B energy probe 需要在相同容量下比较。新导出的 `summary.json` 会保存每个模块
 每个 rank 的 A/B 参数成本，可将其主方向统一截断为 rank 8：
