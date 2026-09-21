@@ -202,9 +202,17 @@ def test_spar_log_summary_computes_normalized_reward_auc(tmp_path: Path) -> None
             " - spar_structure/rank_mean:8"
         )
     log.write_text("\n".join(lines) + "\n")
+    gpu_csv = tmp_path / "gpu.csv"
+    gpu_csv.write_text(
+        "timestamp_utc,gpu_index,used_mib,utilization_percent\n"
+        "t0,0,1024,80\n"
+        "t0,1,2048,70\n"
+        "t1,0,3072,90\n",
+        encoding="utf-8",
+    )
 
     records = parse_step_metrics(log)
-    summary = summarize_run(log)
+    summary = summarize_run(log, gpu_memory_path=gpu_csv)
 
     assert records[20]["critic/score/mean"] == pytest.approx(0.2)
     assert summary["reward_at_50"] == pytest.approx(0.5)
@@ -224,3 +232,5 @@ def test_spar_log_summary_computes_normalized_reward_auc(tmp_path: Path) -> None
     assert summary["step_time_mean_s_1_50"] == pytest.approx(10.0)
     assert summary["peak_allocated_memory_gb"] == pytest.approx(5.0)
     assert summary["peak_allocated_memory_gb_aggregate"] == pytest.approx(20.0)
+    assert summary["observed_full_gpu_peak_gib"] == pytest.approx(3.0)
+    assert summary["observed_gpu_peak_by_index_gib"] == {"0": 3.0, "1": 2.0}

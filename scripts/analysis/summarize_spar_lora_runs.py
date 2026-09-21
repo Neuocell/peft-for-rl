@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import math
 import re
@@ -59,7 +60,30 @@ def _optional_max(records: dict[int, dict[str, float]], key: str, last_step: int
     return max(values) if values else None
 
 
-def summarize_run(path: Path, *, expected_steps: int = 50, world_size: int = 4) -> dict[str, object]:
+def summarize_gpu_memory(path: Path) -> dict[str, object]:
+    peaks: dict[int, int] = {}
+    with path.open(newline="", encoding="utf-8") as output:
+        for row in csv.DictReader(output):
+            index = int(row["gpu_index"])
+            peaks[index] = max(peaks.get(index, 0), int(row["used_mib"]))
+    if not peaks:
+        raise ValueError(f"No GPU memory samples found in {path}")
+    return {
+        "observed_full_gpu_peak_gib": max(peaks.values()) / 1024,
+        "observed_gpu_peak_by_index_gib": {
+            str(index): memory / 1024 for index, memory in sorted(peaks.items())
+        },
+        "gpu_memory_csv": str(path.resolve()),
+    }
+
+
+def summarize_run(
+    path: Path,
+    *,
+    expected_steps: int = 50,
+    world_size: int = 4,
+    gpu_memory_path: Path | None = None,
+) -> dict[str, object]:
     if world_size <= 0:
         raise ValueError("world_size must be positive")
     records = parse_step_metrics(path)
@@ -110,6 +134,8 @@ def summarize_run(path: Path, *, expected_steps: int = 50, world_size: int = 4) 
         ),
         "per_step": {str(step): records[step] for step in range(1, expected_steps + 1)},
     }
+    if gpu_memory_path is not None:
+        summary.update(summarize_gpu_memory(gpu_memory_path))
     return summary
 
 
@@ -127,6 +153,7 @@ def comparison_markdown(uniform: dict[str, object], adaptive: dict[str, object])
         ("mean rank", "active_rank_mean"),
         ("step time (s)", "step_time_mean_s_1_50"),
         ("peak actor GPU/rank (GiB)", "peak_allocated_memory_gb"),
+        ("observed full GPU peak (GiB)", "observed_full_gpu_peak_gib"),
     )
 
     def render(value: object) -> str:
@@ -142,7 +169,7 @@ def comparison_markdown(uniform: dict[str, object], adaptive: dict[str, object])
     divider = "|---|" + "|".join("---:" for _ in columns) + "|"
     rows = []
     for label, summary in (("uniform-r8", uniform), ("adaptive-eqr8", adaptive)):
-        rows.append("| " + label + " | " + " | ".join(render(summary[key]) for _, key in columns) + " |")
+        rows.append("| " + label + " | " + " | ".join(render(summary.get(key)) for _, key in columns) + " |")
     return "\n".join([header, divider, *rows]) + "\n"
 
 
@@ -152,10 +179,20 @@ def main() -> None:
     parser.add_argument("--adaptive-log", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--world-size", type=int, default=4)
+    parser.add_argument("--uniform-gpu-csv", type=Path)
+    parser.add_argument("--adaptive-gpu-csv", type=Path)
     args = parser.parse_args()
 
-    uniform = summarize_run(args.uniform_log.resolve(), world_size=args.world_size)
-    adaptive = summarize_run(args.adaptive_log.resolve(), world_size=args.world_size)
+    uniform = summarize_run(
+        args.uniform_log.resolve(),
+        world_size=args.world_size,
+        gpu_memory_path=args.uniform_gpu_csv.resolve() if args.uniform_gpu_csv else None,
+    )
+    adaptive = summarize_run(
+        args.adaptive_log.resolve(),
+        world_size=args.world_size,
+        gpu_memory_path=args.adaptive_gpu_csv.resolve() if args.adaptive_gpu_csv else None,
+    )
     result = {
         "auc_definition": "arithmetic mean of per-step reward (normalized discrete AUC)",
         "uniform": uniform,
