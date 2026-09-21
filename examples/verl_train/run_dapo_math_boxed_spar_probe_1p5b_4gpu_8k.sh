@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+RUNTIME_ROOT="${RUNTIME_ROOT:-${SCRIPT_DIR}/../../runs}"
+
+export PEFT_TYPE=spar_probe
+export EXP_NAME="${EXP_NAME:-spar_v0_positive_teacher_forced_probe_seed42}"
+export CKPTS_DIR="${CKPTS_DIR:-${RUNTIME_ROOT}/ckpts/verl/DAPO-Math-17k/${EXP_NAME}}"
+export GRADIENT_PROBE_OUTPUT_DIR="${GRADIENT_PROBE_OUTPUT_DIR:-${RUNTIME_ROOT}/analysis/spar_v0_positive_probe_seed42}"
+export RAY_TEMP_DIR="${RAY_TEMP_DIR:-${HOME}/rsp0}"
+export RAY_local_fs_capacity_threshold="${RAY_LOCAL_FS_CAPACITY_THRESHOLD:-0.98}"
+
+export TRAIN_PROMPT_BSZ="${TRAIN_PROMPT_BSZ:-16}"
+export TRAIN_PROMPT_MINI_BSZ="${TRAIN_PROMPT_MINI_BSZ:-16}"
+export N_RESP_PER_PROMPT="${N_RESP_PER_PROMPT:-8}"
+export PPO_EPOCHS=1
+export TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-20}"
+export SAVE_FREQ=0
+export RESUME_MODE=disable
+
+export LORA_RANK=32
+export LORA_ALPHA=64
+export LORA_DROPOUT=0.0
+export LORA_FREEZE_A=False
+export TARGET_MODULES="${TARGET_MODULES:-all-linear}"
+export SPAR_R_MAX="${SPAR_R_MAX:-32}"
+export SPAR_DISCOVERY_SAMPLES="${SPAR_DISCOVERY_SAMPLES:-32}"
+export SPAR_CALIBRATION_SAMPLES="${SPAR_CALIBRATION_SAMPLES:-32}"
+export SPAR_SAMPLE_CLIP_FACTOR="${SPAR_SAMPLE_CLIP_FACTOR:-2.5}"
+export GRADIENT_PROBE_SEED="${GRADIENT_PROBE_SEED:-42}"
+export GRADIENT_SUBSPACE_SCALING=2.0
+
+export MAX_PROMPT_LENGTH="${MAX_PROMPT_LENGTH:-1024}"
+export MAX_RESPONSE_LENGTH="${MAX_RESPONSE_LENGTH:-8192}"
+export ACTOR_PPO_MAX_TOKEN_LEN="${ACTOR_PPO_MAX_TOKEN_LEN:-12288}"
+export INFER_PPO_MAX_TOKEN_LEN="${INFER_PPO_MAX_TOKEN_LEN:-12288}"
+export ROLLOUT_MAX_NUM_SEQS="${ROLLOUT_MAX_NUM_SEQS:-128}"
+
+export LR="${LR:-1e-6}"
+export WEIGHT_DECAY=0
+export LR_WARMUP_STEPS=0
+export LR_SCHEDULER_TYPE=constant
+export DATA_SEED="${DATA_SEED:-42}"
+export PPO_DATA_LOADER_SEED="${PPO_DATA_LOADER_SEED:-42}"
+export TRAIN_SHUFFLE=True
+export ACTOR_SHUFFLE=False
+
+exec bash "${SCRIPT_DIR}/run_dapo_math_boxed_stable_lora_1p5b_4gpu_8k.sh"

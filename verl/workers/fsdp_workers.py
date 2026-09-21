@@ -96,6 +96,7 @@ from verl.utils.peft_gradient_subspace import (
     freeze_lora_a_factors,
     initialize_gradient_probe,
 )
+from verl.utils.peft_spar_lora import initialize_spar_probe
 from verl.utils.peft_oracle_lora import load_oracle_lora_patterns
 from verl.utils.peft_rlpo import apply_rlpo_initialization
 from verl.utils.peft_skew import apply_skew_adapters
@@ -228,6 +229,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             "geora",
             "grad_probe",
             "grad_subspace",
+            "spar_probe",
         )
         self._is_adalora = self._is_peft and self._peft_type == "adalora"
 
@@ -410,6 +412,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         init_context = get_init_weight_context_manager(
             use_meta_tensor=not actor_model_config.tie_word_embeddings
             and self._peft_type not in ("geora", "rlpo", "grad_probe", "grad_subspace")
+            and self._peft_type != "spar_probe"
             and self._peft_type != "tinylora",
             mesh=self.device_mesh,
         )
@@ -594,6 +597,27 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                             f"layers={stats.num_layers}, width={stats.rank}, "
                             f"a_abs_max={stats.a_abs_max:.3e}, b_rms_mean={stats.b_rms_mean:.3e}"
                         )
+                elif self._peft_type == "spar_probe":
+                    spar_rank = int(self.config.model.get("spar_r_max", 32))
+                    spar_scaling = float(self.config.model.get("gradient_subspace_scaling", 2.0))
+                    spar_alpha = spar_rank * spar_scaling
+                    if not float(spar_alpha).is_integer():
+                        raise ValueError("SPAR rank times scaling must produce an integral LoRA alpha")
+                    peft_config.update(
+                        {
+                            "r": spar_rank,
+                            "lora_alpha": int(spar_alpha),
+                            "lora_dropout": 0.0,
+                        }
+                    )
+                    actor_module = get_peft_model(actor_module, LoraConfig(**peft_config))
+                    stats = initialize_spar_probe(actor_module, self.config.model)
+                    if self.rank == 0:
+                        print(
+                            "Applied zero-function SPAR positive probe: "
+                            f"layers={int(stats['num_layers'])}, rank={int(stats['rank'])}, "
+                            f"scaling={stats['scaling']:g}, b_rms_mean={stats['b_rms_mean']:.3e}"
+                        )
                 elif self._peft_type == "grad_subspace":
                     rank_map_path = self.config.model.get("gradient_subspace_rank_map_path")
                     if not rank_map_path:
@@ -733,7 +757,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         if self._peft_type == "tinylora":
             # TinyLoRA mixes frozen base tensors with shared trainable vectors.
             self.use_orig_params = True
-        if self._peft_type == "grad_probe":
+        if self._peft_type in {"grad_probe", "spar_probe"}:
             # FSDP only supports summon_full_params(with_grads=True) with
             # original parameters. It also keeps each transformer layer as
             # the collection unit instead of separately wrapping LoRA A/B.
@@ -772,7 +796,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         auto_wrap_policy = get_fsdp_wrap_policy(
             module=actor_module,
             config=fsdp_config.get("wrap_policy", None),
-            is_lora=self._is_peft and self._peft_type != "grad_probe",
+            is_lora=self._is_peft and self._peft_type != "grad_probe" and self._peft_type != "spar_probe",
         )
 
         # if self._is_rollout and self.config.rollout.name == "hf":
@@ -1272,6 +1296,27 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             offload_fsdp_optimizer(optimizer=self.actor_optimizer)
             log_gpu_memory_usage("After offload actor optimizer during update_actor", logger=logger)
 
+        return output
+
+    @register(dispatch_mode=make_nd_compute_dataproto_dispatch_fn(mesh_name="actor"))
+    @DistProfiler.annotate(color="red", role="spar_probe")
+    def run_spar_probe(self, data: DataProto):
+        """Run SPAR teacher-forced probe backwards without an optimizer step."""
+
+        assert self._is_actor and self._peft_type == "spar_probe"
+        if self._is_offload_param:
+            load_fsdp_model_to_gpu(self.actor_module_fsdp)
+        with self.ulysses_sharding_manager:
+            data = data.to("cpu")
+            with Timer(name="spar_probe", logger=None) as timer:
+                metrics = self.actor.run_spar_probe(data=data)
+            metrics["spar_probe/backward_time"] = timer.last
+            metrics["perf/max_memory_allocated_gb"] = get_torch_device().max_memory_allocated() / (1024**3)
+            metrics["perf/max_memory_reserved_gb"] = get_torch_device().max_memory_reserved() / (1024**3)
+            output = DataProto(meta_info={"metrics": metrics}).to("cpu")
+        if self._is_offload_param:
+            offload_fsdp_model_to_cpu(self.actor_module_fsdp)
+            log_gpu_memory_usage("After offload actor model during SPAR probe", logger=logger)
         return output
 
     @register(dispatch_mode=make_nd_compute_dataproto_dispatch_fn(mesh_name="rollout"))

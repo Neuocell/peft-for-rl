@@ -179,6 +179,11 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.model.gradient_subspace_rank_map_path=${GRADIENT_SUBSPACE_RANK_MAP_PATH:-null} \
     +actor_rollout_ref.model.gradient_subspace_path=${GRADIENT_SUBSPACE_PATH:-null} \
     +actor_rollout_ref.model.gradient_subspace_scaling=${GRADIENT_SUBSPACE_SCALING:-2.0} \
+    +actor_rollout_ref.model.spar_r_max=${SPAR_R_MAX:-32} \
+    +actor_rollout_ref.model.spar_discovery_samples=${SPAR_DISCOVERY_SAMPLES:-32} \
+    +actor_rollout_ref.model.spar_calibration_samples=${SPAR_CALIBRATION_SAMPLES:-32} \
+    +actor_rollout_ref.model.spar_sample_clip_factor=${SPAR_SAMPLE_CLIP_FACTOR:-2.5} \
+    +actor_rollout_ref.model.spar_score_eps=${SPAR_SCORE_EPS:-1e-12} \
     +actor_rollout_ref.model.oft_block_size=${OFT_BLOCK_SIZE:-32} \
     +actor_rollout_ref.model.oft_rank=${OFT_RANK:-0} \
     +actor_rollout_ref.model.oft_dropout=${OFT_DROPOUT:-0.0} \

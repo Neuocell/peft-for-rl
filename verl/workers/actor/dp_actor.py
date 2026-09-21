@@ -17,8 +17,10 @@
 Single Process Actor
 """
 
+import json
 import logging
 import os
+from pathlib import Path
 
 import torch
 from torch import nn
@@ -33,6 +35,7 @@ from verl.utils.device import get_device_id, get_device_name
 from verl.utils.fsdp_utils import FSDPModule, fsdp2_clip_grad_norm_
 from verl.utils.peft_adalora import find_adalora_model, update_and_allocate
 from verl.utils.peft_gradient_subspace import GradientProbeCollector
+from verl.utils.peft_spar_lora import SparPositiveProbeCollector
 from verl.utils.profiler import GPUMemoryLogger
 from verl.utils.py_functional import append_to_dict
 from verl.utils.seqlen_balancing import prepare_dynamic_batch, restore_dynamic_batch
@@ -124,6 +127,7 @@ class DataParallelPPOActor(BasePPOActor):
         else:
             self.scaler = None
         self._gradient_probe_collector = None
+        self._spar_probe_collector = None
         if (
             actor_optimizer is not None
             and model_config is not None
@@ -132,6 +136,82 @@ class DataParallelPPOActor(BasePPOActor):
             if self.scaler is not None:
                 raise NotImplementedError("peft_type=grad_probe currently requires bf16 or fp32, not fp16 scaling")
             self._gradient_probe_collector = GradientProbeCollector(actor_module, model_config)
+        if (
+            actor_optimizer is not None
+            and model_config is not None
+            and model_config.get("peft_type", "lora") == "spar_probe"
+        ):
+            if self.scaler is not None:
+                raise NotImplementedError("peft_type=spar_probe currently requires bf16 or fp32, not fp16 scaling")
+            self._spar_probe_collector = SparPositiveProbeCollector(actor_module, model_config)
+
+        trainable_parameters = sum(parameter.numel() for parameter in actor_module.parameters() if parameter.requires_grad)
+        self._static_actor_metrics = {"actor/active_parameter_count": float(trainable_parameters)}
+        if model_config is not None and model_config.get("peft_type", "lora") == "grad_subspace":
+            rank_map_path = model_config.get("gradient_subspace_rank_map_path")
+            allocation_path = Path(str(rank_map_path)).expanduser().resolve().parent / "allocation_summary.json"
+            if allocation_path.is_file():
+                allocation = json.loads(allocation_path.read_text(encoding="utf-8"))
+                structure = allocation["structure"]
+                self._static_actor_metrics.update(
+                    {
+                        "actor/active_parameter_count": float(allocation["trainable_parameters"]),
+                        "spar_structure/rank_mean": float(structure["active_rank_mean"]),
+                        "spar_structure/rank_min": float(structure["active_rank_min"]),
+                        "spar_structure/rank_max": float(structure["active_rank_max"]),
+                        "spar_structure/calibration_energy_capture": float(
+                            structure["calibration_energy_capture"]
+                        ),
+                        "spar_structure/u_score_capture": float(structure["u_score_capture"]),
+                    }
+                )
+                for family, value in structure["rank_by_family"].items():
+                    self._static_actor_metrics[f"spar_structure/rank_family_{family}"] = float(value)
+                for segment, value in structure["rank_by_layer_segment"].items():
+                    self._static_actor_metrics[f"spar_structure/rank_segment_{segment}"] = float(value)
+
+    def run_spar_probe(self, data: DataProto) -> dict[str, list[float] | float]:
+        """Run synchronized per-sample token-mean CE backwards without updates."""
+
+        if self._spar_probe_collector is None:
+            raise RuntimeError("run_spar_probe requires peft_type=spar_probe")
+        self.actor_module.train()
+        self._spar_probe_collector.record_rollout_batch(data.meta_info)
+        metrics: dict[str, list[float] | float] = dict(self._static_actor_metrics)
+        temperature = float(data.meta_info["temperature"])
+        prompt_ids = data.non_tensor_batch.get("spar_prompt_id")
+        if prompt_ids is None:
+            raise ValueError("SPAR probe batch is missing spar_prompt_id")
+
+        for index in range(len(data)):
+            if self._spar_probe_collector.ready:
+                break
+            sample = data.select_idxs([index]).to(get_device_id())
+            model_inputs = {**sample.batch, **sample.non_tensor_batch}
+            response_mask = model_inputs["response_mask"].float()
+            token_count = response_mask.sum()
+            if int(token_count.item()) <= 0:
+                continue
+            self.actor_optimizer.zero_grad()
+            _, log_prob = self._forward_micro_batch(
+                model_inputs,
+                temperature=temperature,
+                calculate_entropy=False,
+            )
+            loss = -(log_prob.float() * response_mask).sum() / token_count
+            if not torch.isfinite(loss):
+                raise FloatingPointError("SPAR teacher-forced CE loss is non-finite")
+            loss.backward()
+            probe_metrics = self._spar_probe_collector.capture_sample(
+                loss=float(loss.detach().item()),
+                prompt_id=str(prompt_ids[index]),
+                response_length=int(token_count.detach().item()),
+            )
+            # These are cumulative state counters, so reducers must see the
+            # latest value rather than an average over intermediate samples.
+            metrics.update(probe_metrics)
+        self.actor_optimizer.zero_grad()
+        return metrics
 
     def _forward_micro_batch(
         self, micro_batch, temperature, calculate_entropy=False, capture_adalora_orthogonal_loss=False
@@ -525,6 +605,7 @@ class DataParallelPPOActor(BasePPOActor):
             "actor/pg_loss": 0.0,
             "actor/kl_loss": 0.0,
         }
+        metrics.update(self._static_actor_metrics)
         model_config = getattr(self.config, "model_config", None)
         is_adalora = model_config is not None and model_config.get("peft_type", "lora") == "adalora"
         is_gradient_probe = self._gradient_probe_collector is not None

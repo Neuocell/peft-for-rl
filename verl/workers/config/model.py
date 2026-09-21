@@ -123,6 +123,13 @@ class HFModelConfig(BaseConfig):
     gradient_subspace_rank_map_path: Optional[str] = None
     gradient_subspace_path: Optional[str] = None
     gradient_subspace_scaling: float = 2.0
+    # SPAR-LoRA v0 uses positive teacher-forced rollouts to discover and score
+    # a fixed candidate atom set before ordinary heterogeneous LoRA training.
+    spar_r_max: int = 32
+    spar_discovery_samples: int = 32
+    spar_calibration_samples: int = 32
+    spar_sample_clip_factor: float = 2.5
+    spar_score_eps: float = 1e-12
     oft_rank: int = 0
     oft_block_size: int = 32
     oft_dropout: float = 0.0

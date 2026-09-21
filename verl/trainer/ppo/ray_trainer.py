@@ -1451,6 +1451,74 @@ class RayPPOTrainer:
             actor_output = self.actor_rollout_wg.update_actor(batch)
         return actor_output
 
+    def _build_spar_probe_batch(self, batch: DataProto) -> tuple[DataProto | None, dict[str, float]]:
+        """Choose at most one parsed positive rollout per previously unseen prompt."""
+
+        seen = getattr(self, "_spar_seen_prompt_ids", set())
+        selected_count = int(getattr(self, "_spar_selected_count", 0))
+        target = int(self.config.actor_rollout_ref.model.get("spar_discovery_samples", 32)) + int(
+            self.config.actor_rollout_ref.model.get("spar_calibration_samples", 32)
+        )
+        scores = batch.batch["token_level_scores"].sum(dim=-1).detach().cpu().tolist()
+        parse_values = batch.non_tensor_batch.get("parse_success")
+        if parse_values is None:
+            raise ValueError("SPAR probe requires parse_success from the boxed reward")
+
+        prompt_ids: list[str] = []
+        for index, item in enumerate(batch):
+            extra_info = item.non_tensor_batch.get("extra_info", {})
+            stable_id = extra_info.get("index") if isinstance(extra_info, dict) else None
+            if stable_id is None:
+                stable_id = item.non_tensor_batch.get("uid", index)
+            prompt_ids.append(str(stable_id))
+
+        positive_indices = [
+            index
+            for index, (score, parsed) in enumerate(zip(scores, parse_values, strict=True))
+            if float(score) >= 0.5 and bool(parsed)
+        ]
+        chosen: list[int] = []
+        chosen_ids: list[str] = []
+        batch_seen: set[str] = set()
+        for index in positive_indices:
+            prompt_id = prompt_ids[index]
+            if prompt_id in seen or prompt_id in batch_seen or selected_count + len(chosen) >= target:
+                continue
+            chosen.append(index)
+            chosen_ids.append(prompt_id)
+            batch_seen.add(prompt_id)
+        seen.update(chosen_ids)
+        self._spar_seen_prompt_ids = seen
+        self._spar_selected_count = selected_count + len(chosen)
+
+        rollout_prompt_count = len(set(prompt_ids))
+        selection_metrics = {
+            "spar_probe/batch_prompts": float(rollout_prompt_count),
+            "spar_probe/batch_rollouts": float(len(batch)),
+            "spar_probe/batch_positive_rollouts": float(len(positive_indices)),
+            "spar_probe/batch_selected_prompts": float(len(chosen)),
+            "spar_probe/batch_positive_rate": float(len(positive_indices) / max(len(batch), 1)),
+        }
+        if not chosen:
+            return None, selection_metrics
+
+        selected = batch.select_idxs(chosen)
+        selected.non_tensor_batch["spar_prompt_id"] = np.asarray(chosen_ids, dtype=object)
+        selected.meta_info.update(
+            {
+                "spar_total_prompts": rollout_prompt_count,
+                "spar_total_rollouts": len(batch),
+                "spar_positive_rollouts": len(positive_indices),
+            }
+        )
+        dp_size = self._get_dp_size(self.actor_rollout_wg, "actor")
+        return selected.repeat(repeat_times=dp_size, interleave=False), selection_metrics
+
+    def _run_spar_probe(self, batch: DataProto) -> DataProto:
+        batch.meta_info["temperature"] = self.config.actor_rollout_ref.rollout.temperature
+        batch.meta_info["global_steps"] = self.global_steps
+        return self.actor_rollout_wg.run_spar_probe(batch)
+
     def _update_critic(self, batch: DataProto) -> DataProto:
         if self.use_legacy_worker_impl == "disable":
             batch_td = batch.to_tensordict()
@@ -1504,6 +1572,13 @@ class RayPPOTrainer:
         # load checkpoint before doing anything
         self._load_checkpoint()
         self._load_warm_start_data_state()
+
+        if self.global_steps >= self.total_training_steps:
+            pprint(
+                f"Checkpoint step {self.global_steps} already reached total training steps "
+                f"{self.total_training_steps}; exiting without another update."
+            )
+            return
 
         current_epoch = self.global_steps // len(self.train_dataloader)
 
@@ -1762,9 +1837,22 @@ class RayPPOTrainer:
                     if self.config.trainer.critic_warmup <= self.global_steps:
                         # update actor
                         with marked_timer("update_actor", timing_raw, color="red"):
-                            actor_output = self._update_actor(batch)
-                        actor_output_metrics = reduce_metrics(actor_output.meta_info["metrics"])
-                        metrics.update(actor_output_metrics)
+                            is_spar_probe = (
+                                self.config.actor_rollout_ref.model.get("peft_type", "lora") == "spar_probe"
+                            )
+                            if is_spar_probe:
+                                spar_batch, selection_metrics = self._build_spar_probe_batch(batch)
+                                metrics.update(selection_metrics)
+                                if spar_batch is not None:
+                                    actor_output = self._run_spar_probe(spar_batch)
+                                    actor_output_metrics = reduce_metrics(actor_output.meta_info["metrics"])
+                                    metrics.update(actor_output_metrics)
+                                else:
+                                    metrics["spar_probe/artifact_ready"] = 0.0
+                            else:
+                                actor_output = self._update_actor(batch)
+                                actor_output_metrics = reduce_metrics(actor_output.meta_info["metrics"])
+                                metrics.update(actor_output_metrics)
 
                     # Log rollout generations if enabled
                     rollout_data_dir = self.config.trainer.get("rollout_data_dir", None)
@@ -1855,6 +1943,8 @@ class RayPPOTrainer:
                     for key in (
                         "gradient_probe/artifact_ready",
                         "actor/gradient_probe/artifact_ready",
+                        "spar_probe/artifact_ready",
+                        "actor/spar_probe/artifact_ready",
                     )
                 )
                 if probe_artifact_ready:
@@ -1863,7 +1953,7 @@ class RayPPOTrainer:
                     artifact_dir = self.config.actor_rollout_ref.model.get(
                         "gradient_probe_output_dir", "<not configured>"
                     )
-                    pprint(f"Gradient probe artifact is ready at {artifact_dir}; stopping probe cleanly.")
+                    pprint(f"Probe artifact is ready at {artifact_dir}; stopping probe cleanly.")
                     progress_bar.close()
                     return
 
