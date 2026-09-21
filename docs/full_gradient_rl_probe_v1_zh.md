@@ -109,3 +109,26 @@ python scripts/analysis/build_gradient_probe_uniform_allocation.py \
 
 该转换只截断已有候选方向，不重新 probe；输出仍为标准 `rank_map.json` 和
 `subspaces.safetensors`，并固定 `alpha/r=2`。
+
+## 2026-09-22 第一轮筛选
+
+正式 full-gradient artifact 使用相同的 16 discovery、16 calibration、8 audit prompt，
+共采样 80 prompt / 640 rollout，其中 209 条 boxed reward 为正。三个 uniform-r8 初始化
+均使用这一个 artifact，各有 196 个模块、9,232,384 个可训练参数、`alpha/r=2`。
+
+| 候选 | calibration F capture | reward AUC1:10 | reward@10 | 平均 step(s) |
+|---|---:|---:|---:|---:|
+| mean | 0.7574 | 0.38828 | 0.42188 | 197.49 |
+| covariance | 0.7878 | 0.37734 | 0.39844 | 195.04 |
+| hybrid | 0.7757 | 0.36719 | 0.42188 | 195.23 |
+
+这些训练使用相同 data/PPO seed，但 vLLM 的异步采样没有 request-level 固定种子，
+step-1 reward 分别为 0.53906、0.43750、0.43750，不能把单次 AUC 差异全归因于子空间。
+排除 step 1 后，mean 与 covariance 的 step 2-10 平均 reward 分别为 0.37153 与 0.37066，
+因此目前仅选 mean 进入 50-step 检查，不宣称已显著优于 covariance。
+
+`gain_lcb` 全局 adaptive 虽用满 rank-8 参数预算，calibration F capture 只有 0.4011，
+55/196 个模块停在 rank 2，25/196 个达到 rank 32，按预设条件暂停该配置。改用
+calibration `P*R` 的 `stable_energy` 分配后，参数为 9,231,360，calibration F capture
+为 0.8488，独立 audit F capture 为 0.8384；uniform 对应的 audit F capture 为 0.7490。
+这些是梯度结构指标，不是训练 reward；新的 adaptive 仍需单独验证。
