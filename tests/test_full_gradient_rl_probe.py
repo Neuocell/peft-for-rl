@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 import torch
 from safetensors import safe_open
+from safetensors.torch import save_file
 
 from scripts.analysis.build_full_gradient_uniform_allocation import (
     build_adaptive_allocation,
@@ -101,6 +102,15 @@ def test_full_gradient_probe_exports_three_cross_fit_candidate_sets(
             assert torch.allclose(utility, gain_lcb.clamp_min(0))
             assert torch.isfinite(gain).all()
             assert torch.isfinite(scores.get_tensor(f"{name}.audit_gain")).all()
+
+    score_path = tmp_path / "atom_scores_mean.safetensors"
+    with safe_open(score_path, framework="pt", device="cpu") as score_file:
+        tensors = {key: score_file.get_tensor(key) for key in score_file.keys()}
+    name = next(iter(summary["modules"]))
+    tensors[f"{name}.audit_F"][0] = float("nan")
+    save_file(tensors, score_path)
+    with pytest.raises(ValueError, match="audit_F"):
+        validate_full_gradient_probe_artifact(tmp_path, candidate_method="mean")
 
 
 def test_full_gradient_uniform_allocation_uses_lcb_and_scaling_two(

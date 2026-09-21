@@ -756,7 +756,7 @@ def validate_full_gradient_probe_artifact(
                         f"Non-orthogonal {candidate_method} candidates for {name}: {error}"
                     )
                 maximum_error = max(maximum_error, error)
-                for label in (
+                score_labels = (
                     "F",
                     "S",
                     "R",
@@ -766,13 +766,25 @@ def validate_full_gradient_probe_artifact(
                     "gain_lcb",
                     "adam_gain",
                     "U",
-                ):
+                )
+                for label in (*score_labels, *(f"audit_{key}" for key in score_labels), "spectrum"):
                     value = scores.get_tensor(f"{name}.{label}")
                     if tuple(value.shape) != (basis.shape[0],) or not bool(
                         torch.isfinite(value).all()
                     ):
                         raise ValueError(
                             f"Invalid {candidate_method} score {label} for {name}"
+                        )
+                diagnostic = (
+                    "discovery_capture" if candidate_method == "mean"
+                    else "nystrom_residual" if candidate_method == "covariance"
+                    else None
+                )
+                if diagnostic is not None:
+                    value = scores.get_tensor(f"{name}.{diagnostic}")
+                    if tuple(value.shape) != (1,) or not bool(torch.isfinite(value).all()):
+                        raise ValueError(
+                            f"Invalid {candidate_method} diagnostic {diagnostic} for {name}"
                         )
     return {
         "module_count": float(len(summary["modules"])),
