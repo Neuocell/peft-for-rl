@@ -210,6 +210,14 @@ def test_spar_log_summary_computes_normalized_reward_auc(tmp_path: Path) -> None
     assert summary["reward_at_50"] == pytest.approx(0.5)
     assert summary["reward_auc_1_20"] == pytest.approx(0.105)
     assert summary["reward_auc_1_50"] == pytest.approx(0.255)
+
+    screen = summarize_run(log, expected_steps=10)
+    assert screen["reward_at_10"] == pytest.approx(0.1)
+    assert screen["reward_auc_1_10"] == pytest.approx(0.055)
+    assert screen["reward_at_20"] is None
+    assert screen["reward_auc_1_20"] is None
+    assert screen["reward_at_50"] is None
+    assert screen["reward_auc_1_50"] is None
     assert summary["step_time_mean_s_1_50"] == pytest.approx(10.0)
     assert summary["peak_allocated_memory_gb"] == pytest.approx(5.0)
     assert summary["peak_allocated_memory_gb_aggregate"] == pytest.approx(20.0)

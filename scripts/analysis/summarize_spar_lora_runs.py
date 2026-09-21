@@ -72,9 +72,11 @@ def summarize_run(path: Path, *, expected_steps: int = 50, world_size: int = 4) 
     summary: dict[str, object] = {
         "log_path": str(path.resolve()),
         "steps": expected_steps,
-        "reward_at_20": rewards[19],
+        "reward_at_10": rewards[9] if expected_steps >= 10 else None,
+        "reward_at_20": rewards[19] if expected_steps >= 20 else None,
         "reward_at_50": rewards[49] if expected_steps >= 50 else None,
-        "reward_auc_1_20": sum(rewards[:20]) / 20,
+        "reward_auc_1_10": sum(rewards[:10]) / 10 if expected_steps >= 10 else None,
+        "reward_auc_1_20": sum(rewards[:20]) / 20 if expected_steps >= 20 else None,
         "reward_auc_1_50": sum(rewards[:50]) / 50 if expected_steps >= 50 else None,
         "boxed_accuracy_at_50": records[50].get("reward_extra/acc/mean") if expected_steps >= 50 else None,
         "response_length_mean_1_50": _optional_mean(records, "response_length/mean", expected_steps),
