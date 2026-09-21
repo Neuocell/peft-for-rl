@@ -20,6 +20,7 @@ Single Process Actor
 import json
 import logging
 import os
+import time
 from pathlib import Path
 
 import torch
@@ -258,6 +259,24 @@ class DataParallelPPOActor(BasePPOActor):
             if float(advantage_rms.item()) <= 0:
                 continue
 
+            capture_started = time.perf_counter()
+            distributed = torch.distributed.is_available() and torch.distributed.is_initialized()
+            is_rank_zero = not distributed or torch.distributed.get_rank() == 0
+            captured = collector.discovery_count + collector.calibration_count + collector.audit_count
+            capture_target = (
+                collector.discovery_target + collector.calibration_target + collector.audit_target
+            )
+            if is_rank_zero:
+                logger.warning(
+                    "Full-gradient probe prompt start: phase=%s progress=%d/%d "
+                    "responses=%d response_tokens=%d prompt_id=%s",
+                    collector.phase,
+                    captured + 1,
+                    capture_target,
+                    len(indices),
+                    int(token_count.item()),
+                    prompt_id,
+                )
             self.actor_optimizer.zero_grad()
             group_loss = torch.zeros((), device=get_device_id(), dtype=torch.float32)
             # A response can already approach the actor token budget. Accumulate
@@ -289,6 +308,20 @@ class DataParallelPPOActor(BasePPOActor):
                 advantage_rms=float(advantage_rms.item()),
             )
             metrics.update(probe_metrics)
+            if is_rank_zero:
+                logger.warning(
+                    "Full-gradient probe prompt complete: phase=%s progress=%d/%d "
+                    "elapsed_s=%.3f raw_grad_norm=%.6g clip_scale=%.6g prompt_id=%s",
+                    collector.phase,
+                    collector.discovery_count
+                    + collector.calibration_count
+                    + collector.audit_count,
+                    capture_target,
+                    time.perf_counter() - capture_started,
+                    collector.raw_norms[-1],
+                    collector.scales[-1],
+                    prompt_id,
+                )
         self.actor_optimizer.zero_grad()
         return metrics
 

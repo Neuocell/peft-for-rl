@@ -8,6 +8,7 @@ import torch
 from safetensors import safe_open
 
 from scripts.analysis.build_full_gradient_uniform_allocation import (
+    build_adaptive_allocation,
     build_uniform_allocation,
 )
 from verl.utils.full_gradient_rl_probe import (
@@ -139,6 +140,31 @@ def test_full_gradient_uniform_allocation_uses_lcb_and_scaling_two(
     assert all(rank == 1 for rank in rank_map["rank_pattern"].values())
     assert all(alpha == 2 for alpha in rank_map["alpha_pattern"].values())
 
+    uniform_r2 = build_uniform_allocation(
+        artifact,
+        tmp_path / "uniform-r2",
+        candidate_method="covariance",
+        uniform_rank=2,
+    )
+    adaptive = build_adaptive_allocation(
+        artifact,
+        tmp_path / "adaptive",
+        candidate_method="covariance",
+        uniform_rank=2,
+        r_min=1,
+    )
+    assert adaptive["allocation_mode"] == "adaptive"
+    assert adaptive["budget_respected"] is True
+    assert adaptive["trainable_parameters"] <= uniform_r2["trainable_parameters"]
+    assert adaptive["constant_scaling"] == pytest.approx(2.0)
+    assert all(item["rank"] >= 1 for item in adaptive["modules"].values())
+    assert all(item["rank"] <= 4 for item in adaptive["modules"].values())
+    assert sum(item["rank"] for item in adaptive["modules"].values()) == 4
+    assert all(
+        len(item["atom_indices"]) == item["rank"]
+        for item in adaptive["modules"].values()
+    )
+
 
 def test_full_gradient_probe_integration_is_wired() -> None:
     root = Path(__file__).resolve().parents[1]
@@ -150,3 +176,4 @@ def test_full_gradient_probe_integration_is_wired() -> None:
     assert 'self._peft_type == "full_gradient_probe"' in worker
     assert (root / "scripts/local/start_full_gradient_rl_probe_4gpu.sh").is_file()
     assert (root / "scripts/local/start_full_gradient_uniform_r8_4gpu.sh").is_file()
+    assert (root / "scripts/local/start_full_gradient_adaptive_eqr8_4gpu.sh").is_file()
