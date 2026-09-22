@@ -149,13 +149,13 @@ step-1 reward 分别为 0.53906、0.43750、0.43750，不能把单次 AUC 差异
 55/196 个模块停在 rank 2，25/196 个达到 rank 32，按预设条件暂停该配置。改用
 calibration `P*R` 的 `stable_energy` 分配后，参数为 9,231,360，calibration F capture
 为 0.8488，独立 audit F capture 为 0.8384；uniform 对应的 audit F capture 为 0.7490。
-这些是梯度结构指标，不是训练 reward；新的 adaptive 仍需单独验证。
+这里的 uniform 使用 `gain_lcb` 选择 atom，不能用它隔离 rank 分配的效果。
 
 为隔离 rank 与 atom 选择的影响，离线计算相同 `P*R` top-8 uniform 的 calibration F
 capture 为 0.84343、audit F capture 为 0.83815；adaptive 对应为 0.84877 和 0.83841。
 原 `gain_lcb` uniform 的 audit F capture 只有 0.74903，因此与 adaptive 之间观察到的
 大部分 audit capture 差异来自 atom 排序分数的改变，不能归因于全局 rank 分配。
-匹配 `P*R` 的 uniform 在 GPU 上训练前，这个 rank 分配假设仍未得到训练验证。
+匹配 `P*R` 的两组现已完成 50-step 训练，对照结果见下文。
 
 ### Gain-LCB uniform 50-step 探索基线
 
@@ -164,8 +164,57 @@ capture 为 0.84343、audit F capture 为 0.83815；adaptive 对应为 0.84877 �
 `0.34750`，step 2-50 均值为 `0.34550`；平均 response 长度约 6,480、
 entropy `0.91244`、step time `196.46s`，可训练参数为 9,232,384。
 历史 random-B 日志前 50 步均值约 `0.35539`，但平均 rank 约 31.63，
-与这里的 rank 8 不是等预算对照。独立的 `P*R` uniform/adaptive 训练仍在进行，
-不能从这个探索基线推断全局 rank 分配的收益。
+与这里的 rank 8 不是等预算对照。不能从这个探索基线推断全局 rank 分配的收益。
+
+### 同分数 uniform/adaptive 50-step 对照
+
+两组读取同一个 full-gradient probe artifact，均按 calibration `P*R` 选择 atom，
+vLLM 的全局 LoRA 容量均为 rank32/alpha64；实际每模块 `alpha/r=2`。
+seed、GRPO/reward、batch、优化器和 rollout 配置一致。下表的 AUC 是逐步 reward
+的算术平均，KL 是日志中的 PPO KL，并非相对 base policy 的 reference KL。
+
+| 指标 | uniform-r8 | adaptive-eqr8 |
+|---|---:|---:|
+| reward@20 | 0.257812 | 0.273438 |
+| reward@50 / boxed accuracy@50 | 0.390625 | 0.406250 |
+| reward AUC1:20 | 0.341406 | 0.357422 |
+| reward AUC1:50 | 0.346875 | 0.357187 |
+| reward mean 2:50 | 0.345823 | 0.356505 |
+| response length mean 1:50 | 6465.17 | 6453.71 |
+| entropy mean 1:50 | 0.903619 | 0.900485 |
+| PPO KL mean 1:50 | 0 | 0 |
+| A/B 可训练参数 | 9,232,384 | 9,231,360 |
+| 模块平均 rank | 8 | 14.2653 |
+| 平均 step time (s) | 204.925 | 202.932 |
+| actor 分配显存峰值/卡 (GiB) | 14.5304 | 14.6305 |
+| 观测整卡显存峰值 (GiB) | 32.3447 | 32.2275 |
+
+adaptive 的 AUC1:50 高 `0.0103125`，且参数少 1,024 个；其 196 个模块中
+9 个 rank=2、13 个 rank=32、174 个位于内部。calibration F capture 为
+`0.848773`，略高于同分数 uniform 的 `0.843433`。独立 audit F capture 分别为
+`0.838414` 和 `0.838146`，仅差 `0.000268`，不能将训练差异归因于显著提升
+的 held-out 梯度覆盖率。vLLM 异步 rollout 未固定 request-level 随机种子，
+因此这是一轮筛选结果，不是可归因的显著性证据。
+
+两组都正常完成 50 步，未见非有限指标、entropy 爆炸、同步故障或步时异常。
+adaptive 未触发预设的 AUC 落后超过 0.02、预算/scaling 不一致、rank 集中在边界、
+calibration capture 不高于 uniform 等停止条件；仍不直接扩展到 270 步，
+下一轮应先以多 seed 和等预算 random-B 截断基线核验收益。
+
+adaptive 的 step-25/50 checkpoint 均包含四份 FSDP model shard、extra state 和
+标准 PEFT adapter；step-50 adapter 的 392 个权重键仅含 LoRA A/B，逐模块
+`alpha/r` 均为 2。真实 1.5B base model 的 FP32 短输入 merge 前后 logits
+最大绝对误差为 `1.01e-4`。另用四卡 `resume_mode=auto` 只加载 step-50，
+四个 rank 成功读取 model、RNG 和调度器，trainer 判定已达到总步数并退出，
+没有额外更新。恢复检查日志为
+`runs/full-gradient-v1/logs/verl/full_gradient_mean_adaptive_stable_energy_resume_check_seed42.log`。
+和 uniform 一样，此配置只保存 `model + extra`，**不保存 optimizer state**；
+上述检查证明模型状态可恢复，但不能据此声称中途恢复后优化器轨迹完全一致。
+
+原始训练日志位于 `runs/full-gradient-v1/logs/verl/`，文件名分别为
+`full_gradient_mean_uniform_r8_stable_energy_50_seed42.log` 和
+`full_gradient_mean_adaptive_stable_energy_eqr8_50_seed42.log`。包含逐步指标的
+完整对照为 `runs/full-gradient-v1/analysis/mean_stable_energy_uniform_vs_adaptive_50_seed42.json`。
 
 ## Checkpoint 与显存口径
 
