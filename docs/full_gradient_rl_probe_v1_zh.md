@@ -199,7 +199,7 @@ adaptive 的 AUC1:50 高 `0.0103125`，且参数少 1,024 个；其 196 个模�
 两组都正常完成 50 步，未见非有限指标、entropy 爆炸、同步故障或步时异常。
 adaptive 未触发预设的 AUC 落后超过 0.02、预算/scaling 不一致、rank 集中在边界、
 calibration capture 不高于 uniform 等停止条件；仍不直接扩展到 270 步，
-下一轮应先以多 seed 和等预算 random-B 截断基线核验收益。
+下一轮需恢复历史训练的 global batch，检查小 rank 是否接近历史大 rank 基线。
 
 adaptive 的 step-25/50 checkpoint 均包含四份 FSDP model shard、extra state 和
 标准 PEFT adapter；step-50 adapter 的 392 个权重键仅含 LoRA A/B，逐模块
@@ -215,6 +215,24 @@ adaptive 的 step-25/50 checkpoint 均包含四份 FSDP model shard、extra stat
 `full_gradient_mean_uniform_r8_stable_energy_50_seed42.log` 和
 `full_gradient_mean_adaptive_stable_energy_eqr8_50_seed42.log`。包含逐步指标的
 完整对照为 `runs/full-gradient-v1/analysis/mean_stable_energy_uniform_vs_adaptive_50_seed42.json`。
+
+### batch64 小 rank 与历史大 rank
+
+上面的 full-gradient 50-step 筛选使用 global batch16，而历史 random-B energy
+强基线 `/root/gradtop_probe12_r8to32_mean31p63_a2_b64m16n8_270_v1.log`
+使用 batch64、mini-batch16、n8、actor/inference token budget 12288、
+vLLM `max_num_seqs=256`。历史基线前 50 步 reward AUC 为 `0.355391`，
+reward@50 为 `0.378906`，平均 rank 约 31.63；原 batch16 结果不能用于判断
+rank8 在该训练配置下是否达到大 rank 水平。
+
+下一组直接复用同一个 full-gradient probe artifact 的 mean 候选、模块内
+gain-LCB top-8 atom；其 10-step 筛选在 mean/covariance/hybrid 中 AUC 最高。
+`scripts/local/start_full_gradient_mean_gain_lcb_b64_50_4gpu.sh` 固定以上历史
+训练参数、seed42 和 50 步，设置 vLLM 容量 rank32/alpha64，但实际每个模块的
+rank map 均为 rank8/alpha16，A/B 参数量为 9,232,384，缩放恒为 2。
+这组的主要验收目标是小 rank 的 reward AUC1:50 能否接近历史大 rank，
+不要求先完成等预算 random-B 对照。历史实验与当前机器的异步 rollout
+无法做到逐请求配对，单 seed 结果仍需谨慎解读。
 
 ## Checkpoint 与显存口径
 
