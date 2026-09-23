@@ -1525,11 +1525,20 @@ class RayPPOTrainer:
         seen = getattr(self, "_full_gradient_seen_prompt_ids", set())
         selected_count = int(getattr(self, "_full_gradient_selected_count", 0))
         model_config = self.config.actor_rollout_ref.model
-        target = (
-            int(model_config.get("full_gradient_probe_discovery_prompts", 16))
-            + int(model_config.get("full_gradient_probe_calibration_prompts", 16))
-            + int(model_config.get("full_gradient_probe_audit_prompts", 8))
-        )
+        probe_mode = str(model_config.get("full_gradient_probe_mode", "legacy")).lower()
+        window_prompts = int(model_config.get("full_gradient_probe_window_prompts", 16))
+        if probe_mode == "windowed_adam_consensus":
+            target = window_prompts * (
+                int(model_config.get("full_gradient_probe_discovery_windows", 8))
+                + int(model_config.get("full_gradient_probe_calibration_windows", 2))
+                + int(model_config.get("full_gradient_probe_audit_windows", 2))
+            )
+        else:
+            target = (
+                int(model_config.get("full_gradient_probe_discovery_prompts", 16))
+                + int(model_config.get("full_gradient_probe_calibration_prompts", 16))
+                + int(model_config.get("full_gradient_probe_audit_prompts", 8))
+            )
         min_advantage_rms = float(model_config.get("full_gradient_probe_min_advantage_rms", 1e-6))
 
         prompt_ids: list[str] = []
@@ -1543,11 +1552,10 @@ class RayPPOTrainer:
             prompt_ids.append(prompt_id)
             groups.setdefault(prompt_id, []).append(index)
 
-        chosen_ids: list[str] = []
-        chosen_indices: list[int] = []
+        eligible: list[tuple[str, list[int]]] = []
         skipped_zero_advantage = 0
         for prompt_id, indices in groups.items():
-            if prompt_id in seen or selected_count + len(chosen_ids) >= target:
+            if prompt_id in seen or selected_count + len(eligible) >= target:
                 continue
             group_indices = torch.tensor(indices, dtype=torch.long, device=batch.batch["advantages"].device)
             advantages = batch.batch["advantages"].index_select(0, group_indices).float()
@@ -1557,8 +1565,14 @@ class RayPPOTrainer:
             if advantage_rms < min_advantage_rms:
                 skipped_zero_advantage += 1
                 continue
-            chosen_ids.append(prompt_id)
-            chosen_indices.extend(indices)
+            eligible.append((prompt_id, indices))
+
+        take = min(len(eligible), target - selected_count)
+        if probe_mode == "windowed_adam_consensus":
+            take -= take % window_prompts
+        chosen = eligible[:take]
+        chosen_ids = [prompt_id for prompt_id, _ in chosen]
+        chosen_indices = [index for _, indices in chosen for index in indices]
 
         seen.update(chosen_ids)
         self._full_gradient_seen_prompt_ids = seen

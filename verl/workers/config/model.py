@@ -132,6 +132,7 @@ class HFModelConfig(BaseConfig):
     spar_score_eps: float = 1e-12
     # Full-weight prompt-group GRPO probe. It observes actual base-weight
     # gradients and exports mean, covariance and hybrid right subspaces.
+    full_gradient_probe_mode: str = "legacy"
     full_gradient_probe_rank: int = 32
     full_gradient_probe_sketch_width: int = 40
     full_gradient_probe_svd_oversample: int = 8
@@ -144,6 +145,16 @@ class HFModelConfig(BaseConfig):
     full_gradient_probe_confidence_z: float = 1.0
     full_gradient_probe_eps: float = 1e-12
     full_gradient_probe_min_advantage_rms: float = 1e-6
+    full_gradient_probe_window_prompts: int = 16
+    full_gradient_probe_discovery_windows: int = 8
+    full_gradient_probe_calibration_windows: int = 2
+    full_gradient_probe_audit_windows: int = 2
+    full_gradient_probe_local_atoms: int = 4
+    full_gradient_probe_adam_beta1: float = 0.9
+    full_gradient_probe_adam_beta2: float = 0.999
+    full_gradient_probe_adam_eps: float = 1e-8
+    full_gradient_probe_future_lcb_z: float = 1.0
+    full_gradient_probe_support_floor: float = 1e-4
     oft_rank: int = 0
     oft_block_size: int = 32
     oft_dropout: float = 0.0

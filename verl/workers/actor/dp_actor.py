@@ -34,7 +34,11 @@ from verl.trainer.ppo.core_algos import agg_loss, get_policy_loss_fn, kl_penalty
 from verl.utils.attention_utils import index_first_axis, pad_input, rearrange, unpad_input
 from verl.utils.device import get_device_id, get_device_name
 from verl.utils.fsdp_utils import FSDPModule, fsdp2_clip_grad_norm_
-from verl.utils.full_gradient_rl_probe import FullGradientRLProbeCollector
+from verl.utils.full_gradient_rl_probe import (
+    build_full_gradient_probe_collector,
+    deterministic_response_offset,
+    unbiased_single_response_scale,
+)
 from verl.utils.peft_adalora import find_adalora_model, update_and_allocate
 from verl.utils.peft_gradient_subspace import GradientProbeCollector
 from verl.utils.peft_spar_lora import SparPositiveProbeCollector
@@ -156,7 +160,9 @@ class DataParallelPPOActor(BasePPOActor):
                 raise NotImplementedError(
                     "peft_type=full_gradient_probe currently requires bf16 or fp32, not fp16 scaling"
                 )
-            self._full_gradient_probe_collector = FullGradientRLProbeCollector(actor_module, model_config)
+            self._full_gradient_probe_collector = build_full_gradient_probe_collector(
+                actor_module, model_config
+            )
 
         trainable_parameters = sum(parameter.numel() for parameter in actor_module.parameters() if parameter.requires_grad)
         self._static_actor_metrics = {"actor/active_parameter_count": float(trainable_parameters)}
@@ -232,6 +238,8 @@ class DataParallelPPOActor(BasePPOActor):
         collector = self._full_gradient_probe_collector
         if collector is None:
             raise RuntimeError("run_full_gradient_probe requires peft_type=full_gradient_probe")
+        if getattr(collector, "is_windowed", False):
+            return self._run_windowed_full_gradient_probe(data, collector)
         self.actor_module.train()
         collector.record_rollout_batch(data.meta_info)
         metrics: dict[str, list[float] | float] = dict(self._static_actor_metrics)
@@ -321,6 +329,120 @@ class DataParallelPPOActor(BasePPOActor):
                     collector.raw_norms[-1],
                     collector.scales[-1],
                     prompt_id,
+                )
+        self.actor_optimizer.zero_grad()
+        return metrics
+
+    def _run_windowed_full_gradient_probe(self, data: DataProto, collector) -> dict[str, list[float] | float]:
+        """Accumulate fixed prompt windows using one unbiased rollout per prompt."""
+
+        self.actor_module.train()
+        collector.record_rollout_batch(data.meta_info)
+        metrics: dict[str, list[float] | float] = dict(self._static_actor_metrics)
+        temperature = float(data.meta_info["temperature"])
+        prompt_ids = data.non_tensor_batch.get("full_gradient_prompt_id")
+        if prompt_ids is None:
+            raise ValueError("Full-gradient probe batch is missing full_gradient_prompt_id")
+
+        groups: dict[str, list[int]] = {}
+        for index, prompt_id in enumerate(prompt_ids):
+            groups.setdefault(str(prompt_id), []).append(index)
+        ordered_groups = list(groups.items())
+        if len(ordered_groups) % collector.window_prompts:
+            raise ValueError(
+                "Windowed full-gradient probe received a partial window: "
+                f"{len(ordered_groups)} prompts is not divisible by {collector.window_prompts}"
+            )
+
+        distributed = torch.distributed.is_available() and torch.distributed.is_initialized()
+        is_rank_zero = not distributed or torch.distributed.get_rank() == 0
+        capture_target = (
+            collector.discovery_target + collector.calibration_target + collector.audit_target
+        )
+        for start in range(0, len(ordered_groups), collector.window_prompts):
+            if collector.ready:
+                break
+            window = ordered_groups[start : start + collector.window_prompts]
+            capture_started = time.perf_counter()
+            phase = collector.phase
+            window_index = collector.window_index
+            if is_rank_zero:
+                logger.warning(
+                    "Windowed full-gradient probe start: phase=%s window=%d/%d prompts=%d",
+                    phase,
+                    window_index + 1,
+                    capture_target,
+                    len(window),
+                )
+            self.actor_optimizer.zero_grad()
+            window_loss = torch.zeros((), device=get_device_id(), dtype=torch.float32)
+            observed_prompt_ids: list[str] = []
+            response_counts: list[int] = []
+            response_tokens: list[int] = []
+            selected_offsets: list[int] = []
+            advantage_values: list[float] = []
+            for prompt_id, indices in window:
+                group = data.select_idxs(indices)
+                response_mask = group.batch["response_mask"].float()
+                advantages = group.batch["advantages"].float()
+                token_count = response_mask.sum()
+                if int(token_count.item()) <= 0:
+                    raise ValueError(f"Probe prompt {prompt_id} has no response tokens")
+                weighted_advantages = advantages * response_mask
+                advantage_rms = torch.sqrt(
+                    weighted_advantages.square().sum() / token_count.clamp_min(1)
+                )
+                if float(advantage_rms.item()) <= 0:
+                    raise ValueError(f"Probe prompt {prompt_id} has zero GRPO advantage")
+                offset = deterministic_response_offset(
+                    collector.seed, prompt_id, window_index, len(indices)
+                )
+                sample = data.select_idxs([indices[offset]]).to(get_device_id())
+                model_inputs = {**sample.batch, **sample.non_tensor_batch}
+                _, log_prob = self._forward_micro_batch(
+                    model_inputs,
+                    temperature=temperature,
+                    calculate_entropy=False,
+                )
+                scale = unbiased_single_response_scale(
+                    len(indices), collector.window_prompts
+                )
+                sample_loss = -scale * (
+                    log_prob.float()
+                    * model_inputs["advantages"].float()
+                    * model_inputs["response_mask"].float()
+                ).sum() / token_count.to(get_device_id())
+                if not torch.isfinite(sample_loss):
+                    raise FloatingPointError(
+                        "Windowed single-response policy-gradient loss is non-finite"
+                    )
+                window_loss = window_loss + sample_loss.detach()
+                sample_loss.backward()
+                observed_prompt_ids.append(prompt_id)
+                response_counts.append(len(indices))
+                response_tokens.append(int(token_count.item()))
+                selected_offsets.append(offset)
+                advantage_values.append(float(advantage_rms.item()))
+
+            probe_metrics = collector.capture_window(
+                loss=float(window_loss.item()),
+                prompt_ids=observed_prompt_ids,
+                response_counts=response_counts,
+                response_tokens=response_tokens,
+                selected_response_offsets=selected_offsets,
+                advantage_rms=advantage_values,
+            )
+            metrics.update(probe_metrics)
+            if is_rank_zero:
+                logger.warning(
+                    "Windowed full-gradient probe complete: phase=%s window=%d/%d "
+                    "elapsed_s=%.3f raw_grad_norm=%.6g clip_scale=%.6g",
+                    phase,
+                    collector.window_index,
+                    capture_target,
+                    time.perf_counter() - capture_started,
+                    collector.raw_norms[-1],
+                    collector.scales[-1],
                 )
         self.actor_optimizer.zero_grad()
         return metrics

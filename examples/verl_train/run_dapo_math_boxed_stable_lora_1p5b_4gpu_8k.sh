@@ -184,6 +184,7 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.model.spar_calibration_samples=${SPAR_CALIBRATION_SAMPLES:-32} \
     +actor_rollout_ref.model.spar_sample_clip_factor=${SPAR_SAMPLE_CLIP_FACTOR:-2.5} \
     +actor_rollout_ref.model.spar_score_eps=${SPAR_SCORE_EPS:-1e-12} \
+    +actor_rollout_ref.model.full_gradient_probe_mode=${FULL_GRADIENT_PROBE_MODE:-legacy} \
     +actor_rollout_ref.model.full_gradient_probe_rank=${FULL_GRADIENT_PROBE_RANK:-32} \
     +actor_rollout_ref.model.full_gradient_probe_sketch_width=${FULL_GRADIENT_PROBE_SKETCH_WIDTH:-40} \
     +actor_rollout_ref.model.full_gradient_probe_svd_oversample=${FULL_GRADIENT_PROBE_SVD_OVERSAMPLE:-8} \
@@ -196,6 +197,16 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.model.full_gradient_probe_confidence_z=${FULL_GRADIENT_PROBE_CONFIDENCE_Z:-1.0} \
     +actor_rollout_ref.model.full_gradient_probe_eps=${FULL_GRADIENT_PROBE_EPS:-1e-12} \
     +actor_rollout_ref.model.full_gradient_probe_min_advantage_rms=${FULL_GRADIENT_PROBE_MIN_ADVANTAGE_RMS:-1e-6} \
+    +actor_rollout_ref.model.full_gradient_probe_window_prompts=${FULL_GRADIENT_PROBE_WINDOW_PROMPTS:-16} \
+    +actor_rollout_ref.model.full_gradient_probe_discovery_windows=${FULL_GRADIENT_PROBE_DISCOVERY_WINDOWS:-8} \
+    +actor_rollout_ref.model.full_gradient_probe_calibration_windows=${FULL_GRADIENT_PROBE_CALIBRATION_WINDOWS:-2} \
+    +actor_rollout_ref.model.full_gradient_probe_audit_windows=${FULL_GRADIENT_PROBE_AUDIT_WINDOWS:-2} \
+    +actor_rollout_ref.model.full_gradient_probe_local_atoms=${FULL_GRADIENT_PROBE_LOCAL_ATOMS:-4} \
+    +actor_rollout_ref.model.full_gradient_probe_adam_beta1=${FULL_GRADIENT_PROBE_ADAM_BETA1:-0.9} \
+    +actor_rollout_ref.model.full_gradient_probe_adam_beta2=${FULL_GRADIENT_PROBE_ADAM_BETA2:-0.999} \
+    +actor_rollout_ref.model.full_gradient_probe_adam_eps=${FULL_GRADIENT_PROBE_ADAM_EPS:-1e-8} \
+    +actor_rollout_ref.model.full_gradient_probe_future_lcb_z=${FULL_GRADIENT_PROBE_FUTURE_LCB_Z:-1.0} \
+    +actor_rollout_ref.model.full_gradient_probe_support_floor=${FULL_GRADIENT_PROBE_SUPPORT_FLOOR:-1e-4} \
     +actor_rollout_ref.model.oft_block_size=${OFT_BLOCK_SIZE:-32} \
     +actor_rollout_ref.model.oft_rank=${OFT_RANK:-0} \
     +actor_rollout_ref.model.oft_dropout=${OFT_DROPOUT:-0.0} \

@@ -87,6 +87,8 @@ def _selection_scores(
 ) -> dict[str, torch.Tensor]:
     if utility == "gain_lcb":
         return {name: module_scores["U"] for name, module_scores in scores.items()}
+    if utility == "future_lcb":
+        return {name: module_scores["U"] for name, module_scores in scores.items()}
     if utility == "stable_energy":
         return {
             name: module_scores["P"] * module_scores["R"]
@@ -171,9 +173,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument(
-        "--candidate-method", choices=("mean", "covariance", "hybrid"), default="mean"
-    )
+    parser.add_argument("--candidate-method", default="mean")
     parser.add_argument(
         "--allocation-mode", choices=("uniform", "adaptive"), default="uniform"
     )
@@ -181,12 +181,12 @@ def main() -> None:
     parser.add_argument("--r-min", type=int, default=2)
     parser.add_argument(
         "--adaptive-utility",
-        choices=("gain_lcb", "stable_energy"),
+        choices=("gain_lcb", "stable_energy", "future_lcb"),
         default="gain_lcb",
     )
     parser.add_argument(
         "--uniform-utility",
-        choices=("gain_lcb", "stable_energy"),
+        choices=("gain_lcb", "stable_energy", "future_lcb"),
         default="gain_lcb",
     )
     args = parser.parse_args()

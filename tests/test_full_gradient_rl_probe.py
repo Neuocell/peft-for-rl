@@ -17,8 +17,12 @@ from scripts.analysis.build_full_gradient_uniform_allocation import (
 )
 from verl.utils.full_gradient_rl_probe import (
     FullGradientRLProbeCollector,
+    WindowedAdamConsensusCollector,
     configure_full_gradient_probe_parameters,
+    deterministic_response_offset,
+    unbiased_single_response_scale,
     validate_full_gradient_probe_artifact,
+    virtual_adam_update,
 )
 from verl.utils.peft_gradient_subspace import apply_gradient_subspace_initialization
 
@@ -57,6 +61,117 @@ def _probe_config(path: Path) -> dict:
         "full_gradient_probe_clip_factor": 2.5,
         "full_gradient_probe_confidence_z": 1.0,
     }
+
+
+def _windowed_probe_config(path: Path) -> dict:
+    config = _probe_config(path)
+    config.update(
+        {
+            "full_gradient_probe_mode": "windowed_adam_consensus",
+            "full_gradient_probe_window_prompts": 2,
+            "full_gradient_probe_discovery_windows": 3,
+            "full_gradient_probe_calibration_windows": 2,
+            "full_gradient_probe_audit_windows": 2,
+            "full_gradient_probe_local_atoms": 1,
+            "full_gradient_probe_adam_beta1": 0.5,
+            "full_gradient_probe_adam_beta2": 0.75,
+            "full_gradient_probe_adam_eps": 1e-6,
+            "full_gradient_probe_future_lcb_z": 1.0,
+        }
+    )
+    return config
+
+
+def test_single_response_estimator_is_unbiased_and_deterministic() -> None:
+    response_losses = torch.tensor([-0.5, 0.25, 1.5, -0.75])
+    full_group_loss = response_losses.sum()
+    estimates = torch.stack(
+        [
+            response_losses[index]
+            * unbiased_single_response_scale(len(response_losses), 1)
+            for index in range(len(response_losses))
+        ]
+    )
+    assert estimates.mean() == pytest.approx(float(full_group_loss))
+    first = deterministic_response_offset(42, "prompt-7", 3, 8)
+    assert first == deterministic_response_offset(42, "prompt-7", 3, 8)
+    assert 0 <= first < 8
+
+
+def test_virtual_adam_uses_bias_correction() -> None:
+    first = torch.zeros(2)
+    second = torch.zeros(2)
+    gradient = torch.tensor([2.0, -4.0])
+    update = virtual_adam_update(
+        first,
+        second,
+        gradient,
+        step=1,
+        beta1=0.5,
+        beta2=0.75,
+        eps=0.0,
+    )
+    assert torch.allclose(update, torch.tensor([1.0, -1.0]))
+
+
+def test_windowed_adam_consensus_exports_cross_fit_candidates(tmp_path: Path) -> None:
+    torch.manual_seed(31)
+    model = TinyPolicy()
+    config = _windowed_probe_config(tmp_path)
+    configure_full_gradient_probe_parameters(model, config)
+    collector = WindowedAdamConsensusCollector(model, config)
+
+    total_windows = 7
+    for window in range(total_windows):
+        model.zero_grad(set_to_none=True)
+        inputs = torch.randn(4, 6) + window / 10
+        loss = model(inputs).square().mean() * (1.0 + window / 5)
+        loss.backward()
+        collector.capture_window(
+            loss=float(loss.item()),
+            prompt_ids=[f"prompt-{window}-0", f"prompt-{window}-1"],
+            response_counts=[8, 8],
+            response_tokens=[24 + window, 28 + window],
+            selected_response_offsets=[window % 8, (window + 1) % 8],
+            advantage_rms=[0.5 + window, 0.75 + window],
+        )
+
+    assert collector.ready
+    summary = json.loads((tmp_path / "probe_summary.json").read_text())
+    assert summary["schema_version"] == 2
+    assert summary["selection_uses_audit"] is False
+    assert summary["held_out_scoring_space"] == "raw_full_policy_gradient"
+    assert len(summary["discovery_prompt_ids"]) == 6
+    assert len(summary["calibration_prompt_ids"]) == 4
+    assert len(summary["audit_prompt_ids"]) == 4
+    assert summary["prompt_splits_disjoint"] is True
+
+    for method in ("raw_momentum", "adam_update", "consensus_hybrid"):
+        validation = validate_full_gradient_probe_artifact(
+            tmp_path, candidate_method=method
+        )
+        assert validation["module_count"] == 2
+        with safe_open(
+            tmp_path / f"atom_scores_{method}.safetensors",
+            framework="pt",
+            device="cpu",
+        ) as score_file:
+            for name in summary["modules"]:
+                p_lcb = score_file.get_tensor(f"{name}.P_lcb")
+                recurrence = score_file.get_tensor(f"{name}.recurrence")
+                utility = score_file.get_tensor(f"{name}.U")
+                assert torch.allclose(utility, recurrence * p_lcb.clamp_min(0))
+                assert torch.isfinite(score_file.get_tensor(f"{name}.audit_U")).all()
+
+    allocation = build_uniform_allocation(
+        tmp_path,
+        tmp_path / "windowed-allocation",
+        candidate_method="consensus_hybrid",
+        uniform_rank=1,
+        selection_utility="future_lcb",
+    )
+    assert allocation["selection_utility"] == "future_lcb"
+    assert allocation["constant_scaling"] == pytest.approx(2.0)
 
 
 def test_full_gradient_probe_exports_three_cross_fit_candidate_sets(
@@ -221,6 +336,19 @@ def test_full_gradient_probe_integration_is_wired() -> None:
     assert (root / "scripts/local/start_full_gradient_rl_probe_4gpu.sh").is_file()
     assert (root / "scripts/local/start_full_gradient_uniform_r8_4gpu.sh").is_file()
     assert (root / "scripts/local/start_full_gradient_adaptive_eqr8_4gpu.sh").is_file()
+    windowed_probe = root / "scripts/local/start_windowed_adam_consensus_probe_4gpu.sh"
+    windowed_train = root / "scripts/local/start_windowed_consensus_uniform_r8_50_4gpu.sh"
+    assert windowed_probe.is_file()
+    assert windowed_train.is_file()
+    probe_launcher = windowed_probe.read_text()
+    train_launcher = windowed_train.read_text()
+    for launcher in (probe_launcher, train_launcher):
+        assert "export TRAIN_PROMPT_BSZ=64" in launcher
+        assert "export TRAIN_PROMPT_MINI_BSZ=16" in launcher
+        assert "export N_RESP_PER_PROMPT=8" in launcher
+    assert "FULL_GRADIENT_PROBE_MODE=windowed_adam_consensus" in probe_launcher
+    assert "export LORA_RANK=8" in train_launcher
+    assert "export LORA_ALPHA=16" in train_launcher
     uniform_launcher = (root / "scripts/local/start_full_gradient_uniform_r8_4gpu.sh").read_text()
     assert 'export LORA_RANK="${LORA_RANK:-8}"' in uniform_launcher
     assert 'export LORA_ALPHA="${LORA_ALPHA:-16}"' in uniform_launcher
