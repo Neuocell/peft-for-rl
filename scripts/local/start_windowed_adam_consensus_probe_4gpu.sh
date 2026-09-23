@@ -29,13 +29,16 @@ export TARGET_MODULES="${TARGET_MODULES:-all-linear}"
 export MODEL_PATH="${MODEL_PATH:-/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base}"
 export TRAIN_FILE="${TRAIN_FILE:-/data/peft-for-rl-runtime/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet}"
 export TEST_FILE="${TEST_FILE:-${TRAIN_FILE}}"
-export RAY_TEMP_DIR="${RAY_TEMP_DIR:-${RUNTIME_ROOT}/ray}"
+export RAY_TEMP_DIR="${RAY_TEMP_DIR:-/tmp/ray-wac-v1}"
 
 # These are the historical training settings. Do not lower the global batch
 # for probe convenience: each probe window is formed inside a batch64 rollout.
 export TRAIN_PROMPT_BSZ=64
 export TRAIN_PROMPT_MINI_BSZ=16
 export N_RESP_PER_PROMPT=8
+export ACTOR_PPO_MAX_TOKEN_LEN=12288
+export INFER_PPO_MAX_TOKEN_LEN=12288
+export ROLLOUT_MAX_NUM_SEQS=256
 export TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-8}"
 export SAVE_FREQ=0
 export RESUME_MODE=disable
