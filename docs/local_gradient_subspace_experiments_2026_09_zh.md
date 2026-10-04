@@ -1,6 +1,6 @@
 # 本机 LoRA 梯度子空间实验汇总
 
-更新时间：2026-10-04 10:31（Asia/Shanghai）
+更新时间：2026-10-04 13:08（Asia/Shanghai）
 
 本文整理当前机器上围绕 SPAR-LoRA、random-B、full-gradient probe、token mask、梯度协方差和 rank 的主要实验。内容以现存启动脚本、Hydra 配置、训练日志、probe artifact、checkpoint 和 full-benchmark JSON 为准，不把仅存在于会话记忆中的数字当作正式结果。
 
@@ -1403,6 +1403,18 @@ shell 语法和嵌入式 Python 编译均已验证；合成的 1,812-record shar
 Git 仓库保存训练器、评测器、启动器、分析器、测试和本文，但 `.gitignore` 明确排除 `runs/`、checkpoint、records、日志、数据集和模型权重。因此仅克隆 GitHub 分支不足以继续正式 seed-43 I8；迁移时还必须单独传输并按 SHA-256 验收运行 artifact。最小的 I8 初始化集合包含 `phase1_training_preparation.json`、I8 的 `rank_map.json`、`allocation_summary.json` 和 `subspaces.safetensors`，其 SHA-256 分别为 `d60fc87775a5b1a0e1d27f922b6c4f2b100f0e8614faeb261afaf2c1c88dd386`、`2f20e70333a66f979d7630c83823304d9b9c196d65e86e74ce329200a87478f5`、`0c7ba14adca289fd1d88377d6c91afaab0f1b26914c03b088b0bddf78e55e131` 和 `63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135`。正式 preflight 还会验证 Phase-0.5/0.6 来源 artifact，不能只复制这四个文件后绕过校验。
 
 训练和评测的外部依赖还包括：DeepSeek-R1-Distill-Qwen-1.5B base model、训练 parquet（2,281,735 bytes，SHA-256 `8e3c9314db8b83c61ab62a3dc85e0a704dcc5f3a9d404d236943f719095ce82f`）以及固定 benchmark snapshot records（191,951,094 bytes，SHA-256 `3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da`）。若要保留 seed-43 I0 的审计和后续 paired comparison，还必须传输 I0 merged records、summary、四份 manifest、training contract、postverify 和 step-50 adapter；若要保留本地恢复能力，则额外传输完整 step-50 checkpoint。GitHub 上传只负责代码与小型文本证据，大型二进制与原始 records 应使用 `rsync`、对象存储或独立归档传输，并在目标服务器逐项复核本文记录的哈希。
+
+#### 19.2.46 GitHub 最小 I8 初始化二进制修订（2026-10-04）
+
+19.2.45 的默认大文件边界随后按用户的异地继续实验需求做了窄范围修订。GitHub 分支 `experiments/spar-lora-v0` 的提交 `12c316b2dbc239d8889d377ea4c8f7cd36e79480` 显式 force-track 三个正式 I8 preflight 所需、且单文件低于 GitHub 100 MB 硬限制的 safetensors；没有放宽仓库对其他 `*.safetensors` 的 ignore，也没有上传模型、训练数据、checkpoint、adapter、评测 records、rollout cache 或其他 candidate family。
+
+| artifact | bytes | SHA-256 |
+|---|---:|---|
+| Phase-0.5 `candidates_P2.safetensors` | 65,162,736 | `a9e33ccadf14a0e6253ae22919fac86a4a812df6d4db27ee22a26ca852c4b9dc` |
+| Phase-0.5 `atom_scores_P2.safetensors` | 309,232 | `a2fcd4416d2a740abd252a19cb0dc52f7ae2547e13a995c3a8b9befc6ce70564` |
+| Phase-1 I8 `subspaces.safetensors` | 65,162,736 | `63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135` |
+
+提交前重新执行冻结的 `prepare_phase1_signal_random_artifacts.py --verify-method I8`，返回 `status=verified`：196 个模块、uniform-r32、8 个 signal directions、24 个随机补空间方向、signal-prefix 最大误差 0、最大正交误差 `9.5367431640625e-7`。因此把该分支克隆到相同的 `/root/peft-for-rl` 路径后，P2 来源张量、atom scores、I8 rank/allocation/preparation 文本及最终子空间已经自包含；其他绝对路径下的 base model、训练 parquet 和 benchmark snapshot 仍由目标环境提供。19.2.45 中关于这三个初始化二进制必须外部传输的陈述由本节取代，关于模型、数据、原始评测 records 和可恢复 checkpoint 的边界保持不变。
 
 ### 19.3 Phase 2：隔离 token selector
 
