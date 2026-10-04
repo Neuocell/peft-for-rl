@@ -1465,6 +1465,18 @@ GitHub 明确不包含：
 
 论文证据距离也据此分层：完成 seed-43 I8 和四个 gate，只能闭合当前固定 `1.5B` 数学 RL 设置中“一个 held-out training seed 上复现、两个已测试 seed delta 均为正”的最小结论；完整主实验支撑仍缺协议匹配 standard-LoRA-r32、同 snapshot base-model参考、独立 random-complement draw，以及用于跨设置措辞的第二任务和第二模型。当前不能写成跨训练 seed 稳定、初始化稳健、优于标准 LoRA或广泛泛化。
 
+#### 19.2.48 seed-43 I8 异地交接包与单方法恢复入口（2026-10-04）
+
+迁移审计进一步区分了公开 Git 内容与必须由用户控制渠道传输的运行态输入。GitHub 新增机器可读 handoff manifest、payload SHA-256 清单、中文恢复说明和 `ops/run_seed43_i8_migrated_guarded.sh`；这些文件位于冻结训练 code provenance 之外，没有修改训练器、评测器、contract verifier 或 full-benchmark verifier。公开仓库继续保留 I8 初始化空间，但不上传训练 parquet、benchmark records、I0 records 或 adapter：adapter 单文件超过普通 GitHub 100 MB 限制，且数据、题目和模型输出的公开再分发许可未确认。
+
+离线交接包固定包含训练 parquet、冻结 benchmark snapshot、seed-43 I0 merged records，以及 I0 adapter 的 config 和 safetensors。base model 不进入包，可从上游恢复后按五个文件 SHA-256 验收；I0 raw shards、rollout cache、日志及 step-25/step-50 恢复 checkpoint 也不进入包，因为 I0 已完成，后续 paired comparison 只需要 verified merged records，I8 训练不依赖 I0 checkpoint。完整内容、大小、哈希和排除理由由 `runs/phase1-signal-random-v1/migration/phase1_seed43_i8_handoff_manifest.json` 固定。
+
+最终本地交接包为 `/root/peft-for-rl-phase1-seed43-i8-handoff-20261004.tar.zst`，大小 `182,837,537` bytes，SHA-256 为 `60bfd3c6c4291b8b5d1811f04655638321d038903ba82287c5958285e043960e`。归档通过 `zstd -t`，成员白名单精确为上述五个文件，并已逐成员从压缩流重新计算 SHA-256 验收。
+
+原 `start_seed43_i8_next_card_guarded.sh --mode replacement` 会重启完整 controller，在只有最小交接包的目标机器上可能因缺少 seed-42 历史 adapter 而重跑旧流水线，因此不能用于此次迁移。新入口默认 dry-run，钉住选择结果、两-seed amendment、冻结启动器/verifier、全部 payload、base model 和 I8 初始化哈希；同时拒绝 controller/evaluator/EngineCore、seed 44、任何 seed-43 I8 部分状态和不足 `16,500,000,000` bytes 的 `/root` 空间。只有显式 `--execute` 才单独运行 seed-43 I8 revision 3，随后生成 I8 postverify 并退出，不进入 seed 44。
+
+冻结 contract 仍绑定 `/root/peft-for-rl`、`/data/peft-for-rl-runtime` 和既有 Python 环境路径。异地磁盘应通过 bind mount 映射到规范路径；普通 symlink 会被 `Path.resolve()` 展开。此次不冒险改写历史 JSON 或 provenance，任意 checkout relocation 留给逻辑 artifact ID、内容 SHA 和 relocation manifest 完整定义后的协议 v2。具体恢复命令见 `docs/phase1_seed43_i8_migration_zh.md`。
+
 ### 19.3 Phase 2：隔离 token selector
 
 若 Phase 0 不能可靠预测训练结果，再直接训练四个 selector 对照，但仍保持 uniform-r32 和同一个 centered estimator：no-mask、random-mask、top-surprisal、advantage-aware stable-band。这里的 mask 仍只参与 probe discovery，不参与 270-step GRPO loss。
