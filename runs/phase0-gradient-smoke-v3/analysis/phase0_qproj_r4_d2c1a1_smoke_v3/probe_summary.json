@@ -1,0 +1,3792 @@
+{
+  "artifacts": {
+    "P0": {
+      "atom_scores": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/atom_scores_P0.safetensors",
+      "candidates": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/candidates_P0.safetensors"
+    },
+    "P0_uncentered": {
+      "atom_scores": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/atom_scores_P0_uncentered.safetensors",
+      "candidates": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/candidates_P0_uncentered.safetensors"
+    },
+    "P1": {
+      "atom_scores": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/atom_scores_P1.safetensors",
+      "candidates": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/candidates_P1.safetensors"
+    },
+    "P1_uncentered": {
+      "atom_scores": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/atom_scores_P1_uncentered.safetensors",
+      "candidates": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/candidates_P1_uncentered.safetensors"
+    },
+    "P2": {
+      "atom_scores": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/atom_scores_P2.safetensors",
+      "candidates": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/candidates_P2.safetensors"
+    },
+    "P2_uncentered": {
+      "atom_scores": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/atom_scores_P2_uncentered.safetensors",
+      "candidates": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/candidates_P2_uncentered.safetensors"
+    },
+    "P3": {
+      "atom_scores": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/atom_scores_P3.safetensors",
+      "candidates": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/candidates_P3.safetensors"
+    }
+  },
+  "audit_prompt_ids": [
+    "18304b77-d112-4689-bff6-37db92889934"
+  ],
+  "audit_prompts": 1,
+  "calibration_prompt_ids": [
+    "8f1609e9-8137-4ed5-b01c-8b456f3f085f"
+  ],
+  "calibration_prompts": 1,
+  "candidate_methods": [
+    "P0",
+    "P0_uncentered",
+    "P1",
+    "P1_uncentered",
+    "P2",
+    "P2_uncentered",
+    "P3"
+  ],
+  "constant_scaling": 2.0,
+  "crossfit_splits": 1,
+  "diagnostics": {
+    "P0": {
+      "audit_capture": 0.18178353043508091,
+      "calibration_capture": 0.19495509034125863,
+      "capture_gap": 0.04240018327741163,
+      "discovery_capture_nystrom_mean_over_modules": 0.22418371371249254,
+      "effective_rank": {
+        "entropy_rank": 3.028828808239528,
+        "positive_rank": 4.0,
+        "stable_rank": 1.8150323714528764
+      },
+      "prompt_split_overlap": {
+        "mean_cosine": 0.043474880047142506,
+        "mean_squared_cosine": 0.002643781522887626,
+        "min_cosine": 0.010038435179532306
+      }
+    },
+    "P0_uncentered": {
+      "audit_capture": 0.18715337193907347,
+      "calibration_capture": 0.2015595835935086,
+      "capture_gap": 0.049648339976854694,
+      "discovery_capture_nystrom_mean_over_modules": 0.23680171191592816,
+      "effective_rank": {
+        "entropy_rank": 2.9536586787019457,
+        "positive_rank": 4.0,
+        "stable_rank": 1.769188370023455
+      },
+      "prompt_split_overlap": {
+        "mean_cosine": 0.3863578720816544,
+        "mean_squared_cosine": 0.21673640874879702,
+        "min_cosine": 0.07944885840905565
+      }
+    },
+    "P1": {
+      "audit_capture": 0.17427624806726755,
+      "calibration_capture": 0.1894632565807189,
+      "capture_gap": 0.07463458582318161,
+      "discovery_capture_nystrom_mean_over_modules": 0.24891083389044916,
+      "effective_rank": {
+        "entropy_rank": 2.9589985523905074,
+        "positive_rank": 4.0,
+        "stable_rank": 1.8138048776558466
+      },
+      "prompt_split_overlap": {
+        "mean_cosine": 0.04386975084032331,
+        "mean_squared_cosine": 0.002781404756076102,
+        "min_cosine": 0.009656946410749307
+      }
+    },
+    "P1_uncentered": {
+      "audit_capture": 0.18051272502604515,
+      "calibration_capture": 0.1971322981420349,
+      "capture_gap": 0.07866663050330192,
+      "discovery_capture_nystrom_mean_over_modules": 0.25917935552934707,
+      "effective_rank": {
+        "entropy_rank": 2.9538654599870955,
+        "positive_rank": 4.0,
+        "stable_rank": 1.7731509378978185
+      },
+      "prompt_split_overlap": {
+        "mean_cosine": 0.4141117254538195,
+        "mean_squared_cosine": 0.2518424035183021,
+        "min_cosine": 0.09435795862892908
+      }
+    },
+    "P2": {
+      "audit_capture": 0.18179179428281614,
+      "calibration_capture": 0.19463720751619482,
+      "capture_gap": 0.0420922995715132,
+      "discovery_capture_nystrom_mean_over_modules": 0.22388409385432934,
+      "effective_rank": {
+        "entropy_rank": 3.0144500774996623,
+        "positive_rank": 4.0,
+        "stable_rank": 1.8049710946423667
+      },
+      "prompt_split_overlap": {
+        "mean_cosine": 0.042395263511155336,
+        "mean_squared_cosine": 0.002623494122027686,
+        "min_cosine": 0.009535989852988027
+      }
+    },
+    "P2_uncentered": {
+      "audit_capture": 0.18750660236167493,
+      "calibration_capture": 0.2018396667807068,
+      "capture_gap": 0.048450229762438346,
+      "discovery_capture_nystrom_mean_over_modules": 0.23595683212411328,
+      "effective_rank": {
+        "entropy_rank": 2.95601087808609,
+        "positive_rank": 4.0,
+        "stable_rank": 1.7731928995677404
+      },
+      "prompt_split_overlap": {
+        "mean_cosine": 0.39145491857613834,
+        "mean_squared_cosine": 0.22038403446120874,
+        "min_cosine": 0.08845507856624733
+      }
+    },
+    "P3": {
+      "audit_capture": 0.08146836677566438,
+      "calibration_capture": 0.08803249928163936,
+      "capture_gap": 0.03890579915878403,
+      "cross_half_overlap": {
+        "mean_cosine": 0.6539379358291626,
+        "mean_squared_cosine": 0.5099691322871617,
+        "min_cosine": 0.24348434458287166
+      },
+      "discovery_capture_nystrom_mean_over_modules": 0.12037416593444841,
+      "effective_rank": {
+        "entropy_rank": 2.349338803972517,
+        "positive_rank": 2.857142857142857,
+        "stable_rank": 1.684960561139243
+      },
+      "prompt_split_overlap": {
+        "mean_cosine": 1.0,
+        "mean_squared_cosine": 1.0,
+        "min_cosine": 1.0
+      },
+      "response_split_overlap": {
+        "mean_cosine": 0.0,
+        "mean_squared_cosine": 0.0,
+        "min_cosine": 0.0
+      }
+    }
+  },
+  "discovery_prompt_ids": [
+    "67d33184-c2f9-4c19-be74-764fab22bda8",
+    "25b2b538-8a3e-4c09-ba0e-5e8d022058f6"
+  ],
+  "discovery_prompts": 2,
+  "held_out_scoring_space": "unmasked_full_prompt_group_policy_gradient",
+  "method": "phase0_shared_rollout_gradient_diagnostics_v1",
+  "modules": {
+    "model.layers.0.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.5158164770975565,
+          "discovery_projected_energy": 3.869916690746322e-05,
+          "discovery_total_energy": 7.502506923628971e-05,
+          "effective_rank": {
+            "entropy_rank": 2.493011713027954,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4236775636672974
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04739833623170853,
+            "mean_squared_cosine": 0.003209309419617057,
+            "min_cosine": 0.004571837373077869
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.5299627100848995,
+          "discovery_projected_energy": 3.9760489016771317e-05,
+          "discovery_total_energy": 7.502506923628971e-05,
+          "effective_rank": {
+            "entropy_rank": 2.195845127105713,
+            "positive_rank": 4.0,
+            "stable_rank": 1.3051729202270508
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.5504448413848877,
+            "mean_squared_cosine": 0.421434223651886,
+            "min_cosine": 0.023940447717905045
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.43627399891494556,
+          "discovery_projected_energy": 4.682824874180369e-05,
+          "discovery_total_energy": 0.00010733678573160432,
+          "effective_rank": {
+            "entropy_rank": 2.8241684436798096,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6219502687454224
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04320307448506355,
+            "mean_squared_cosine": 0.0028034572023898363,
+            "min_cosine": 0.010946140624582767
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.4508588534139746,
+          "discovery_projected_energy": 4.839374014409259e-05,
+          "discovery_total_energy": 0.00010733678573160432,
+          "effective_rank": {
+            "entropy_rank": 2.561724901199341,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4915355443954468
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.7341007590293884,
+            "mean_squared_cosine": 0.581464409828186,
+            "min_cosine": 0.43248340487480164
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.5141739297722995,
+          "discovery_projected_energy": 0.00014923092385288328,
+          "discovery_total_energy": 0.000290234325802885,
+          "effective_rank": {
+            "entropy_rank": 2.5273079872131348,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4401466846466064
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.037199173122644424,
+            "mean_squared_cosine": 0.0020128849428147078,
+            "min_cosine": 0.004569693002849817
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.5254106707072954,
+          "discovery_projected_energy": 0.0001524922117823735,
+          "discovery_total_energy": 0.000290234325802885,
+          "effective_rank": {
+            "entropy_rank": 2.178039312362671,
+            "positive_rank": 4.0,
+            "stable_rank": 1.300803542137146
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.5239468216896057,
+            "mean_squared_cosine": 0.3684978187084198,
+            "min_cosine": 0.1466091424226761
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6866374015808105,
+            "mean_squared_cosine": 0.5826144814491272,
+            "min_cosine": 0.1575217992067337
+          },
+          "discovery_capture": 0.09965497657722404,
+          "discovery_projected_energy": 2.540810419304762e-05,
+          "discovery_total_energy": 0.0002549607161199674,
+          "effective_rank": {
+            "entropy_rank": 1.8355934619903564,
+            "positive_rank": 2.0,
+            "stable_rank": 1.4202938079833984
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.1.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.5363351683830951,
+          "discovery_projected_energy": 1.2338128726696596e-05,
+          "discovery_total_energy": 2.300451183145924e-05,
+          "effective_rank": {
+            "entropy_rank": 1.8199281692504883,
+            "positive_rank": 4.0,
+            "stable_rank": 1.1933828592300415
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04058932512998581,
+            "mean_squared_cosine": 0.00220820982940495,
+            "min_cosine": 0.015864692628383636
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.5420390329369495,
+          "discovery_projected_energy": 1.246934334631078e-05,
+          "discovery_total_energy": 2.300451183145924e-05,
+          "effective_rank": {
+            "entropy_rank": 1.7038618326187134,
+            "positive_rank": 4.0,
+            "stable_rank": 1.1635921001434326
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.48640793561935425,
+            "mean_squared_cosine": 0.32298338413238525,
+            "min_cosine": 0.15932293236255646
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.4641727149036994,
+          "discovery_projected_energy": 1.8248092601425014e-05,
+          "discovery_total_energy": 3.93131522287149e-05,
+          "effective_rank": {
+            "entropy_rank": 2.0781280994415283,
+            "positive_rank": 4.0,
+            "stable_rank": 1.316321611404419
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.045602139085531235,
+            "mean_squared_cosine": 0.0026361967902630568,
+            "min_cosine": 0.0069137755781412125
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.4698304241861496,
+          "discovery_projected_energy": 1.8470514987711795e-05,
+          "discovery_total_energy": 3.93131522287149e-05,
+          "effective_rank": {
+            "entropy_rank": 2.023625373840332,
+            "positive_rank": 4.0,
+            "stable_rank": 1.3004611730575562
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.6133750081062317,
+            "mean_squared_cosine": 0.46276023983955383,
+            "min_cosine": 0.19926930963993073
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.5411483496256386,
+          "discovery_projected_energy": 4.850139157497324e-05,
+          "discovery_total_energy": 8.962679385149386e-05,
+          "effective_rank": {
+            "entropy_rank": 1.8138233423233032,
+            "positive_rank": 4.0,
+            "stable_rank": 1.1916248798370361
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04829700291156769,
+            "mean_squared_cosine": 0.003404164919629693,
+            "min_cosine": 0.010051875375211239
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.5459900828551609,
+          "discovery_projected_energy": 4.893534060101956e-05,
+          "discovery_total_energy": 8.962679385149386e-05,
+          "effective_rank": {
+            "entropy_rank": 1.6651906967163086,
+            "positive_rank": 4.0,
+            "stable_rank": 1.1517820358276367
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4789191782474518,
+            "mean_squared_cosine": 0.3077945411205292,
+            "min_cosine": 0.19135382771492004
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.7931417226791382,
+            "mean_squared_cosine": 0.6549664735794067,
+            "min_cosine": 0.582194447517395
+          },
+          "discovery_capture": 0.27360067341285726,
+          "discovery_projected_energy": 1.7837977793533355e-05,
+          "discovery_total_energy": 6.519712678709766e-05,
+          "effective_rank": {
+            "entropy_rank": 1.3026751279830933,
+            "positive_rank": 2.0,
+            "stable_rank": 1.080169916152954
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.10.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.26170929242105384,
+          "discovery_projected_energy": 8.46633265609853e-05,
+          "discovery_total_energy": 0.00032350141555070877,
+          "effective_rank": {
+            "entropy_rank": 2.860438823699951,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6267786026000977
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04540795832872391,
+            "mean_squared_cosine": 0.00294343288987875,
+            "min_cosine": 0.010804512538015842
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.2688544764464226,
+          "discovery_projected_energy": 8.697480370756239e-05,
+          "discovery_total_energy": 0.00032350141555070877,
+          "effective_rank": {
+            "entropy_rank": 2.6881279945373535,
+            "positive_rank": 4.0,
+            "stable_rank": 1.512943983078003
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3341349959373474,
+            "mean_squared_cosine": 0.16537544131278992,
+            "min_cosine": 0.035715583711862564
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.24937176562160981,
+          "discovery_projected_energy": 0.00014463721890933812,
+          "discovery_total_energy": 0.0005800063954666257,
+          "effective_rank": {
+            "entropy_rank": 3.196575403213501,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8959068059921265
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04321548342704773,
+            "mean_squared_cosine": 0.0024497450795024633,
+            "min_cosine": 0.0056945281103253365
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.2577678521429316,
+          "discovery_projected_energy": 0.00014950700278859586,
+          "discovery_total_energy": 0.0005800063954666257,
+          "effective_rank": {
+            "entropy_rank": 2.9943106174468994,
+            "positive_rank": 4.0,
+            "stable_rank": 1.710713505744934
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.339428186416626,
+            "mean_squared_cosine": 0.15583407878875732,
+            "min_cosine": 0.0573035329580307
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.26270047692267595,
+          "discovery_projected_energy": 0.0003373742802068591,
+          "discovery_total_energy": 0.0012842545402236283,
+          "effective_rank": {
+            "entropy_rank": 2.8542566299438477,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6297990083694458
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.0414639376103878,
+            "mean_squared_cosine": 0.002392738126218319,
+            "min_cosine": 0.014819278381764889
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.26976616171859863,
+          "discovery_projected_energy": 0.00034644841798581183,
+          "discovery_total_energy": 0.0012842545402236283,
+          "effective_rank": {
+            "entropy_rank": 2.672459125518799,
+            "positive_rank": 4.0,
+            "stable_rank": 1.506744623184204
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.34611472487449646,
+            "mean_squared_cosine": 0.1732766479253769,
+            "min_cosine": 0.04545731097459793
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6893845200538635,
+            "mean_squared_cosine": 0.5997602343559265,
+            "min_cosine": 0.09032678604125977
+          },
+          "discovery_capture": 0.14840627648899274,
+          "discovery_projected_energy": 0.00014436067431233823,
+          "discovery_total_energy": 0.0009727396827656776,
+          "effective_rank": {
+            "entropy_rank": 2.575528144836426,
+            "positive_rank": 3.0,
+            "stable_rank": 1.8289837837219238
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.11.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.25220017477489987,
+          "discovery_projected_energy": 6.447982741519809e-05,
+          "discovery_total_energy": 0.00025566924159647897,
+          "effective_rank": {
+            "entropy_rank": 2.943828582763672,
+            "positive_rank": 4.0,
+            "stable_rank": 1.951287031173706
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.06015048176050186,
+            "mean_squared_cosine": 0.004611571319401264,
+            "min_cosine": 0.011301861144602299
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.2626812616542805,
+          "discovery_projected_energy": 6.715951894875616e-05,
+          "discovery_total_energy": 0.00025566924159647897,
+          "effective_rank": {
+            "entropy_rank": 2.9981675148010254,
+            "positive_rank": 4.0,
+            "stable_rank": 2.096459150314331
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4365805387496948,
+            "mean_squared_cosine": 0.2659287750720978,
+            "min_cosine": 0.04324189946055412
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.30664505142505566,
+          "discovery_projected_energy": 0.0001762676110956818,
+          "discovery_total_energy": 0.0005748262046836317,
+          "effective_rank": {
+            "entropy_rank": 2.7986385822296143,
+            "positive_rank": 4.0,
+            "stable_rank": 1.755659580230713
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.055727191269397736,
+            "mean_squared_cosine": 0.003787154797464609,
+            "min_cosine": 0.019185209646821022
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.31939731995711784,
+          "discovery_projected_energy": 0.00018359794921707362,
+          "discovery_total_energy": 0.0005748262046836317,
+          "effective_rank": {
+            "entropy_rank": 2.8103013038635254,
+            "positive_rank": 4.0,
+            "stable_rank": 1.902832269668579
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.44920647144317627,
+            "mean_squared_cosine": 0.2736490070819855,
+            "min_cosine": 0.12383938580751419
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.2546375323100577,
+          "discovery_projected_energy": 0.0002579312422312796,
+          "discovery_total_energy": 0.0010129348956979811,
+          "effective_rank": {
+            "entropy_rank": 2.917618751525879,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9283065795898438
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03488727658987045,
+            "mean_squared_cosine": 0.0017940165707841516,
+            "min_cosine": 0.006022595800459385
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.2653778520498315,
+          "discovery_projected_energy": 0.0002688104868866503,
+          "discovery_total_energy": 0.0010129348956979811,
+          "effective_rank": {
+            "entropy_rank": 2.99595046043396,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0879857540130615
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.45137158036231995,
+            "mean_squared_cosine": 0.27655553817749023,
+            "min_cosine": 0.07380490750074387
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6873834133148193,
+            "mean_squared_cosine": 0.534940779209137,
+            "min_cosine": 0.30439603328704834
+          },
+          "discovery_capture": 0.05413577505422136,
+          "discovery_projected_energy": 3.811523492913693e-05,
+          "discovery_total_energy": 0.0007040674099698663,
+          "effective_rank": {
+            "entropy_rank": 1.9787018299102783,
+            "positive_rank": 2.0,
+            "stable_rank": 1.7450969219207764
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.12.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.23330460193119476,
+          "discovery_projected_energy": 9.439759742235765e-05,
+          "discovery_total_energy": 0.00040461095341015607,
+          "effective_rank": {
+            "entropy_rank": 2.8766582012176514,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6021243333816528
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03759003430604935,
+            "mean_squared_cosine": 0.0018719647778198123,
+            "min_cosine": 0.004753987770527601
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.24535452753177678,
+          "discovery_projected_energy": 9.927312930813059e-05,
+          "discovery_total_energy": 0.00040461095341015607,
+          "effective_rank": {
+            "entropy_rank": 3.075376033782959,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7509976625442505
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.35799020528793335,
+            "mean_squared_cosine": 0.18701206147670746,
+            "min_cosine": 0.05503244698047638
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.23545723081791475,
+          "discovery_projected_energy": 0.0001865813828771934,
+          "discovery_total_energy": 0.0007924215460661799,
+          "effective_rank": {
+            "entropy_rank": 2.687434434890747,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5199366807937622
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04741863161325455,
+            "mean_squared_cosine": 0.0030723707750439644,
+            "min_cosine": 0.020761022344231606
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.2442746546796229,
+          "discovery_projected_energy": 0.00019356849952600896,
+          "discovery_total_energy": 0.0007924215460661799,
+          "effective_rank": {
+            "entropy_rank": 3.072850227355957,
+            "positive_rank": 4.0,
+            "stable_rank": 1.811972737312317
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3280414342880249,
+            "mean_squared_cosine": 0.15341010689735413,
+            "min_cosine": 0.0486631877720356
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.23662313398693535,
+          "discovery_projected_energy": 0.000378571538021788,
+          "discovery_total_energy": 0.0015998923336155713,
+          "effective_rank": {
+            "entropy_rank": 2.8501622676849365,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5883231163024902
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.02246379479765892,
+            "mean_squared_cosine": 0.0009482385939918458,
+            "min_cosine": 0.004308064468204975
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.24863036342834324,
+          "discovery_projected_energy": 0.00039778181235305965,
+          "discovery_total_energy": 0.0015998923336155713,
+          "effective_rank": {
+            "entropy_rank": 3.042179584503174,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7266408205032349
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.35901954770088196,
+            "mean_squared_cosine": 0.18824966251850128,
+            "min_cosine": 0.057826410979032516
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6304298639297485,
+            "mean_squared_cosine": 0.4953441023826599,
+            "min_cosine": 0.11187180876731873
+          },
+          "discovery_capture": 0.08076733122542555,
+          "discovery_projected_energy": 8.84271357790567e-05,
+          "discovery_total_energy": 0.0010948379058390856,
+          "effective_rank": {
+            "entropy_rank": 1.5050321817398071,
+            "positive_rank": 3.0,
+            "stable_rank": 1.1185554265975952
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.13.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.22153427193127553,
+          "discovery_projected_energy": 6.171330460347235e-05,
+          "discovery_total_energy": 0.0002785722681437619,
+          "effective_rank": {
+            "entropy_rank": 3.059828758239746,
+            "positive_rank": 4.0,
+            "stable_rank": 1.844774842262268
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03378743678331375,
+            "mean_squared_cosine": 0.0012980952160432935,
+            "min_cosine": 0.017489688470959663
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.232253195308311,
+          "discovery_projected_energy": 6.469929940067232e-05,
+          "discovery_total_energy": 0.0002785722681437619,
+          "effective_rank": {
+            "entropy_rank": 3.0090835094451904,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8078866004943848
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.43923085927963257,
+            "mean_squared_cosine": 0.2580226957798004,
+            "min_cosine": 0.10028119385242462
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.21917730559077883,
+          "discovery_projected_energy": 0.00011659756273729727,
+          "discovery_total_energy": 0.0005319782649166882,
+          "effective_rank": {
+            "entropy_rank": 2.9960076808929443,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7313284873962402
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04492925852537155,
+            "mean_squared_cosine": 0.0024024746380746365,
+            "min_cosine": 0.022086383774876595
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.2289337786401325,
+          "discovery_projected_energy": 0.00012178779434179887,
+          "discovery_total_energy": 0.0005319782649166882,
+          "effective_rank": {
+            "entropy_rank": 2.898733377456665,
+            "positive_rank": 4.0,
+            "stable_rank": 1.652418851852417
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.39197638630867004,
+            "mean_squared_cosine": 0.22158880531787872,
+            "min_cosine": 0.08392877131700516
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.22302090095659816,
+          "discovery_projected_energy": 0.0002447896113153547,
+          "discovery_total_energy": 0.0010976083867717534,
+          "effective_rank": {
+            "entropy_rank": 3.036215305328369,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8176122903823853
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04440687969326973,
+            "mean_squared_cosine": 0.003410450415685773,
+            "min_cosine": 0.002169160172343254
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.23401111913740683,
+          "discovery_projected_energy": 0.0002568525669630617,
+          "discovery_total_energy": 0.0010976083867717534,
+          "effective_rank": {
+            "entropy_rank": 3.013728618621826,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8180711269378662
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4471469521522522,
+            "mean_squared_cosine": 0.2615692615509033,
+            "min_cosine": 0.11707273125648499
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.677631676197052,
+            "mean_squared_cosine": 0.5290758013725281,
+            "min_cosine": 0.24852468073368073
+          },
+          "discovery_capture": 0.07482447955723427,
+          "discovery_projected_energy": 5.7284276408609e-05,
+          "discovery_total_energy": 0.0007655820227228105,
+          "effective_rank": {
+            "entropy_rank": 2.8967576026916504,
+            "positive_rank": 3.0,
+            "stable_rank": 2.264638900756836
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.14.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.17250611442000643,
+          "discovery_projected_energy": 8.964633161667734e-05,
+          "discovery_total_energy": 0.0005196704587433487,
+          "effective_rank": {
+            "entropy_rank": 3.2535550594329834,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8568545579910278
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03500698506832123,
+            "mean_squared_cosine": 0.0015452863881364465,
+            "min_cosine": 0.014280672185122967
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.20262660899931287,
+          "discovery_projected_energy": 0.00010529906285228208,
+          "discovery_total_energy": 0.0005196704587433487,
+          "effective_rank": {
+            "entropy_rank": 3.338552951812744,
+            "positive_rank": 4.0,
+            "stable_rank": 1.950870156288147
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.41591233015060425,
+            "mean_squared_cosine": 0.25326138734817505,
+            "min_cosine": 0.10421060025691986
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.21595074715497098,
+          "discovery_projected_energy": 0.00024071833468042314,
+          "discovery_total_energy": 0.0011146909091621637,
+          "effective_rank": {
+            "entropy_rank": 3.1956961154937744,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8338185548782349
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.046881843358278275,
+            "mean_squared_cosine": 0.003389761783182621,
+            "min_cosine": 0.0009339703246951103
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.23351673743687026,
+          "discovery_projected_energy": 0.0002602989843580872,
+          "discovery_total_energy": 0.0011146909091621637,
+          "effective_rank": {
+            "entropy_rank": 3.0198771953582764,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6969830989837646
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3763555884361267,
+            "mean_squared_cosine": 0.20721520483493805,
+            "min_cosine": 0.01902722381055355
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.18010317135841017,
+          "discovery_projected_energy": 0.0003705746785271913,
+          "discovery_total_energy": 0.002057568868622184,
+          "effective_rank": {
+            "entropy_rank": 3.261902332305908,
+            "positive_rank": 4.0,
+            "stable_rank": 1.853906512260437
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.046897608786821365,
+            "mean_squared_cosine": 0.0029715755954384804,
+            "min_cosine": 0.016660844907164574
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.2045625697124799,
+          "discovery_projected_energy": 0.0004209015751257539,
+          "discovery_total_energy": 0.002057568868622184,
+          "effective_rank": {
+            "entropy_rank": 3.346350908279419,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9545683860778809
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4086965322494507,
+            "mean_squared_cosine": 0.24911580979824066,
+            "min_cosine": 0.09188605844974518
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6700884699821472,
+            "mean_squared_cosine": 0.499202162027359,
+            "min_cosine": 0.3087193965911865
+          },
+          "discovery_capture": 0.09510904149325104,
+          "discovery_projected_energy": 0.00012906102347187698,
+          "discovery_total_energy": 0.00135697954101488,
+          "effective_rank": {
+            "entropy_rank": 2.528186321258545,
+            "positive_rank": 3.0,
+            "stable_rank": 1.6225286722183228
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.15.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.19541925951250938,
+          "discovery_projected_energy": 7.186506991274655e-05,
+          "discovery_total_energy": 0.00036774814361706376,
+          "effective_rank": {
+            "entropy_rank": 2.8233373165130615,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6110484600067139
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.035577088594436646,
+            "mean_squared_cosine": 0.0017668302170932293,
+            "min_cosine": 0.006717194803059101
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.20742357188702196,
+          "discovery_projected_energy": 7.62796335038729e-05,
+          "discovery_total_energy": 0.00036774814361706376,
+          "effective_rank": {
+            "entropy_rank": 3.1215624809265137,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8926202058792114
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.44737914204597473,
+            "mean_squared_cosine": 0.2598682641983032,
+            "min_cosine": 0.06463596224784851
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.17396108965489954,
+          "discovery_projected_energy": 0.00012207170948386192,
+          "discovery_total_energy": 0.0007017184689175338,
+          "effective_rank": {
+            "entropy_rank": 3.46374773979187,
+            "positive_rank": 4.0,
+            "stable_rank": 2.404655933380127
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04831305146217346,
+            "mean_squared_cosine": 0.003910263068974018,
+            "min_cosine": 0.004642903339117765
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.18355193258739846,
+          "discovery_projected_energy": 0.00012880178110208362,
+          "discovery_total_energy": 0.0007017184689175338,
+          "effective_rank": {
+            "entropy_rank": 3.465860366821289,
+            "positive_rank": 4.0,
+            "stable_rank": 2.428270101547241
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.47142720222473145,
+            "mean_squared_cosine": 0.2623104155063629,
+            "min_cosine": 0.16670982539653778
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.1955948875799778,
+          "discovery_projected_energy": 0.0002839312073774636,
+          "discovery_total_energy": 0.0014516289811581373,
+          "effective_rank": {
+            "entropy_rank": 2.8296756744384766,
+            "positive_rank": 4.0,
+            "stable_rank": 1.612130880355835
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04057202860713005,
+            "mean_squared_cosine": 0.0022960470523685217,
+            "min_cosine": 0.0024040427524596453
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.20710159784778703,
+          "discovery_projected_energy": 0.0003006346814800054,
+          "discovery_total_energy": 0.0014516289811581373,
+          "effective_rank": {
+            "entropy_rank": 3.128972053527832,
+            "positive_rank": 4.0,
+            "stable_rank": 1.903058648109436
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4530942142009735,
+            "mean_squared_cosine": 0.2661406993865967,
+            "min_cosine": 0.06412843614816666
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6580549478530884,
+            "mean_squared_cosine": 0.5071549415588379,
+            "min_cosine": 0.20584826171398163
+          },
+          "discovery_capture": 0.050687938195449096,
+          "discovery_projected_energy": 4.967197310179472e-05,
+          "discovery_total_energy": 0.0009799564722925425,
+          "effective_rank": {
+            "entropy_rank": 2.317441463470459,
+            "positive_rank": 3.0,
+            "stable_rank": 1.484245777130127
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.16.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.22265980107154718,
+          "discovery_projected_energy": 0.00019029999384656549,
+          "discovery_total_energy": 0.0008546670433133841,
+          "effective_rank": {
+            "entropy_rank": 3.387434482574463,
+            "positive_rank": 4.0,
+            "stable_rank": 2.028978109359741
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05216319113969803,
+            "mean_squared_cosine": 0.0037775025703012943,
+            "min_cosine": 0.01921396516263485
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.23497379771039675,
+          "discovery_projected_energy": 0.00020082436094526201,
+          "discovery_total_energy": 0.0008546670433133841,
+          "effective_rank": {
+            "entropy_rank": 3.223111629486084,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9517892599105835
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.44970476627349854,
+            "mean_squared_cosine": 0.23070645332336426,
+            "min_cosine": 0.25599607825279236
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.26636108605592973,
+          "discovery_projected_energy": 0.0004911244031973183,
+          "discovery_total_energy": 0.0018438294064253569,
+          "effective_rank": {
+            "entropy_rank": 3.3125033378601074,
+            "positive_rank": 4.0,
+            "stable_rank": 1.998689889907837
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04822441563010216,
+            "mean_squared_cosine": 0.0032067359425127506,
+            "min_cosine": 0.0067587485536932945
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.27609598687340003,
+          "discovery_projected_energy": 0.0005090738995932043,
+          "discovery_total_energy": 0.0018438294064253569,
+          "effective_rank": {
+            "entropy_rank": 3.149514675140381,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8537766933441162
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4021157920360565,
+            "mean_squared_cosine": 0.18621638417243958,
+            "min_cosine": 0.26845407485961914
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.22458073778060195,
+          "discovery_projected_energy": 0.0007577140931971371,
+          "discovery_total_energy": 0.003373905085027218,
+          "effective_rank": {
+            "entropy_rank": 3.4000120162963867,
+            "positive_rank": 4.0,
+            "stable_rank": 2.049217700958252
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.042494598776102066,
+            "mean_squared_cosine": 0.002606147900223732,
+            "min_cosine": 0.011004113592207432
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.2362995427723443,
+          "discovery_projected_energy": 0.000797252228949219,
+          "discovery_total_energy": 0.003373905085027218,
+          "effective_rank": {
+            "entropy_rank": 3.2330617904663086,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9736932516098022
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4531708359718323,
+            "mean_squared_cosine": 0.23321256041526794,
+            "min_cosine": 0.2612931728363037
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6484684944152832,
+            "mean_squared_cosine": 0.48804259300231934,
+            "min_cosine": 0.23807328939437866
+          },
+          "discovery_capture": 0.14545886128427382,
+          "discovery_projected_energy": 0.0003706743009388447,
+          "discovery_total_energy": 0.0025483102072030306,
+          "effective_rank": {
+            "entropy_rank": 2.486391305923462,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4694430828094482
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.17.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.19642437690925518,
+          "discovery_projected_energy": 7.156431092880666e-05,
+          "discovery_total_energy": 0.0003643351810751483,
+          "effective_rank": {
+            "entropy_rank": 3.433717727661133,
+            "positive_rank": 4.0,
+            "stable_rank": 2.115650177001953
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.0353870615363121,
+            "mean_squared_cosine": 0.001959321554750204,
+            "min_cosine": 0.00412027956917882
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.20490996437541467,
+          "discovery_projected_energy": 7.465590897481889e-05,
+          "discovery_total_energy": 0.0003643351810751483,
+          "effective_rank": {
+            "entropy_rank": 3.2827093601226807,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9120007753372192
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4301425814628601,
+            "mean_squared_cosine": 0.24416764080524445,
+            "min_cosine": 0.11628290265798569
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.1950136749145037,
+          "discovery_projected_energy": 0.00014645123155787587,
+          "discovery_total_energy": 0.0007509792922064662,
+          "effective_rank": {
+            "entropy_rank": 3.473947525024414,
+            "positive_rank": 4.0,
+            "stable_rank": 2.1230061054229736
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.028561227023601532,
+            "mean_squared_cosine": 0.0011769256088882685,
+            "min_cosine": 0.00530597660690546
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.20131531238533512,
+          "discovery_projected_energy": 0.0001511836308054626,
+          "discovery_total_energy": 0.0007509792922064662,
+          "effective_rank": {
+            "entropy_rank": 3.3255774974823,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9293855428695679
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.41748350858688354,
+            "mean_squared_cosine": 0.23686358332633972,
+            "min_cosine": 0.04169994592666626
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.20083524932489052,
+          "discovery_projected_energy": 0.0002927431487478316,
+          "discovery_total_energy": 0.0014576283283531666,
+          "effective_rank": {
+            "entropy_rank": 3.427827835083008,
+            "positive_rank": 4.0,
+            "stable_rank": 2.103015899658203
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.052181489765644073,
+            "mean_squared_cosine": 0.0036720396019518375,
+            "min_cosine": 0.009049972519278526
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.20912217237502767,
+          "discovery_projected_energy": 0.00030482240254059434,
+          "discovery_total_energy": 0.0014576283283531666,
+          "effective_rank": {
+            "entropy_rank": 3.2563352584838867,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8964871168136597
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4397645592689514,
+            "mean_squared_cosine": 0.24535687267780304,
+            "min_cosine": 0.17269153892993927
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.7401628494262695,
+            "mean_squared_cosine": 0.5662490129470825,
+            "min_cosine": 0.5435742735862732
+          },
+          "discovery_capture": 0.08331595658348062,
+          "discovery_projected_energy": 9.094751294469461e-05,
+          "discovery_total_energy": 0.0010915977763943374,
+          "effective_rank": {
+            "entropy_rank": 2.850334882736206,
+            "positive_rank": 3.0,
+            "stable_rank": 2.092182159423828
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.18.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.2298355572993521,
+          "discovery_projected_energy": 0.00014438469952438027,
+          "discovery_total_energy": 0.0006282087124418467,
+          "effective_rank": {
+            "entropy_rank": 2.8569531440734863,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7534794807434082
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03293219581246376,
+            "mean_squared_cosine": 0.0019079779740422964,
+            "min_cosine": 0.001025129808112979
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.23773276892513798,
+          "discovery_projected_energy": 0.000149345796671696,
+          "discovery_total_energy": 0.0006282087124418467,
+          "effective_rank": {
+            "entropy_rank": 2.8021647930145264,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6701524257659912
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.41390958428382874,
+            "mean_squared_cosine": 0.23016072809696198,
+            "min_cosine": 0.0638345405459404
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.27326758715596855,
+          "discovery_projected_energy": 0.0003615726891439408,
+          "discovery_total_energy": 0.0013231451739557087,
+          "effective_rank": {
+            "entropy_rank": 2.6800034046173096,
+            "positive_rank": 4.0,
+            "stable_rank": 1.523364543914795
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04356301203370094,
+            "mean_squared_cosine": 0.0028665014542639256,
+            "min_cosine": 0.0039623272605240345
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.2808423752437206,
+          "discovery_projected_energy": 0.0003715952334459871,
+          "discovery_total_energy": 0.0013231451739557087,
+          "effective_rank": {
+            "entropy_rank": 2.562808036804199,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4751497507095337
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3809375464916229,
+            "mean_squared_cosine": 0.2047208696603775,
+            "min_cosine": 0.021950282156467438
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.22823813216307734,
+          "discovery_projected_energy": 0.0005680556641891599,
+          "discovery_total_energy": 0.0024888727348297834,
+          "effective_rank": {
+            "entropy_rank": 2.84403920173645,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7428995370864868
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.0654766708612442,
+            "mean_squared_cosine": 0.005714378319680691,
+            "min_cosine": 0.01837855577468872
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.23614465219413175,
+          "discovery_projected_energy": 0.0005877339863218367,
+          "discovery_total_energy": 0.0024888727348297834,
+          "effective_rank": {
+            "entropy_rank": 2.805408000946045,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6747255325317383
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.41820093989372253,
+            "mean_squared_cosine": 0.23019751906394958,
+            "min_cosine": 0.08394689857959747
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6146405935287476,
+            "mean_squared_cosine": 0.4602970480918884,
+            "min_cosine": 0.1675073504447937
+          },
+          "discovery_capture": 0.15680691333339464,
+          "discovery_projected_energy": 0.0002729759435169399,
+          "discovery_total_energy": 0.001740841253194958,
+          "effective_rank": {
+            "entropy_rank": 2.421552896499634,
+            "positive_rank": 3.0,
+            "stable_rank": 1.5812957286834717
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.19.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.1051401210632481,
+          "discovery_projected_energy": 3.15389916067943e-05,
+          "discovery_total_energy": 0.0002999710413860157,
+          "effective_rank": {
+            "entropy_rank": 3.7989611625671387,
+            "positive_rank": 4.0,
+            "stable_rank": 2.550227642059326
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03986617177724838,
+            "mean_squared_cosine": 0.002507873810827732,
+            "min_cosine": 0.0008567845216020942
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.12031343679417913,
+          "discovery_projected_energy": 3.6090546927880496e-05,
+          "discovery_total_energy": 0.0002999710413860157,
+          "effective_rank": {
+            "entropy_rank": 3.6318230628967285,
+            "positive_rank": 4.0,
+            "stable_rank": 2.226846933364868
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.35650697350502014,
+            "mean_squared_cosine": 0.18886663019657135,
+            "min_cosine": 0.011405865661799908
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.1383380870213434,
+          "discovery_projected_energy": 8.693446579854935e-05,
+          "discovery_total_energy": 0.0006284203263930976,
+          "effective_rank": {
+            "entropy_rank": 3.4322378635406494,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0179553031921387
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05029451847076416,
+            "mean_squared_cosine": 0.0031643935944885015,
+            "min_cosine": 0.020776070654392242
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.14720583087775777,
+          "discovery_projected_energy": 9.250713628716767e-05,
+          "discovery_total_energy": 0.0006284203263930976,
+          "effective_rank": {
+            "entropy_rank": 3.3486714363098145,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9455711841583252
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.34803831577301025,
+            "mean_squared_cosine": 0.15694010257720947,
+            "min_cosine": 0.15246188640594482
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.10624688054960144,
+          "discovery_projected_energy": 0.000129000298329629,
+          "discovery_total_energy": 0.001214156101923436,
+          "effective_rank": {
+            "entropy_rank": 3.7632405757904053,
+            "positive_rank": 4.0,
+            "stable_rank": 2.4950332641601562
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04338739439845085,
+            "mean_squared_cosine": 0.0025837840512394905,
+            "min_cosine": 0.0014273767592385411
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.12150712043692513,
+          "discovery_projected_energy": 0.00014752861170563847,
+          "discovery_total_energy": 0.001214156101923436,
+          "effective_rank": {
+            "entropy_rank": 3.5937561988830566,
+            "positive_rank": 4.0,
+            "stable_rank": 2.1801769733428955
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3770803213119507,
+            "mean_squared_cosine": 0.20494991540908813,
+            "min_cosine": 0.0038470847066491842
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.5832019448280334,
+            "mean_squared_cosine": 0.39768344163894653,
+            "min_cosine": 0.19672997295856476
+          },
+          "discovery_capture": 0.022932969766867404,
+          "discovery_projected_energy": 1.9629960661404766e-05,
+          "discovery_total_energy": 0.0008559711568523198,
+          "effective_rank": {
+            "entropy_rank": 3.6683781147003174,
+            "positive_rank": 4.0,
+            "stable_rank": 2.4612958431243896
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.2.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.28767745027863245,
+          "discovery_projected_energy": 1.4383419511432294e-05,
+          "discovery_total_energy": 4.999842531105969e-05,
+          "effective_rank": {
+            "entropy_rank": 3.004047155380249,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8353081941604614
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03813041001558304,
+            "mean_squared_cosine": 0.001988909672945738,
+            "min_cosine": 0.002800846239551902
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.29739972732490083,
+          "discovery_projected_energy": 1.4869518054183573e-05,
+          "discovery_total_energy": 4.999842531105969e-05,
+          "effective_rank": {
+            "entropy_rank": 2.9389829635620117,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7792497873306274
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4618505537509918,
+            "mean_squared_cosine": 0.2884405255317688,
+            "min_cosine": 0.13226018846035004
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.28602447813945864,
+          "discovery_projected_energy": 2.8615371775231324e-05,
+          "discovery_total_energy": 0.0001000451848085504,
+          "effective_rank": {
+            "entropy_rank": 3.1233625411987305,
+            "positive_rank": 4.0,
+            "stable_rank": 1.859429955482483
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03658951446413994,
+            "mean_squared_cosine": 0.002129890490323305,
+            "min_cosine": 0.001041927607730031
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.2970669025048571,
+          "discovery_projected_energy": 2.9720113161602058e-05,
+          "discovery_total_energy": 0.0001000451848085504,
+          "effective_rank": {
+            "entropy_rank": 3.049771785736084,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7752280235290527
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.5984600186347961,
+            "mean_squared_cosine": 0.46155357360839844,
+            "min_cosine": 0.06809480488300323
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.29371990275223514,
+          "discovery_projected_energy": 5.7638902944745496e-05,
+          "discovery_total_energy": 0.00019623764819698408,
+          "effective_rank": {
+            "entropy_rank": 3.0349717140197754,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8725981712341309
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.0430850014090538,
+            "mean_squared_cosine": 0.002311867428943515,
+            "min_cosine": 0.013351283967494965
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.3003128914317639,
+          "discovery_projected_energy": 5.893269553780556e-05,
+          "discovery_total_energy": 0.00019623764819698408,
+          "effective_rank": {
+            "entropy_rank": 2.9050116539001465,
+            "positive_rank": 4.0,
+            "stable_rank": 1.767615795135498
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.44544053077697754,
+            "mean_squared_cosine": 0.2759460508823395,
+            "min_cosine": 0.1344461888074875
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.8606038689613342,
+            "mean_squared_cosine": 0.7571445107460022,
+            "min_cosine": 0.6583134531974792
+          },
+          "discovery_capture": 0.0475631678822822,
+          "discovery_projected_energy": 8.174826689355541e-06,
+          "discovery_total_energy": 0.00017187304911203682,
+          "effective_rank": {
+            "entropy_rank": 1.7647807598114014,
+            "positive_rank": 2.0,
+            "stable_rank": 1.3427270650863647
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.20.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.17028411085742726,
+          "discovery_projected_energy": 5.8171135606244206e-05,
+          "discovery_total_energy": 0.0003416122344788164,
+          "effective_rank": {
+            "entropy_rank": 2.8795878887176514,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5927022695541382
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04413105547428131,
+            "mean_squared_cosine": 0.0026511200703680515,
+            "min_cosine": 0.006120405159890652
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.17563704094845783,
+          "discovery_projected_energy": 5.999976201565005e-05,
+          "discovery_total_energy": 0.0003416122344788164,
+          "effective_rank": {
+            "entropy_rank": 2.849792242050171,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5788389444351196
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3100113868713379,
+            "mean_squared_cosine": 0.14878374338150024,
+            "min_cosine": 0.019187772646546364
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.1999768856874171,
+          "discovery_projected_energy": 0.00014045185525901616,
+          "discovery_total_energy": 0.0007023404468782246,
+          "effective_rank": {
+            "entropy_rank": 2.8044703006744385,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5573983192443848
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.034025948494672775,
+            "mean_squared_cosine": 0.0014552331995218992,
+            "min_cosine": 0.01600274071097374
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.20521798769231228,
+          "discovery_projected_energy": 0.0001441328931832686,
+          "discovery_total_energy": 0.0007023404468782246,
+          "effective_rank": {
+            "entropy_rank": 2.8342466354370117,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5685319900512695
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.26574262976646423,
+            "mean_squared_cosine": 0.10852804780006409,
+            "min_cosine": 0.039842844009399414
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.16989281958383098,
+          "discovery_projected_energy": 0.00023084295389708132,
+          "discovery_total_energy": 0.0013587563880719244,
+          "effective_rank": {
+            "entropy_rank": 2.8378384113311768,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5711157321929932
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05017564445734024,
+            "mean_squared_cosine": 0.0034995605237782,
+            "min_cosine": 0.008882954716682434
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.1752835947442981,
+          "discovery_projected_energy": 0.00023816770408302546,
+          "discovery_total_energy": 0.0013587563880719244,
+          "effective_rank": {
+            "entropy_rank": 2.8278162479400635,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5689795017242432
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3105466961860657,
+            "mean_squared_cosine": 0.15083695948123932,
+            "min_cosine": 0.009833980351686478
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6197013258934021,
+            "mean_squared_cosine": 0.4936907887458801,
+            "min_cosine": 0.05835103616118431
+          },
+          "discovery_capture": 0.10576655977138152,
+          "discovery_projected_energy": 8.353102020919323e-05,
+          "discovery_total_energy": 0.0007897677714936435,
+          "effective_rank": {
+            "entropy_rank": 3.3145933151245117,
+            "positive_rank": 4.0,
+            "stable_rank": 2.055647611618042
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.21.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.20427255222971738,
+          "discovery_projected_energy": 7.43558703106828e-05,
+          "discovery_total_energy": 0.000364003237336874,
+          "effective_rank": {
+            "entropy_rank": 3.274008274078369,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0873632431030273
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03379722684621811,
+            "mean_squared_cosine": 0.0017361798090860248,
+            "min_cosine": 0.00046606044634245336
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.2178696769247695,
+          "discovery_projected_energy": 7.930526771815494e-05,
+          "discovery_total_energy": 0.000364003237336874,
+          "effective_rank": {
+            "entropy_rank": 3.2723562717437744,
+            "positive_rank": 4.0,
+            "stable_rank": 1.971611738204956
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.2675119936466217,
+            "mean_squared_cosine": 0.1117088720202446,
+            "min_cosine": 0.034205637872219086
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.2719710100813274,
+          "discovery_projected_energy": 0.00022634115885011852,
+          "discovery_total_energy": 0.0008322253124788404,
+          "effective_rank": {
+            "entropy_rank": 2.97575306892395,
+            "positive_rank": 4.0,
+            "stable_rank": 1.764544129371643
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03515822812914848,
+            "mean_squared_cosine": 0.0018958867294713855,
+            "min_cosine": 0.0036752421874552965
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.2828305842089279,
+          "discovery_projected_energy": 0.00023537877132184803,
+          "discovery_total_energy": 0.0008322253124788404,
+          "effective_rank": {
+            "entropy_rank": 3.0326335430145264,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7714976072311401
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.2590625286102295,
+            "mean_squared_cosine": 0.093570776283741,
+            "min_cosine": 0.06646369397640228
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.1999705353552253,
+          "discovery_projected_energy": 0.00028747317264787853,
+          "discovery_total_energy": 0.0014375776518136263,
+          "effective_rank": {
+            "entropy_rank": 3.3319246768951416,
+            "positive_rank": 4.0,
+            "stable_rank": 2.122720241546631
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03461445868015289,
+            "mean_squared_cosine": 0.0016342262970283628,
+            "min_cosine": 0.003588806139305234
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.21406084673866022,
+          "discovery_projected_energy": 0.0003077290893997997,
+          "discovery_total_energy": 0.0014375776518136263,
+          "effective_rank": {
+            "entropy_rank": 3.3490893840789795,
+            "positive_rank": 4.0,
+            "stable_rank": 2.011554479598999
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.2684725821018219,
+            "mean_squared_cosine": 0.11507730931043625,
+            "min_cosine": 0.02439187467098236
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.5249844193458557,
+            "mean_squared_cosine": 0.33165693283081055,
+            "min_cosine": 0.15245375037193298
+          },
+          "discovery_capture": 0.09075347694418884,
+          "discovery_projected_energy": 8.277928282041103e-05,
+          "discovery_total_energy": 0.0009121334587689489,
+          "effective_rank": {
+            "entropy_rank": 1.6420835256576538,
+            "positive_rank": 3.0,
+            "stable_rank": 1.1679805517196655
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.22.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.18397261960015593,
+          "discovery_projected_energy": 2.8961630960111506e-05,
+          "discovery_total_energy": 0.0001574235939187929,
+          "effective_rank": {
+            "entropy_rank": 3.1109161376953125,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7790988683700562
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.052927080541849136,
+            "mean_squared_cosine": 0.0040302095003426075,
+            "min_cosine": 0.0011533615179359913
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.19208515948366747,
+          "discovery_projected_energy": 3.0238736144383438e-05,
+          "discovery_total_energy": 0.0001574235939187929,
+          "effective_rank": {
+            "entropy_rank": 2.8796584606170654,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6437627077102661
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.29805517196655273,
+            "mean_squared_cosine": 0.11867941170930862,
+            "min_cosine": 0.08831095695495605
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.24465059740963307,
+          "discovery_projected_energy": 8.685003558639437e-05,
+          "discovery_total_energy": 0.0003549962129909545,
+          "effective_rank": {
+            "entropy_rank": 3.0474774837493896,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8973599672317505
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04233960062265396,
+            "mean_squared_cosine": 0.002829291857779026,
+            "min_cosine": 0.010141843929886818
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.25199338770314794,
+          "discovery_projected_energy": 8.945669833337888e-05,
+          "discovery_total_energy": 0.0003549962129909545,
+          "effective_rank": {
+            "entropy_rank": 2.8556466102600098,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7654759883880615
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.2697298526763916,
+            "mean_squared_cosine": 0.11532994359731674,
+            "min_cosine": 0.006189407780766487
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.18338077186345514,
+          "discovery_projected_energy": 0.00011480409011710435,
+          "discovery_total_energy": 0.0006260421359911561,
+          "effective_rank": {
+            "entropy_rank": 3.1334381103515625,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7921699285507202
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.045667413622140884,
+            "mean_squared_cosine": 0.0029887703713029623,
+            "min_cosine": 0.008408088237047195
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.19147767031056812,
+          "discovery_projected_energy": 0.00011987308971583843,
+          "discovery_total_energy": 0.0006260421359911561,
+          "effective_rank": {
+            "entropy_rank": 2.8761987686157227,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6365972757339478
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.29896289110183716,
+            "mean_squared_cosine": 0.12091174721717834,
+            "min_cosine": 0.08187991380691528
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.5635347366333008,
+            "mean_squared_cosine": 0.37262284755706787,
+            "min_cosine": 0.21233431994915009
+          },
+          "discovery_capture": 0.07536670225507502,
+          "discovery_projected_energy": 2.9886377888033167e-05,
+          "discovery_total_energy": 0.00039654618012718856,
+          "effective_rank": {
+            "entropy_rank": 2.577338218688965,
+            "positive_rank": 3.0,
+            "stable_rank": 1.8372845649719238
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.23.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.17321585279112303,
+          "discovery_projected_energy": 3.610765634221025e-05,
+          "discovery_total_energy": 0.00020845468679908663,
+          "effective_rank": {
+            "entropy_rank": 3.5144219398498535,
+            "positive_rank": 4.0,
+            "stable_rank": 2.185964345932007
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04440199211239815,
+            "mean_squared_cosine": 0.002601060550659895,
+            "min_cosine": 0.007295994553714991
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.17914882738772922,
+          "discovery_projected_energy": 3.7344412703532726e-05,
+          "discovery_total_energy": 0.00020845468679908663,
+          "effective_rank": {
+            "entropy_rank": 3.5365591049194336,
+            "positive_rank": 4.0,
+            "stable_rank": 2.144763708114624
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.42629966139793396,
+            "mean_squared_cosine": 0.2197454869747162,
+            "min_cosine": 0.1270337849855423
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.20336853560449325,
+          "discovery_projected_energy": 9.202556975651532e-05,
+          "discovery_total_energy": 0.00045250642870087177,
+          "effective_rank": {
+            "entropy_rank": 3.5255849361419678,
+            "positive_rank": 4.0,
+            "stable_rank": 2.368844509124756
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05465180426836014,
+            "mean_squared_cosine": 0.0036812741309404373,
+            "min_cosine": 0.018394719809293747
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.2109813784761097,
+          "discovery_projected_energy": 9.547043009661138e-05,
+          "discovery_total_energy": 0.00045250642870087177,
+          "effective_rank": {
+            "entropy_rank": 3.5291330814361572,
+            "positive_rank": 4.0,
+            "stable_rank": 2.2768497467041016
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3895336091518402,
+            "mean_squared_cosine": 0.18830689787864685,
+            "min_cosine": 0.09654954075813293
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.173107275046253,
+          "discovery_projected_energy": 0.00014345895033329725,
+          "discovery_total_energy": 0.0008287286036647856,
+          "effective_rank": {
+            "entropy_rank": 3.5343379974365234,
+            "positive_rank": 4.0,
+            "stable_rank": 2.191610813140869
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03661820665001869,
+            "mean_squared_cosine": 0.0016196974320337176,
+            "min_cosine": 0.01519005186855793
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.17905186174854779,
+          "discovery_projected_energy": 0.00014838539937045425,
+          "discovery_total_energy": 0.0008287286036647856,
+          "effective_rank": {
+            "entropy_rank": 3.5442819595336914,
+            "positive_rank": 4.0,
+            "stable_rank": 2.1414358615875244
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.42845821380615234,
+            "mean_squared_cosine": 0.2222243696451187,
+            "min_cosine": 0.12399295717477798
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6199248433113098,
+            "mean_squared_cosine": 0.5109232068061829,
+            "min_cosine": 0.023696722462773323
+          },
+          "discovery_capture": 0.04260064988001295,
+          "discovery_projected_energy": 2.2896670998306945e-05,
+          "discovery_total_energy": 0.0005374723405111581,
+          "effective_rank": {
+            "entropy_rank": 2.8022613525390625,
+            "positive_rank": 3.0,
+            "stable_rank": 2.023510694503784
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.24.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.132508174247823,
+          "discovery_projected_energy": 2.630855487950612e-05,
+          "discovery_total_energy": 0.0001985428825719282,
+          "effective_rank": {
+            "entropy_rank": 3.31717848777771,
+            "positive_rank": 4.0,
+            "stable_rank": 2.1076724529266357
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.049668364226818085,
+            "mean_squared_cosine": 0.0034212241880595684,
+            "min_cosine": 0.00653491634875536
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.13945347225688398,
+          "discovery_projected_energy": 2.768749436654616e-05,
+          "discovery_total_energy": 0.0001985428825719282,
+          "effective_rank": {
+            "entropy_rank": 3.1915781497955322,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0122735500335693
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.24090887606143951,
+            "mean_squared_cosine": 0.09893921762704849,
+            "min_cosine": 0.01822405494749546
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.19604136646979836,
+          "discovery_projected_energy": 8.644384070066735e-05,
+          "discovery_total_energy": 0.0004409469402162358,
+          "effective_rank": {
+            "entropy_rank": 2.838447093963623,
+            "positive_rank": 4.0,
+            "stable_rank": 1.685367465019226
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04406702518463135,
+            "mean_squared_cosine": 0.0026889017317444086,
+            "min_cosine": 0.0069826566614210606
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.20402958017821013,
+          "discovery_projected_energy": 8.996621909318492e-05,
+          "discovery_total_energy": 0.0004409469402162358,
+          "effective_rank": {
+            "entropy_rank": 2.815093755722046,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6884856224060059
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.2527052164077759,
+            "mean_squared_cosine": 0.09700538218021393,
+            "min_cosine": 0.04642047360539436
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.13143997427785473,
+          "discovery_projected_energy": 0.00010371163079980761,
+          "discovery_total_energy": 0.0007890417764429003,
+          "effective_rank": {
+            "entropy_rank": 3.30776309967041,
+            "positive_rank": 4.0,
+            "stable_rank": 2.1068735122680664
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04750743508338928,
+            "mean_squared_cosine": 0.0027730618603527546,
+            "min_cosine": 0.02545539289712906
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.13833896893575878,
+          "discovery_projected_energy": 0.00010915522580035031,
+          "discovery_total_energy": 0.0007890417764429003,
+          "effective_rank": {
+            "entropy_rank": 3.185274839401245,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0157532691955566
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.24147583544254303,
+            "mean_squared_cosine": 0.09898331016302109,
+            "min_cosine": 0.014830340631306171
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.5073554515838623,
+            "mean_squared_cosine": 0.3463658392429352,
+            "min_cosine": 0.024717560037970543
+          },
+          "discovery_capture": 0.0994565422294745,
+          "discovery_projected_energy": 5.013368354411796e-05,
+          "discovery_total_energy": 0.0005040762771386653,
+          "effective_rank": {
+            "entropy_rank": 2.043163537979126,
+            "positive_rank": 3.0,
+            "stable_rank": 1.3429447412490845
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.25.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.11816634881244212,
+          "discovery_projected_energy": 2.687122287170496e-05,
+          "discovery_total_energy": 0.0002274016515002586,
+          "effective_rank": {
+            "entropy_rank": 3.3931286334991455,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0324206352233887
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04222911223769188,
+            "mean_squared_cosine": 0.0021703490056097507,
+            "min_cosine": 0.01726243458688259
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.12768743333820207,
+          "discovery_projected_energy": 2.9036333216936328e-05,
+          "discovery_total_energy": 0.0002274016515002586,
+          "effective_rank": {
+            "entropy_rank": 3.451418399810791,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0719220638275146
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.28830814361572266,
+            "mean_squared_cosine": 0.13048946857452393,
+            "min_cosine": 0.058591656386852264
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.13963088031193055,
+          "discovery_projected_energy": 6.752506305929273e-05,
+          "discovery_total_energy": 0.00048359691572841257,
+          "effective_rank": {
+            "entropy_rank": 3.40265154838562,
+            "positive_rank": 4.0,
+            "stable_rank": 2.2204794883728027
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03233158215880394,
+            "mean_squared_cosine": 0.0013568856520578265,
+            "min_cosine": 0.007578944321721792
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.14846502644833479,
+          "discovery_projected_energy": 7.17972288839519e-05,
+          "discovery_total_energy": 0.00048359691572841257,
+          "effective_rank": {
+            "entropy_rank": 3.4006407260894775,
+            "positive_rank": 4.0,
+            "stable_rank": 2.235403537750244
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.23202688992023468,
+            "mean_squared_cosine": 0.09995125979185104,
+            "min_cosine": 0.014345511794090271
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.11736423740644172,
+          "discovery_projected_energy": 0.00010628365271259099,
+          "discovery_total_energy": 0.0009055880655068904,
+          "effective_rank": {
+            "entropy_rank": 3.421916961669922,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0805599689483643
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03876933082938194,
+            "mean_squared_cosine": 0.0020381987560540438,
+            "min_cosine": 0.009472424164414406
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.12680724683359104,
+          "discovery_projected_energy": 0.00011483512935228646,
+          "discovery_total_energy": 0.0009055880655068904,
+          "effective_rank": {
+            "entropy_rank": 3.448951482772827,
+            "positive_rank": 4.0,
+            "stable_rank": 2.074432373046875
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.28775057196617126,
+            "mean_squared_cosine": 0.12963064014911652,
+            "min_cosine": 0.06345690786838531
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.5361713767051697,
+            "mean_squared_cosine": 0.3570156991481781,
+            "min_cosine": 0.1260487288236618
+          },
+          "discovery_capture": 0.07531707852530199,
+          "discovery_projected_energy": 4.670843918574974e-05,
+          "discovery_total_energy": 0.0006201573414728045,
+          "effective_rank": {
+            "entropy_rank": 2.792368173599243,
+            "positive_rank": 3.0,
+            "stable_rank": 1.9825066328048706
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.26.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.17450396407019053,
+          "discovery_projected_energy": 3.110044781351462e-05,
+          "discovery_total_energy": 0.0001782220133463852,
+          "effective_rank": {
+            "entropy_rank": 3.2560818195343018,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8803573846817017
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03806053847074509,
+            "mean_squared_cosine": 0.002079406287521124,
+            "min_cosine": 0.005690712481737137
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.18298640923463808,
+          "discovery_projected_energy": 3.2612206268822774e-05,
+          "discovery_total_energy": 0.0001782220133463852,
+          "effective_rank": {
+            "entropy_rank": 3.3050055503845215,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8965755701065063
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.29627302289009094,
+            "mean_squared_cosine": 0.14834262430667877,
+            "min_cosine": 0.009291454218327999
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.21687032202873266,
+          "discovery_projected_energy": 9.169214172288775e-05,
+          "discovery_total_energy": 0.0004227970930514857,
+          "effective_rank": {
+            "entropy_rank": 3.269049882888794,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0416629314422607
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04754847660660744,
+            "mean_squared_cosine": 0.003687292104586959,
+            "min_cosine": 0.0005927738966420293
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.22482349055968984,
+          "discovery_projected_energy": 9.505471825832501e-05,
+          "discovery_total_energy": 0.0004227970930514857,
+          "effective_rank": {
+            "entropy_rank": 3.168281078338623,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8735626935958862
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.2879650890827179,
+            "mean_squared_cosine": 0.11550363153219223,
+            "min_cosine": 0.0656963363289833
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.17485270417831825,
+          "discovery_projected_energy": 0.00012574528227560222,
+          "discovery_total_energy": 0.0007191497716121376,
+          "effective_rank": {
+            "entropy_rank": 3.249504566192627,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8759894371032715
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04712072014808655,
+            "mean_squared_cosine": 0.0030153263360261917,
+            "min_cosine": 0.00858631357550621
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.1833068809384844,
+          "discovery_projected_energy": 0.00013182510156184435,
+          "discovery_total_energy": 0.0007191497716121376,
+          "effective_rank": {
+            "entropy_rank": 3.290432929992676,
+            "positive_rank": 4.0,
+            "stable_rank": 1.8813997507095337
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.29594823718070984,
+            "mean_squared_cosine": 0.15006685256958008,
+            "min_cosine": 0.006132687442004681
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.52532559633255,
+            "mean_squared_cosine": 0.3438701629638672,
+            "min_cosine": 0.17910905182361603
+          },
+          "discovery_capture": 0.07420985159847132,
+          "discovery_projected_energy": 3.3571232052054256e-05,
+          "discovery_total_energy": 0.0004523824172792956,
+          "effective_rank": {
+            "entropy_rank": 1.9592649936676025,
+            "positive_rank": 2.0,
+            "stable_rank": 1.663658618927002
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.27.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.30598978992714676,
+          "discovery_projected_energy": 4.31062035204377e-05,
+          "discovery_total_energy": 0.00014087464660406113,
+          "effective_rank": {
+            "entropy_rank": 2.2733378410339355,
+            "positive_rank": 4.0,
+            "stable_rank": 1.3409702777862549
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05658981576561928,
+            "mean_squared_cosine": 0.004299405962228775,
+            "min_cosine": 0.00795574951916933
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.3100821809530421,
+          "discovery_projected_energy": 4.368271765997633e-05,
+          "discovery_total_energy": 0.00014087464660406113,
+          "effective_rank": {
+            "entropy_rank": 2.303492546081543,
+            "positive_rank": 4.0,
+            "stable_rank": 1.351285457611084
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.38025492429733276,
+            "mean_squared_cosine": 0.2165633738040924,
+            "min_cosine": 0.05924893170595169
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.3053394654945833,
+          "discovery_projected_energy": 9.341836994281039e-05,
+          "discovery_total_energy": 0.0003059492155443877,
+          "effective_rank": {
+            "entropy_rank": 2.5716328620910645,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4650713205337524
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.053762614727020264,
+            "mean_squared_cosine": 0.0037561217322945595,
+            "min_cosine": 0.013583214022219181
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.3093550338721131,
+          "discovery_projected_energy": 9.464692993788049e-05,
+          "discovery_total_energy": 0.0003059492155443877,
+          "effective_rank": {
+            "entropy_rank": 2.574411630630493,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4823877811431885
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.2879558205604553,
+            "mean_squared_cosine": 0.1782391518354416,
+            "min_cosine": 0.01086714118719101
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.31254209024559104,
+          "discovery_projected_energy": 0.00017729219689499587,
+          "discovery_total_energy": 0.0005672586266882718,
+          "effective_rank": {
+            "entropy_rank": 2.3054165840148926,
+            "positive_rank": 4.0,
+            "stable_rank": 1.355604648590088
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.026143915951251984,
+            "mean_squared_cosine": 0.0012304683914408088,
+            "min_cosine": 0.002635396085679531
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.31668700782695147,
+          "discovery_projected_energy": 0.00017964343714993447,
+          "discovery_total_energy": 0.0005672586266882718,
+          "effective_rank": {
+            "entropy_rank": 2.3114378452301025,
+            "positive_rank": 4.0,
+            "stable_rank": 1.3569897413253784
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.38442233204841614,
+            "mean_squared_cosine": 0.21913138031959534,
+            "min_cosine": 0.06444426625967026
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.5100101232528687,
+            "mean_squared_cosine": 0.3736397922039032,
+            "min_cosine": 0.08616473525762558
+          },
+          "discovery_capture": 0.07029862013245651,
+          "discovery_projected_energy": 2.7256644898443483e-05,
+          "discovery_total_energy": 0.00038772659900132567,
+          "effective_rank": {
+            "entropy_rank": 2.480842351913452,
+            "positive_rank": 3.0,
+            "stable_rank": 1.6259082555770874
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.3.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.3921544792696699,
+          "discovery_projected_energy": 2.701142329897266e-05,
+          "discovery_total_energy": 6.88795480527915e-05,
+          "effective_rank": {
+            "entropy_rank": 2.665303945541382,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5161097049713135
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03681355342268944,
+            "mean_squared_cosine": 0.0017980614211410284,
+            "min_cosine": 0.008899345062673092
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.4098572865633794,
+          "discovery_projected_energy": 2.8230784664629027e-05,
+          "discovery_total_energy": 6.88795480527915e-05,
+          "effective_rank": {
+            "entropy_rank": 2.3386547565460205,
+            "positive_rank": 4.0,
+            "stable_rank": 1.3664551973342896
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3605462908744812,
+            "mean_squared_cosine": 0.2508966028690338,
+            "min_cosine": 0.015935556963086128
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.38636481316311566,
+          "discovery_projected_energy": 5.298859468894079e-05,
+          "discovery_total_energy": 0.0001371465332340449,
+          "effective_rank": {
+            "entropy_rank": 2.901097536087036,
+            "positive_rank": 4.0,
+            "stable_rank": 1.723785161972046
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04755480960011482,
+            "mean_squared_cosine": 0.0031685642898082733,
+            "min_cosine": 0.00012325719580985606
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.40047264945348565,
+          "discovery_projected_energy": 5.4923435527598485e-05,
+          "discovery_total_energy": 0.0001371465332340449,
+          "effective_rank": {
+            "entropy_rank": 2.8443453311920166,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6486784219741821
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4745343029499054,
+            "mean_squared_cosine": 0.33843618631362915,
+            "min_cosine": 0.10587470233440399
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.39427117940752604,
+          "discovery_projected_energy": 0.00010443177598062903,
+          "discovery_total_energy": 0.0002648729641805403,
+          "effective_rank": {
+            "entropy_rank": 2.6275014877319336,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4957376718521118
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05475584417581558,
+            "mean_squared_cosine": 0.0038380129262804985,
+            "min_cosine": 0.01539409440010786
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.407619927588454,
+          "discovery_projected_energy": 0.000107967498479411,
+          "discovery_total_energy": 0.0002648729641805403,
+          "effective_rank": {
+            "entropy_rank": 2.3496367931365967,
+            "positive_rank": 4.0,
+            "stable_rank": 1.3714008331298828
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.32840394973754883,
+            "mean_squared_cosine": 0.22701311111450195,
+            "min_cosine": 0.0031223883852362633
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6723393201828003,
+            "mean_squared_cosine": 0.5479702353477478,
+            "min_cosine": 0.1734265834093094
+          },
+          "discovery_capture": 0.09520345054996399,
+          "discovery_projected_energy": 2.4344011762877926e-05,
+          "discovery_total_energy": 0.00025570514117134735,
+          "effective_rank": {
+            "entropy_rank": 2.547367811203003,
+            "positive_rank": 3.0,
+            "stable_rank": 1.7818886041641235
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.4.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.34026024455802995,
+          "discovery_projected_energy": 2.9713626645389013e-05,
+          "discovery_total_energy": 8.732617789064534e-05,
+          "effective_rank": {
+            "entropy_rank": 3.1891939640045166,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7724261283874512
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05174921825528145,
+            "mean_squared_cosine": 0.003056606976315379,
+            "min_cosine": 0.027354756370186806
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.3497692075712098,
+          "discovery_projected_energy": 3.054400804103352e-05,
+          "discovery_total_energy": 8.732617789064534e-05,
+          "effective_rank": {
+            "entropy_rank": 2.682194948196411,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4914482831954956
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.49400293827056885,
+            "mean_squared_cosine": 0.2957516312599182,
+            "min_cosine": 0.20497506856918335
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.28509148963406356,
+          "discovery_projected_energy": 4.600407919497229e-05,
+          "discovery_total_energy": 0.0001613660206203349,
+          "effective_rank": {
+            "entropy_rank": 3.064452648162842,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7594902515411377
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05476408451795578,
+            "mean_squared_cosine": 0.004326631315052509,
+            "min_cosine": 0.014337844215333462
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.2940842620587081,
+          "discovery_projected_energy": 4.7455207095481455e-05,
+          "discovery_total_energy": 0.0001613660206203349,
+          "effective_rank": {
+            "entropy_rank": 2.861082077026367,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5864317417144775
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.589809775352478,
+            "mean_squared_cosine": 0.4263375699520111,
+            "min_cosine": 0.18568983674049377
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.33411466898498304,
+          "discovery_projected_energy": 0.00011096505477325991,
+          "discovery_total_energy": 0.0003321166805108078,
+          "effective_rank": {
+            "entropy_rank": 3.1075432300567627,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7252559661865234
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.030861809849739075,
+            "mean_squared_cosine": 0.0015812093624845147,
+            "min_cosine": 0.0031404606997966766
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.3428078514790714,
+          "discovery_projected_energy": 0.00011385220568627119,
+          "discovery_total_energy": 0.0003321166805108078,
+          "effective_rank": {
+            "entropy_rank": 2.6549112796783447,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4806733131408691
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4880022406578064,
+            "mean_squared_cosine": 0.28724414110183716,
+            "min_cosine": 0.22835783660411835
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.8437851071357727,
+            "mean_squared_cosine": 0.7257580757141113,
+            "min_cosine": 0.6904156804084778
+          },
+          "discovery_capture": 0.09037723730400897,
+          "discovery_projected_energy": 2.721591226872988e-05,
+          "discovery_total_energy": 0.0003011368025909178,
+          "effective_rank": {
+            "entropy_rank": 1.920370101928711,
+            "positive_rank": 2.0,
+            "stable_rank": 1.5587115287780762
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.5.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.5102966362192571,
+          "discovery_projected_energy": 0.00013544059765990824,
+          "discovery_total_energy": 0.00026541542320046574,
+          "effective_rank": {
+            "entropy_rank": 2.8343613147735596,
+            "positive_rank": 4.0,
+            "stable_rank": 1.670175313949585
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.051296357065439224,
+            "mean_squared_cosine": 0.003234672360122204,
+            "min_cosine": 0.025318505242466927
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.5276319822860739,
+          "discovery_projected_energy": 0.00014004166587255895,
+          "discovery_total_energy": 0.00026541542320046574,
+          "effective_rank": {
+            "entropy_rank": 2.6911189556121826,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5736078023910522
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3858765661716461,
+            "mean_squared_cosine": 0.24702902138233185,
+            "min_cosine": 0.04207807406783104
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.5033206917587912,
+          "discovery_projected_energy": 0.0002812775783240795,
+          "discovery_total_energy": 0.0005588436615653336,
+          "effective_rank": {
+            "entropy_rank": 2.5400819778442383,
+            "positive_rank": 4.0,
+            "stable_rank": 1.673994779586792
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05065274238586426,
+            "mean_squared_cosine": 0.00373206939548254,
+            "min_cosine": 0.012085950002074242
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.5161187106031427,
+          "discovery_projected_energy": 0.0002884296700358391,
+          "discovery_total_energy": 0.0005588436615653336,
+          "effective_rank": {
+            "entropy_rank": 2.8003499507904053,
+            "positive_rank": 4.0,
+            "stable_rank": 1.750141978263855
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.6452261805534363,
+            "mean_squared_cosine": 0.5202382206916809,
+            "min_cosine": 0.12280774116516113
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.503474077760252,
+          "discovery_projected_energy": 0.000516589789185673,
+          "discovery_total_energy": 0.0010260504204779863,
+          "effective_rank": {
+            "entropy_rank": 2.7817702293395996,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6647415161132812
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.030582547187805176,
+            "mean_squared_cosine": 0.001315763220191002,
+            "min_cosine": 0.007832598872482777
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.5186717142595861,
+          "discovery_projected_energy": 0.0005321833305060863,
+          "discovery_total_energy": 0.0010260504204779863,
+          "effective_rank": {
+            "entropy_rank": 2.738121509552002,
+            "positive_rank": 4.0,
+            "stable_rank": 1.5952835083007812
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4324081540107727,
+            "mean_squared_cosine": 0.2824453115463257,
+            "min_cosine": 0.0840764120221138
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.8167436718940735,
+            "mean_squared_cosine": 0.7080727815628052,
+            "min_cosine": 0.4706362783908844
+          },
+          "discovery_capture": 0.27909961608005784,
+          "discovery_projected_energy": 0.0002593575918581337,
+          "discovery_total_energy": 0.0009292653121519834,
+          "effective_rank": {
+            "entropy_rank": 1.9316521883010864,
+            "positive_rank": 3.0,
+            "stable_rank": 1.284230351448059
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.6.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.2548606788792225,
+          "discovery_projected_energy": 4.0476719732396305e-05,
+          "discovery_total_energy": 0.00015881900617387146,
+          "effective_rank": {
+            "entropy_rank": 3.257669448852539,
+            "positive_rank": 4.0,
+            "stable_rank": 1.961379885673523
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04471884295344353,
+            "mean_squared_cosine": 0.0031211150344461203,
+            "min_cosine": 0.0011826205300167203
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.2783876593269225,
+          "discovery_projected_energy": 4.421325138537213e-05,
+          "discovery_total_energy": 0.00015881900617387146,
+          "effective_rank": {
+            "entropy_rank": 3.2845706939697266,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9622188806533813
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.2853087782859802,
+            "mean_squared_cosine": 0.10866185277700424,
+            "min_cosine": 0.05749020725488663
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.2626081851997308,
+          "discovery_projected_energy": 8.009147859411314e-05,
+          "discovery_total_energy": 0.0003049847000511363,
+          "effective_rank": {
+            "entropy_rank": 3.680616617202759,
+            "positive_rank": 4.0,
+            "stable_rank": 2.7945075035095215
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03521493822336197,
+            "mean_squared_cosine": 0.0020692041143774986,
+            "min_cosine": 0.004922526888549328
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.28187130699788043,
+          "discovery_projected_energy": 8.596643601777032e-05,
+          "discovery_total_energy": 0.0003049847000511363,
+          "effective_rank": {
+            "entropy_rank": 3.562894105911255,
+            "positive_rank": 4.0,
+            "stable_rank": 2.2238881587982178
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.5060542225837708,
+            "mean_squared_cosine": 0.346671462059021,
+            "min_cosine": 0.048463672399520874
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.2553755880247542,
+          "discovery_projected_energy": 0.0001580268144607544,
+          "discovery_total_energy": 0.0006188015686348081,
+          "effective_rank": {
+            "entropy_rank": 3.280996561050415,
+            "positive_rank": 4.0,
+            "stable_rank": 1.983319640159607
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03648647665977478,
+            "mean_squared_cosine": 0.001889228937216103,
+            "min_cosine": 0.007990575395524502
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.2760829955610657,
+          "discovery_projected_energy": 0.0001708405907265842,
+          "discovery_total_energy": 0.0006188015686348081,
+          "effective_rank": {
+            "entropy_rank": 3.227792501449585,
+            "positive_rank": 4.0,
+            "stable_rank": 1.899246096611023
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.293888658285141,
+            "mean_squared_cosine": 0.12148245424032211,
+            "min_cosine": 0.004953928757458925
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.7220010161399841,
+            "mean_squared_cosine": 0.592344343662262,
+            "min_cosine": 0.2769307792186737
+          },
+          "discovery_capture": 0.1285512466885505,
+          "discovery_projected_energy": 6.263355317059904e-05,
+          "discovery_total_energy": 0.00048722633800935,
+          "effective_rank": {
+            "entropy_rank": 2.626650810241699,
+            "positive_rank": 3.0,
+            "stable_rank": 2.0894947052001953
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.7.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.33704443197694245,
+          "discovery_projected_energy": 4.904313391307369e-05,
+          "discovery_total_energy": 0.0001455094025004655,
+          "effective_rank": {
+            "entropy_rank": 2.638387441635132,
+            "positive_rank": 4.0,
+            "stable_rank": 1.512372612953186
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.046827174723148346,
+            "mean_squared_cosine": 0.002734043635427952,
+            "min_cosine": 0.02356826327741146
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.34603195914126245,
+          "discovery_projected_energy": 5.0350903620710596e-05,
+          "discovery_total_energy": 0.0001455094025004655,
+          "effective_rank": {
+            "entropy_rank": 2.629741907119751,
+            "positive_rank": 4.0,
+            "stable_rank": 1.581032633781433
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.44281136989593506,
+            "mean_squared_cosine": 0.2681555151939392,
+            "min_cosine": 0.12127537280321121
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.3958664541903251,
+          "discovery_projected_energy": 0.00011914007336599752,
+          "discovery_total_energy": 0.00030096026603132486,
+          "effective_rank": {
+            "entropy_rank": 1.6841657161712646,
+            "positive_rank": 4.0,
+            "stable_rank": 1.1504185199737549
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03512471914291382,
+            "mean_squared_cosine": 0.0020488472655415535,
+            "min_cosine": 0.0008531427592970431
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.4077762066726004,
+          "discovery_projected_energy": 0.00012272443564143032,
+          "discovery_total_energy": 0.00030096026603132486,
+          "effective_rank": {
+            "entropy_rank": 2.2313127517700195,
+            "positive_rank": 4.0,
+            "stable_rank": 1.3599982261657715
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.48339778184890747,
+            "mean_squared_cosine": 0.3498697876930237,
+            "min_cosine": 0.006702606566250324
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.3243680830247303,
+          "discovery_projected_energy": 0.00018149279640056193,
+          "discovery_total_energy": 0.000559527295990847,
+          "effective_rank": {
+            "entropy_rank": 2.5686135292053223,
+            "positive_rank": 4.0,
+            "stable_rank": 1.4766439199447632
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.0410381555557251,
+            "mean_squared_cosine": 0.002338566118851304,
+            "min_cosine": 0.003326988546177745
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.3337309969255735,
+          "discovery_projected_energy": 0.00018673160229809582,
+          "discovery_total_energy": 0.000559527295990847,
+          "effective_rank": {
+            "entropy_rank": 2.722888231277466,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6530659198760986
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.4739657938480377,
+            "mean_squared_cosine": 0.3210394084453583,
+            "min_cosine": 0.08845433592796326
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.6424416303634644,
+            "mean_squared_cosine": 0.5085877180099487,
+            "min_cosine": 0.15595421195030212
+          },
+          "discovery_capture": 0.45149422865031785,
+          "discovery_projected_energy": 0.00028083365759812295,
+          "discovery_total_energy": 0.0006220094073796645,
+          "effective_rank": {
+            "entropy_rank": 2.228989362716675,
+            "positive_rank": 3.0,
+            "stable_rank": 1.4148956537246704
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.8.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.23461823161567505,
+          "discovery_projected_energy": 5.351464278646745e-05,
+          "discovery_total_energy": 0.00022809243091614917,
+          "effective_rank": {
+            "entropy_rank": 3.1310722827911377,
+            "positive_rank": 4.0,
+            "stable_rank": 1.87507164478302
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04761441424489021,
+            "mean_squared_cosine": 0.002821579109877348,
+            "min_cosine": 0.017433153465390205
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.25386251811673083,
+          "discovery_projected_energy": 5.7904118875740096e-05,
+          "discovery_total_energy": 0.00022809243091614917,
+          "effective_rank": {
+            "entropy_rank": 3.0915558338165283,
+            "positive_rank": 4.0,
+            "stable_rank": 1.91619873046875
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.39156419038772583,
+            "mean_squared_cosine": 0.20684471726417542,
+            "min_cosine": 0.05306081846356392
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.2696176327965905,
+          "discovery_projected_energy": 0.00012092803081031889,
+          "discovery_total_energy": 0.0004485167737584561,
+          "effective_rank": {
+            "entropy_rank": 2.108762741088867,
+            "positive_rank": 4.0,
+            "stable_rank": 1.2919930219650269
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.03675951063632965,
+            "mean_squared_cosine": 0.0020172905642539263,
+            "min_cosine": 0.01128667313605547
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.28458640266683644,
+          "discovery_projected_energy": 0.00012764177517965436,
+          "discovery_total_energy": 0.0004485167737584561,
+          "effective_rank": {
+            "entropy_rank": 2.6691787242889404,
+            "positive_rank": 4.0,
+            "stable_rank": 1.533586025238037
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.47860971093177795,
+            "mean_squared_cosine": 0.328189879655838,
+            "min_cosine": 0.09131766110658646
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.22684072417448392,
+          "discovery_projected_energy": 0.00020186949404887855,
+          "discovery_total_energy": 0.0008899173408281058,
+          "effective_rank": {
+            "entropy_rank": 2.9233224391937256,
+            "positive_rank": 4.0,
+            "stable_rank": 1.6912013292312622
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05058387294411659,
+            "mean_squared_cosine": 0.0038848109543323517,
+            "min_cosine": 0.011335744522511959
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.247594827369966,
+          "discovery_projected_energy": 0.00022033893037587404,
+          "discovery_total_energy": 0.0008899173408281058,
+          "effective_rank": {
+            "entropy_rank": 3.184699296951294,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0284574031829834
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.43356338143348694,
+            "mean_squared_cosine": 0.2483440339565277,
+            "min_cosine": 0.09076631814241409
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.5536429286003113,
+            "mean_squared_cosine": 0.4349365234375,
+            "min_cosine": 0.005967687349766493
+          },
+          "discovery_capture": 0.21711310238079537,
+          "discovery_projected_energy": 0.000145731057273224,
+          "discovery_total_energy": 0.0006712218455504626,
+          "effective_rank": {
+            "entropy_rank": 1.9480793476104736,
+            "positive_rank": 2.0,
+            "stable_rank": 1.6282007694244385
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.9.self_attn.q_proj": {
+      "candidate_rank": 4,
+      "diagnostics": {
+        "P0": {
+          "discovery_capture": 0.16313822995604638,
+          "discovery_projected_energy": 3.3528340281918645e-05,
+          "discovery_total_energy": 0.00020552104979287833,
+          "effective_rank": {
+            "entropy_rank": 3.4608569145202637,
+            "positive_rank": 4.0,
+            "stable_rank": 2.1132497787475586
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04248521849513054,
+            "mean_squared_cosine": 0.0026745630893856287,
+            "min_cosine": 0.011038454249501228
+          }
+        },
+        "P0_uncentered": {
+          "discovery_capture": 0.18699535073214835,
+          "discovery_projected_energy": 3.843148078885861e-05,
+          "discovery_total_energy": 0.00020552104979287833,
+          "effective_rank": {
+            "entropy_rank": 3.185375928878784,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9546971321105957
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3700917959213257,
+            "mean_squared_cosine": 0.18179969489574432,
+            "min_cosine": 0.14949804544448853
+          }
+        },
+        "P1": {
+          "discovery_capture": 0.2050158892426342,
+          "discovery_projected_energy": 8.961626008385792e-05,
+          "discovery_total_energy": 0.00043711860780604184,
+          "effective_rank": {
+            "entropy_rank": 3.1752638816833496,
+            "positive_rank": 4.0,
+            "stable_rank": 1.7895954847335815
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.04187357798218727,
+            "mean_squared_cosine": 0.0021699678618460894,
+            "min_cosine": 0.02082398533821106
+          }
+        },
+        "P1_uncentered": {
+          "discovery_capture": 0.22503156109803127,
+          "discovery_projected_energy": 9.836548269959167e-05,
+          "discovery_total_energy": 0.00043711860780604184,
+          "effective_rank": {
+            "entropy_rank": 3.2453560829162598,
+            "positive_rank": 4.0,
+            "stable_rank": 1.909008264541626
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.3218284845352173,
+            "mean_squared_cosine": 0.1808823198080063,
+            "min_cosine": 0.05090603604912758
+          }
+        },
+        "P2": {
+          "discovery_capture": 0.16328805217546488,
+          "discovery_projected_energy": 0.00013431783008854836,
+          "discovery_total_energy": 0.0008225821075029671,
+          "effective_rank": {
+            "entropy_rank": 3.4316606521606445,
+            "positive_rank": 4.0,
+            "stable_rank": 2.0810317993164062
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.05332868918776512,
+            "mean_squared_cosine": 0.0036926004104316235,
+            "min_cosine": 0.021550968289375305
+          }
+        },
+        "P2_uncentered": {
+          "discovery_capture": 0.1910684324270851,
+          "discovery_projected_energy": 0.00015716947382315993,
+          "discovery_total_energy": 0.0008225821075029671,
+          "effective_rank": {
+            "entropy_rank": 3.220327854156494,
+            "positive_rank": 4.0,
+            "stable_rank": 1.9917782545089722
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 0.39250144362449646,
+            "mean_squared_cosine": 0.1954590380191803,
+            "min_cosine": 0.14368434250354767
+          }
+        },
+        "P3": {
+          "cross_half_overlap": {
+            "mean_cosine": 0.7124708890914917,
+            "mean_squared_cosine": 0.559205174446106,
+            "min_cosine": 0.36775296926498413
+          },
+          "discovery_capture": 0.08216159381672325,
+          "discovery_projected_energy": 5.465606591315009e-05,
+          "discovery_total_energy": 0.0006652264564763755,
+          "effective_rank": {
+            "entropy_rank": 2.8351073265075684,
+            "positive_rank": 3.0,
+            "stable_rank": 2.2105753421783447
+          },
+          "prompt_split_overlap": {
+            "mean_cosine": 1.0,
+            "mean_squared_cosine": 1.0,
+            "min_cosine": 1.0
+          },
+          "response_split_overlap": {
+            "mean_cosine": 0.0,
+            "mean_squared_cosine": 0.0,
+            "min_cosine": 0.0
+          }
+        }
+      },
+      "shape": [
+        1536,
+        1536
+      ]
+    }
+  },
+  "positive_rollouts": 15,
+  "prompt_splits_disjoint": true,
+  "r_max": 4,
+  "rollout_cache": [
+    {
+      "ordinal": 0,
+      "path": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/rollout_cache/0000_discovery_146fcf092288.safetensors",
+      "phase": "discovery",
+      "prompt_id": "67d33184-c2f9-4c19-be74-764fab22bda8",
+      "tensor_keys": [
+        "advantages",
+        "attention_mask",
+        "input_ids",
+        "old_log_probs",
+        "position_ids",
+        "response_mask",
+        "responses",
+        "token_level_scores"
+      ]
+    },
+    {
+      "ordinal": 1,
+      "path": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/rollout_cache/0001_discovery_406546462b77.safetensors",
+      "phase": "discovery",
+      "prompt_id": "25b2b538-8a3e-4c09-ba0e-5e8d022058f6",
+      "tensor_keys": [
+        "advantages",
+        "attention_mask",
+        "input_ids",
+        "old_log_probs",
+        "position_ids",
+        "response_mask",
+        "responses",
+        "token_level_scores"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "path": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/rollout_cache/0002_calibration_f8896fd5134e.safetensors",
+      "phase": "calibration",
+      "prompt_id": "8f1609e9-8137-4ed5-b01c-8b456f3f085f",
+      "tensor_keys": [
+        "advantages",
+        "attention_mask",
+        "input_ids",
+        "old_log_probs",
+        "position_ids",
+        "response_mask",
+        "responses",
+        "token_level_scores"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "path": "/root/peft-for-rl/runs/phase0-gradient-smoke-v3/analysis/phase0_qproj_r4_d2c1a1_smoke_v3/rollout_cache/0003_audit_fc84714cab9d.safetensors",
+      "phase": "audit",
+      "prompt_id": "18304b77-d112-4689-bff6-37db92889934",
+      "tensor_keys": [
+        "advantages",
+        "attention_mask",
+        "input_ids",
+        "old_log_probs",
+        "position_ids",
+        "response_mask",
+        "responses",
+        "token_level_scores"
+      ]
+    }
+  ],
+  "samples": {
+    "advantage_rms": [
+      0.8934022188186646,
+      0.9715485572814941,
+      0.9354123473167419,
+      0.9354127645492554
+    ],
+    "norm_references": {
+      "P0": [
+        0.09380733563978146,
+        0.07773252012400604
+      ],
+      "P1": [
+        0.13115577247624124,
+        0.11689386466450917
+      ],
+      "P2": [
+        0.18626113664966204,
+        0.15500938646004458
+      ],
+      "P3": [
+        0.152335287863587,
+        0.1380720684653546
+      ]
+    },
+    "response_counts": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "response_tokens": [
+      8159,
+      14653,
+      16384,
+      15463
+    ]
+  },
+  "schema_version": 3,
+  "score_labels": [
+    "F",
+    "P",
+    "U"
+  ],
+  "selection_uses_audit": false,
+  "selectors": {
+    "P0": "centered covariance, no mask",
+    "P1": "centered covariance, deterministic density-matched random mask",
+    "P2": "centered covariance, top surprisal plus final tokens",
+    "P3": "symmetric centered cross-fit covariance, advantage-entropy stable band"
+  },
+  "shared_rollouts_across_selectors": true,
+  "sketch_width": 6,
+  "token_mask": {
+    "calibration_audit_mask": "none",
+    "keep_ratio": 0.5,
+    "min_keep_per_response": 16,
+    "stable_surprisal_upper_quantile": 0.95,
+    "top_surprisal_final_tokens": 16
+  },
+  "total_prompts": 12,
+  "total_rollouts": 96,
+  "uncentered_controls": [
+    "P0_uncentered",
+    "P1_uncentered",
+    "P2_uncentered"
+  ]
+}

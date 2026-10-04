@@ -1,0 +1,50 @@
+{
+  "H0": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 9.5367431640625e-07
+  },
+  "H16": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 9.5367431640625e-07
+  },
+  "H2": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 9.5367431640625e-07
+  },
+  "H4": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 9.5367431640625e-07
+  },
+  "H8": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 9.5367431640625e-07
+  },
+  "P0": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 1.0728836059570312e-06
+  },
+  "P0_uncentered": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 2.9802322387695312e-06
+  },
+  "P1": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 1.0728836059570312e-06
+  },
+  "P1_uncentered": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 1.0728836059570312e-06
+  },
+  "P2": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 9.5367431640625e-07
+  },
+  "P2_uncentered": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 9.5367431640625e-07
+  },
+  "P3": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 4.76837158203125e-06
+  }
+}

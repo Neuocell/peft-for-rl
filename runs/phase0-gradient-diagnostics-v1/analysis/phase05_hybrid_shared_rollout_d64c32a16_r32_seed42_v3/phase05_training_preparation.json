@@ -1,0 +1,10 @@
+{
+  "allocations": {},
+  "calibration_selected_method": null,
+  "gate_decision": "no-go",
+  "gate_path": "/root/peft-for-rl/runs/phase0-gradient-diagnostics-v1/analysis/phase05_hybrid_shared_rollout_d64c32a16_r32_seed42_v3/phase05_gate_decision.json",
+  "gate_sha256": "0439fc68c2a924ada78d720ce0d66857a93458ac4e8b22c960c4a35475c6b388",
+  "schema_version": 1,
+  "status": "skipped_no_go",
+  "uniform_rank": 32
+}

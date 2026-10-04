@@ -1,0 +1,34 @@
+{
+  "checkpoint": "gradtop_original_random_b_r8to32_step50_fullbench_32768_seed42_repro_v1",
+  "base_model": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+  "lora_adapter": "/root/peft-for-rl/runs/random-b-original-repro-v1/ckpts/verl/DAPO-Math-17k/gradtop_probe12_r8to32_original_random_b_a2_b64m16n8_270_seed42_repro_v1/global_step_50/actor/peft_adapter",
+  "benchmarks": [
+    "aime24",
+    "aime25",
+    "amc23",
+    "hmmt_feb",
+    "math500",
+    "minerva"
+  ],
+  "total_requests": 7248,
+  "shard_requests": 1812,
+  "num_shards": 4,
+  "shard_index": 0,
+  "seed": 42,
+  "temperature": 0.6,
+  "top_p": 0.95,
+  "max_new_tokens": 32768,
+  "max_model_len": 34816,
+  "samples_small": 32,
+  "samples_large": 4,
+  "limit_per_benchmark": null,
+  "benchmark_snapshot_records": "/data/peft-for-rl-runtime/outputs/full_bench_eval/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42/records/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42.jsonl",
+  "benchmark_sizes": {
+    "aime24": 30,
+    "aime25": 30,
+    "amc23": 40,
+    "hmmt_feb": 30,
+    "math500": 500,
+    "minerva": 272
+  }
+}

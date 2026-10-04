@@ -1,0 +1,5781 @@
+{
+  "adaptive_utility": "stable_energy",
+  "allocation_mode": "adaptive",
+  "alpha_pattern": {
+    "model.layers.0.mlp.down_proj": 8,
+    "model.layers.0.mlp.gate_proj": 6,
+    "model.layers.0.mlp.up_proj": 6,
+    "model.layers.0.self_attn.k_proj": 28,
+    "model.layers.0.self_attn.o_proj": 12,
+    "model.layers.0.self_attn.q_proj": 14,
+    "model.layers.0.self_attn.v_proj": 28,
+    "model.layers.1.mlp.down_proj": 4,
+    "model.layers.1.mlp.gate_proj": 4,
+    "model.layers.1.mlp.up_proj": 4,
+    "model.layers.1.self_attn.k_proj": 62,
+    "model.layers.1.self_attn.o_proj": 24,
+    "model.layers.1.self_attn.q_proj": 20,
+    "model.layers.1.self_attn.v_proj": 16,
+    "model.layers.10.mlp.down_proj": 12,
+    "model.layers.10.mlp.gate_proj": 6,
+    "model.layers.10.mlp.up_proj": 6,
+    "model.layers.10.self_attn.k_proj": 58,
+    "model.layers.10.self_attn.o_proj": 60,
+    "model.layers.10.self_attn.q_proj": 40,
+    "model.layers.10.self_attn.v_proj": 34,
+    "model.layers.11.mlp.down_proj": 14,
+    "model.layers.11.mlp.gate_proj": 6,
+    "model.layers.11.mlp.up_proj": 6,
+    "model.layers.11.self_attn.k_proj": 58,
+    "model.layers.11.self_attn.o_proj": 42,
+    "model.layers.11.self_attn.q_proj": 32,
+    "model.layers.11.self_attn.v_proj": 28,
+    "model.layers.12.mlp.down_proj": 12,
+    "model.layers.12.mlp.gate_proj": 6,
+    "model.layers.12.mlp.up_proj": 8,
+    "model.layers.12.self_attn.k_proj": 62,
+    "model.layers.12.self_attn.o_proj": 40,
+    "model.layers.12.self_attn.q_proj": 38,
+    "model.layers.12.self_attn.v_proj": 34,
+    "model.layers.13.mlp.down_proj": 14,
+    "model.layers.13.mlp.gate_proj": 8,
+    "model.layers.13.mlp.up_proj": 8,
+    "model.layers.13.self_attn.k_proj": 60,
+    "model.layers.13.self_attn.o_proj": 54,
+    "model.layers.13.self_attn.q_proj": 34,
+    "model.layers.13.self_attn.v_proj": 40,
+    "model.layers.14.mlp.down_proj": 8,
+    "model.layers.14.mlp.gate_proj": 10,
+    "model.layers.14.mlp.up_proj": 8,
+    "model.layers.14.self_attn.k_proj": 62,
+    "model.layers.14.self_attn.o_proj": 40,
+    "model.layers.14.self_attn.q_proj": 46,
+    "model.layers.14.self_attn.v_proj": 38,
+    "model.layers.15.mlp.down_proj": 10,
+    "model.layers.15.mlp.gate_proj": 8,
+    "model.layers.15.mlp.up_proj": 6,
+    "model.layers.15.self_attn.k_proj": 54,
+    "model.layers.15.self_attn.o_proj": 56,
+    "model.layers.15.self_attn.q_proj": 34,
+    "model.layers.15.self_attn.v_proj": 36,
+    "model.layers.16.mlp.down_proj": 10,
+    "model.layers.16.mlp.gate_proj": 8,
+    "model.layers.16.mlp.up_proj": 6,
+    "model.layers.16.self_attn.k_proj": 60,
+    "model.layers.16.self_attn.o_proj": 50,
+    "model.layers.16.self_attn.q_proj": 44,
+    "model.layers.16.self_attn.v_proj": 42,
+    "model.layers.17.mlp.down_proj": 8,
+    "model.layers.17.mlp.gate_proj": 10,
+    "model.layers.17.mlp.up_proj": 10,
+    "model.layers.17.self_attn.k_proj": 58,
+    "model.layers.17.self_attn.o_proj": 62,
+    "model.layers.17.self_attn.q_proj": 38,
+    "model.layers.17.self_attn.v_proj": 38,
+    "model.layers.18.mlp.down_proj": 10,
+    "model.layers.18.mlp.gate_proj": 10,
+    "model.layers.18.mlp.up_proj": 10,
+    "model.layers.18.self_attn.k_proj": 64,
+    "model.layers.18.self_attn.o_proj": 52,
+    "model.layers.18.self_attn.q_proj": 40,
+    "model.layers.18.self_attn.v_proj": 42,
+    "model.layers.19.mlp.down_proj": 8,
+    "model.layers.19.mlp.gate_proj": 10,
+    "model.layers.19.mlp.up_proj": 10,
+    "model.layers.19.self_attn.k_proj": 64,
+    "model.layers.19.self_attn.o_proj": 58,
+    "model.layers.19.self_attn.q_proj": 44,
+    "model.layers.19.self_attn.v_proj": 38,
+    "model.layers.2.mlp.down_proj": 4,
+    "model.layers.2.mlp.gate_proj": 4,
+    "model.layers.2.mlp.up_proj": 4,
+    "model.layers.2.self_attn.k_proj": 62,
+    "model.layers.2.self_attn.o_proj": 42,
+    "model.layers.2.self_attn.q_proj": 42,
+    "model.layers.2.self_attn.v_proj": 26,
+    "model.layers.20.mlp.down_proj": 8,
+    "model.layers.20.mlp.gate_proj": 8,
+    "model.layers.20.mlp.up_proj": 8,
+    "model.layers.20.self_attn.k_proj": 64,
+    "model.layers.20.self_attn.o_proj": 64,
+    "model.layers.20.self_attn.q_proj": 48,
+    "model.layers.20.self_attn.v_proj": 48,
+    "model.layers.21.mlp.down_proj": 6,
+    "model.layers.21.mlp.gate_proj": 8,
+    "model.layers.21.mlp.up_proj": 8,
+    "model.layers.21.self_attn.k_proj": 64,
+    "model.layers.21.self_attn.o_proj": 30,
+    "model.layers.21.self_attn.q_proj": 60,
+    "model.layers.21.self_attn.v_proj": 46,
+    "model.layers.22.mlp.down_proj": 8,
+    "model.layers.22.mlp.gate_proj": 8,
+    "model.layers.22.mlp.up_proj": 6,
+    "model.layers.22.self_attn.k_proj": 64,
+    "model.layers.22.self_attn.o_proj": 64,
+    "model.layers.22.self_attn.q_proj": 52,
+    "model.layers.22.self_attn.v_proj": 46,
+    "model.layers.23.mlp.down_proj": 6,
+    "model.layers.23.mlp.gate_proj": 6,
+    "model.layers.23.mlp.up_proj": 6,
+    "model.layers.23.self_attn.k_proj": 64,
+    "model.layers.23.self_attn.o_proj": 24,
+    "model.layers.23.self_attn.q_proj": 50,
+    "model.layers.23.self_attn.v_proj": 48,
+    "model.layers.24.mlp.down_proj": 8,
+    "model.layers.24.mlp.gate_proj": 6,
+    "model.layers.24.mlp.up_proj": 6,
+    "model.layers.24.self_attn.k_proj": 64,
+    "model.layers.24.self_attn.o_proj": 30,
+    "model.layers.24.self_attn.q_proj": 64,
+    "model.layers.24.self_attn.v_proj": 54,
+    "model.layers.25.mlp.down_proj": 8,
+    "model.layers.25.mlp.gate_proj": 8,
+    "model.layers.25.mlp.up_proj": 6,
+    "model.layers.25.self_attn.k_proj": 64,
+    "model.layers.25.self_attn.o_proj": 24,
+    "model.layers.25.self_attn.q_proj": 62,
+    "model.layers.25.self_attn.v_proj": 24,
+    "model.layers.26.mlp.down_proj": 8,
+    "model.layers.26.mlp.gate_proj": 8,
+    "model.layers.26.mlp.up_proj": 6,
+    "model.layers.26.self_attn.k_proj": 64,
+    "model.layers.26.self_attn.o_proj": 24,
+    "model.layers.26.self_attn.q_proj": 60,
+    "model.layers.26.self_attn.v_proj": 38,
+    "model.layers.27.mlp.down_proj": 4,
+    "model.layers.27.mlp.gate_proj": 8,
+    "model.layers.27.mlp.up_proj": 8,
+    "model.layers.27.self_attn.k_proj": 64,
+    "model.layers.27.self_attn.o_proj": 8,
+    "model.layers.27.self_attn.q_proj": 48,
+    "model.layers.27.self_attn.v_proj": 32,
+    "model.layers.3.mlp.down_proj": 8,
+    "model.layers.3.mlp.gate_proj": 6,
+    "model.layers.3.mlp.up_proj": 4,
+    "model.layers.3.self_attn.k_proj": 54,
+    "model.layers.3.self_attn.o_proj": 42,
+    "model.layers.3.self_attn.q_proj": 30,
+    "model.layers.3.self_attn.v_proj": 18,
+    "model.layers.4.mlp.down_proj": 6,
+    "model.layers.4.mlp.gate_proj": 6,
+    "model.layers.4.mlp.up_proj": 4,
+    "model.layers.4.self_attn.k_proj": 60,
+    "model.layers.4.self_attn.o_proj": 52,
+    "model.layers.4.self_attn.q_proj": 32,
+    "model.layers.4.self_attn.v_proj": 20,
+    "model.layers.5.mlp.down_proj": 8,
+    "model.layers.5.mlp.gate_proj": 6,
+    "model.layers.5.mlp.up_proj": 6,
+    "model.layers.5.self_attn.k_proj": 38,
+    "model.layers.5.self_attn.o_proj": 36,
+    "model.layers.5.self_attn.q_proj": 38,
+    "model.layers.5.self_attn.v_proj": 22,
+    "model.layers.6.mlp.down_proj": 8,
+    "model.layers.6.mlp.gate_proj": 6,
+    "model.layers.6.mlp.up_proj": 8,
+    "model.layers.6.self_attn.k_proj": 42,
+    "model.layers.6.self_attn.o_proj": 42,
+    "model.layers.6.self_attn.q_proj": 50,
+    "model.layers.6.self_attn.v_proj": 34,
+    "model.layers.7.mlp.down_proj": 6,
+    "model.layers.7.mlp.gate_proj": 6,
+    "model.layers.7.mlp.up_proj": 6,
+    "model.layers.7.self_attn.k_proj": 56,
+    "model.layers.7.self_attn.o_proj": 48,
+    "model.layers.7.self_attn.q_proj": 34,
+    "model.layers.7.self_attn.v_proj": 34,
+    "model.layers.8.mlp.down_proj": 8,
+    "model.layers.8.mlp.gate_proj": 8,
+    "model.layers.8.mlp.up_proj": 8,
+    "model.layers.8.self_attn.k_proj": 62,
+    "model.layers.8.self_attn.o_proj": 44,
+    "model.layers.8.self_attn.q_proj": 50,
+    "model.layers.8.self_attn.v_proj": 48,
+    "model.layers.9.mlp.down_proj": 12,
+    "model.layers.9.mlp.gate_proj": 6,
+    "model.layers.9.mlp.up_proj": 8,
+    "model.layers.9.self_attn.k_proj": 56,
+    "model.layers.9.self_attn.o_proj": 44,
+    "model.layers.9.self_attn.q_proj": 40,
+    "model.layers.9.self_attn.v_proj": 32
+  },
+  "budget_residual": 1024,
+  "budget_respected": true,
+  "candidate_method": "mean",
+  "constant_scaling": 2.0,
+  "method": "full_gradient_signed_grpo_mean_adaptive_eqr8_rmin2_stable_energy",
+  "modules": {
+    "model.layers.0.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        3,
+        4,
+        5
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.4346216981363672,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.0.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5025439898814129,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.0.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5298213165160642,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.0.self_attn.k_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        15,
+        17,
+        19,
+        30
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.8747617564930986,
+      "rank": 14,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 25088,
+      "u_score_capture": 0.0
+    },
+    "model.layers.0.self_attn.o_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8599320540102385,
+      "rank": 6,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 18432,
+      "u_score_capture": 0.0
+    },
+    "model.layers.0.self_attn.q_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        9
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.873666350113315,
+      "rank": 7,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 21504,
+      "u_score_capture": 0.0
+    },
+    "model.layers.0.self_attn.v_proj": {
+      "atom_indices": [
+        5,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        18
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9195432411973399,
+      "rank": 14,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 25088,
+      "u_score_capture": 1.0
+    },
+    "model.layers.1.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.8414739337138498,
+      "rank": 2,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 20992,
+      "u_score_capture": 0.0
+    },
+    "model.layers.1.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.9604952530377311,
+      "rank": 2,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 20992,
+      "u_score_capture": 0.0
+    },
+    "model.layers.1.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.9684879063035167,
+      "rank": 2,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 20992,
+      "u_score_capture": 0.0
+    },
+    "model.layers.1.self_attn.k_proj": {
+      "atom_indices": [
+        21,
+        9,
+        31,
+        23,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        22,
+        24,
+        25,
+        26,
+        27,
+        28,
+        30
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9903663643726959,
+      "rank": 31,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 55552,
+      "u_score_capture": 1.0
+    },
+    "model.layers.1.self_attn.o_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8780137376256762,
+      "rank": 12,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 36864,
+      "u_score_capture": 0.0
+    },
+    "model.layers.1.self_attn.q_proj": {
+      "atom_indices": [
+        8,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        12
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.863076597933523,
+      "rank": 10,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 30720,
+      "u_score_capture": 0.8195869367623165
+    },
+    "model.layers.1.self_attn.v_proj": {
+      "atom_indices": [
+        7,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9429801339582955,
+      "rank": 8,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 14336,
+      "u_score_capture": 0.5768148719311116
+    },
+    "model.layers.10.mlp.down_proj": {
+      "atom_indices": [
+        18,
+        0,
+        1,
+        3,
+        4,
+        5
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6519658497912225,
+      "rank": 6,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 62976,
+      "u_score_capture": 0.22788121915011147
+    },
+    "model.layers.10.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6549987882838862,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.10.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.689791379967678,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.10.self_attn.k_proj": {
+      "atom_indices": [
+        13,
+        16,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        28,
+        30
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9743516660773787,
+      "rank": 29,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 51968,
+      "u_score_capture": 1.0
+    },
+    "model.layers.10.self_attn.o_proj": {
+      "atom_indices": [
+        15,
+        19,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16,
+        17,
+        18,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        28,
+        29,
+        31
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9798320754013107,
+      "rank": 30,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 92160,
+      "u_score_capture": 0.824960957807052
+    },
+    "model.layers.10.self_attn.q_proj": {
+      "atom_indices": [
+        5,
+        2,
+        19,
+        3,
+        12,
+        15,
+        0,
+        1,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        13,
+        14,
+        16,
+        17,
+        21
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9181574955847708,
+      "rank": 20,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 61440,
+      "u_score_capture": 1.0000000646618812
+    },
+    "model.layers.10.self_attn.v_proj": {
+      "atom_indices": [
+        9,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.953885013390626,
+      "rank": 17,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 30464,
+      "u_score_capture": 1.0
+    },
+    "model.layers.11.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        8
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6474728541274153,
+      "rank": 7,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 73472,
+      "u_score_capture": 0.0
+    },
+    "model.layers.11.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6718426210011856,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.11.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6806868592373768,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.11.self_attn.k_proj": {
+      "atom_indices": [
+        10,
+        11,
+        19,
+        14,
+        5,
+        25,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        15,
+        16,
+        17,
+        18,
+        20,
+        21,
+        22,
+        23,
+        24,
+        26,
+        28,
+        29
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9762035339586003,
+      "rank": 29,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 51968,
+      "u_score_capture": 0.99999991789483
+    },
+    "model.layers.11.self_attn.o_proj": {
+      "atom_indices": [
+        0,
+        13,
+        26,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9002651052945498,
+      "rank": 21,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 64512,
+      "u_score_capture": 0.9348450363926324
+    },
+    "model.layers.11.self_attn.q_proj": {
+      "atom_indices": [
+        12,
+        10,
+        6,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        14,
+        16,
+        19
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8807574298716253,
+      "rank": 16,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 49152,
+      "u_score_capture": 0.8044946179933244
+    },
+    "model.layers.11.self_attn.v_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        15
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9284909256307012,
+      "rank": 14,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 25088,
+      "u_score_capture": 0.0
+    },
+    "model.layers.12.mlp.down_proj": {
+      "atom_indices": [
+        13,
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6208174689504363,
+      "rank": 6,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 62976,
+      "u_score_capture": 0.3364872102038951
+    },
+    "model.layers.12.mlp.gate_proj": {
+      "atom_indices": [
+        1,
+        0,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6288547822624799,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.341247255917517
+    },
+    "model.layers.12.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.684465211603139,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.12.self_attn.k_proj": {
+      "atom_indices": [
+        0,
+        28,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        29,
+        30
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.991636852933395,
+      "rank": 31,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 55552,
+      "u_score_capture": 1.0
+    },
+    "model.layers.12.self_attn.o_proj": {
+      "atom_indices": [
+        8,
+        10,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        19,
+        22
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9002876566559006,
+      "rank": 20,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 61440,
+      "u_score_capture": 0.7695577199429968
+    },
+    "model.layers.12.self_attn.q_proj": {
+      "atom_indices": [
+        0,
+        2,
+        13,
+        17,
+        11,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12,
+        14,
+        16,
+        18,
+        19
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8952933113402629,
+      "rank": 19,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 58368,
+      "u_score_capture": 0.9933765616639789
+    },
+    "model.layers.12.self_attn.v_proj": {
+      "atom_indices": [
+        11,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16,
+        18
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9329877889747896,
+      "rank": 17,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 30464,
+      "u_score_capture": 0.6780791308249132
+    },
+    "model.layers.13.mlp.down_proj": {
+      "atom_indices": [
+        2,
+        6,
+        4,
+        0,
+        1,
+        3,
+        7
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6754363021266947,
+      "rank": 7,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 73472,
+      "u_score_capture": 0.3450479972972358
+    },
+    "model.layers.13.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6293942774646354,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.13.mlp.up_proj": {
+      "atom_indices": [
+        2,
+        0,
+        1,
+        5
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6606675724830543,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.07204609500905187
+    },
+    "model.layers.13.self_attn.k_proj": {
+      "atom_indices": [
+        2,
+        5,
+        13,
+        4,
+        12,
+        21,
+        27,
+        19,
+        29,
+        20,
+        23,
+        0,
+        1,
+        3,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        14,
+        15,
+        16,
+        17,
+        18,
+        22,
+        24,
+        25,
+        28,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9835447826884971,
+      "rank": 30,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 53760,
+      "u_score_capture": 1.0000000633033912
+    },
+    "model.layers.13.self_attn.o_proj": {
+      "atom_indices": [
+        6,
+        5,
+        10,
+        4,
+        12,
+        16,
+        0,
+        1,
+        2,
+        3,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        15,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        27
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9590606473131371,
+      "rank": 27,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 82944,
+      "u_score_capture": 1.0
+    },
+    "model.layers.13.self_attn.q_proj": {
+      "atom_indices": [
+        0,
+        1,
+        16,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8837283681408076,
+      "rank": 17,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 52224,
+      "u_score_capture": 0.9701785303626309
+    },
+    "model.layers.13.self_attn.v_proj": {
+      "atom_indices": [
+        0,
+        2,
+        4,
+        7,
+        8,
+        1,
+        3,
+        5,
+        6,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9543282232092163,
+      "rank": 20,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 35840,
+      "u_score_capture": 0.9865345458582393
+    },
+    "model.layers.14.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5421772537079642,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.14.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        5
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.675550009004835,
+      "rank": 5,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 0.0
+    },
+    "model.layers.14.mlp.up_proj": {
+      "atom_indices": [
+        1,
+        0,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6742860726247424,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.5338639991679572
+    },
+    "model.layers.14.self_attn.k_proj": {
+      "atom_indices": [
+        3,
+        17,
+        15,
+        24,
+        31,
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        25,
+        26,
+        27,
+        29,
+        30
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9894652421531634,
+      "rank": 31,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 55552,
+      "u_score_capture": 1.0
+    },
+    "model.layers.14.self_attn.o_proj": {
+      "atom_indices": [
+        5,
+        2,
+        21,
+        0,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8963473900226939,
+      "rank": 20,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 61440,
+      "u_score_capture": 0.868038334339647
+    },
+    "model.layers.14.self_attn.q_proj": {
+      "atom_indices": [
+        2,
+        0,
+        17,
+        11,
+        18,
+        12,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        13,
+        14,
+        15,
+        16,
+        22,
+        25,
+        27,
+        30
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9199395681700574,
+      "rank": 23,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 70656,
+      "u_score_capture": 0.9944378270463659
+    },
+    "model.layers.14.self_attn.v_proj": {
+      "atom_indices": [
+        4,
+        8,
+        15,
+        12,
+        10,
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        9,
+        11,
+        13,
+        14,
+        16,
+        17,
+        19
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9479288733434813,
+      "rank": 19,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 34048,
+      "u_score_capture": 0.9072035204194353
+    },
+    "model.layers.15.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        6,
+        7
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5818984426805756,
+      "rank": 5,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 0.0
+    },
+    "model.layers.15.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6512087385950027,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.15.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6299812002086518,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.8455780569254999
+    },
+    "model.layers.15.self_attn.k_proj": {
+      "atom_indices": [
+        0,
+        11,
+        12,
+        6,
+        15,
+        19,
+        22,
+        20,
+        24,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        13,
+        14,
+        16,
+        17,
+        18,
+        23,
+        26,
+        27,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9502584769225685,
+      "rank": 27,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 48384,
+      "u_score_capture": 0.9778306046591246
+    },
+    "model.layers.15.self_attn.o_proj": {
+      "atom_indices": [
+        5,
+        26,
+        9,
+        13,
+        15,
+        14,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        25,
+        27,
+        28
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9619698143118784,
+      "rank": 28,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 86016,
+      "u_score_capture": 0.9948779246924674
+    },
+    "model.layers.15.self_attn.q_proj": {
+      "atom_indices": [
+        15,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16,
+        18
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8942936463250695,
+      "rank": 17,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 52224,
+      "u_score_capture": 0.23497267369275118
+    },
+    "model.layers.15.self_attn.v_proj": {
+      "atom_indices": [
+        2,
+        9,
+        12,
+        6,
+        7,
+        10,
+        0,
+        1,
+        3,
+        4,
+        5,
+        8,
+        11,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9512335988996163,
+      "rank": 18,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 32256,
+      "u_score_capture": 0.9962925791699141
+    },
+    "model.layers.16.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        5
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5524756002531974,
+      "rank": 5,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 0.0
+    },
+    "model.layers.16.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6529994087799557,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.16.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6370587876799025,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.16.self_attn.k_proj": {
+      "atom_indices": [
+        2,
+        4,
+        6,
+        20,
+        9,
+        25,
+        15,
+        0,
+        1,
+        3,
+        5,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16,
+        17,
+        18,
+        19,
+        21,
+        22,
+        23,
+        24,
+        26,
+        27,
+        29,
+        30
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9840975710403518,
+      "rank": 30,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 53760,
+      "u_score_capture": 1.0000000808928435
+    },
+    "model.layers.16.self_attn.o_proj": {
+      "atom_indices": [
+        3,
+        10,
+        12,
+        20,
+        11,
+        21,
+        30,
+        18,
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        13,
+        14,
+        15,
+        16,
+        17,
+        22,
+        24,
+        25
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9396250434226272,
+      "rank": 25,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 76800,
+      "u_score_capture": 0.9485253185197479
+    },
+    "model.layers.16.self_attn.q_proj": {
+      "atom_indices": [
+        7,
+        12,
+        3,
+        11,
+        19,
+        2,
+        16,
+        0,
+        1,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        13,
+        14,
+        15,
+        17,
+        18,
+        20,
+        25
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9171597614656838,
+      "rank": 22,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 67584,
+      "u_score_capture": 0.9740264841807789
+    },
+    "model.layers.16.self_attn.v_proj": {
+      "atom_indices": [
+        0,
+        2,
+        19,
+        10,
+        6,
+        15,
+        12,
+        1,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16,
+        17,
+        18,
+        20
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.955036223288359,
+      "rank": 21,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 37632,
+      "u_score_capture": 0.9719429474009239
+    },
+    "model.layers.17.mlp.down_proj": {
+      "atom_indices": [
+        4,
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5682706141567104,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.18769810492273814
+    },
+    "model.layers.17.mlp.gate_proj": {
+      "atom_indices": [
+        3,
+        0,
+        1,
+        2,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7136513417150595,
+      "rank": 5,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 0.2207555372442252
+    },
+    "model.layers.17.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.728229406024955,
+      "rank": 5,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 0.0
+    },
+    "model.layers.17.self_attn.k_proj": {
+      "atom_indices": [
+        1,
+        10,
+        9,
+        21,
+        6,
+        19,
+        0,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        20,
+        23,
+        24,
+        25,
+        27,
+        28,
+        29,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9748964281812298,
+      "rank": 29,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 51968,
+      "u_score_capture": 1.0
+    },
+    "model.layers.17.self_attn.o_proj": {
+      "atom_indices": [
+        0,
+        19,
+        10,
+        6,
+        27,
+        31,
+        13,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        18,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        29,
+        30
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9900632701673568,
+      "rank": 31,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 95232,
+      "u_score_capture": 1.0
+    },
+    "model.layers.17.self_attn.q_proj": {
+      "atom_indices": [
+        14,
+        11,
+        12,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        13,
+        15,
+        16,
+        19,
+        21
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9083261603786524,
+      "rank": 19,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 58368,
+      "u_score_capture": 0.7378476191092092
+    },
+    "model.layers.17.self_attn.v_proj": {
+      "atom_indices": [
+        7,
+        6,
+        15,
+        10,
+        14,
+        11,
+        18,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        12,
+        13,
+        16,
+        17
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9545483344768341,
+      "rank": 19,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 34048,
+      "u_score_capture": 0.8918898240687748
+    },
+    "model.layers.18.mlp.down_proj": {
+      "atom_indices": [
+        2,
+        0,
+        1,
+        3,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6101977469896023,
+      "rank": 5,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 0.14976966481262458
+    },
+    "model.layers.18.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6727846487699667,
+      "rank": 5,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 0.0
+    },
+    "model.layers.18.mlp.up_proj": {
+      "atom_indices": [
+        1,
+        0,
+        2,
+        3,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6902731617747211,
+      "rank": 5,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 0.5395645177510828
+    },
+    "model.layers.18.self_attn.k_proj": {
+      "atom_indices": [
+        4,
+        12,
+        13,
+        14,
+        26,
+        23,
+        25,
+        16,
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        15,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 1.0,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 1.0000000735245949
+    },
+    "model.layers.18.self_attn.o_proj": {
+      "atom_indices": [
+        5,
+        21,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        22,
+        23,
+        24,
+        25
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9451450195548504,
+      "rank": 26,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 79872,
+      "u_score_capture": 0.5007127016224577
+    },
+    "model.layers.18.self_attn.q_proj": {
+      "atom_indices": [
+        3,
+        20,
+        4,
+        21,
+        0,
+        1,
+        2,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        17,
+        19
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8911383304800877,
+      "rank": 20,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 61440,
+      "u_score_capture": 1.0
+    },
+    "model.layers.18.self_attn.v_proj": {
+      "atom_indices": [
+        1,
+        17,
+        9,
+        4,
+        5,
+        0,
+        2,
+        3,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        18,
+        19,
+        20
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9497311256168851,
+      "rank": 21,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 37632,
+      "u_score_capture": 0.9807409134197891
+    },
+    "model.layers.19.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5256171983256572,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.19.mlp.gate_proj": {
+      "atom_indices": [
+        2,
+        1,
+        0,
+        3,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7007937797430641,
+      "rank": 5,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 1.0
+    },
+    "model.layers.19.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7206035203016409,
+      "rank": 5,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 52480,
+      "u_score_capture": 0.0
+    },
+    "model.layers.19.self_attn.k_proj": {
+      "atom_indices": [
+        5,
+        22,
+        16,
+        19,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        17,
+        18,
+        20,
+        21,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9999999287200422,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 1.0000001086682253
+    },
+    "model.layers.19.self_attn.o_proj": {
+      "atom_indices": [
+        17,
+        27,
+        12,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        13,
+        14,
+        15,
+        16,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        29
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9699920194288927,
+      "rank": 29,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 89088,
+      "u_score_capture": 1.0
+    },
+    "model.layers.19.self_attn.q_proj": {
+      "atom_indices": [
+        5,
+        16,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9108166142781378,
+      "rank": 22,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 67584,
+      "u_score_capture": 1.0
+    },
+    "model.layers.19.self_attn.v_proj": {
+      "atom_indices": [
+        19,
+        15,
+        6,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16,
+        18
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9436251693930807,
+      "rank": 19,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 34048,
+      "u_score_capture": 0.3299222349898092
+    },
+    "model.layers.2.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.993689698767783,
+      "rank": 2,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 20992,
+      "u_score_capture": 0.0
+    },
+    "model.layers.2.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.8778402649710128,
+      "rank": 2,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 20992,
+      "u_score_capture": 0.0
+    },
+    "model.layers.2.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.8915612991361134,
+      "rank": 2,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 20992,
+      "u_score_capture": 0.0
+    },
+    "model.layers.2.self_attn.k_proj": {
+      "atom_indices": [
+        24,
+        17,
+        16,
+        15,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        18,
+        19,
+        20,
+        22,
+        23,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9874395700505629,
+      "rank": 31,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 55552,
+      "u_score_capture": 1.0
+    },
+    "model.layers.2.self_attn.o_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        20,
+        22,
+        23
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9052474204508084,
+      "rank": 21,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 64512,
+      "u_score_capture": 0.0
+    },
+    "model.layers.2.self_attn.q_proj": {
+      "atom_indices": [
+        10,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14,
+        15,
+        18,
+        20,
+        21,
+        22,
+        27
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9089655613603355,
+      "rank": 21,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 64512,
+      "u_score_capture": 0.1754448020189386
+    },
+    "model.layers.2.self_attn.v_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        14
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9139770073300498,
+      "rank": 13,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 23296,
+      "u_score_capture": 0.0
+    },
+    "model.layers.20.mlp.down_proj": {
+      "atom_indices": [
+        3,
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.4949437178179281,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.08455835189774623
+    },
+    "model.layers.20.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6346028676564884,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.20.mlp.up_proj": {
+      "atom_indices": [
+        1,
+        0,
+        2,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6489128149271314,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.43152100942221705
+    },
+    "model.layers.20.self_attn.k_proj": {
+      "atom_indices": [
+        9,
+        14,
+        8,
+        5,
+        20,
+        11,
+        2,
+        17,
+        22,
+        0,
+        1,
+        3,
+        4,
+        6,
+        7,
+        10,
+        12,
+        13,
+        15,
+        16,
+        18,
+        19,
+        21,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 1.0,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 1.0000000777497904
+    },
+    "model.layers.20.self_attn.o_proj": {
+      "atom_indices": [
+        8,
+        27,
+        23,
+        7,
+        16,
+        29,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        25,
+        26,
+        28,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 1.0000000726979028,
+      "rank": 32,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 98304,
+      "u_score_capture": 0.9999998936220685
+    },
+    "model.layers.20.self_attn.q_proj": {
+      "atom_indices": [
+        0,
+        13,
+        2,
+        3,
+        8,
+        18,
+        10,
+        21,
+        1,
+        4,
+        5,
+        6,
+        7,
+        9,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        19,
+        20,
+        22,
+        23
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9294695320422521,
+      "rank": 24,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 73728,
+      "u_score_capture": 0.951158314609745
+    },
+    "model.layers.20.self_attn.v_proj": {
+      "atom_indices": [
+        6,
+        13,
+        8,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9642658650812612,
+      "rank": 24,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 43008,
+      "u_score_capture": 1.0
+    },
+    "model.layers.21.mlp.down_proj": {
+      "atom_indices": [
+        1,
+        0,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5578329494529803,
+      "rank": 3,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.12971903664397283
+    },
+    "model.layers.21.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7033247304218364,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.21.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7181518214541884,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.21.self_attn.k_proj": {
+      "atom_indices": [
+        20,
+        15,
+        18,
+        23,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16,
+        17,
+        19,
+        21,
+        22,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 1.0000001140379327,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 1.0
+    },
+    "model.layers.21.self_attn.o_proj": {
+      "atom_indices": [
+        3,
+        8,
+        9,
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8738059260824166,
+      "rank": 15,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 46080,
+      "u_score_capture": 0.9350408031144711
+    },
+    "model.layers.21.self_attn.q_proj": {
+      "atom_indices": [
+        8,
+        31,
+        22,
+        14,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        23,
+        24,
+        25,
+        27,
+        28,
+        29
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9779699804905588,
+      "rank": 30,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 92160,
+      "u_score_capture": 1.0
+    },
+    "model.layers.21.self_attn.v_proj": {
+      "atom_indices": [
+        5,
+        6,
+        2,
+        15,
+        16,
+        0,
+        1,
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9587046306548066,
+      "rank": 23,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 41216,
+      "u_score_capture": 0.9605835464931236
+    },
+    "model.layers.22.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6229346712052883,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.22.mlp.gate_proj": {
+      "atom_indices": [
+        3,
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7392191444302105,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.2330764892040087
+    },
+    "model.layers.22.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7021790466262204,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.22.self_attn.k_proj": {
+      "atom_indices": [
+        10,
+        31,
+        26,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        27,
+        28,
+        29,
+        30
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 1.0,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 1.000000095710962
+    },
+    "model.layers.22.self_attn.o_proj": {
+      "atom_indices": [
+        6,
+        14,
+        29,
+        30,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        31
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 1.0,
+      "rank": 32,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 98304,
+      "u_score_capture": 1.0
+    },
+    "model.layers.22.self_attn.q_proj": {
+      "atom_indices": [
+        6,
+        14,
+        21,
+        11,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        22,
+        24,
+        25,
+        27
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9385828334210156,
+      "rank": 26,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 79872,
+      "u_score_capture": 0.8763795184804658
+    },
+    "model.layers.22.self_attn.v_proj": {
+      "atom_indices": [
+        1,
+        13,
+        5,
+        18,
+        16,
+        12,
+        7,
+        23,
+        0,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        11,
+        14,
+        15,
+        17,
+        20,
+        21,
+        22
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9534257881765471,
+      "rank": 23,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 41216,
+      "u_score_capture": 0.9747170300220126
+    },
+    "model.layers.23.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5516483450126959,
+      "rank": 3,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.23.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7283201027767349,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.23.mlp.up_proj": {
+      "atom_indices": [
+        1,
+        0,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7407281203150095,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.48723069723714907
+    },
+    "model.layers.23.self_attn.k_proj": {
+      "atom_indices": [
+        0,
+        12,
+        14,
+        5,
+        20,
+        15,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        13,
+        16,
+        17,
+        18,
+        19,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9999999175321393,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 1.0000000670216536
+    },
+    "model.layers.23.self_attn.o_proj": {
+      "atom_indices": [
+        2,
+        0,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        13
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8514418899705439,
+      "rank": 12,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 36864,
+      "u_score_capture": 0.767579351810091
+    },
+    "model.layers.23.self_attn.q_proj": {
+      "atom_indices": [
+        3,
+        10,
+        5,
+        18,
+        11,
+        26,
+        0,
+        1,
+        2,
+        4,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        19,
+        20,
+        22,
+        23,
+        25
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9345959885407805,
+      "rank": 25,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 76800,
+      "u_score_capture": 0.9888256020961506
+    },
+    "model.layers.23.self_attn.v_proj": {
+      "atom_indices": [
+        1,
+        22,
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        24
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9662074552504719,
+      "rank": 24,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 43008,
+      "u_score_capture": 0.9379908203011734
+    },
+    "model.layers.24.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6724616422371733,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.24.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6867911484139094,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.24.mlp.up_proj": {
+      "atom_indices": [
+        1,
+        0,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6985121568533883,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.6907402286373422
+    },
+    "model.layers.24.self_attn.k_proj": {
+      "atom_indices": [
+        24,
+        25,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 1.0000000908688609,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 1.0
+    },
+    "model.layers.24.self_attn.o_proj": {
+      "atom_indices": [
+        3,
+        4,
+        7,
+        10,
+        0,
+        1,
+        2,
+        5,
+        6,
+        8,
+        9,
+        11,
+        12,
+        14,
+        16
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8533564840096027,
+      "rank": 15,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 46080,
+      "u_score_capture": 0.9199824143408214
+    },
+    "model.layers.24.self_attn.q_proj": {
+      "atom_indices": [
+        28,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 1.0,
+      "rank": 32,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 98304,
+      "u_score_capture": 1.0
+    },
+    "model.layers.24.self_attn.v_proj": {
+      "atom_indices": [
+        5,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        25,
+        26,
+        27
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9744397714286402,
+      "rank": 27,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 48384,
+      "u_score_capture": 0.4651429419019351
+    },
+    "model.layers.25.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.622257967306585,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.25.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        2,
+        3,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7010093211453166,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.8117265735432484
+    },
+    "model.layers.25.mlp.up_proj": {
+      "atom_indices": [
+        2,
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6830302265349734,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.6506240644947822
+    },
+    "model.layers.25.self_attn.k_proj": {
+      "atom_indices": [
+        6,
+        14,
+        8,
+        28,
+        26,
+        11,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10,
+        12,
+        13,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        27,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9999999013349578,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 1.0000000915155562
+    },
+    "model.layers.25.self_attn.o_proj": {
+      "atom_indices": [
+        2,
+        7,
+        5,
+        11,
+        3,
+        8,
+        0,
+        1,
+        4,
+        6,
+        10,
+        13
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.843763503534547,
+      "rank": 12,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 36864,
+      "u_score_capture": 0.8683474557508962
+    },
+    "model.layers.25.self_attn.q_proj": {
+      "atom_indices": [
+        3,
+        10,
+        16,
+        20,
+        21,
+        11,
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        14,
+        15,
+        17,
+        18,
+        19,
+        22,
+        23,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9883822222369525,
+      "rank": 31,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 95232,
+      "u_score_capture": 0.9999998827243876
+    },
+    "model.layers.25.self_attn.v_proj": {
+      "atom_indices": [
+        5,
+        3,
+        2,
+        0,
+        1,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9209208043937644,
+      "rank": 12,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 21504,
+      "u_score_capture": 0.9401813637682355
+    },
+    "model.layers.26.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7247220662358446,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.48597489864432125
+    },
+    "model.layers.26.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7191655281954267,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.26.mlp.up_proj": {
+      "atom_indices": [
+        3,
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6954778348996388,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.6861077434432897
+    },
+    "model.layers.26.self_attn.k_proj": {
+      "atom_indices": [
+        2,
+        3,
+        15,
+        11,
+        4,
+        20,
+        27,
+        13,
+        7,
+        14,
+        26,
+        1,
+        0,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16,
+        17,
+        18,
+        19,
+        21,
+        22,
+        23,
+        24,
+        25,
+        28,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9999998824356512,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 0.999999924935052
+    },
+    "model.layers.26.self_attn.o_proj": {
+      "atom_indices": [
+        9,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        10,
+        11,
+        12,
+        14
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8407953259553222,
+      "rank": 12,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 36864,
+      "u_score_capture": 0.035791574508502004
+    },
+    "model.layers.26.self_attn.q_proj": {
+      "atom_indices": [
+        15,
+        13,
+        19,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16,
+        17,
+        18,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        27,
+        28,
+        29,
+        30
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9776041713147612,
+      "rank": 30,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 92160,
+      "u_score_capture": 1.0
+    },
+    "model.layers.26.self_attn.v_proj": {
+      "atom_indices": [
+        0,
+        5,
+        4,
+        10,
+        15,
+        13,
+        1,
+        2,
+        3,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        14,
+        18,
+        19,
+        20
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9361485284374645,
+      "rank": 19,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 34048,
+      "u_score_capture": 0.9208092481758096
+    },
+    "model.layers.27.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7451784243463458,
+      "rank": 2,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 20992,
+      "u_score_capture": 0.0
+    },
+    "model.layers.27.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7835290180454423,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.27.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7764215595263684,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.27.self_attn.k_proj": {
+      "atom_indices": [
+        0,
+        2,
+        6,
+        11,
+        15,
+        5,
+        31,
+        27,
+        18,
+        1,
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16,
+        17,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        28,
+        29,
+        30
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 1.0,
+      "rank": 32,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 57344,
+      "u_score_capture": 1.0000000708860903
+    },
+    "model.layers.27.self_attn.o_proj": {
+      "atom_indices": [
+        5,
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8838973980073984,
+      "rank": 4,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 12288,
+      "u_score_capture": 0.257549371668068
+    },
+    "model.layers.27.self_attn.q_proj": {
+      "atom_indices": [
+        0,
+        3,
+        17,
+        19,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        18,
+        20,
+        23,
+        24,
+        27
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9267922127153366,
+      "rank": 24,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 73728,
+      "u_score_capture": 0.9856346517730371
+    },
+    "model.layers.27.self_attn.v_proj": {
+      "atom_indices": [
+        3,
+        10,
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        14,
+        15,
+        21,
+        22
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9296016536046473,
+      "rank": 16,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 28672,
+      "u_score_capture": 0.15727296942604602
+    },
+    "model.layers.3.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6404751737029467,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.3.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.8755820241539211,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.3.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.8508575500904351,
+      "rank": 2,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 20992,
+      "u_score_capture": 0.0
+    },
+    "model.layers.3.self_attn.k_proj": {
+      "atom_indices": [
+        7,
+        8,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        9,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        29,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9516348460732427,
+      "rank": 27,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 48384,
+      "u_score_capture": 1.0
+    },
+    "model.layers.3.self_attn.o_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        20,
+        22
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9079381710892815,
+      "rank": 21,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 64512,
+      "u_score_capture": 0.0
+    },
+    "model.layers.3.self_attn.q_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        12,
+        15,
+        16,
+        17,
+        19
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.861991672673147,
+      "rank": 15,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 46080,
+      "u_score_capture": 0.0
+    },
+    "model.layers.3.self_attn.v_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9424144267821495,
+      "rank": 9,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 16128,
+      "u_score_capture": 0.0
+    },
+    "model.layers.4.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6355042925486598,
+      "rank": 3,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.4.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7773145245025527,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.4.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7513120338876019,
+      "rank": 2,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 20992,
+      "u_score_capture": 0.0
+    },
+    "model.layers.4.self_attn.k_proj": {
+      "atom_indices": [
+        0,
+        13,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        28,
+        29,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9850371957774559,
+      "rank": 30,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 53760,
+      "u_score_capture": 1.0
+    },
+    "model.layers.4.self_attn.o_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        25,
+        26
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9449542995515877,
+      "rank": 26,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 79872,
+      "u_score_capture": 0.0
+    },
+    "model.layers.4.self_attn.q_proj": {
+      "atom_indices": [
+        10,
+        15,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        18
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8645059653439218,
+      "rank": 16,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 49152,
+      "u_score_capture": 0.48287789458436137
+    },
+    "model.layers.4.self_attn.v_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9308499377441587,
+      "rank": 10,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 17920,
+      "u_score_capture": 0.0
+    },
+    "model.layers.5.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6263843997905179,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.5.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.85373113272579,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.5.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.8745334978938487,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.5.self_attn.k_proj": {
+      "atom_indices": [
+        20,
+        18,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        13,
+        14,
+        17,
+        19,
+        21,
+        27
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9146586023073426,
+      "rank": 19,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 34048,
+      "u_score_capture": 1.0
+    },
+    "model.layers.5.self_attn.o_proj": {
+      "atom_indices": [
+        16,
+        18,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        13,
+        14,
+        15,
+        17
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8880240861796228,
+      "rank": 18,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 55296,
+      "u_score_capture": 0.5566204933285053
+    },
+    "model.layers.5.self_attn.q_proj": {
+      "atom_indices": [
+        6,
+        17,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        21,
+        29
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.8798713022223367,
+      "rank": 19,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 58368,
+      "u_score_capture": 1.0
+    },
+    "model.layers.5.self_attn.v_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9326185843699183,
+      "rank": 11,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 19712,
+      "u_score_capture": 0.0
+    },
+    "model.layers.6.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.614665609642511,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.6.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6351758720322839,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.6.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7062102833998756,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.6.self_attn.k_proj": {
+      "atom_indices": [
+        26,
+        27,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        17,
+        18,
+        22,
+        23,
+        29
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9147448188667641,
+      "rank": 21,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 37632,
+      "u_score_capture": 1.0
+    },
+    "model.layers.6.self_attn.o_proj": {
+      "atom_indices": [
+        5,
+        15,
+        19,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16,
+        17,
+        18,
+        20
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9053831573784544,
+      "rank": 21,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 64512,
+      "u_score_capture": 0.6421239240534881
+    },
+    "model.layers.6.self_attn.q_proj": {
+      "atom_indices": [
+        13,
+        7,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        23,
+        24,
+        28
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9250309487971803,
+      "rank": 25,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 76800,
+      "u_score_capture": 1.0
+    },
+    "model.layers.6.self_attn.v_proj": {
+      "atom_indices": [
+        15,
+        13,
+        8,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9301988961820205,
+      "rank": 17,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 30464,
+      "u_score_capture": 0.7889545907993275
+    },
+    "model.layers.7.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5344466471822696,
+      "rank": 3,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.7.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6630982326344437,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.7.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6772341405995188,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.7.self_attn.k_proj": {
+      "atom_indices": [
+        26,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        19,
+        20,
+        21,
+        22,
+        24,
+        27,
+        28,
+        29,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9670966597044384,
+      "rank": 28,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 50176,
+      "u_score_capture": 1.0
+    },
+    "model.layers.7.self_attn.o_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9182969180605692,
+      "rank": 24,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 73728,
+      "u_score_capture": 0.0
+    },
+    "model.layers.7.self_attn.q_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16,
+        17
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.885511667932703,
+      "rank": 17,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 52224,
+      "u_score_capture": 0.0
+    },
+    "model.layers.7.self_attn.v_proj": {
+      "atom_indices": [
+        13,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        17
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9376791785860712,
+      "rank": 17,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 30464,
+      "u_score_capture": 0.2131669403883755
+    },
+    "model.layers.8.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        7
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.5398228965782317,
+      "rank": 4,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.8.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7324073947762215,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.8.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7467540952435192,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.8.self_attn.k_proj": {
+      "atom_indices": [
+        0,
+        12,
+        1,
+        20,
+        19,
+        13,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        14,
+        15,
+        16,
+        17,
+        18,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        29,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9877326385968437,
+      "rank": 31,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 55552,
+      "u_score_capture": 1.0000000639755604
+    },
+    "model.layers.8.self_attn.o_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9084014717976167,
+      "rank": 22,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 67584,
+      "u_score_capture": 0.0
+    },
+    "model.layers.8.self_attn.q_proj": {
+      "atom_indices": [
+        15,
+        13,
+        9,
+        26,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        14,
+        16,
+        17,
+        18,
+        19,
+        21,
+        22,
+        23,
+        25
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9393635611196991,
+      "rank": 25,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 76800,
+      "u_score_capture": 0.969404311547476
+    },
+    "model.layers.8.self_attn.v_proj": {
+      "atom_indices": [
+        11,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        15,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        27
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9593771021766383,
+      "rank": 24,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 43008,
+      "u_score_capture": 0.8901788600708116
+    },
+    "model.layers.9.mlp.down_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6164794895880409,
+      "rank": 6,
+      "shape": [
+        1536,
+        8960
+      ],
+      "trainable_parameters": 62976,
+      "u_score_capture": 0.0
+    },
+    "model.layers.9.mlp.gate_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.6772010228077786,
+      "rank": 3,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 31488,
+      "u_score_capture": 0.0
+    },
+    "model.layers.9.mlp.up_proj": {
+      "atom_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "atom_parameter_cost": 10496,
+      "calibration_energy_capture": 0.7346360591791706,
+      "rank": 4,
+      "shape": [
+        8960,
+        1536
+      ],
+      "trainable_parameters": 41984,
+      "u_score_capture": 0.0
+    },
+    "model.layers.9.self_attn.k_proj": {
+      "atom_indices": [
+        12,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        13,
+        14,
+        15,
+        16,
+        17,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        26,
+        27,
+        30,
+        31
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9701509745284755,
+      "rank": 28,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 50176,
+      "u_score_capture": 1.0
+    },
+    "model.layers.9.self_attn.o_proj": {
+      "atom_indices": [
+        6,
+        21,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        26
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9091913141598743,
+      "rank": 22,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 67584,
+      "u_score_capture": 1.0
+    },
+    "model.layers.9.self_attn.q_proj": {
+      "atom_indices": [
+        1,
+        18,
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        19,
+        22
+      ],
+      "atom_parameter_cost": 3072,
+      "calibration_energy_capture": 0.9170547302451418,
+      "rank": 20,
+      "shape": [
+        1536,
+        1536
+      ],
+      "trainable_parameters": 61440,
+      "u_score_capture": 0.9674845886243855
+    },
+    "model.layers.9.self_attn.v_proj": {
+      "atom_indices": [
+        7,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "atom_parameter_cost": 1792,
+      "calibration_energy_capture": 0.9430034626044785,
+      "rank": 16,
+      "shape": [
+        256,
+        1536
+      ],
+      "trainable_parameters": 28672,
+      "u_score_capture": 0.021663457800294564
+    }
+  },
+  "probe_validation": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 1.430511474609375e-06
+  },
+  "r_min": 2,
+  "rank_pattern": {
+    "model.layers.0.mlp.down_proj": 4,
+    "model.layers.0.mlp.gate_proj": 3,
+    "model.layers.0.mlp.up_proj": 3,
+    "model.layers.0.self_attn.k_proj": 14,
+    "model.layers.0.self_attn.o_proj": 6,
+    "model.layers.0.self_attn.q_proj": 7,
+    "model.layers.0.self_attn.v_proj": 14,
+    "model.layers.1.mlp.down_proj": 2,
+    "model.layers.1.mlp.gate_proj": 2,
+    "model.layers.1.mlp.up_proj": 2,
+    "model.layers.1.self_attn.k_proj": 31,
+    "model.layers.1.self_attn.o_proj": 12,
+    "model.layers.1.self_attn.q_proj": 10,
+    "model.layers.1.self_attn.v_proj": 8,
+    "model.layers.10.mlp.down_proj": 6,
+    "model.layers.10.mlp.gate_proj": 3,
+    "model.layers.10.mlp.up_proj": 3,
+    "model.layers.10.self_attn.k_proj": 29,
+    "model.layers.10.self_attn.o_proj": 30,
+    "model.layers.10.self_attn.q_proj": 20,
+    "model.layers.10.self_attn.v_proj": 17,
+    "model.layers.11.mlp.down_proj": 7,
+    "model.layers.11.mlp.gate_proj": 3,
+    "model.layers.11.mlp.up_proj": 3,
+    "model.layers.11.self_attn.k_proj": 29,
+    "model.layers.11.self_attn.o_proj": 21,
+    "model.layers.11.self_attn.q_proj": 16,
+    "model.layers.11.self_attn.v_proj": 14,
+    "model.layers.12.mlp.down_proj": 6,
+    "model.layers.12.mlp.gate_proj": 3,
+    "model.layers.12.mlp.up_proj": 4,
+    "model.layers.12.self_attn.k_proj": 31,
+    "model.layers.12.self_attn.o_proj": 20,
+    "model.layers.12.self_attn.q_proj": 19,
+    "model.layers.12.self_attn.v_proj": 17,
+    "model.layers.13.mlp.down_proj": 7,
+    "model.layers.13.mlp.gate_proj": 4,
+    "model.layers.13.mlp.up_proj": 4,
+    "model.layers.13.self_attn.k_proj": 30,
+    "model.layers.13.self_attn.o_proj": 27,
+    "model.layers.13.self_attn.q_proj": 17,
+    "model.layers.13.self_attn.v_proj": 20,
+    "model.layers.14.mlp.down_proj": 4,
+    "model.layers.14.mlp.gate_proj": 5,
+    "model.layers.14.mlp.up_proj": 4,
+    "model.layers.14.self_attn.k_proj": 31,
+    "model.layers.14.self_attn.o_proj": 20,
+    "model.layers.14.self_attn.q_proj": 23,
+    "model.layers.14.self_attn.v_proj": 19,
+    "model.layers.15.mlp.down_proj": 5,
+    "model.layers.15.mlp.gate_proj": 4,
+    "model.layers.15.mlp.up_proj": 3,
+    "model.layers.15.self_attn.k_proj": 27,
+    "model.layers.15.self_attn.o_proj": 28,
+    "model.layers.15.self_attn.q_proj": 17,
+    "model.layers.15.self_attn.v_proj": 18,
+    "model.layers.16.mlp.down_proj": 5,
+    "model.layers.16.mlp.gate_proj": 4,
+    "model.layers.16.mlp.up_proj": 3,
+    "model.layers.16.self_attn.k_proj": 30,
+    "model.layers.16.self_attn.o_proj": 25,
+    "model.layers.16.self_attn.q_proj": 22,
+    "model.layers.16.self_attn.v_proj": 21,
+    "model.layers.17.mlp.down_proj": 4,
+    "model.layers.17.mlp.gate_proj": 5,
+    "model.layers.17.mlp.up_proj": 5,
+    "model.layers.17.self_attn.k_proj": 29,
+    "model.layers.17.self_attn.o_proj": 31,
+    "model.layers.17.self_attn.q_proj": 19,
+    "model.layers.17.self_attn.v_proj": 19,
+    "model.layers.18.mlp.down_proj": 5,
+    "model.layers.18.mlp.gate_proj": 5,
+    "model.layers.18.mlp.up_proj": 5,
+    "model.layers.18.self_attn.k_proj": 32,
+    "model.layers.18.self_attn.o_proj": 26,
+    "model.layers.18.self_attn.q_proj": 20,
+    "model.layers.18.self_attn.v_proj": 21,
+    "model.layers.19.mlp.down_proj": 4,
+    "model.layers.19.mlp.gate_proj": 5,
+    "model.layers.19.mlp.up_proj": 5,
+    "model.layers.19.self_attn.k_proj": 32,
+    "model.layers.19.self_attn.o_proj": 29,
+    "model.layers.19.self_attn.q_proj": 22,
+    "model.layers.19.self_attn.v_proj": 19,
+    "model.layers.2.mlp.down_proj": 2,
+    "model.layers.2.mlp.gate_proj": 2,
+    "model.layers.2.mlp.up_proj": 2,
+    "model.layers.2.self_attn.k_proj": 31,
+    "model.layers.2.self_attn.o_proj": 21,
+    "model.layers.2.self_attn.q_proj": 21,
+    "model.layers.2.self_attn.v_proj": 13,
+    "model.layers.20.mlp.down_proj": 4,
+    "model.layers.20.mlp.gate_proj": 4,
+    "model.layers.20.mlp.up_proj": 4,
+    "model.layers.20.self_attn.k_proj": 32,
+    "model.layers.20.self_attn.o_proj": 32,
+    "model.layers.20.self_attn.q_proj": 24,
+    "model.layers.20.self_attn.v_proj": 24,
+    "model.layers.21.mlp.down_proj": 3,
+    "model.layers.21.mlp.gate_proj": 4,
+    "model.layers.21.mlp.up_proj": 4,
+    "model.layers.21.self_attn.k_proj": 32,
+    "model.layers.21.self_attn.o_proj": 15,
+    "model.layers.21.self_attn.q_proj": 30,
+    "model.layers.21.self_attn.v_proj": 23,
+    "model.layers.22.mlp.down_proj": 4,
+    "model.layers.22.mlp.gate_proj": 4,
+    "model.layers.22.mlp.up_proj": 3,
+    "model.layers.22.self_attn.k_proj": 32,
+    "model.layers.22.self_attn.o_proj": 32,
+    "model.layers.22.self_attn.q_proj": 26,
+    "model.layers.22.self_attn.v_proj": 23,
+    "model.layers.23.mlp.down_proj": 3,
+    "model.layers.23.mlp.gate_proj": 3,
+    "model.layers.23.mlp.up_proj": 3,
+    "model.layers.23.self_attn.k_proj": 32,
+    "model.layers.23.self_attn.o_proj": 12,
+    "model.layers.23.self_attn.q_proj": 25,
+    "model.layers.23.self_attn.v_proj": 24,
+    "model.layers.24.mlp.down_proj": 4,
+    "model.layers.24.mlp.gate_proj": 3,
+    "model.layers.24.mlp.up_proj": 3,
+    "model.layers.24.self_attn.k_proj": 32,
+    "model.layers.24.self_attn.o_proj": 15,
+    "model.layers.24.self_attn.q_proj": 32,
+    "model.layers.24.self_attn.v_proj": 27,
+    "model.layers.25.mlp.down_proj": 4,
+    "model.layers.25.mlp.gate_proj": 4,
+    "model.layers.25.mlp.up_proj": 3,
+    "model.layers.25.self_attn.k_proj": 32,
+    "model.layers.25.self_attn.o_proj": 12,
+    "model.layers.25.self_attn.q_proj": 31,
+    "model.layers.25.self_attn.v_proj": 12,
+    "model.layers.26.mlp.down_proj": 4,
+    "model.layers.26.mlp.gate_proj": 4,
+    "model.layers.26.mlp.up_proj": 3,
+    "model.layers.26.self_attn.k_proj": 32,
+    "model.layers.26.self_attn.o_proj": 12,
+    "model.layers.26.self_attn.q_proj": 30,
+    "model.layers.26.self_attn.v_proj": 19,
+    "model.layers.27.mlp.down_proj": 2,
+    "model.layers.27.mlp.gate_proj": 4,
+    "model.layers.27.mlp.up_proj": 4,
+    "model.layers.27.self_attn.k_proj": 32,
+    "model.layers.27.self_attn.o_proj": 4,
+    "model.layers.27.self_attn.q_proj": 24,
+    "model.layers.27.self_attn.v_proj": 16,
+    "model.layers.3.mlp.down_proj": 4,
+    "model.layers.3.mlp.gate_proj": 3,
+    "model.layers.3.mlp.up_proj": 2,
+    "model.layers.3.self_attn.k_proj": 27,
+    "model.layers.3.self_attn.o_proj": 21,
+    "model.layers.3.self_attn.q_proj": 15,
+    "model.layers.3.self_attn.v_proj": 9,
+    "model.layers.4.mlp.down_proj": 3,
+    "model.layers.4.mlp.gate_proj": 3,
+    "model.layers.4.mlp.up_proj": 2,
+    "model.layers.4.self_attn.k_proj": 30,
+    "model.layers.4.self_attn.o_proj": 26,
+    "model.layers.4.self_attn.q_proj": 16,
+    "model.layers.4.self_attn.v_proj": 10,
+    "model.layers.5.mlp.down_proj": 4,
+    "model.layers.5.mlp.gate_proj": 3,
+    "model.layers.5.mlp.up_proj": 3,
+    "model.layers.5.self_attn.k_proj": 19,
+    "model.layers.5.self_attn.o_proj": 18,
+    "model.layers.5.self_attn.q_proj": 19,
+    "model.layers.5.self_attn.v_proj": 11,
+    "model.layers.6.mlp.down_proj": 4,
+    "model.layers.6.mlp.gate_proj": 3,
+    "model.layers.6.mlp.up_proj": 4,
+    "model.layers.6.self_attn.k_proj": 21,
+    "model.layers.6.self_attn.o_proj": 21,
+    "model.layers.6.self_attn.q_proj": 25,
+    "model.layers.6.self_attn.v_proj": 17,
+    "model.layers.7.mlp.down_proj": 3,
+    "model.layers.7.mlp.gate_proj": 3,
+    "model.layers.7.mlp.up_proj": 3,
+    "model.layers.7.self_attn.k_proj": 28,
+    "model.layers.7.self_attn.o_proj": 24,
+    "model.layers.7.self_attn.q_proj": 17,
+    "model.layers.7.self_attn.v_proj": 17,
+    "model.layers.8.mlp.down_proj": 4,
+    "model.layers.8.mlp.gate_proj": 4,
+    "model.layers.8.mlp.up_proj": 4,
+    "model.layers.8.self_attn.k_proj": 31,
+    "model.layers.8.self_attn.o_proj": 22,
+    "model.layers.8.self_attn.q_proj": 25,
+    "model.layers.8.self_attn.v_proj": 24,
+    "model.layers.9.mlp.down_proj": 6,
+    "model.layers.9.mlp.gate_proj": 3,
+    "model.layers.9.mlp.up_proj": 4,
+    "model.layers.9.self_attn.k_proj": 28,
+    "model.layers.9.self_attn.o_proj": 22,
+    "model.layers.9.self_attn.q_proj": 20,
+    "model.layers.9.self_attn.v_proj": 16
+  },
+  "schema_version": 4,
+  "structure": {
+    "active_rank_max": 32,
+    "active_rank_mean": 14.26530612244898,
+    "active_rank_min": 2,
+    "calibration_energy_capture": 0.8487734630543515,
+    "rank_by_family": {
+      "down_proj": 4.178571428571429,
+      "gate_proj": 3.5714285714285716,
+      "k_proj": 29.142857142857142,
+      "o_proj": 20.857142857142858,
+      "q_proj": 21.142857142857142,
+      "up_proj": 3.392857142857143,
+      "v_proj": 17.571428571428573
+    },
+    "rank_by_layer_segment": {
+      "low": 12.3,
+      "middle": 15.142857142857142,
+      "top": 15.571428571428571
+    },
+    "u_score_capture": 0.8453884724233226
+  },
+  "subspace_path": "/root/peft-for-rl/runs/full-gradient-v1/analysis/full_gradient_signed_grpo_probe_r32_d16c16a8_seed42/mean_adaptive_stable_energy_eqr8/subspaces.safetensors",
+  "trainable_parameters": 9231360,
+  "uniform_r8_parameter_budget": 9232384
+}

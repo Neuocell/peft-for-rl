@@ -1,0 +1,85 @@
+{
+  "H0_P2_invariants": {
+    "global_capture": {
+      "audit_capture": {
+        "equal": true,
+        "value": 0.5465061145280267
+      },
+      "calibration_capture": {
+        "equal": true,
+        "value": 0.5824962714660158
+      }
+    },
+    "tensor_files": {
+      "atom_scores": {
+        "equal": true,
+        "tensor_count": 1372
+      },
+      "candidates": {
+        "equal": true,
+        "tensor_count": 196
+      }
+    }
+  },
+  "baseline": {
+    "audit_capture": 0.5465061145280267,
+    "calibration_capture": 0.5824962714660158,
+    "method": "H0",
+    "prompt_split_mean_cosine": 0.7197630102841222
+  },
+  "calibration_admissible_methods": [],
+  "calibration_selected_method": null,
+  "candidates": {
+    "H16": {
+      "audit_capture": 0.5337192882703249,
+      "audit_delta_vs_H0": -0.012786826257701778,
+      "calibration_admissible": false,
+      "calibration_capture": 0.5701431402501693,
+      "calibration_delta_vs_H0": -0.012353131215846469,
+      "prompt_split_delta_vs_H0": -0.1850605462582744,
+      "prompt_split_mean_cosine": 0.5347024640258478,
+      "requested_p3_directions": 16
+    },
+    "H2": {
+      "audit_capture": 0.5459013266710329,
+      "audit_delta_vs_H0": -0.0006047878569938048,
+      "calibration_admissible": false,
+      "calibration_capture": 0.5818754533267375,
+      "calibration_delta_vs_H0": -0.0006208181392782786,
+      "prompt_split_delta_vs_H0": -0.03259235149135398,
+      "prompt_split_mean_cosine": 0.6871706587927682,
+      "requested_p3_directions": 2
+    },
+    "H4": {
+      "audit_capture": 0.5450727502290722,
+      "audit_delta_vs_H0": -0.0014333642989544648,
+      "calibration_admissible": false,
+      "calibration_capture": 0.5810790844667829,
+      "calibration_delta_vs_H0": -0.0014171869992328778,
+      "prompt_split_delta_vs_H0": -0.0600418901565124,
+      "prompt_split_mean_cosine": 0.6597211201276098,
+      "requested_p3_directions": 4
+    },
+    "H8": {
+      "audit_capture": 0.5427895606987256,
+      "audit_delta_vs_H0": -0.003716553829301028,
+      "calibration_admissible": false,
+      "calibration_capture": 0.5787802642480419,
+      "calibration_delta_vs_H0": -0.003716007217973938,
+      "prompt_split_delta_vs_H0": -0.10719943685191013,
+      "prompt_split_mean_cosine": 0.612563573432212,
+      "requested_p3_directions": 8
+    }
+  },
+  "decision": "no-go",
+  "method": "phase05_stability_supported_hybrid_preregistered_gate",
+  "reason": "no nonzero hybrid passed the calibration admissibility screen",
+  "schema_version": 1,
+  "selection_uses_audit": false,
+  "thresholds": {
+    "calibration_capture_tolerance": 0.002,
+    "calibration_tie_tolerance": 0.0005,
+    "prompt_split_overlap_tolerance": 0.02,
+    "required_calibration_and_audit_improvement": 0.001
+  }
+}

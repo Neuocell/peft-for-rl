@@ -1,0 +1,93 @@
+{
+  "P3_C3_replay_invariants": {
+    "atom_scores": {
+      "atol": 1e-06,
+      "failing_tensor_count": 1023,
+      "maximum_absolute_error": 0.531989336013794,
+      "passed": false,
+      "rtol": 1e-05,
+      "tensor_count": 1372
+    },
+    "candidates": {
+      "atol": 3e-05,
+      "failing_tensor_count": 181,
+      "maximum_sign_invariant_row_error": 1.1899148225784302,
+      "passed": false,
+      "tensor_count": 196
+    },
+    "global_metrics": {
+      "audit_capture": {
+        "delta": 7.183720855627462e-05,
+        "passed": false,
+        "replay": 0.16796131741705886,
+        "source": 0.16788948020850258
+      },
+      "calibration_capture": {
+        "delta": 0.00018955084425176238,
+        "passed": false,
+        "replay": 0.17248658595444483,
+        "source": 0.17229703511019306
+      }
+    },
+    "passed": false
+  },
+  "decision": "unavailable",
+  "diagnosis": "crossfit_estimator_failure",
+  "diagnostic_comparisons": {
+    "C0": {
+      "audit_capture_delta_reported_not_used_for_authorization": -0.1470741614249173,
+      "calibration_admissible": false,
+      "calibration_capture_delta": -0.14972682449792862,
+      "matched_standard_method": "P0",
+      "prompt_split_mean_cosine_delta": -0.41645110276888825
+    },
+    "C2": {
+      "audit_capture_delta_reported_not_used_for_authorization": -0.2875847458593609,
+      "calibration_admissible": false,
+      "calibration_capture_delta": -0.30941590471354435,
+      "matched_standard_method": "P2",
+      "prompt_split_mean_cosine_delta": -0.4133169070190313
+    }
+  },
+  "method": "phase06_failed_replay_invalidation_v1",
+  "phase05_gate_sha256": "0439fc68c2a924ada78d720ce0d66857a93458ac4e8b22c960c4a35475c6b388",
+  "phase06_training_authorized": false,
+  "phase1_fallback": {
+    "allowed_methods": [
+      "I0",
+      "I8",
+      "I16",
+      "I32"
+    ],
+    "authorization_uses_audit": false,
+    "authorized": true,
+    "basis_source": "validated_phase05_source_only",
+    "signal_method": "P2"
+  },
+  "protocol_deviation": {
+    "description": "Phase 1 may use only the already validated P2 source after an invalid Phase-0.6 replay; no C candidate may enter training.",
+    "formal_phase06_gate_written": false,
+    "present": true
+  },
+  "reason": "P3/C3 replay invariants failed before the preregistered gate",
+  "replay_C3_candidates_sha256": "443f1f565f20be1924db9579ce042fd61015824e2b88932b021b6e1329c7aaf1",
+  "replay_C3_scores_sha256": "4c5590726050437df9f666364c986984724fdb5fdaba7610d2609bef3c3046fc",
+  "replay_artifact": "/root/peft-for-rl/runs/phase0-gradient-diagnostics-v1/analysis/phase06_crossfit_replay_d64c32a16_r32_seed42_v1",
+  "replay_probe_summary_sha256": "4d3c8189a65f85a5d2b85afa7880877e9b5aa02b99bd84a088e5e0343052cb92",
+  "replay_validation_sha256": "b4e188ac2157c80abe42c7dad96372f5adee061211af72d0bda6dfb24ccb82c6",
+  "schema_version": 1,
+  "selection_uses_audit": false,
+  "source_P3_candidates_sha256": "0cf431fd50dcf0ee8d05810147ee15edbb1a1d8aadaa88ea634da8c4055eb45a",
+  "source_P3_scores_sha256": "8b6adb70d19015ad7b042035197e6525e10393118736845d715a176490c68cf5",
+  "source_artifact": "/root/peft-for-rl/runs/phase0-gradient-diagnostics-v1/analysis/phase05_hybrid_shared_rollout_d64c32a16_r32_seed42_v3",
+  "source_probe_summary_sha256": "f1bc8c3fc23b56d4853de84756bf7e6090136e7087f7fe0cf044e0ee8b6ce1bb",
+  "source_validation_sha256": "ad583fb11b8302cb7ef1c7abd2b8279160027e88366660636b52aade32913144",
+  "status": "invalid",
+  "thresholds": {
+    "calibration_capture_tolerance": 0.002,
+    "prompt_split_overlap_tolerance": 0.02,
+    "replay_candidate_atol": 3e-05,
+    "replay_metric_atol": 1e-06,
+    "replay_score_rtol": 1e-05
+  }
+}

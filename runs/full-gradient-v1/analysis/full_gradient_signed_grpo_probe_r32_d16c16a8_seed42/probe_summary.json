@@ -1,0 +1,2890 @@
+{
+  "aggregation": "token-mean within prompt group",
+  "artifacts": {
+    "covariance": {
+      "atom_scores": "/root/peft-for-rl/runs/full-gradient-v1/analysis/full_gradient_signed_grpo_probe_r32_d16c16a8_seed42/atom_scores_covariance.safetensors",
+      "candidates": "/root/peft-for-rl/runs/full-gradient-v1/analysis/full_gradient_signed_grpo_probe_r32_d16c16a8_seed42/candidates_covariance.safetensors"
+    },
+    "hybrid": {
+      "atom_scores": "/root/peft-for-rl/runs/full-gradient-v1/analysis/full_gradient_signed_grpo_probe_r32_d16c16a8_seed42/atom_scores_hybrid.safetensors",
+      "candidates": "/root/peft-for-rl/runs/full-gradient-v1/analysis/full_gradient_signed_grpo_probe_r32_d16c16a8_seed42/candidates_hybrid.safetensors"
+    },
+    "mean": {
+      "atom_scores": "/root/peft-for-rl/runs/full-gradient-v1/analysis/full_gradient_signed_grpo_probe_r32_d16c16a8_seed42/atom_scores_mean.safetensors",
+      "candidates": "/root/peft-for-rl/runs/full-gradient-v1/analysis/full_gradient_signed_grpo_probe_r32_d16c16a8_seed42/candidates_mean.safetensors"
+    }
+  },
+  "audit_prompt_ids": [
+    "fe46add8-53c7-4247-8128-ee37d057a4fd",
+    "af26354d-1b6c-4153-a09f-6acbfebdefb0",
+    "107411d5-b6d4-4a40-b8d5-f63b9172dcfe",
+    "5a75bbf7-da75-4fc3-adb2-e5cbfed27ae0",
+    "71bf2986-64fd-40e6-a3ac-64d108bd4e1d",
+    "8a5f7b70-e9f5-499e-bae4-de54f5227422",
+    "b47cbb18-f6cd-4955-ad03-d5ddf0d38dd1",
+    "b9b37c9a-b1d6-48c5-9168-6cb89dabfcd1"
+  ],
+  "audit_prompts": 8,
+  "calibration_prompt_ids": [
+    "e18db739-e517-404b-8e6a-3c4e55df55a4",
+    "7f1c2c17-0d49-4484-9e28-85123be7b4e0",
+    "d47c5888-4910-412c-88c4-14036e262150",
+    "20b2d25f-3013-4d4a-b28a-c8614b0a9c7d",
+    "d4722716-1ae0-4d0a-ba1a-81308aeb29ea",
+    "e3768aa0-322a-4505-934e-2ff565287dbd",
+    "a6d3b58f-5014-4c2d-bd67-23729db4bde9",
+    "2dce9c87-9619-49b5-8746-9af70ffe339f",
+    "0a6e7e95-acec-4098-87ae-5487eb70dda3",
+    "18aa1f84-ea33-4583-a57c-edf40e776080",
+    "498907e8-cf13-46b9-a5a4-8530fe622cb8",
+    "0863f2f7-4e87-464e-bc9b-1ff3a85b7c56",
+    "abfb97a0-1b49-4fda-8928-a6d1c5fcfd2a",
+    "2e0f9d60-4937-4d00-96da-dfb22c84f465",
+    "eb73a109-8e41-4fcb-bb7a-2f39f767039f",
+    "b0246993-343d-4eee-8276-38f89efe3122"
+  ],
+  "calibration_prompts": 16,
+  "candidate_methods": [
+    "mean",
+    "covariance",
+    "hybrid"
+  ],
+  "confidence_z": 1.0,
+  "constant_scaling": 2.0,
+  "discovery_prompt_ids": [
+    "25b2b538-8a3e-4c09-ba0e-5e8d022058f6",
+    "8f1609e9-8137-4ed5-b01c-8b456f3f085f",
+    "67d33184-c2f9-4c19-be74-764fab22bda8",
+    "6e2d592e-3d17-466f-a1dc-b154793c8105",
+    "5a4651f8-2c30-45de-b968-ffab1764e3f0",
+    "8df82868-bc01-4fa3-88e8-292d49b16a14",
+    "fe463b9b-b72a-44bc-b375-f1c79c8f7626",
+    "e42e6416-1fd9-4c07-897b-1a2cc38150b6",
+    "4103e68f-9a53-424e-b8c7-46125f8f17ae",
+    "2242af5b-0f42-4953-9d17-c12ca1148e06",
+    "ef3b6ce8-c055-458b-ac30-0f69d419e624",
+    "6252404a-5e9b-430a-adc4-45ca5d55dd08",
+    "514e669b-d742-439f-bba3-aae7fd7c73dc",
+    "d4c12ab5-8965-4f64-bae8-53333c7f1fbf",
+    "14e197e1-2abb-48f4-b7c9-2a7fa2504353",
+    "40378d60-9c11-4f31-bf90-96b4608ce167"
+  ],
+  "discovery_prompts": 16,
+  "loss": "prompt-group signed GRPO policy gradient at ratio=1",
+  "method": "full_gradient_signed_grpo_nystrom_v1",
+  "modules": {
+    "model.layers.0.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 8.344650268554688e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.0.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.0.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.0.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.0.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.0.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.0.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.1.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 1.0728836059570312e-06,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.1.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.1.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.1.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.1.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.1.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 8.344650268554688e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.1.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.10.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.10.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.10.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.10.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.10.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.10.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 8,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 8.344650268554688e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.10.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.11.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.11.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.11.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.11.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.11.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.11.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.11.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.12.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.12.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.12.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.12.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.12.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.12.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 6.556510925292969e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.12.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.172325134277344e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.13.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.13.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.364418029785156e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.13.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.13.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 11,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.13.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 8,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.13.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.13.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 8,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.14.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.14.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.14.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.14.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 8.344650268554688e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.14.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 5.364418029785156e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.14.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 9,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 8,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.14.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 10,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 9,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.15.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.15.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.15.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.172325134277344e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.15.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 10,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.15.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.15.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 5.364418029785156e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.15.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.16.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.16.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 5.364418029785156e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.16.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.16.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.16.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 10,
+      "hybrid_orthogonality_error": 5.364418029785156e-07,
+      "mean_calibration_positive_lcb": 10,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.16.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.16.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.17.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.17.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 8,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.17.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.17.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.17.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.17.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.17.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 10,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 8.344650268554688e-07,
+      "mean_calibration_positive_lcb": 10,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.18.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.18.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.18.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.18.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 9,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 8,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.18.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.18.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.18.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 9.5367431640625e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.19.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 8,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.19.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.19.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.19.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.172325134277344e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.19.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.19.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.19.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 4.172325134277344e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.2.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 1.1920928955078125e-06,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 1.7881393432617188e-06,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.2.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.2.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.2.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.2.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 6.556510925292969e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 9.5367431640625e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.2.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.2.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.20.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.20.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.20.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.20.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.20.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.20.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 8,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 11,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.20.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 8,
+      "covariance_orthogonality_error": 2.980232238769531e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.21.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.21.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.21.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.21.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.21.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 8,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.21.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 2.980232238769531e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.21.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 9,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 8,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.22.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 8,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.22.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 9,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 9,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 8.344650268554688e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.22.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 8.344650268554688e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.22.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.22.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.22.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.22.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 8.344650268554688e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.23.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 8,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.23.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 6.556510925292969e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.23.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 10,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.23.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 11,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 10,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.23.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.23.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.23.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.24.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 8,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 9,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.24.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.24.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.24.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.24.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 8,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.24.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.24.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 9,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.25.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.25.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 8,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 8,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 12,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.25.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.25.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.25.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 8,
+      "hybrid_orthogonality_error": 8.344650268554688e-07,
+      "mean_calibration_positive_lcb": 10,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.25.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.25.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.26.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 8,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 7,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.26.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.26.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 9,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 9,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 10,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.26.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 10,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 11,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 12,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.26.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.26.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.26.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.27.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.27.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 5.364418029785156e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 3.5762786865234375e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.27.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.27.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 9,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.27.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.27.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 7,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 9,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.27.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.3.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.3.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.3.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 5.364418029785156e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.3.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.3.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.3.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.3.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.4.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.4.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.4.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.4.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 8,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.4.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.4.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.4.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.5.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.5.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.5.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.5.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.5.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.5.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.5.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.6.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.6.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.6.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 0,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.6.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.6.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 3,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.6.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 9.5367431640625e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.6.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.7.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.7.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.7.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.7.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.7.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.7.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 3.5762786865234375e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.7.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.8.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.8.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.8.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.8.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 6,
+      "covariance_orthogonality_error": 8.344650268554688e-07,
+      "hybrid_calibration_positive_lcb": 4,
+      "hybrid_orthogonality_error": 5.960464477539062e-07,
+      "mean_calibration_positive_lcb": 6,
+      "mean_orthogonality_error": 9.5367431640625e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.8.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.364418029785156e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.8.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 5,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 5,
+      "mean_orthogonality_error": 6.556510925292969e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.8.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 4,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 6,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 7.152557373046875e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.9.mlp.down_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        8960
+      ]
+    },
+    "model.layers.9.mlp.gate_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 0,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 0,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.9.mlp.up_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 3.5762786865234375e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        8960,
+        1536
+      ]
+    },
+    "model.layers.9.self_attn.k_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 7.152557373046875e-07,
+      "hybrid_calibration_positive_lcb": 1,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 1,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    },
+    "model.layers.9.self_attn.o_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 2,
+      "covariance_orthogonality_error": 5.364418029785156e-07,
+      "hybrid_calibration_positive_lcb": 2,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 2,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.9.self_attn.q_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 5,
+      "covariance_orthogonality_error": 4.76837158203125e-07,
+      "hybrid_calibration_positive_lcb": 7,
+      "hybrid_orthogonality_error": 7.152557373046875e-07,
+      "mean_calibration_positive_lcb": 4,
+      "mean_orthogonality_error": 4.76837158203125e-07,
+      "shape": [
+        1536,
+        1536
+      ]
+    },
+    "model.layers.9.self_attn.v_proj": {
+      "candidate_rank": 32,
+      "covariance_calibration_positive_lcb": 1,
+      "covariance_orthogonality_error": 5.960464477539062e-07,
+      "hybrid_calibration_positive_lcb": 3,
+      "hybrid_orthogonality_error": 4.76837158203125e-07,
+      "mean_calibration_positive_lcb": 3,
+      "mean_orthogonality_error": 5.960464477539062e-07,
+      "shape": [
+        256,
+        1536
+      ]
+    }
+  },
+  "positive_rate": 0.3265625,
+  "positive_rollouts": 209,
+  "prompt_splits_disjoint": true,
+  "r_max": 32,
+  "sample_norm_control": {
+    "clip_factor": 2.5,
+    "method": "global-full-gradient discovery-median-clip",
+    "raw_norms": [
+      0.4219555554974683,
+      0.36166454964340033,
+      0.408693825782168,
+      0.23214751131940264,
+      0.17257098924412875,
+      0.20117739216291577,
+      0.3422928897656527,
+      0.25559843546965183,
+      0.29170380921603906,
+      0.2662374643368808,
+      0.24615941719201526,
+      0.25009128305048683,
+      0.19537310015684128,
+      0.20810858935351267,
+      0.22782161821759844,
+      0.2599189827198285,
+      0.20947168081215958,
+      0.19829594248440807,
+      0.1973853205183781,
+      0.19216250508226884,
+      0.2069375771827717,
+      0.18004031687784675,
+      0.2855315018573112,
+      0.16758207432579367,
+      0.23277670013411736,
+      0.3363577233419214,
+      0.1643638689151605,
+      0.1871177779376562,
+      0.3402152371681255,
+      0.19665539020831999,
+      0.3864664033817316,
+      0.27302919008775256,
+      0.3522405592514523,
+      0.27628978280325933,
+      0.30073874260349676,
+      0.21521347718503644,
+      0.24892914016376125,
+      0.20403276163945974,
+      0.1736965347934942,
+      0.6361484781357755
+    ],
+    "scales": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.9936550504727599
+    ]
+  },
+  "samples": {
+    "advantage_rms": [
+      0.8904639482498169,
+      1.2686947584152222,
+      0.9354127049446106,
+      0.987612783908844,
+      0.8795600533485413,
+      0.9089035987854004,
+      0.9429412484169006,
+      0.9302399754524231,
+      0.9749957919120789,
+      0.9354127645492554,
+      0.9305950999259949,
+      0.930501401424408,
+      0.922399640083313,
+      0.9354127645492554,
+      0.9336483478546143,
+      1.0343208312988281,
+      0.9288986921310425,
+      0.8407092094421387,
+      0.909561276435852,
+      0.8969771862030029,
+      0.8870437741279602,
+      0.9319522380828857,
+      0.9496920704841614,
+      0.4627007246017456,
+      0.5902642011642456,
+      0.9946631789207458,
+      0.5002970695495605,
+      0.8674669861793518,
+      0.9354127645492554,
+      0.8883853554725647,
+      0.8587638139724731,
+      0.9962165355682373,
+      0.8886759281158447,
+      0.9159632325172424,
+      1.0672105550765991,
+      0.8462123870849609,
+      0.9401596784591675,
+      0.9577158093452454,
+      0.6594724059104919,
+      1.6174720525741577
+    ],
+    "losses": [
+      0.056215301156044006,
+      -0.1703956127166748,
+      -0.2709563076496124,
+      -0.10631109774112701,
+      -0.14966358244419098,
+      -0.1965564787387848,
+      -0.13148999214172363,
+      0.03170093894004822,
+      -0.04122183471918106,
+      -0.05862462520599365,
+      -0.07924261689186096,
+      -0.011398537084460258,
+      -0.06898807734251022,
+      -0.1440577507019043,
+      -0.03414017707109451,
+      -0.13804233074188232,
+      -0.01896759867668152,
+      -0.12253378331661224,
+      0.043380171060562134,
+      -0.11045913398265839,
+      -0.04663049429655075,
+      -0.05088750645518303,
+      -0.06405269354581833,
+      0.3367377519607544,
+      0.20143915712833405,
+      0.13844121992588043,
+      0.20820197463035583,
+      -0.08012944459915161,
+      -0.1199079304933548,
+      -0.02735401690006256,
+      0.24092891812324524,
+      0.055568523705005646,
+      -0.1874607503414154,
+      -0.05374542251229286,
+      -0.20005103945732117,
+      -0.16970622539520264,
+      -0.11070088297128677,
+      -0.06900546699762344,
+      0.312321275472641,
+      -0.7894840836524963
+    ],
+    "response_counts": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+    ],
+    "response_tokens": [
+      13988,
+      33108,
+      18750,
+      55914,
+      62430,
+      60468,
+      38321,
+      33006,
+      36263,
+      42213,
+      34719,
+      42179,
+      64643,
+      59160,
+      47517,
+      49128,
+      50101,
+      60877,
+      64946,
+      62211,
+      51385,
+      64818,
+      53828,
+      35895,
+      19954,
+      38527,
+      25954,
+      62916,
+      47529,
+      55065,
+      17342,
+      29720,
+      47788,
+      60177,
+      48476,
+      60080,
+      42586,
+      58481,
+      40138,
+      19730
+    ]
+  },
+  "schema_version": 1,
+  "total_prompts": 80,
+  "total_rollouts": 640
+}

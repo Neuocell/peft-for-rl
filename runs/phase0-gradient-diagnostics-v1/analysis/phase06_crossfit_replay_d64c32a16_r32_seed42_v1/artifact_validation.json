@@ -1,0 +1,35 @@
+{
+  "cache_manifest_exactly_replayed": true,
+  "candidate_methods": [
+    "C0",
+    "C2",
+    "C3"
+  ],
+  "finite_numeric_values_checked": 10048,
+  "method_validation": {
+    "C0": {
+      "module_count": 196.0,
+      "orthogonality_error_max": 7.152557373046875e-07
+    },
+    "C2": {
+      "module_count": 196.0,
+      "orthogonality_error_max": 1.3113021850585938e-06
+    },
+    "C3": {
+      "module_count": 196.0,
+      "orthogonality_error_max": 4.655122756958008e-05
+    }
+  },
+  "module_count": 196,
+  "phase05_gate_decision": "no-go",
+  "prompt_ids_exactly_replayed": true,
+  "replay_artifact": "/root/peft-for-rl/runs/phase0-gradient-diagnostics-v1/analysis/phase06_crossfit_replay_d64c32a16_r32_seed42_v1",
+  "schema_version": 1,
+  "source_artifact": "/root/peft-for-rl/runs/phase0-gradient-diagnostics-v1/analysis/phase05_hybrid_shared_rollout_d64c32a16_r32_seed42_v3",
+  "split_counts": {
+    "audit": 16,
+    "calibration": 32,
+    "discovery": 64
+  },
+  "status": "valid"
+}
