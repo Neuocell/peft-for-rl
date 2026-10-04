@@ -1,6 +1,6 @@
 # 本机 LoRA 梯度子空间实验汇总
 
-更新时间：2026-10-04 13:08（Asia/Shanghai）
+更新时间：2026-10-04 13:31（Asia/Shanghai）
 
 本文整理当前机器上围绕 SPAR-LoRA、random-B、full-gradient probe、token mask、梯度协方差和 rank 的主要实验。内容以现存启动脚本、Hydra 配置、训练日志、probe artifact、checkpoint 和 full-benchmark JSON 为准，不把仅存在于会话记忆中的数字当作正式结果。
 
@@ -27,6 +27,15 @@
 7. 当前所有主要 `grad_subspace` 正式训练均为 `LORA_FREEZE_A=False`。探测得到的 A 是可训练初始化，不是永久固定子空间；静态不变的是训练前生成的 rank map。
 8. original random-B rank map 的 196 个模块中，192 个为 r32，只有 3 个 r8、1 个 r28，不能把它当作“自适应 rank 有效”的证据。
 9. Phase 1 seed 42 中，I8 相对匹配 I0 的 macro delta 为 `+0.035999`，I16 为 `-0.016665`，signal-only I32 为 `+0.046317`；I8 仍是预注册的 mixed candidate。为缩短当前模型/任务结论的周转时间，执行范围已于 `2026-10-03T18:55:11+08:00` 由 seeds 42/43/44 显式修订为 seeds 42/43，seed 44 不启动。该修订只能支持“在一个 held-out 训练 seed 上复现”的固定设置结论，不能支持“跨训练 seed 稳定”或跨模型/任务泛化表述。
+10. Phase 1 seed-43 I0 已完成训练、7,248-record 六基准聚合和独立 postverify，Macro Avg@k 为 `0.327747`；seed-43 I8 尚未启动，因此 I8-vs-I0 的 seed-43 comparison 和两-seed 最终 gate 都还不能计算。两个 I0 seed 的点估计相差约 `-0.002415`，只说明匹配随机基线在这两个训练轨迹上的宏平均接近，不能据此推断 I8 提升可复现。
+
+Phase 1 当前状态如下；这里的 `verified` 同时要求 training contract 与固定 full-benchmark 协议通过独立验收：
+
+| training seed | I0 Macro Avg@k | I8 Macro Avg@k | 当前状态 |
+|---:|---:|---:|---|
+| 42 | 0.330162 | 0.366161 | I0/I8 均 verified；I8-I0 为 `+0.035999` |
+| 43 | 0.327747 | 未运行 | I0 verified；I8 尚未启动 |
+| 两-seed 最终 gate | - | - | 输入不全，blocked on seed-43 I8 |
 
 ## 2. 代码与设备快照
 
@@ -40,12 +49,24 @@ Driver: 610.57.04
 
 ### 2.2 仓库状态
 
+初始实验整理快照保留如下：
+
 ```text
 Repository: /root/peft-for-rl
 Git HEAD: 926909c94d59c5950d201dc9d68616beea986bff
 ```
 
 整理开始时工作树有 34 项未提交修改或新增文件，其中包含 token-mask covariance、续训、评测和 original random-B 复现脚本。因此只记录 Git HEAD 不足以完整复现实验，必须同时保留本文列出的脚本和 artifact。
+
+截至本次迁移整理前，源码、实验配置、小型文本证据和最小 I8 初始化已归档并推送：
+
+```text
+Migration baseline commit: 0cca95911fc36271480318718c9f4d634d8d4d0f
+Remote: ssh://git@ssh.github.com:443/Neuocell/peft-for-rl.git
+Remote branch: origin/experiments/spar-lora-v0
+```
+
+该迁移基线不包含 base model、数据集、checkpoint、adapter 或 raw evaluation records；具体边界见 19.2.45--19.2.47。上面的 `926909c` 是实验整理开始时的历史快照，不是当前迁移分支 HEAD。
 
 ### 2.3 主要存储位置
 
@@ -881,15 +902,17 @@ phase06_invalidation.json:
 
 这里的实现坐标必须写清：本仓库 `grad_subspace` 把 rank 个输入方向写入 LoRA `A`，将 `B` 置零，随后 A/B 都可训练。因此 I0 是与数据子空间同样行归一化的随机正交 `A`，不是历史 original random-B probe reproduction 的复用；后者还带有 probe-derived 方向、近似 adaptive rank 和 dropout 等差异，只能作为外部历史参照。所有 I 组保持 uniform-r32、`alpha/r=2`、dropout 0、数据顺序、rollout seed 和完整 optimizer checkpoint 一致。`scripts/analysis/prepare_phase1_signal_random_artifacts.py` 只接受两条显式授权路径：Phase 0.6 正式 `no-go` gate，或严格校验的 `crossfit_estimator_failure` 失效记录；本轮使用后者，且只允许从已审计的 Phase 0.5 source P2 构造四组 allocation，绝不引用 C 候选。随机补空间 seed 固定为 42，I32 必须与 P2 位级一致。该准备器不自动启动训练，须先读取 Phase 0.6 的 estimator 诊断。先跑到 step 50，统一六集评测；I0 和最佳混合组至少再用两个训练 seed 重复。只有多 seed 的提升超过评测 bootstrap 区间，才认为 random+signal 混合有效。
 
-Phase 1 的可执行训练协议在看到 Phase 0.5/0.6 gate 和任何 Phase-1 训练结果前固定如下。`scripts/local/run_phase1_signal_random_confirmation.sh` 要求人工判读 Phase 0.6 diagnosis 后已经生成 preparation manifest，不自动接到 Phase 0.5/0.6 controller。它先用 seed 42 依次训练和评测 `I0/I8/I16/I32`，再以 I0 为 baseline 生成三份 paired problem-bootstrap comparison。只有混合组 `I8/I16` 有资格进入多 seed；I32 只作为 hard signal-only endpoint，不参与“最佳混合组”选择。I8/I16 各自必须先满足 macro Avg@k delta `>= +0.005` 且 `P(delta > 0) >= 0.90`，过线者按 seed-42 macro delta 最大者选择，精确并列时选择信号方向更少的 I8。若两者均未过线，Phase 1 停止，不因 I32 或单 benchmark 的亮点追加训练。若有选中项，只对 I0 和该项运行 seeds 43/44，再对固定 seeds 42/43/44 应用下述分层 bootstrap 门槛。
+以下是 Phase 1 在看到 Phase 0.5/0.6 gate 和任何 Phase-1 训练结果前冻结的**原始三-seed预注册协议**。`scripts/local/run_phase1_signal_random_confirmation.sh` 要求人工判读 Phase 0.6 diagnosis 后已经生成 preparation manifest，不自动接到 Phase 0.5/0.6 controller。它先用 seed 42 依次训练和评测 `I0/I8/I16/I32`，再以 I0 为 baseline 生成三份 paired problem-bootstrap comparison。只有混合组 `I8/I16` 有资格进入多 seed；I32 只作为 hard signal-only endpoint，不参与“最佳混合组”选择。I8/I16 各自必须先满足 macro Avg@k delta `>= +0.005` 且 `P(delta > 0) >= 0.90`，过线者按 seed-42 macro delta 最大者选择，精确并列时选择信号方向更少的 I8。若两者均未过线，Phase 1 停止，不因 I32 或单 benchmark 的亮点追加训练。若有选中项，只对 I0 和该项运行 seeds 43/44，再对固定 seeds 42/43/44 应用下述分层 bootstrap 门槛。
+
+该原始协议没有被删除或回溯改写，但当前执行范围已按 19.2.27--19.2.28 前瞻性修订为 seeds `42/43`，seed 44 不启动。原 `aggregate_multiseed_full_bench.py` 仍严格实现 seeds `42/43/44`，不能用于当前两-seed 最终 gate；两-seed 专用 analyzer 只能在 seed-43 I8 完成并独立验收后，按冻结 execution spec 实现和测试。
 
 对应入口为 `scripts/local/start_phase1_signal_random_uniform_r32_4gpu.sh`、`scripts/local/run_phase1_signal_random_step50_fullbench.sh`、`scripts/analysis/select_phase1_seed42_candidate.py`。每次训练前重新核验 Phase 0.5/0.6 validation 与 gate 哈希、P2 signal 哈希、allocation/rank-map/subspace 哈希、196 个 uniform-r32 模块、`alpha=64`、正交性以及 I8/I16/I32 的 P2 前缀逐元素精确一致。这样 Phase 1 即使稍后人工启动，也不能在看到结果后替换 signal、complement seed 或候选集合。
 
 六基准评测固定复用 7248 条 snapshot records，其 SHA-256 为 `3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da`。每个评测 shard 的 manifest 必须记录该哈希、完整的 7248 requests、固定 seed 42、预期 adapter 路径和六个基准；即使训练或评测产物已存在，wrapper 也会重新核验 allocation、summary、records 行数和四个 manifest。多 seed 聚合器还会在统计入口再次要求每个 seed 恰好 7248 条匹配记录，避免缺失样本或陈旧产物被误判为稳定泛化。
 
-每个 Phase 1 训练 run 还必须有独立的 `phase1_training_provenance_contract_v1`。contract 在训练前原子写入，锁定 preparation、Phase 0.5/0.6 validation 与 outcome、P2 signal、rank map、subspace、allocation summary、训练 seed 和固定超参的哈希/值；同时记录 `verl`、训练入口、Phase 1 分析器和六基准评测代码的逐文件 SHA-256 及聚合哈希，并在复用结果时按当前字节重算。step-50 训练成功后再写入 adapter 路径与 SHA-256。Phase 1 专用 launcher 显式固定 learning rate/scheduler/weight decay、PPO epochs、clip/KL、rollout temperature/top-p/top-k 和 shuffle 设置，不允许调用者的 shell 环境暗中改变三 seed 对照。任何已存在的 adapter 只有在 complete contract 与当前 preparation、代码清单及 adapter 字节全部匹配时才能复用，避免旧 checkpoint 与新 allocation 同名而被误评测。
+每个 Phase 1 训练 run 还必须有独立的 `phase1_training_provenance_contract_v1`。contract 在训练前原子写入，锁定 preparation、Phase 0.5/0.6 validation 与 outcome、P2 signal、rank map、subspace、allocation summary、训练 seed 和固定超参的哈希/值；同时记录 `verl`、训练入口、Phase 1 分析器和六基准评测代码的逐文件 SHA-256 及聚合哈希，并在复用结果时按当前字节重算。step-50 训练成功后再写入 adapter 路径与 SHA-256。Phase 1 专用 launcher 显式固定 learning rate/scheduler/weight decay、PPO epochs、clip/KL、rollout temperature/top-p/top-k 和 shuffle 设置，不允许调用者的 shell 环境暗中改变原预注册 seed 对照。任何已存在的 adapter 只有在 complete contract 与当前 preparation、代码清单及 adapter 字节全部匹配时才能复用，避免旧 checkpoint 与新 allocation 同名而被误评测。
 
-Phase 0.5/0.6 的 gate 通过项也遵守同一训练验证协议。`scripts/local/run_phase05_hybrid_step50_fullbench.sh` 和 `scripts/local/run_phase06_crossfit_step50_fullbench.sh` 串行执行 step-50 训练与固定 snapshot 六集评测；每个 summary 必须包含 7248 条采样、六个预定 benchmark。`scripts/analysis/compare_paired_full_bench.py` 要求 baseline/candidate 的 `(benchmark, problem_index, sample_index)` 逐项一致，并以 problem 为 cluster 做 10000 次 paired bootstrap。`scripts/analysis/evaluate_single_seed_screen.py` 固化 seed-42 晋级门槛，`scripts/analysis/aggregate_multiseed_full_bench.py` 对固定 seeds 42/43/44 做 training-seed × problem 分层 bootstrap。当前完整相关测试为 `41 passed`。seed-42 输出仍只是筛选证据，不替代训练 seed 重复。
+Phase 0.5/0.6 的 gate 通过项也遵守同一训练验证协议。`scripts/local/run_phase05_hybrid_step50_fullbench.sh` 和 `scripts/local/run_phase06_crossfit_step50_fullbench.sh` 串行执行 step-50 训练与固定 snapshot 六集评测；每个 summary 必须包含 7248 条采样、六个预定 benchmark。`scripts/analysis/compare_paired_full_bench.py` 要求 baseline/candidate 的 `(benchmark, problem_index, sample_index)` 逐项一致，并以 problem 为 cluster 做 10000 次 paired bootstrap。`scripts/analysis/evaluate_single_seed_screen.py` 固化 seed-42 晋级门槛，`scripts/analysis/aggregate_multiseed_full_bench.py` 对固定 seeds 42/43/44 做 training-seed × problem 分层 bootstrap。最近一次完整相关测试为 `45 passed, 1 warning`；warning 来自 Ray 的 deprecation warning，不是测试失败。seed-42 输出仍只是筛选证据，不替代训练 seed 重复。
 
 #### 19.2.1 Phase 1 allocation 准备（2026-10-01）
 
@@ -1244,7 +1267,7 @@ Phase-1b 最早只能在当前 controller 终止、I0/I8 三 seed 全部正式�
 
 修订后的 seed-43 主确认同时要求原始评测和固定 30 题过滤评测满足：macro delta 至少 `+0.005`、problem-cluster bootstrap `P(delta>0)>=0.90`、至少四个 benchmark delta 为正、最差 benchmark delta 不低于 `-0.02`。两 seed 描述性汇总还要求 seed 42/43 delta 均严格为正、均值至少 `+0.005`、至少四个 benchmark 的两 seed 均值为正、最差两 seed benchmark 均值不低于 `-0.02`。两 seed hierarchical bootstrap 仍报告，但只能描述当前两个轨迹的不确定性，不能冒充训练 seed population 的稳定估计。只有这些条件全部通过，才允许表述：“在该固定模型/任务设置中，I8 相对匹配 I0 的提升在一个 held-out training seed 上复现，并在两个已测试 seed 上均为正。”禁止使用“stable across training seeds”、广泛泛化、原三 seed gate 通过或优于标准 LoRA等表述。
 
-完整修订位于 `analysis/phase1_two_seed_scope_amendment.json`，SHA-256 为 `92d44f339e0129c81c43fd691395c3d87399a17c7fbbe9b42f34149fcf2cc65d`。为避免当前 controller 在 seed-43 comparison 后自动进入 seed 44，已部署 transient systemd path guard `peft-phase1-stop-after-seed43.path`，监听 `analysis/I0_vs_I8_step50_seed43_paired.json` 的原子出现；触发时只向 PGID `27424` 发送 `SIGSTOP`，随后要求人工验证 seed-43 artifacts、确认无 seed-44 训练状态并终止 controller。guard 部署时为 `active/waiting`，触发文件和任何 seed-44 artifact 均不存在。
+完整修订位于 `analysis/phase1_two_seed_scope_amendment.json`，SHA-256 为 `92d44f339e0129c81c43fd691395c3d87399a17c7fbbe9b42f34149fcf2cc65d`。为避免当时的 controller 在 seed-43 comparison 后自动进入 seed 44，曾部署 transient systemd path guard `peft-phase1-stop-after-seed43.path`，监听 `analysis/I0_vs_I8_step50_seed43_paired.json` 的原子出现；触发时只向 PGID `27424` 发送 `SIGSTOP`，随后要求人工验证 seed-43 artifacts、确认无 seed-44 训练状态并终止 controller。guard 部署时为 `active/waiting`，触发文件和任何 seed-44 artifact 均不存在；这是历史运行时状态，当前无活动 controller，换服务器后的 guard 必须由 19.2.41 的入口重新建立。
 
 #### 19.2.28 两 seed 最终 gate 执行规范冻结（2026-10-03）
 
@@ -1312,25 +1335,25 @@ I8 的 50-step 训练不能把 P2 当作免费初始化。正式 source `phase05
 
 #### 19.2.35 seed-43 I0 评测跨卡恢复边界（2026-10-03）
 
-为应对当前约 6 小时硬卡时，对正式四卡评测 wrapper 做只读恢复审计。每个 GPU shard 会先一次性执行本 shard 的全部 1,812 个 request，随后才写出 JSONL；因此正在生成但尚未写完的 shard 没有逐 request checkpoint，卡中断后必须整片重跑。另一方面，完整 shard 是独立确定的 request partition，具备固定 `seed+shard_index`、manifest 和 1,812 条 records，可以跨卡安全复用。
+为应对当时约 6 小时的硬卡时限制，对正式四卡评测 wrapper 做只读恢复审计。每个 GPU shard 会先一次性执行本 shard 的全部 1,812 个 request，随后才写出 JSONL；因此正在生成但尚未写完的 shard 没有逐 request checkpoint，卡中断后必须整片重跑。另一方面，完整 shard 是独立确定的 request partition，具备固定 `seed+shard_index`、manifest 和 1,812 条 records，可以跨卡安全复用。
 
 现有 `run_full_bench_vllm_4gpu.sh` 每次固定启动全部四个 shard，外层 Phase-1 wrapper 也只用最终 summary 判断是否跳过评测。因此若硬中断发生在 1--3 个 shard 已完成、summary 尚未出现时，直接重启 controller 会重跑全部四片；这不是结果正确性问题，但会浪费下一张卡的评测时间。为此新增独立、人工调用且不自动启动的 `ops/resume_seed43_i0_eval_missing_shards.sh`。初版 SHA-256 为 `ad9df154ecc82a577d118032f1a105374a099fc3c146efc2891e2033b5c6df18`；经 19.2.40 的半成品状态 fail-closed 收紧后，当前 SHA-256 为 `bce6bb415033ccaaa512b7e6b96b54f5e6a7ef2a9e908f8334c462c692495d80`。它只覆盖固定的 seed-43 I0 eval name，不修改正式 evaluator、wrapper、controller 或 provenance-covered 代码。
 
-恢复器先钉住 benchmark snapshot、Phase-1 preparation、training-contract verifier、evaluator 和正式 full-benchmark verifier 哈希；随后必须由 finalized training contract 对当前 adapter 内容返回 `status=verified`、正确的 I0/seed-43/experiment identity 和非空 `adapter_sha256`，不能仅凭 adapter 路径相同就混用 shard。若 summary 已存在则只做正式验收。否则它拒绝与现存目标 eval 或残留 vLLM EngineCore 并发，逐行流式验证每个可复用 shard：精确 1,812 个唯一 request key、与 snapshot 的题目不变量一致、按全局 request 次序模 4 得到的 partition 完全一致、record/manifest 中 adapter、base model、采样参数、seed 和 shard index 全部匹配。已有非空但验证失败的 shard fail closed，不自动删除或覆盖；只对完全缺失的 shard 按显式 GPU 映射补跑，最后 aggregate 并调用冻结的 `verify_full_bench_run.py`。脚本支持 `--dry-run`，但在当前训练/评测仍运行时不会调用。
+恢复器先钉住 benchmark snapshot、Phase-1 preparation、training-contract verifier、evaluator 和正式 full-benchmark verifier 哈希；随后必须由 finalized training contract 对当前 adapter 内容返回 `status=verified`、正确的 I0/seed-43/experiment identity 和非空 `adapter_sha256`，不能仅凭 adapter 路径相同就混用 shard。若 summary 已存在则只做正式验收。否则它拒绝与现存目标 eval 或残留 vLLM EngineCore 并发，逐行流式验证每个可复用 shard：精确 1,812 个唯一 request key、与 snapshot 的题目不变量一致、按全局 request 次序模 4 得到的 partition 完全一致、record/manifest 中 adapter、base model、采样参数、seed 和 shard index 全部匹配。已有非空但验证失败的 shard fail closed，不自动删除或覆盖；只对完全缺失的 shard 按显式 GPU 映射补跑，最后 aggregate 并调用冻结的 `verify_full_bench_run.py`。脚本支持 `--dry-run`，但在该审计时点的训练/评测仍运行时不会调用。
 
-shell 语法和嵌入式 Python 编译均已验证；合成的 1,812-record shard 正向 fixture 通过，随后把 manifest temperature 从 `0.6` 篡改为 `0.7` 的负向 fixture 被正确拒绝。该恢复能力只减少硬中断后的重复计算，不改变任何 records、gate、评测随机性或论文结论；若当前卡正常在 summary 前完成，则完全不使用它。
+shell 语法和嵌入式 Python 编译均已验证；合成的 1,812-record shard 正向 fixture 通过，随后把 manifest temperature 从 `0.6` 篡改为 `0.7` 的负向 fixture 被正确拒绝。该恢复能力只减少硬中断后的重复计算，不改变任何 records、gate、评测随机性或论文结论；最终处置只走 aggregate-only 且没有补跑 shard，见 19.2.44。
 
 #### 19.2.36 seed-43 I0 step-25 非破坏性留存清单工具（2026-10-03）
 
-当前 root 完成 I0 step-50 与评测后预计只剩约 8 GiB，不足以在下一张卡同时容纳 I8 的 step-25 和 step-50 两份约 7.72 GB recovery checkpoint；但训练未完成前绝不能提前删除当前 I0 step-25。为把历史 I0/I8/I16/I32 的手工留存流程收紧为可重复操作，新增纯 inventory 工具 `ops/inventory_seed43_i0_step25_after_postverify.sh`，修订后 SHA-256 为 `575f8003cf28b601e732bd2adab981f91c0ca740d33ae94d7e47b76425607e12`。该工具不包含任何删除命令，也不接受删除参数。
+按当时容量估计，root 完成 I0 step-50 与评测后预计只剩约 8 GiB，不足以在下一张卡同时容纳 I8 的 step-25 和 step-50 两份约 7.72 GB recovery checkpoint；但训练未完成前绝不能提前删除 I0 step-25。为把历史 I0/I8/I16/I32 的手工留存流程收紧为可重复操作，新增纯 inventory 工具 `ops/inventory_seed43_i0_step25_after_postverify.sh`，修订后 SHA-256 为 `575f8003cf28b601e732bd2adab981f91c0ca740d33ae94d7e47b76425607e12`。该工具不包含任何删除命令，也不接受删除参数。
 
 工具只在固定 seed-43 I0 postverify artifact 存在且 schema、训练 seed、候选、7,248/1,812 计数、training-contract 与 full-benchmark `verified` 状态全部匹配时继续；records、summary、step-50 adapter 和 contract 还必须分别指向该固定 train/eval name 的精确规范路径，不能由 postverify 改指任意同内容文件，随后才重新核对四者哈希。step-25 必须恰好包含预期的 22 个普通非 symlink 文件，文件集合有缺失、额外项或类型变化都 fail closed。通过后才逐文件流式计算绝对/相对路径、字节数和 SHA-256，原子写入 inventory 与 `inventory_ready_no_deletion_performed` manifest；manifest 显式固定 `deletion_performed=false` 和 `irreversible_action_authorized=false`。
 
-当前真实 postverify 尚不存在时运行该工具，以状态 2 正确拒绝且没有产生清单。隔离合成测试中，标准 22 文件 fixture 成功生成 22 行 inventory，所有源文件仍存在；加入第 23 个 `unexpected.pt` 后正确拒绝，并确认没有写出 inventory/manifest、额外文件也未被修改；把 postverify records 改指另一个内容相同的路径也被正确拒绝。I0 正式 postverify 后先运行并人工复核这份非破坏性清单，再另行逐项确认任何不可恢复删除；当前阶段没有授权或执行删除。
+在该节记录的历史时点，真实 postverify 尚不存在，运行该工具以状态 2 正确拒绝且没有产生清单。隔离合成测试中，标准 22 文件 fixture 成功生成 22 行 inventory，所有源文件仍存在；加入第 23 个 `unexpected.pt` 后正确拒绝，并确认没有写出 inventory/manifest、额外文件也未被修改；把 postverify records 改指另一个内容相同的路径也被正确拒绝。最终 postverify 与正式 inventory 已按此流程完成，见 19.2.44；没有删除 seed-43 I0 step-25 checkpoint。
 
 #### 19.2.37 seed-43 postverify 证据结构补强（2026-10-03）
 
-在 seed-43 I0 summary 尚不存在、I0/I8 两个 postverify path watcher 均为 `active/waiting` 时，对自动验收脚本做结构审计。原脚本会重新运行 training-contract 与 full-benchmark verifier，并绑定 records、summary、adapter、contract 和自身哈希，但比 19.2.28 已保存的 seed-42 postverify artifact 少四份 shard manifest 哈希以及两份 verifier 代码哈希，不满足“同结构独立验收”的最强口径。
+在该节记录的历史时点，seed-43 I0 summary 尚不存在、I0/I8 两个 postverify path watcher 均为 `active/waiting`，因此对自动验收脚本做结构审计。原脚本会重新运行 training-contract 与 full-benchmark verifier，并绑定 records、summary、adapter、contract 和自身哈希，但比 19.2.28 已保存的 seed-42 postverify artifact 少四份 shard manifest 哈希以及两份 verifier 代码哈希，不满足“同结构独立验收”的最强口径。seed-43 I0 的最终 summary 与增强后的 postverify 结果见 19.2.44。
 
 因此只增强独立运维脚本 `ops/seed43_i0_postverify.sh`，不修改训练器、评测器、contract、gate 或任何运行参数。修订后 SHA-256 为 `c25685daa65bb66b5f5974857e3e3cc32e61a81359e90983cc1dcd6f542ffaa0`。脚本在确认四个 shard 各 1,812 行时，同时要求四份固定 manifest 均非空，把它们逐份加入同一次 SHA-256 集合与 `artifacts.manifests`；并将实际执行的 `phase1_training_contract.py` 与 `verify_full_bench_run.py` 哈希写入 `verifier_code`。最终原子提交前的 jq 自检要求 manifest 精确四份、所有 path 非空、六个新增哈希均为 64 位字符串。
 
@@ -1344,7 +1367,7 @@ shell 语法和嵌入式 Python 编译均已验证；合成的 1,812-record shar
 
 同一 controller 已完成到正式六基准评测的交接。`00:45` 观察时四个固定 shard evaluator 和四个 vLLM EngineCore 已运行约 18 分钟，四份 manifest 均已原子写出并绑定哈希；协议保持 seed 42、temperature `0.6`、top-p `0.95`、max-new-tokens `32768`、四卡各一 shard 和固定六 benchmark。summary 尚不存在，符合生成仍在进行的预期；本次审计没有读取 shard progress、records、分数或任何评测结果，也没有执行 gate。root 尚余 `8,849,797,120` bytes，足够写出历史同协议约 0.36--0.39 GB 的完整评测目录。
 
-完整只读 artifact 位于 `analysis/phase1_seed43_i0_step50_training_completion_audit.json`，SHA-256 为 `0fcfd63d19f116fbf1036a18f4a843a350c40cc2fcbef1290bc5617abf3ddb90`。当前状态正式转为 `training_complete_evaluation_active`；下一次内容检查仍由 `03:35` timer 执行，期间不轮询评测。
+完整只读 artifact 位于 `analysis/phase1_seed43_i0_step50_training_completion_audit.json`，SHA-256 为 `0fcfd63d19f116fbf1036a18f4a843a350c40cc2fcbef1290bc5617abf3ddb90`。在该审计时点，状态正式转为 `training_complete_evaluation_active`，下一次内容检查由 `03:35` timer 执行，期间不轮询评测；这不是当前状态，最终聚合和验收见 19.2.44。
 
 #### 19.2.39 两 seed analyzer 实现边界准备审计（2026-10-04）
 
@@ -1364,13 +1387,13 @@ shell 语法和嵌入式 Python 编译均已验证；合成的 1,812-record shar
 
 入口强制验证 seed-42 selection 仍为 `advance_multiseed/I8`、seed-43 I0 postverify 及其全部绑定哈希、无 evaluator/EngineCore、无 seed-44 artifact、无已存在 comparison，并钉住 controller、method launcher、paired comparator、selector、postverify 和两-seed scope amendment 的代码/规范哈希。replacement 模式还要求 controller lock 空闲、没有任何 seed-43 I8 部分状态和 stale unit；新 controller 在 guard 部署失败时保持 stopped，不会形成无保护启动竞态。由于复用原 controller，它会确定性地重新验证已完成 run，并原子重写 seed-42 comparison/selection artifact，但已有 adapter/summary 会跳过训练与评测；这一行为已显式披露。所有运行时 mutation 之前还要求 `/root` 至少有 `16,500,000,000` bytes 可用空间，用于两份实测合计约 `15.431 GB` 的 I8 checkpoint 以及评测、日志和运行余量；不足时只打印实际/要求字节并拒绝，不自动删除或清理。
 
-工具显式切换到仓库根目录，不依赖调用者 cwd；从 `/tmp` 调用无副作用 help 已通过。当前 SHA-256 为 `7e8e35193eca3c524ee57ff3162ffd72b875958e8e7bffc2025cd8cf6b7aca6c`；`bash -n`、格式检查和 postverify artifact 遍历 fixture 也均通过。容量审计时 `/root` 可用 `8,840,220,672` bytes，距门槛还差 `7,659,779,328` bytes；I0 step-25 实占 `7,715,557,376` bytes，按当时盘面即使只释放它也仅到 `16,555,778,048` bytes，比门槛多约 55.8 MB，尚未计评测最终落盘增长，因此不能预设它单独足够。静态审计位于 `analysis/phase1_seed43_i8_next_card_guarded_start_audit.json`，更新后 SHA-256 为 `214fc96011242b4939e9fb34e8fffa0a6d3d40f32a7930cb24933c2dbe471062`，状态为 `static_ready_runtime_release_pending_i0_postverify`。当前没有调用 `--execute`、没有恢复或创建 controller、没有部署新 unit，也没有执行任何删除；I0 正式 postverify 前该入口保持不可释放。
+工具显式切换到仓库根目录，不依赖调用者 cwd；从 `/tmp` 调用无副作用 help 已通过。当前 SHA-256 为 `7e8e35193eca3c524ee57ff3162ffd72b875958e8e7bffc2025cd8cf6b7aca6c`；`bash -n`、格式检查和 postverify artifact 遍历 fixture 也均通过。容量审计时 `/root` 可用 `8,840,220,672` bytes，距门槛还差 `7,659,779,328` bytes；I0 step-25 实占 `7,715,557,376` bytes，按当时盘面即使只释放它也仅到 `16,555,778,048` bytes，比门槛多约 55.8 MB，尚未计评测最终落盘增长，因此不能预设它单独足够。静态审计位于 `analysis/phase1_seed43_i8_next_card_guarded_start_audit.json`，更新后 SHA-256 为 `214fc96011242b4939e9fb34e8fffa0a6d3d40f32a7930cb24933c2dbe471062`，状态为 `static_ready_runtime_release_pending_i0_postverify`。在该静态审计时点没有调用 `--execute`、没有恢复或创建 controller、没有部署新 unit，也没有执行任何删除；I0 正式 postverify 前该入口保持不可释放。I0 现已 postverify，但换服务器后的实时存储和运行时 preflight 仍须重新执行，见 19.2.47。
 
 #### 19.2.42 COLING 证据就绪矩阵（2026-10-04）
 
-为避免把当前固定设置复验与完整投稿支撑混为一谈，新增 `analysis/phase1_coling_evidence_readiness_matrix.json`，纳入 19.2.43 存储门槛后的当前 SHA-256 为 `8b48cbd307900ab33cae4d45f1a1a9513d92e08db217c053b2907b6f52533f66`。矩阵逐项区分十个证据轴：seed-42 I0/I8 固定协议结果已独立验证；seed-43 I0 训练完成而评测最后审计为运行中；seed-43 I8 尚未启动；两-seed gate 因输入不全且受冻结实现时序约束而不可计算；matched standard-LoRA-r32、同 snapshot base-model参考、独立 random-complement seed、跨任务、跨模型和完整方法间资源表均尚未闭合。另设 operational readiness，明确 seed-43 I8 当前只有 `8,840,220,672` bytes、低于 `16,500,000,000` bytes 启动门槛，状态为 `not_ready`，且存储 inventory 不授权删除。矩阵内全部 path/SHA 绑定已按实际字节重算通过，`submission_readiness_decision` 明确为 `not_ready`，且 `automatic_launch_authorized=false`。
+为避免把当前固定设置复验与完整投稿支撑混为一谈，新增 `analysis/phase1_coling_evidence_readiness_matrix.json`，纳入 19.2.43 存储门槛后的 SHA-256 为 `8b48cbd307900ab33cae4d45f1a1a9513d92e08db217c053b2907b6f52533f66`。该 JSON 是当时冻结的准备度快照，不随随后产物自动改写。矩阵逐项区分十个证据轴：seed-42 I0/I8 固定协议结果已独立验证；seed-43 I0 训练完成而评测最后审计为运行中；seed-43 I8 尚未启动；两-seed gate 因输入不全且受冻结实现时序约束而不可计算；matched standard-LoRA-r32、同 snapshot base-model参考、独立 random-complement seed、跨任务、跨模型和完整方法间资源表均尚未闭合。另设 operational readiness，记录当时 seed-43 I8 只有 `8,840,220,672` bytes、低于 `16,500,000,000` bytes 启动门槛，状态为 `not_ready`，且存储 inventory 不授权删除。矩阵内全部 path/SHA 绑定已按实际字节重算通过，`submission_readiness_decision` 明确为 `not_ready`，且 `automatic_launch_authorized=false`。
 
-当前优先顺序因此固定为：先完成并独立验收 seed-43 I0；下一张足够长的卡只运行 seed-43 I8；controller 停止后实现并测试冻结的两-seed analyzer；若且仅若四个 gate 全通过，再补 seeds 42/43 的协议匹配 standard LoRA r32 与同 snapshot base-model评测；之后优先补独立 random-complement draw，若要使用跨设置泛化措辞，还需第二任务和第二模型。即便当前两-seed gate 通过，也只允许 19.2.27 中固定 `1.5B` 数学 RL 设置的 held-out-seed复现表述，不能提前写成训练 seed 稳定、初始化稳健、优于标准 LoRA或广泛泛化。
+该快照给出的优先顺序是：先完成并独立验收 seed-43 I0；下一张足够长的卡只运行 seed-43 I8；controller 停止后实现并测试冻结的两-seed analyzer；若且仅若四个 gate 全通过，再补 seeds 42/43 的协议匹配 standard LoRA r32 与同 snapshot base-model评测；之后优先补独立 random-complement draw，若要使用跨设置泛化措辞，还需第二任务和第二模型。其中 seed-43 I0 已由 19.2.44 闭合，但 submission readiness 仍为 `not_ready`，其余缺口不变。即便未来两-seed gate 通过，也只允许 19.2.27 中固定 `1.5B` 数学 RL 设置的 held-out-seed复现表述，不能提前写成训练 seed 稳定、初始化稳健、优于标准 LoRA或广泛泛化。
 
 #### 19.2.43 seed-43 I8 非破坏性存储就绪清单（2026-10-04）
 
@@ -1378,7 +1401,7 @@ shell 语法和嵌入式 Python 编译均已验证；合成的 1,812-record shar
 
 可重建缓存候选包括 uv `449,064,960` bytes、pip `51,445,760` bytes、vLLM compile cache `329,523,200` bytes、DeepSeek Hugging Face hub cache `1,258,328,064` bytes和 LiveCodeBench cache `4,486,094,848` bytes。step-25 加 uv/pip 后的保守投影只高于门槛 `153,606,912` bytes，过于脆弱；再加 vLLM compile cache 可高出 `483,130,112` bytes，但会付出下次重编译卡时；处理 HF 模型 cache 可高出 `911,424,256` bytes，但需先确认无其他 workflow 依赖；LiveCodeBench cache 可高出 `4,139,191,040` bytes，却会损害后续跨任务准备和增加重下载成本。正式 outputs `1.533 GB`、analysis `261.6 MB` 和 provenance logs 必须保留，不列为回收候选。
 
-完整清单位于 `analysis/phase1_seed43_i8_storage_readiness_inventory.json`，SHA-256 为 `8bb0679409e9781ad115fc20034d56b5ec2cd81a88310021a2f93a7e2489475a`。五种投影均通过统一公式和 margin 算术断言；artifact 明确 `deletion_performed=false`、`irreversible_action_authorized=false`、`active_runtime_modified=false`。正确顺序仍是先完成 I0 postverify，再生成并人工复核 22 文件 step-25 inventory，随后单独决定保留/缓存处置，最后重新运行 guarded preflight；本节不构成任何删除授权。
+完整清单位于 `analysis/phase1_seed43_i8_storage_readiness_inventory.json`，SHA-256 为 `8bb0679409e9781ad115fc20034d56b5ec2cd81a88310021a2f93a7e2489475a`。五种投影均通过统一公式和 margin 算术断言；artifact 明确 `deletion_performed=false`、`irreversible_action_authorized=false`、`active_runtime_modified=false`。这是 I0 postverify 前的历史处置顺序；I0 postverify 和 22 文件 inventory 已由 19.2.44 完成，但 checkpoint 仍未删除，后续换服务器接续也不得把本节当成删除授权。
 
 #### 19.2.44 seed-43 I0 离线聚合与正式验收（2026-10-04）
 
@@ -1396,13 +1419,15 @@ shell 语法和嵌入式 Python 编译均已验证；合成的 1,812-record shar
 | Minerva | 0.195772 | 0.319853 | 0.579963 | 0.009191 | 5697.4 |
 | **Macro/overall** | **0.327747** | **0.591642** | **0.798565** | **0.037390** | **8951.1** |
 
+seed-43 I0 的 Macro Avg@k 比 seed-42 I0 的 `0.330162` 低约 `0.002415`。这两个 I0 run 共享固定随机子空间，但训练数据顺序与 on-policy rollout seed 不同；接近的点估计为随机基线的两条轨迹提供了有用背景，但没有 candidate 侧的 seed-43 I8，就不能形成 paired improvement、held-out-seed复现或两-seed gate 结论。
+
 随后 `ops/seed43_i0_postverify.sh I0` 再次验证 training contract、固定 snapshot 协议、7,248 条 merged records、四个 1,812 条 shard、四份 manifest 及所有绑定哈希，并原子写入 `analysis/verification/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_postverify.json`；该文件 SHA-256 为 `a9cc92ca9971adec8ee2808f5fada3034d7247e3f6d793ca3e08e63b9910f9ff`，状态为 `verified`。之后仅生成 step-25 的 22 文件非破坏性 inventory：文件清单 SHA-256 为 `4f3b7a7a914c35a7d2e71efa56f10209c857365a0d909deeee2dd11ab69a6a82`，inventory manifest SHA-256 为 `42a90c4ab439936158886c33303e18f566a43eab994b6f6f69b97c4ef54078c1`；没有删除、移动或覆盖 checkpoint。
 
-#### 19.2.45 返回自有服务器的迁移边界（2026-10-04）
+#### 19.2.45 返回自有服务器的初始迁移边界（2026-10-04）
 
-Git 仓库保存训练器、评测器、启动器、分析器、测试和本文，但 `.gitignore` 明确排除 `runs/`、checkpoint、records、日志、数据集和模型权重。因此仅克隆 GitHub 分支不足以继续正式 seed-43 I8；迁移时还必须单独传输并按 SHA-256 验收运行 artifact。最小的 I8 初始化集合包含 `phase1_training_preparation.json`、I8 的 `rank_map.json`、`allocation_summary.json` 和 `subspaces.safetensors`，其 SHA-256 分别为 `d60fc87775a5b1a0e1d27f922b6c4f2b100f0e8614faeb261afaf2c1c88dd386`、`2f20e70333a66f979d7630c83823304d9b9c196d65e86e74ce329200a87478f5`、`0c7ba14adca289fd1d88377d6c91afaab0f1b26914c03b088b0bddf78e55e131` 和 `63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135`。正式 preflight 还会验证 Phase-0.5/0.6 来源 artifact，不能只复制这四个文件后绕过校验。
+本节记录把初始化二进制加入 Git 前的迁移边界，随后已由 19.2.46 窄范围修订。Git 仓库原本保存训练器、评测器、启动器、分析器、测试和本文，而 `.gitignore` 默认排除 `runs/`、checkpoint、records、日志、数据集和模型权重。当时仅克隆 GitHub 分支不足以继续正式 seed-43 I8；最小 I8 初始化集合包含 `phase1_training_preparation.json`、I8 的 `rank_map.json`、`allocation_summary.json` 和 `subspaces.safetensors`，其 SHA-256 分别为 `d60fc87775a5b1a0e1d27f922b6c4f2b100f0e8614faeb261afaf2c1c88dd386`、`2f20e70333a66f979d7630c83823304d9b9c196d65e86e74ce329200a87478f5`、`0c7ba14adca289fd1d88377d6c91afaab0f1b26914c03b088b0bddf78e55e131` 和 `63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135`。正式 preflight 还会验证 Phase-0.5/0.6 来源 artifact，不能绕过校验。
 
-训练和评测的外部依赖还包括：DeepSeek-R1-Distill-Qwen-1.5B base model、训练 parquet（2,281,735 bytes，SHA-256 `8e3c9314db8b83c61ab62a3dc85e0a704dcc5f3a9d404d236943f719095ce82f`）以及固定 benchmark snapshot records（191,951,094 bytes，SHA-256 `3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da`）。若要保留 seed-43 I0 的审计和后续 paired comparison，还必须传输 I0 merged records、summary、四份 manifest、training contract、postverify 和 step-50 adapter；若要保留本地恢复能力，则额外传输完整 step-50 checkpoint。GitHub 上传只负责代码与小型文本证据，大型二进制与原始 records 应使用 `rsync`、对象存储或独立归档传输，并在目标服务器逐项复核本文记录的哈希。
+训练和评测的外部依赖仍包括：DeepSeek-R1-Distill-Qwen-1.5B base model、训练 parquet（2,281,735 bytes，SHA-256 `8e3c9314db8b83c61ab62a3dc85e0a704dcc5f3a9d404d236943f719095ce82f`）以及固定 benchmark snapshot records（191,951,094 bytes，SHA-256 `3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da`）。seed-43 I0 的 summary、四份 manifest、training contract、postverify 和 step-25 inventory 已作为小型文本证据进入 GitHub；若要在目标服务器执行 paired comparison 或重跑完整 verifier，还必须另行迁移 I0 merged/raw records 和 step-50 adapter。若要保留本地恢复能力，则额外迁移完整 checkpoint。大型运行产物与 raw records 应使用 `rsync`、对象存储或独立归档传输，并在目标服务器逐项复核本文记录的哈希。
 
 #### 19.2.46 GitHub 最小 I8 初始化二进制修订（2026-10-04）
 
@@ -1415,6 +1440,30 @@ Git 仓库保存训练器、评测器、启动器、分析器、测试和本文�
 | Phase-1 I8 `subspaces.safetensors` | 65,162,736 | `63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135` |
 
 提交前重新执行冻结的 `prepare_phase1_signal_random_artifacts.py --verify-method I8`，返回 `status=verified`：196 个模块、uniform-r32、8 个 signal directions、24 个随机补空间方向、signal-prefix 最大误差 0、最大正交误差 `9.5367431640625e-7`。因此把该分支克隆到相同的 `/root/peft-for-rl` 路径后，P2 来源张量、atom scores、I8 rank/allocation/preparation 文本及最终子空间已经自包含；其他绝对路径下的 base model、训练 parquet 和 benchmark snapshot 仍由目标环境提供。19.2.45 中关于这三个初始化二进制必须外部传输的陈述由本节取代，关于模型、数据、原始评测 records 和可恢复 checkpoint 的边界保持不变。
+
+#### 19.2.47 当前接续状态与迁移清单（2026-10-04）
+
+截至本文更新时间，seed-43 I0 已完成并 verified，step-25 非破坏性 inventory 已生成且 checkpoint 原文件仍保留；seed-43 I8 尚未启动。进程复核未发现 Phase-1 controller、full-benchmark evaluator 或 vLLM EngineCore 在运行。当前不存在需要从本机“续跑”的活动进程，回到自有服务器后的下一项 GPU 工作是单独启动 seed-43 I8，而不是重跑 I0、启动 seed 44 或直接计算尚不完整的两-seed gate。
+
+GitHub 分支 `experiments/spar-lora-v0` 已包含：
+
+- 训练、评测、验证、比较与受控启动代码，以及相关测试；
+- Phase-0.5/0.6 与 Phase-1 的小型配置、summary、manifest 和审计 JSON；
+- Phase-0.5 P2 candidate、P2 atom scores 和 Phase-1 I8 subspace 三份 safetensors；
+- I8 的 preparation、rank map、allocation summary，以及本文档。
+
+GitHub 明确不包含：
+
+- base model、训练 parquet 和固定 benchmark snapshot records；
+- seed-43 I0 adapter、checkpoint、merged/raw records 和 evaluator shard records；
+- rollout cache、日志及除已列三份之外的 candidate/subspace 二进制；
+- 任何 seed-43 I8 训练或评测结果，因为该 run 尚未发生。
+
+目标服务器应优先克隆到 `/root/peft-for-rl`，因为冻结 JSON 与 contract 中保存了该绝对仓库路径；若必须使用其他路径，需要先审计所有 path-bound verifier，而不能直接绕过。恢复外部模型与数据后，先运行 I8 initialization verifier 和 guarded preflight，再按冻结的 seed-43 I8 协议训练/评测并生成独立 postverify。只有 I8 与 I0 的 seed-43 records 都完成哈希绑定后，才能实现和测试两-seed analyzer、生成 paired comparison 并执行四个冻结 gate。
+
+另有离线迁移基线 `/root/peft-for-rl-phase1-0cca959.bundle`，大小 `123,948,750` bytes，SHA-256 为 `78d3bd743508543497410d1f4f60c3cd5c4bd79a5ad10a3b44ea4138c4abcc81`；`git bundle verify` 确认其包含分支到提交 `0cca95911fc36271480318718c9f4d634d8d4d0f` 的完整历史及三份最小初始化二进制。该 bundle 是网络不可用时的迁移基线，不包含本节之后的新文档提交；正常迁移仍以 GitHub 分支最新 HEAD 为准。
+
+论文证据距离也据此分层：完成 seed-43 I8 和四个 gate，只能闭合当前固定 `1.5B` 数学 RL 设置中“一个 held-out training seed 上复现、两个已测试 seed delta 均为正”的最小结论；完整主实验支撑仍缺协议匹配 standard-LoRA-r32、同 snapshot base-model参考、独立 random-complement draw，以及用于跨设置措辞的第二任务和第二模型。当前不能写成跨训练 seed 稳定、初始化稳健、优于标准 LoRA或广泛泛化。
 
 ### 19.3 Phase 2：隔离 token selector
 
