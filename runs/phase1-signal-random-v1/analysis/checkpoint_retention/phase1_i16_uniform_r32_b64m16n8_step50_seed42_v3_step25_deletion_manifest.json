@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "status": "deleted",
+  "created_at": "2026-10-03T07:36:43+08:00",
+  "source_root": "/root/peft-for-rl/runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3/global_step_25",
+  "reason": "Persistent disk cannot retain step-25 and step-50 full recovery states for all Phase-1 runs; the step-50 contract and 7248-record evaluation are independently verified.",
+  "recovery": "Deleted step-25 files are not recoverable locally; recreating them requires rerunning I16 seed 42 through step 25.",
+  "file_inventory": {
+    "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/checkpoint_retention/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3_step25_files.jsonl",
+    "sha256": "c6fea4b1de1e331b67c4d2bc860cf2f1f2edb2936056d1cbb4943addd05f4242"
+  },
+  "file_count": 22,
+  "total_file_bytes": 7715471431,
+  "disk_bytes": 7715487815,
+  "preserved": {
+    "step50_adapter": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3/global_step_50/actor/peft_adapter/adapter_model.safetensors",
+      "sha256": "df66bf8756b6888b1641b4b4f8766d33fcd1c1699f3c3aeb991faae83cdaffb6"
+    },
+    "training_contract": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_manifests/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3.json",
+      "sha256": "42c414f1a1b137d470b2067f7f05ee0d6b3d05cd60f566a974ad107027fef06c"
+    },
+    "evaluation_summary": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3_fullbench_32768_seed42/summary/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3_fullbench_32768_seed42.json",
+      "sha256": "f9db8e856767aacd1391859e437385744af541d27f49e68cc4407c4dacfb2759"
+    },
+    "evaluation_records": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3_fullbench_32768_seed42/records/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3_fullbench_32768_seed42.jsonl",
+      "sha256": "5ec73279993a0df7e8a0d450b111c06928c63bae800300bb57867243c7b09281"
+    },
+    "paired_comparison": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/I0_vs_I16_step50_seed42_paired.json",
+      "sha256": "62b97995fe8614ec6503611e9a69158fef930ce9530c6cf06e4a2312ed7c9616"
+    }
+  },
+  "deleted_at": "2026-10-03T07:38:20+08:00",
+  "freed_disk_bytes": 7715487815
+}

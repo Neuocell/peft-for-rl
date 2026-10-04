@@ -197,6 +197,18 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.model.full_gradient_probe_confidence_z=${FULL_GRADIENT_PROBE_CONFIDENCE_Z:-1.0} \
     +actor_rollout_ref.model.full_gradient_probe_eps=${FULL_GRADIENT_PROBE_EPS:-1e-12} \
     +actor_rollout_ref.model.full_gradient_probe_min_advantage_rms=${FULL_GRADIENT_PROBE_MIN_ADVANTAGE_RMS:-1e-6} \
+    +actor_rollout_ref.model.full_gradient_probe_covariance_estimator=${FULL_GRADIENT_PROBE_COVARIANCE_ESTIMATOR:-centered_population_covariance} \
+    +actor_rollout_ref.model.full_gradient_probe_token_mask_mode=${FULL_GRADIENT_PROBE_TOKEN_MASK_MODE:-none} \
+    +actor_rollout_ref.model.full_gradient_probe_token_keep_ratio=${FULL_GRADIENT_PROBE_TOKEN_KEEP_RATIO:-0.5} \
+    +actor_rollout_ref.model.full_gradient_probe_token_min_keep=${FULL_GRADIENT_PROBE_TOKEN_MIN_KEEP:-128} \
+    +actor_rollout_ref.model.full_gradient_probe_token_keep_final=${FULL_GRADIENT_PROBE_TOKEN_KEEP_FINAL:-128} \
+    +actor_rollout_ref.model.full_gradient_probe_token_mask_discovery_only=${FULL_GRADIENT_PROBE_TOKEN_MASK_DISCOVERY_ONLY:-True} \
+    +actor_rollout_ref.model.full_gradient_probe_token_mask_scope=${FULL_GRADIENT_PROBE_TOKEN_MASK_SCOPE:-legacy} \
+    +actor_rollout_ref.model.full_gradient_probe_crossfit_splits=${FULL_GRADIENT_PROBE_CROSSFIT_SPLITS:-3} \
+    +actor_rollout_ref.model.full_gradient_probe_stable_surprisal_quantile=${FULL_GRADIENT_PROBE_STABLE_SURPRISAL_QUANTILE:-0.95} \
+    +actor_rollout_ref.model.full_gradient_probe_hybrid_ranks="'${FULL_GRADIENT_PROBE_HYBRID_RANKS:-0,2,4,8,16}'" \
+    +actor_rollout_ref.model.full_gradient_probe_hybrid_support_relative_threshold=${FULL_GRADIENT_PROBE_HYBRID_SUPPORT_RELATIVE_THRESHOLD:-1e-7} \
+    +actor_rollout_ref.model.full_gradient_probe_replay_source_dir=${FULL_GRADIENT_PROBE_REPLAY_SOURCE_DIR:-null} \
     +actor_rollout_ref.model.full_gradient_probe_window_prompts=${FULL_GRADIENT_PROBE_WINDOW_PROMPTS:-16} \
     +actor_rollout_ref.model.full_gradient_probe_discovery_windows=${FULL_GRADIENT_PROBE_DISCOVERY_WINDOWS:-8} \
     +actor_rollout_ref.model.full_gradient_probe_calibration_windows=${FULL_GRADIENT_PROBE_CALIBRATION_WINDOWS:-2} \
@@ -235,6 +247,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.actor.use_dynamic_bsz=${use_dynamic_bsz} \
     actor_rollout_ref.actor.ppo_max_token_len_per_gpu=${actor_ppo_max_token_len} \
     actor_rollout_ref.rollout.name=vllm \
+    +actor_rollout_ref.rollout.seed=${ROLLOUT_SEED:-null} \
     actor_rollout_ref.rollout.load_format=dummy \
     actor_rollout_ref.rollout.gpu_memory_utilization=${GPU_MEMORY_UTILIZATION:-0.70} \
     actor_rollout_ref.rollout.tensor_model_parallel_size=${gen_tp} \

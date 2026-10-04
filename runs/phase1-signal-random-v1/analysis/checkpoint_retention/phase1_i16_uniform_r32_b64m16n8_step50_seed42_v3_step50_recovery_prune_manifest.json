@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "status": "deleted",
+  "created_at": "2026-10-03T07:45:33+08:00",
+  "checkpoint_root": "/root/peft-for-rl/runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3",
+  "reason": "I16 is eliminated by the preregistered seed-42 screen, while the detached controller will launch seed-43 immediately after I32 evaluation and the persistent disk cannot hold another pair of full recovery checkpoints.",
+  "recovery": "After execution, I16 seed 42 cannot resume training from step 50 locally. Recreating the deleted recovery state requires rerunning I16 seed 42 through step 50. The PEFT adapter, inference configuration, contract, evaluation records, and paired comparison remain reproducible and verifiable.",
+  "file_inventory": {
+    "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/checkpoint_retention/phase1_i16_uniform_r32_b64m16n8_step50_seed42_v3_step50_files.jsonl",
+    "sha256": "1eaefb37659c661d26a5fd5646f4b91e5a6bb3be136bdf3a28d396fb4e04a0cb",
+    "file_count": 23,
+    "total_file_bytes": 7715471433
+  },
+  "planned_delete": {
+    "file_count": 14,
+    "total_file_bytes": 7556249986,
+    "paths": [
+      "global_step_50/actor/extra_state_world_size_4_rank_0.pt",
+      "global_step_50/actor/extra_state_world_size_4_rank_1.pt",
+      "global_step_50/actor/extra_state_world_size_4_rank_2.pt",
+      "global_step_50/actor/extra_state_world_size_4_rank_3.pt",
+      "global_step_50/actor/model_world_size_4_rank_0.pt",
+      "global_step_50/actor/model_world_size_4_rank_1.pt",
+      "global_step_50/actor/model_world_size_4_rank_2.pt",
+      "global_step_50/actor/model_world_size_4_rank_3.pt",
+      "global_step_50/actor/optim_world_size_4_rank_0.pt",
+      "global_step_50/actor/optim_world_size_4_rank_1.pt",
+      "global_step_50/actor/optim_world_size_4_rank_2.pt",
+      "global_step_50/actor/optim_world_size_4_rank_3.pt",
+      "global_step_50/data.pt",
+      "latest_checkpointed_iteration.txt"
+    ]
+  },
+  "planned_preserve": {
+    "checkpoint_file_count": 9,
+    "checkpoint_file_bytes": 159221447,
+    "checkpoint_paths": [
+      "global_step_50/actor/fsdp_config.json",
+      "global_step_50/actor/huggingface/chat_template.jinja",
+      "global_step_50/actor/huggingface/config.json",
+      "global_step_50/actor/huggingface/generation_config.json",
+      "global_step_50/actor/huggingface/special_tokens_map.json",
+      "global_step_50/actor/huggingface/tokenizer.json",
+      "global_step_50/actor/huggingface/tokenizer_config.json",
+      "global_step_50/actor/peft_adapter/adapter_config.json",
+      "global_step_50/actor/peft_adapter/adapter_model.safetensors"
+    ],
+    "formal_artifacts": {
+      "step50_adapter_sha256": "df66bf8756b6888b1641b4b4f8766d33fcd1c1699f3c3aeb991faae83cdaffb6",
+      "training_contract_sha256": "42c414f1a1b137d470b2067f7f05ee0d6b3d05cd60f566a974ad107027fef06c",
+      "evaluation_summary_sha256": "f9db8e856767aacd1391859e437385744af541d27f49e68cc4407c4dacfb2759",
+      "evaluation_records_sha256": "5ec73279993a0df7e8a0d450b111c06928c63bae800300bb57867243c7b09281",
+      "paired_comparison_sha256": "62b97995fe8614ec6503611e9a69158fef930ce9530c6cf06e4a2312ed7c9616"
+    }
+  },
+  "preconditions": [
+    "Recheck every inventory entry against the live file before deletion.",
+    "Training contract verifier must return status=verified immediately before deletion.",
+    "Full-benchmark verifier must return status=verified immediately before deletion.",
+    "Delete exactly the planned_delete paths and no directories.",
+    "Re-run both verifiers and preserved-artifact hashes after deletion.",
+    "Record deleted_at, freed_disk_bytes, and status=deleted only after all post-delete checks pass."
+  ],
+  "deleted_at": "2026-10-03T07:51:57+08:00",
+  "freed_file_bytes": 7556249986,
+  "post_delete": {
+    "deleted_targets_all_absent": true,
+    "preserved_checkpoint_files_verified": 9,
+    "preserved_checkpoint_file_bytes": 159221447,
+    "preserved_checkpoint_disk_bytes": 159237831,
+    "available_disk_bytes": 26134761472,
+    "training_contract_verifier": "verified",
+    "full_benchmark_verifier": "verified",
+    "formal_artifact_hashes_unchanged": true
+  }
+}

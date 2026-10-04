@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "status": "training_complete_evaluation_active",
+  "created_at": "2026-10-04T00:46:29+08:00",
+  "scope": "Scheduled seed-43 I0 step-50 completion and evaluation-handoff audit. No evaluation records, scores, shard progress, or summary values were read.",
+  "training_identity": {
+    "candidate_method": "I0",
+    "training_seed": 43,
+    "experiment_name": "phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3",
+    "evaluation_name": "phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42"
+  },
+  "scheduled_check": {
+    "timer": "peft-phase1-seed43-i0-step50-check.timer",
+    "check_time": "2026-10-04T00:45:00+08:00",
+    "service_result": "success",
+    "service_exit_status": 0
+  },
+  "training_completion": {
+    "latest_checkpointed_iteration": 50,
+    "progress": "50/50",
+    "reported_total_training_time": "7:10:07",
+    "reported_mean_seconds_per_step": 516.15,
+    "step50_metrics": {
+      "entropy": 0.8668972253799438,
+      "grad_norm": 0.013536348706111312,
+      "score_mean": 0.416015625,
+      "parse_success_mean": 0.568359375,
+      "response_length_mean": 6192.76171875,
+      "response_length_clip_ratio": 0.486328125,
+      "step_seconds": 512.7711165370129,
+      "checkpoint_save_seconds": 5.451650046976283
+    },
+    "fatal_error_scan": {
+      "status": "no_runtime_fatal_error_found",
+      "configuration_only_matches": [
+        "NCCL_DEBUG and timeout environment/configuration values in startup output",
+        "nccl_timeout configuration value"
+      ]
+    }
+  },
+  "checkpoint": {
+    "path": "runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/global_step_50",
+    "file_count": 22,
+    "total_file_bytes": 7715471431,
+    "directory_apparent_bytes": 7715487815,
+    "expected_file_set_exact": true,
+    "latest_pointer": {
+      "path": "runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/latest_checkpointed_iteration.txt",
+      "sha256": "1a6562590ef19d1045d06c4055742d38288e9e6dcd71ccde5cee80f1d5a774eb"
+    },
+    "adapter": {
+      "path": "runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/global_step_50/actor/peft_adapter/adapter_model.safetensors",
+      "bytes": 147770464,
+      "sha256": "0037992fca30100e435c48f6e03f67f09031949324869c20524eb2dee96b7ec5"
+    }
+  },
+  "training_contract": {
+    "path": "runs/phase1-signal-random-v1/analysis/training_manifests/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3.json",
+    "sha256": "6470539ab870d2e0ef3c75f534186ce5f289839005fc3db3429e0df02311a673",
+    "status": "complete",
+    "independent_verifier_status": "verified",
+    "verifier_path": "scripts/analysis/phase1_training_contract.py",
+    "verifier_sha256": "7660390028739a1db83c1fa4de96235faf754e4fcbad604d946c0aab283bf80c"
+  },
+  "training_log": {
+    "path": "runs/phase1-signal-random-v1/logs/verl/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3.log",
+    "bytes": 305186,
+    "sha256": "7d92e06bf54f18c3bcdad5d96c5d006055e71225a1ce33b9fb5b28d7e4ddfa73"
+  },
+  "evaluation_handoff": {
+    "observed_at": "2026-10-04T00:45:14+08:00",
+    "wrapper_processes": 1,
+    "shard_processes": 4,
+    "engine_core_processes": 4,
+    "elapsed_at_observation": "approximately 18 minutes",
+    "manifest_count": 4,
+    "summary_present": false,
+    "summary_absence_interpretation": "expected_while_generation_is_active",
+    "fixed_protocol": {
+      "seed": 42,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "max_new_tokens": 32768,
+      "max_model_len": 34816,
+      "samples_small": 32,
+      "samples_large": 4,
+      "num_shards": 4,
+      "benchmarks": [
+        "aime24",
+        "aime25",
+        "amc23",
+        "hmmt_feb",
+        "math500",
+        "minerva"
+      ]
+    },
+    "manifest_sha256": {
+      "shard_00": "4232db4c6b9ff39a3ed3948ed4db924106337539ee0310348267c45226ae2e17",
+      "shard_01": "bd56e1c882668560deedc86a9ac66c71c4c559dd34a46144d2a4bf8b34c39462",
+      "shard_02": "35e477f1ae26c0eba1d3880611b44c475c6f2b60698ecf7c87dc9a90f0b34f39",
+      "shard_03": "99007bbf49c2d2c9b931ba9a2e44c95459055715189c0ae254ed629d94293876"
+    }
+  },
+  "runtime": {
+    "controller_pid": 27424,
+    "controller_pgid": 27424,
+    "controller_sid": 27424,
+    "controller_alive": true,
+    "root_free_bytes": 8849797120
+  },
+  "decision_boundary": {
+    "training_complete": true,
+    "evaluation_complete": false,
+    "no_evaluation_result_observed": true,
+    "no_gate_evaluated": true,
+    "no_new_run_authorized": true,
+    "next_scheduled_content_check": "2026-10-04T03:35:00+08:00"
+  }
+}

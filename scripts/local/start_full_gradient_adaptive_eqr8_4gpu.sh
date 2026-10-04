@@ -12,7 +12,7 @@ export PEFT_TYPE=grad_subspace
 # vLLM uses the global rank as its capacity ceiling; PEFT modules use rank_pattern.
 export LORA_RANK=32
 export LORA_ALPHA=64
-export LORA_DROPOUT=0.0
+export LORA_DROPOUT="${LORA_DROPOUT:-0.05}"
 export LORA_FREEZE_A=False
 export GRADIENT_SUBSPACE_RANK_MAP_PATH="${GRADIENT_SUBSPACE_RANK_MAP_PATH:-${ALLOCATION_DIR}/rank_map.json}"
 export GRADIENT_SUBSPACE_PATH="${GRADIENT_SUBSPACE_PATH:-${ALLOCATION_DIR}/subspaces.safetensors}"

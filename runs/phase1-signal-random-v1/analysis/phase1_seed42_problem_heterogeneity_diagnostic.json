@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "created_at": "2026-10-03T08:05:00+08:00",
+  "scope": "Post-hoc seed-42 mechanism and concentration diagnostic; not a selection metric and not multi-seed evidence.",
+  "inputs": {
+    "i0_records_sha256": "7ea31a89f04ab52e3044f079e3f191e402639b52667fa85cf7b88b79236fd9ad",
+    "i8_records_sha256": "9e1c31b6f4aace7408362fbc612b1ad6f22be8291e7b73c89f270f72b97892b6",
+    "i16_records_sha256": "5ec73279993a0df7e8a0d450b111c06928c63bae800300bb57867243c7b09281"
+  },
+  "matching": {
+    "record_keys_exactly_matched": true,
+    "matched_records": 7248,
+    "matched_problems": 902,
+    "benchmarks": [
+      "aime24",
+      "aime25",
+      "amc23",
+      "hmmt_feb",
+      "math500",
+      "minerva"
+    ]
+  },
+  "problem_level_vs_i0": {
+    "i8": {
+      "macro_delta_avg_at_k": 0.035998774509803926,
+      "positive_problems": 222,
+      "zero_problems": 567,
+      "negative_problems": 113,
+      "benchmark_balanced_positive_fraction": 0.2964493464052288,
+      "benchmark_balanced_negative_fraction": 0.17544934640522877,
+      "per_benchmark": {
+        "aime24": {"mean_delta": 0.025, "positive": 12, "zero": 11, "negative": 7},
+        "aime25": {"mean_delta": 0.0125, "positive": 6, "zero": 17, "negative": 7},
+        "amc23": {"mean_delta": 0.109375, "positive": 24, "zero": 10, "negative": 6},
+        "hmmt_feb": {"mean_delta": 0.009375, "positive": 5, "zero": 19, "negative": 6},
+        "math500": {"mean_delta": 0.0625, "positive": 138, "zero": 312, "negative": 50},
+        "minerva": {"mean_delta": -0.0027573529411764708, "positive": 37, "zero": 198, "negative": 37}
+      }
+    },
+    "i16": {
+      "macro_delta_avg_at_k": -0.016664726307189542,
+      "positive_problems": 164,
+      "zero_problems": 565,
+      "negative_problems": 173,
+      "benchmark_balanced_positive_fraction": 0.2150996732026144,
+      "benchmark_balanced_negative_fraction": 0.29716339869281044
+    }
+  },
+  "i8_i16_dose_response_quadrants": {
+    "both_positive": 121,
+    "i8_positive_i16_nonpositive": 101,
+    "i8_nonpositive_i16_positive": 43,
+    "both_nonpositive": 637
+  },
+  "sample_level_transitions_vs_i0": {
+    "i8": {
+      "correct_0_to_1": 745,
+      "correct_1_to_0": 438,
+      "net_correct_flips": 307,
+      "format_invalid_to_valid": 913,
+      "format_valid_to_invalid": 556,
+      "net_format_flips": 357
+    },
+    "i16": {
+      "correct_0_to_1": 560,
+      "correct_1_to_0": 660,
+      "net_correct_flips": -100,
+      "format_invalid_to_valid": 784,
+      "format_valid_to_invalid": 912,
+      "net_format_flips": -128
+    }
+  },
+  "format_conditioned_accuracy_delta_vs_i0": {
+    "i8": {
+      "overall_format_rate_delta": 0.04925496688741726,
+      "overall_accuracy_given_format_delta": 0.022262300125744983,
+      "aime24": 0.011011624896084593,
+      "aime25": -0.004883417016300989,
+      "amc23": 0.03485441427513125,
+      "hmmt_feb": 0.011136161781785892,
+      "math500": 0.01790721202485912,
+      "minerva": 0.0022071653453703544
+    },
+    "i16": {
+      "overall_format_rate_delta": -0.017660044150110354,
+      "overall_accuracy_given_format_delta": -0.006912029018126542
+    }
+  },
+  "interpretation": [
+    "I8 has more improving than degrading problems both in raw counts and after equal weighting across benchmarks, so its seed-42 gain is not produced by only a handful of isolated problems.",
+    "The many zero problem deltas and the concentration of the largest mean gains in AMC23 and MATH500 still make multi-seed confirmation essential.",
+    "I8 improves both format validity and correctness conditional on valid format; the observed gain cannot be attributed only to answer parsing.",
+    "The 101 versus 43 asymmetric dose-response quadrants support a non-monotone signal fraction: more P2 directions do not simply preserve the I8 improvements at I16.",
+    "All findings remain single-training-seed post-hoc diagnostics and cannot satisfy the preregistered stable-generalization decision."
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "status": "inventory_only_storage_not_ready",
+  "created_at": "2026-10-04T01:26:59+08:00",
+  "scope": "Non-destructive storage inventory for starting seed-43 I8 only after seed-43 I0 postverification and an explicit retention decision. Directory-level byte counts only; no checkpoint or evaluation content was read.",
+  "capacity": {
+    "mount": "/root",
+    "available_bytes": 8840220672,
+    "guarded_start_minimum_bytes": 16500000000,
+    "deficit_bytes": 7659779328,
+    "ready": false
+  },
+  "must_preserve": [
+    {
+      "path": "runs/phase1-signal-random-v1/outputs",
+      "disk_bytes": 1533714432,
+      "reason": "Formal fixed-protocol evaluation shards, manifests, records, summaries, and logs."
+    },
+    {
+      "path": "runs/phase1-signal-random-v1/analysis",
+      "disk_bytes": 261558272,
+      "reason": "Frozen allocations, contracts, preregistrations, audits, comparisons, and verification artifacts."
+    },
+    {
+      "path": "runs/phase1-signal-random-v1/logs",
+      "disk_bytes": 1691648,
+      "reason": "Training and controller provenance logs; too small to justify retention risk."
+    },
+    {
+      "path": "runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/global_step_50",
+      "disk_bytes": 7715573760,
+      "reason": "Active seed-43 I0 final checkpoint and adapter; preserve through formal evaluation postverification and retention review."
+    }
+  ],
+  "checkpoint_retention_candidate": {
+    "path": "runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/global_step_25",
+    "disk_bytes": 7715557376,
+    "current_rule": "Do not remove until seed-43 I0 postverification passes, the 22-file non-destructive inventory is generated, and an explicit deletion decision is made.",
+    "deletion_authorized": false
+  },
+  "rebuildable_cache_candidates": [
+    {
+      "path": "/root/.cache/uv",
+      "disk_bytes": 449064960,
+      "current_experiment_dependency": "Installed environments do not execute from the uv download cache; deletion would require redownload for future package operations.",
+      "risk": "low_but_not_authorized"
+    },
+    {
+      "path": "/root/.cache/pip",
+      "disk_bytes": 51445760,
+      "current_experiment_dependency": "Installed environments do not execute from the pip HTTP cache; deletion would require redownload for future package operations.",
+      "risk": "low_but_not_authorized"
+    },
+    {
+      "path": "/root/.cache/vllm/torch_compile_cache",
+      "disk_bytes": 329523200,
+      "current_experiment_dependency": "May reduce the next vLLM startup time; removal is rebuildable but can consume limited card time through recompilation.",
+      "risk": "moderate_startup_time_cost_not_authorized"
+    },
+    {
+      "path": "/root/.cache/huggingface/hub/models--deepseek-ai--DeepSeek-R1-Distill-Qwen-1.5B",
+      "disk_bytes": 1258328064,
+      "current_experiment_dependency": "The fixed active runtime uses the separate /data model snapshot. This cache was not proven byte-identical and may serve unrelated workflows.",
+      "risk": "requires_dependency_review_not_authorized"
+    },
+    {
+      "path": "/root/.cache/huggingface/hub/datasets--livecodebench--code_generation_lite",
+      "disk_bytes": 4486094848,
+      "current_experiment_dependency": "Not used by the active math evaluation, but likely useful for the planned cross-task extension and expensive to redownload.",
+      "risk": "large_reclaim_but_future_experiment_cost_not_authorized"
+    }
+  ],
+  "hypothetical_scenarios": {
+    "assumed_remaining_i0_eval_growth_bytes": 402681856,
+    "basis": "Conservatively reserve the largest measured historical Phase-1 full-evaluation directory size.",
+    "step25_only_after_eval": {
+      "projected_available_bytes": 16153096192,
+      "margin_over_guard_bytes": -346903808,
+      "ready": false
+    },
+    "step25_plus_uv_plus_pip_after_eval": {
+      "projected_available_bytes": 16653606912,
+      "margin_over_guard_bytes": 153606912,
+      "ready": true,
+      "warning": "The margin is too small to treat as robust against additional logs or filesystem growth."
+    },
+    "step25_plus_uv_plus_pip_plus_vllm_compile_after_eval": {
+      "projected_available_bytes": 16983130112,
+      "margin_over_guard_bytes": 483130112,
+      "ready": true,
+      "warning": "This adds vLLM recompilation time and still leaves a modest margin."
+    },
+    "step25_plus_huggingface_model_cache_after_eval": {
+      "projected_available_bytes": 17411424256,
+      "margin_over_guard_bytes": 911424256,
+      "ready": true,
+      "warning": "Recalculate exactly before use; dependency review is required and this scenario is not authorized."
+    },
+    "step25_plus_livecodebench_cache_after_eval": {
+      "projected_available_bytes": 20639191040,
+      "margin_over_guard_bytes": 4139191040,
+      "ready": true,
+      "warning": "Provides ample space but discards a likely future cross-task dataset cache and is not currently justified."
+    }
+  },
+  "recommended_sequence_without_automatic_deletion": [
+    "Wait for seed-43 I0 summary and independent postverification.",
+    "Generate and review the non-destructive 22-file step-25 inventory.",
+    "Select an explicit retention/cache action with enough margin; do not infer authorization from this inventory.",
+    "Re-run the guarded start preflight and require at least 16,500,000,000 available bytes before seed-43 I8."
+  ],
+  "inventory_checks": {
+    "json_parse": "passed",
+    "all_scenario_arithmetic_relations": "passed",
+    "directory_level_metadata_only": true
+  },
+  "deletion_performed": false,
+  "irreversible_action_authorized": false,
+  "active_runtime_modified": false
+}

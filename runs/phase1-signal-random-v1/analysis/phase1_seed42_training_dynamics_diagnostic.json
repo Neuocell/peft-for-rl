@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "created_at": "2026-10-03T08:08:39+08:00",
+  "scope": "Post-hoc seed-42 training-dynamics diagnostic; not a candidate-selection metric and not multi-seed evidence.",
+  "inputs": {
+    "i0_log_sha256": "3de946e6aaec9662be29b0a77555ee2963168cf999b8abc646c99fdcadb7d96f",
+    "i8_log_sha256": "d5b8a0eecefd673cbe36a75915c447d66fc6821ec72a2aa23db32a1188285bb7",
+    "i16_log_sha256": "4beebd5e60c8df41d1e2be05e9cfa0f1a653fa1d8b30ffe16bdfe95c89c35015"
+  },
+  "matching": {
+    "steps_exactly_matched": true,
+    "steps": 50,
+    "training_seed": 42
+  },
+  "method_means": {
+    "i0": {
+      "train_score": 0.3631640625,
+      "train_parse": 0.5485546875,
+      "entropy": 0.8909278285503387,
+      "grad_norm": 0.011916554116178304,
+      "last10_train_score": 0.3587890625,
+      "eval_macro_avg_at_k": 0.33016227532679737
+    },
+    "i8": {
+      "train_score": 0.3767578125,
+      "train_parse": 0.5622265625,
+      "entropy": 0.8687083518505097,
+      "grad_norm": 0.06618379848077893,
+      "last10_train_score": 0.3814453125,
+      "eval_macro_avg_at_k": 0.3661610498366013
+    },
+    "i16": {
+      "train_score": 0.373203125,
+      "train_parse": 0.5594140625,
+      "entropy": 0.92749680519104,
+      "grad_norm": 0.07036233155988157,
+      "last10_train_score": 0.3857421875,
+      "eval_macro_avg_at_k": 0.31349754901960786
+    }
+  },
+  "i8_minus_i16": {
+    "mean_train_score": 0.0035546874999999867,
+    "mean_train_parse": 0.0028124999999999956,
+    "eval_macro_avg_at_k": 0.0526635008169935,
+    "mean_entropy": -0.05878845334053039,
+    "mean_grad_norm": -0.004178533079102636,
+    "last10_train_score": -0.004296875,
+    "score_trajectory_pearson": 0.862505146874757,
+    "parse_trajectory_pearson": 0.7994567293558779,
+    "entropy_i8_lower_steps": 50,
+    "grad_norm_i8_lower_steps": 41
+  },
+  "paired_vs_i0": {
+    "i8": {
+      "mean_train_score_delta": 0.01359375,
+      "mean_train_parse_delta": 0.013671875,
+      "eval_macro_delta": 0.035998774509803926,
+      "train_score_positive_steps": 33,
+      "train_score_negative_steps": 17
+    },
+    "i16": {
+      "mean_train_score_delta": 0.0100390625,
+      "mean_train_parse_delta": 0.010859375,
+      "eval_macro_delta": -0.016664726307189542,
+      "train_score_positive_steps": 30,
+      "train_score_negative_steps": 19
+    }
+  },
+  "interpretation": [
+    "I8 and I16 have closely aligned training score and parse trajectories but differ by more than five macro Avg@k points in formal evaluation.",
+    "I16 has a higher last-10-step training score than I8 while evaluating substantially worse, so late training reward cannot select the signal fraction.",
+    "I16 has higher entropy at every step and higher gradient norm at 41 of 50 steps, yet it fails the paired evaluation screen; neither magnitude is evidence of better generalization.",
+    "Both I8 and I16 improve mean training score over I0, but only I8 improves formal evaluation, demonstrating an optimization-generalization mismatch.",
+    "All training runs remain numerically healthy; this diagnostic supports mandatory fixed full-benchmark evaluation rather than an outcome-adaptive proxy."
+  ]
+}

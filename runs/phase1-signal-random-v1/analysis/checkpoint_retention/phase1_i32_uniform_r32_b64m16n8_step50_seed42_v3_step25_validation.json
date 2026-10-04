@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "validated_at": "2026-10-03T11:16:50+08:00",
+  "run": "phase1_i32_uniform_r32_b64m16n8_step50_seed42_v3",
+  "checkpoint": "global_step_25",
+  "commit_marker": {
+    "path": "latest_checkpointed_iteration.txt",
+    "value": 25,
+    "mtime": "2026-10-03T11:14:43.365110575+08:00"
+  },
+  "inventory": {
+    "expected_file_count": 22,
+    "actual_file_count": 22,
+    "missing_files": [],
+    "extra_files": [],
+    "all_files_nonempty": true,
+    "checkpoint_payload_bytes": 7715471431,
+    "run_directory_bytes": 7715491913,
+    "model_shards": {
+      "count": 4,
+      "bytes_each": 1814714347
+    },
+    "optimizer_shards": {
+      "count": 4,
+      "bytes_each": 74331291
+    },
+    "extra_state_shards": {
+      "count": 4,
+      "bytes_each": 15141
+    },
+    "data_state_bytes": 6868,
+    "adapter_safetensors_bytes": 147770464
+  },
+  "dataloader_state": {
+    "batches_yielded": 25,
+    "samples_yielded": 1600,
+    "expected_batch_size": 64,
+    "consistent": true
+  },
+  "adapter": {
+    "config_parseable": true,
+    "safetensors_readable": true,
+    "tensor_count": 392,
+    "expected_module_count": 196,
+    "rank": 32,
+    "alpha": 64,
+    "scaling": 2.0,
+    "dropout": 0.0
+  },
+  "runtime": {
+    "checked_at": "2026-10-03T11:15:47+08:00",
+    "controller_pid": 27424,
+    "trainer_pid": 587978,
+    "task_runner_pid": 589359,
+    "all_expected_processes_alive": true,
+    "process_group": 27424,
+    "session_id": 27424
+  },
+  "storage": {
+    "filesystem": "/dev/vda3",
+    "available_bytes_after_step25": 18340450304,
+    "used_percent": 91,
+    "sufficient_for_one_more_full_checkpoint": true
+  },
+  "step25_health": {
+    "logged": true,
+    "entropy": 0.9269098043441772,
+    "policy_gradient_loss": 0.003996429297330906,
+    "gradient_norm": 0.062492731027305126,
+    "score_mean": 0.27734375,
+    "parse_success_mean": 0.521484375,
+    "response_length_mean": 6660.306640625,
+    "response_clip_ratio": 0.541015625,
+    "step_seconds": 538.111320349999,
+    "checkpoint_save_seconds": 6.4909333620162215,
+    "all_recorded_metrics_finite": true
+  },
+  "error_scan": {
+    "traceback": false,
+    "cuda_out_of_memory": false,
+    "nccl_error_or_timeout": false,
+    "nan_or_inf_in_step_metrics": false,
+    "no_space_left": false,
+    "killed_or_segfault": false
+  },
+  "retention_decision": {
+    "keep_step25": true,
+    "delete_before_step50_contract_and_full_evaluation_validation": false,
+    "reason": "The active I32 run must retain both recovery checkpoints until step-50 contract and the complete six-benchmark evaluation are verified."
+  },
+  "next_check": {
+    "node": "global_step_50",
+    "estimated_window": "2026-10-03T14:50:00+08:00/2026-10-03T15:15:00+08:00",
+    "no_intermediate_polling_planned": true
+  }
+}

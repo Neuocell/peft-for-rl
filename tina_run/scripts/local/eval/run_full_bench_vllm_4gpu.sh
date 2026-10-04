@@ -22,6 +22,7 @@ SAMPLES_LARGE="${SAMPLES_LARGE:-4}"
 GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-0.85}"
 LIMIT_PER_BENCHMARK="${LIMIT_PER_BENCHMARK:-}"
 DRY_RUN_NO_MODEL="${DRY_RUN_NO_MODEL:-0}"
+BENCHMARK_SNAPSHOT_RECORDS="${BENCHMARK_SNAPSHOT_RECORDS:-}"
 
 IFS=',' read -r -a GPU_IDS <<< "${CUDA_VISIBLE_DEVICES}"
 NUM_SHARDS="${#GPU_IDS[@]}"
@@ -57,6 +58,9 @@ if [[ -n "${LIMIT_PER_BENCHMARK}" ]]; then
 fi
 if [[ "${DRY_RUN_NO_MODEL}" == "1" ]]; then
   common_args+=(--dry_run_no_model)
+fi
+if [[ -n "${BENCHMARK_SNAPSHOT_RECORDS}" ]]; then
+  common_args+=(--benchmark_snapshot_records "${BENCHMARK_SNAPSHOT_RECORDS}")
 fi
 
 pids=()

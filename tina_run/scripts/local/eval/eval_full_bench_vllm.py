@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import os
@@ -40,6 +41,14 @@ BENCHMARK_ALIASES = {
 DIRECT_OPD_EVAL_ROOT = Path(os.environ.get("DIRECT_OPD_EVAL_ROOT", "/home/wangls/Direct-OPD/datasets/eval"))
 
 
+def sha256_file(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).expanduser().resolve().open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base_model", required=True)
@@ -57,6 +66,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max_lora_rank", type=int, default=32)
     parser.add_argument("--samples_small", type=int, default=32)
     parser.add_argument("--samples_large", type=int, default=4)
+    parser.add_argument("--benchmark_snapshot_records", default=None)
     parser.add_argument("--num_shards", type=int, default=1)
     parser.add_argument("--shard_index", type=int, default=0)
     parser.add_argument("--limit_per_benchmark", type=int, default=None)
@@ -171,6 +181,56 @@ def load_benchmark(benchmark: str) -> list[dict[str, Any]]:
     if benchmark == "minerva":
         return load_hf_rows("knoveleng/Minerva-Math", "default", "train", benchmark, "solution")
     raise ValueError(f"Unsupported benchmark: {benchmark}")
+
+
+def load_benchmark_snapshot_records(
+    path: str, benchmarks: list[str]
+) -> dict[str, list[dict[str, Any]]]:
+    requested = set(benchmarks)
+    by_key: dict[tuple[str, int], dict[str, Any]] = {}
+    with Path(path).open("r", encoding="utf-8") as records:
+        for line_number, line in enumerate(records, start=1):
+            if not line.strip():
+                continue
+            record = json.loads(line)
+            benchmark = normalize_benchmark(str(record.get("benchmark", "")))
+            if benchmark not in requested:
+                continue
+            try:
+                problem_index = int(record["problem_index"])
+                row = {
+                    "id": str(record["id"]),
+                    "benchmark": benchmark,
+                    "problem": str(record["problem"]),
+                    "gold_answer": str(record["gold_answer"]),
+                }
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(
+                    f"Invalid benchmark snapshot record at line {line_number} in {path}"
+                ) from exc
+            key = (benchmark, problem_index)
+            previous = by_key.setdefault(key, row)
+            if previous != row:
+                raise ValueError(
+                    f"Conflicting benchmark snapshot records for {benchmark} problem_index={problem_index}"
+                )
+
+    rows_by_benchmark: dict[str, list[dict[str, Any]]] = {}
+    for benchmark in benchmarks:
+        indexed = sorted(
+            (index, row)
+            for (row_benchmark, index), row in by_key.items()
+            if row_benchmark == benchmark
+        )
+        if not indexed:
+            raise ValueError(f"Benchmark snapshot has no rows for {benchmark}: {path}")
+        indices = [index for index, _ in indexed]
+        if indices != list(range(len(indices))):
+            raise ValueError(
+                f"Benchmark snapshot has non-contiguous problem_index values for {benchmark}: {indices[:5]}"
+            )
+        rows_by_benchmark[benchmark] = [row for _, row in indexed]
+    return rows_by_benchmark
 
 
 def build_prompt(tokenizer: Any, problem: str) -> str:
@@ -309,7 +369,12 @@ def main() -> None:
         return
 
     tokenizer = AutoTokenizer.from_pretrained(args.base_model)
-    rows_by_benchmark = {benchmark: load_benchmark(benchmark) for benchmark in benchmarks}
+    if args.benchmark_snapshot_records:
+        rows_by_benchmark = load_benchmark_snapshot_records(
+            args.benchmark_snapshot_records, benchmarks
+        )
+    else:
+        rows_by_benchmark = {benchmark: load_benchmark(benchmark) for benchmark in benchmarks}
     requests = expanded_requests(rows_by_benchmark, args)
     shard = shard_requests(requests, args.num_shards, args.shard_index)
     manifest = {
@@ -329,6 +394,12 @@ def main() -> None:
         "samples_small": args.samples_small,
         "samples_large": args.samples_large,
         "limit_per_benchmark": args.limit_per_benchmark,
+        "benchmark_snapshot_records": args.benchmark_snapshot_records,
+        "benchmark_snapshot_sha256": (
+            sha256_file(args.benchmark_snapshot_records)
+            if args.benchmark_snapshot_records
+            else None
+        ),
         "benchmark_sizes": {benchmark: len(rows_by_benchmark[benchmark]) for benchmark in benchmarks},
     }
     write_json(output_dir / "manifests" / f"{args.checkpoint_name}.shard-{args.shard_index:02d}-of-{args.num_shards:02d}.json", manifest)

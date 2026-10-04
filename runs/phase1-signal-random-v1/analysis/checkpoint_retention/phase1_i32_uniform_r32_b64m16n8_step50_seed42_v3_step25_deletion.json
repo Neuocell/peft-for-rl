@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "status": "deleted_and_postverified",
+  "action": "delete_recovery_checkpoint_after_step50_and_full_evaluation_verification",
+  "run": "phase1_i32_uniform_r32_b64m16n8_step50_seed42_v3",
+  "checkpoint": "global_step_25",
+  "target": "runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i32_uniform_r32_b64m16n8_step50_seed42_v3/global_step_25",
+  "inventory_completed_at": "2026-10-03T17:17:14+08:00",
+  "reason": "The step-50 contract, complete six-benchmark evaluation, paired comparison, and seed-42 selection are verified. The recovery-only step-25 checkpoint is no longer needed and retaining it would leave insufficient capacity for seed-43 checkpoints.",
+  "prerequisites": {
+    "step25_validation": {
+      "path": "runs/phase1-signal-random-v1/analysis/checkpoint_retention/phase1_i32_uniform_r32_b64m16n8_step50_seed42_v3_step25_validation.json",
+      "sha256": "007815016babe230d31e53f2460c5acb49dbc9fcf6687dd9949683f6be3d4de6",
+      "status": "pass"
+    },
+    "step50_training_contract": {
+      "path": "runs/phase1-signal-random-v1/analysis/training_manifests/phase1_i32_uniform_r32_b64m16n8_step50_seed42_v3.json",
+      "sha256": "37640cf2274530c001aa08ff2b8d4ea0510f2a050e002382298d5cf5a53c5219",
+      "status": "verified"
+    },
+    "full_benchmark_verification": {
+      "status": "verified",
+      "num_shards": 4,
+      "num_samples": 7248,
+      "benchmarks": [
+        "aime24",
+        "aime25",
+        "amc23",
+        "hmmt_feb",
+        "math500",
+        "minerva"
+      ],
+      "summary_sha256": "136599ebdc7ef22a0c6221edf3b5d84ca47fc53b060b6decbc99127ee39928b9",
+      "verifier_sha256": "4bcd33a1a336397c56778eb866d39fc65b70229c7cb2e9fdc80b412745dea3f9"
+    },
+    "paired_comparison": {
+      "path": "runs/phase1-signal-random-v1/analysis/I0_vs_I32_step50_seed42_paired.json",
+      "sha256": "3b25ec1ee7a51433347a88fc3089b30a41c0210e7a42fc6b1912ad7822d370b4",
+      "macro_delta_avg_at_k": 0.04631709558823529,
+      "ci95_low": 0.030682498468137254,
+      "ci95_high": 0.06348381076388887,
+      "probability_delta_gt_zero": 1.0
+    },
+    "seed42_selection": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_seed42_selection.json",
+      "sha256": "247fc05892648c41815252cecccb70c0152eddab940be642dc5d29fea65c27c8",
+      "selected_method": "I8",
+      "i32_role": "signal_only_control_not_eligible_for_selection"
+    }
+  },
+  "storage_before_deletion": {
+    "filesystem": "/dev/vda3",
+    "available_bytes": 9146515456,
+    "used_percent": 96
+  },
+  "inventory": {
+    "file_count": 22,
+    "file_payload_bytes": 7715471431,
+    "directory_bytes": 7715487815,
+    "files": [
+      {"path": "actor/extra_state_world_size_4_rank_0.pt", "bytes": 15141, "sha256": "8c3bb2c16fa4610f04dfea86af7919725dabad565e9f07d21b7e086062cfa31a"},
+      {"path": "actor/extra_state_world_size_4_rank_1.pt", "bytes": 15141, "sha256": "25e3b2bf550c5a013b1a93b4970393bef91e3f85c150d367cc83e7c40165f8d5"},
+      {"path": "actor/extra_state_world_size_4_rank_2.pt", "bytes": 15141, "sha256": "3359722f5c05035402047be6efac50cc21373030b125bbad04e79e4ef4ae6651"},
+      {"path": "actor/extra_state_world_size_4_rank_3.pt", "bytes": 15141, "sha256": "834d6ebb4a4afa0b6ba9ec6d1f455b5e37e46b22c0dbc4c3e89531077815fe1a"},
+      {"path": "actor/fsdp_config.json", "bytes": 46, "sha256": "68c204b2d3b755db051979376990d46558934c0d7ce0ac06bd1e19d3ee8dcf6d"},
+      {"path": "actor/huggingface/chat_template.jinja", "bytes": 2246, "sha256": "56a1447ad31926fdc21fb07e56e5642bd9c850c4f52d8c8af7bbe5f079a84f5f"},
+      {"path": "actor/huggingface/config.json", "bytes": 1361, "sha256": "afdd35536cfe6eebdb6cb4f0aa10efc482ed679becc22b4422f3435435172da9"},
+      {"path": "actor/huggingface/generation_config.json", "bytes": 181, "sha256": "f5e432959a722c3d3cde9a9c6606ddff8c618c1fe5a67f685f3b5b43d806ee53"},
+      {"path": "actor/huggingface/special_tokens_map.json", "bytes": 485, "sha256": "59cda48bbe8bab9d61ffb410e6e3c07b6d98bff73cee7c88ff8b51f95f21ab1c"},
+      {"path": "actor/huggingface/tokenizer.json", "bytes": 11422778, "sha256": "e20ddafc659ba90242154b55275402edeca0715e5dbb30f56815a4ce081f4893"},
+      {"path": "actor/huggingface/tokenizer_config.json", "bytes": 4490, "sha256": "55edc67ee25d8e0d4b7a13036ee61cdb880b49db4398533cc6a29710d1790ade"},
+      {"path": "actor/model_world_size_4_rank_0.pt", "bytes": 1814714347, "sha256": "325c4b53ed9131ca78a9177fdaf8f8d3f3daedd3f7194f305f8829c46b7da660"},
+      {"path": "actor/model_world_size_4_rank_1.pt", "bytes": 1814714347, "sha256": "7d6a21861fd9da9a33c090e5728a36d0ff92e24d4bcb319a32b0767e01e11006"},
+      {"path": "actor/model_world_size_4_rank_2.pt", "bytes": 1814714347, "sha256": "b912a2ee1dd80df93889be65cf9d880dd6f04adfb8f4a312a52a5c9853eb7383"},
+      {"path": "actor/model_world_size_4_rank_3.pt", "bytes": 1814714347, "sha256": "ff303a1495649eec7df171415b453540c735d21705f5f4e1008fe27ae2fb44b7"},
+      {"path": "actor/optim_world_size_4_rank_0.pt", "bytes": 74331291, "sha256": "137c20a51218a0c55ba4a0273485a8441d3f054f8c2cd376be99faf649874ef7"},
+      {"path": "actor/optim_world_size_4_rank_1.pt", "bytes": 74331291, "sha256": "71828c46629a22cd239b6be9a2408ef829bc6568cc5b676facdcf717823f55c6"},
+      {"path": "actor/optim_world_size_4_rank_2.pt", "bytes": 74331291, "sha256": "4f4d8f71a20a490b880b08ff0630882433750b446a970214ff26ac836c6c8486"},
+      {"path": "actor/optim_world_size_4_rank_3.pt", "bytes": 74331291, "sha256": "7d0f0810f86d37bab9d8449641eaf7378be6faf523a1d64f03176962b1d959cc"},
+      {"path": "actor/peft_adapter/adapter_config.json", "bytes": 19396, "sha256": "01839feee13d95fa6255cb0917bf12ced3504562d824128263c7a98514dce0eb"},
+      {"path": "actor/peft_adapter/adapter_model.safetensors", "bytes": 147770464, "sha256": "f3f33cd232e5a137994966655fb36d2122ae3e912e6b0ac74b907d3b44c54dce"},
+      {"path": "data.pt", "bytes": 6868, "sha256": "d29e0a6f3a54ff83a22ef8ed1fbf156fbb5aa2c5088a16090188f4b7cd1f03cf"}
+    ]
+  },
+  "retention_after_deletion": {
+    "step50_adapter": "retain",
+    "step50_huggingface_and_tokenizer_config": "retain",
+    "training_contract": "retain",
+    "full_benchmark_records_and_summary": "retain",
+    "paired_comparison_and_selection": "retain"
+  },
+  "recoverability": "The deleted step-25 optimizer/model recovery state will not be recoverable from retained artifacts. The step-50 adapter and all evidence required for evaluation and paper analysis remain retained.",
+  "deletion": {
+    "completed_at": "2026-10-03T17:19:21+08:00",
+    "target_absent_after_deletion": true,
+    "method": "exact-target depth-first deletion without crossing filesystems",
+    "irrecoverable": true
+  },
+  "storage_after_deletion": {
+    "filesystem": "/dev/vda3",
+    "available_bytes": 16860286976,
+    "used_percent": 92,
+    "observed_net_bytes_released": 7713771520,
+    "note": "Observed free-space change includes concurrent seed-43 training writes."
+  },
+  "post_deletion_verification": {
+    "training_contract_status": "verified",
+    "full_benchmark_status": "verified",
+    "num_shards": 4,
+    "num_samples": 7248,
+    "step50_adapter_sha256": "05fd90b6dd106587913c6016375ecf2f7ed3206e3b9959afccdfffec875923ac",
+    "training_contract_sha256": "37640cf2274530c001aa08ff2b8d4ea0510f2a050e002382298d5cf5a53c5219",
+    "paired_comparison_sha256": "3b25ec1ee7a51433347a88fc3089b30a41c0210e7a42fc6b1912ad7822d370b4",
+    "seed42_selection_sha256": "247fc05892648c41815252cecccb70c0152eddab940be642dc5d29fea65c27c8"
+  }
+}

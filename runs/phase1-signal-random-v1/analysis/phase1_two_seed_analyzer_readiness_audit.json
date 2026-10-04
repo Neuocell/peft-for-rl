@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "status": "implementation_deferred_by_frozen_execution_spec",
+  "created_at": "2026-10-04T01:02:20+08:00",
+  "purpose": "Prevent the legacy three-training-seed analyzer from being used for the user-directed two-training-seed fixed-setting decision, while preserving the frozen implementation boundary during the active Phase-1 runtime.",
+  "decision": "do_not_implement_or_execute_the_two_seed_final_gate_yet",
+  "evidence_boundary": {
+    "last_runtime_check_at": "2026-10-04T00:59:05+08:00",
+    "controller_pid": 27424,
+    "controller_was_alive": true,
+    "seed43_i0_summary_was_absent": true,
+    "evaluation_progress_or_scores_read_for_this_audit": false
+  },
+  "frozen_authorities": {
+    "scope_amendment": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_scope_amendment.json",
+      "sha256": "92d44f339e0129c81c43fd691395c3d87399a17c7fbbe9b42f34149fcf2cc65d"
+    },
+    "execution_spec": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_final_gate_execution_spec.json",
+      "sha256": "7c146c48bfb35759386e32eda2761b20a003fae04f430bceca57c548f462596d"
+    },
+    "fixed_exclusion_source": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_seed42_train_eval_overlap_sensitivity.json",
+      "sha256": "65e39bc856e075240964e0aec4e20d73231686214861675a60e8790a444d5767"
+    }
+  },
+  "reference_code_at_audit": {
+    "paired_bootstrap": {
+      "path": "scripts/analysis/compare_paired_full_bench.py",
+      "sha256": "5764621d26742238f77a4e8d47d5c37b14ca80ae2b65e6ea4bd3865cf2041fc8"
+    },
+    "legacy_multiseed_analyzer": {
+      "path": "scripts/analysis/aggregate_multiseed_full_bench.py",
+      "sha256": "0ca4bb7fd01f59afd99cf991596626892ed18370b35d68fa74b76cb32a05460b"
+    },
+    "legacy_test_module": {
+      "path": "tests/test_full_bench_eval.py",
+      "sha256": "9145b44358fea9f3014b116880fbcc6067b294834093c9ee69120820ed2bb279"
+    }
+  },
+  "legacy_analyzer_assessment": {
+    "compatible_with_active_two_seed_decision": false,
+    "reasons": [
+      "It requires training seeds 42, 43, and 44 exactly.",
+      "Its hierarchical bootstrap samples three seed slots rather than the frozen two seed slots.",
+      "Its pass/fail checks implement the superseded original three-seed gate.",
+      "It does not produce the required unfiltered and fixed-30-problem-filtered four-gate decision artifact."
+    ],
+    "prohibited_use": "Do not pass only seeds 42 and 43 to the legacy analyzer and do not reinterpret its output as the amended final gate."
+  },
+  "implementation_release_conditions": [
+    "The Phase-1 controller has been deliberately stopped, not merely paused while an evaluation is finalizing.",
+    "Seed-43 I0 and I8 training contracts and full-benchmark postverification artifacts are independently verified.",
+    "All four I0/I8 by seed-42/43 record files and verification-artifact hashes are available and immutable.",
+    "The frozen scope amendment, execution spec, exclusion source, and bound reference-code hashes still match this audit."
+  ],
+  "required_next_action_after_release": "Implement a dedicated two-seed analyzer and tests that satisfy every validation, metric, bootstrap, gate, output, and claim-policy requirement in the frozen execution spec before reading the numerical gate output.",
+  "runtime_mutation_performed": false,
+  "analysis_code_modified": false,
+  "training_or_evaluation_process_modified": false
+}

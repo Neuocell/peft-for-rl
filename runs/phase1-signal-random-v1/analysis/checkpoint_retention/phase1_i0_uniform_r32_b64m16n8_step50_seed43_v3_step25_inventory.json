@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "inventory_ready_no_deletion_performed",
+  "method": "phase1_seed43_step25_retention_inventory_v1",
+  "created_at": "2026-10-04T10:31:32+08:00",
+  "source_root": "/root/peft-for-rl/runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/global_step_25",
+  "file_count": 22,
+  "total_file_bytes": 7715471431,
+  "disk_bytes": 7715557376,
+  "deletion_performed": false,
+  "irreversible_action_authorized": false,
+  "file_inventory": {
+    "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/checkpoint_retention/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_step25_files.jsonl",
+    "sha256": "4f3b7a7a914c35a7d2e71efa56f10209c857365a0d909deeee2dd11ab69a6a82"
+  },
+  "prerequisite_postverify": {
+    "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/verification/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_postverify.json",
+    "sha256": "a9cc92ca9971adec8ee2808f5fada3034d7247e3f6d793ca3e08e63b9910f9ff",
+    "status": "verified"
+  },
+  "preserved": {
+    "evaluation_records": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42/records/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42.jsonl",
+      "sha256": "a5d8f67ae6461f6577e4891a9049b5d8f37e6f71b1ec5bf0f9152b4ac02224da"
+    },
+    "evaluation_summary": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42/summary/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42.json",
+      "sha256": "f2942bee41a19d31733032e437a184a8b3c5394bb5eef82b64e017df87e1b5de"
+    },
+    "step50_adapter": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/global_step_50/actor/peft_adapter/adapter_model.safetensors",
+      "sha256": "0037992fca30100e435c48f6e03f67f09031949324869c20524eb2dee96b7ec5"
+    },
+    "training_contract": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_manifests/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3.json",
+      "sha256": "6470539ab870d2e0ef3c75f534186ce5f289839005fc3db3429e0df02311a673"
+    }
+  },
+  "next_action": "Review and re-hash this inventory before any explicit deletion of the exact 22 listed files."
+}

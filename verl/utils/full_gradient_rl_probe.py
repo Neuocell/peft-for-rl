@@ -7,6 +7,7 @@ import json
 import math
 import os
 import statistics
+import gc
 from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
@@ -25,11 +26,252 @@ _ALL_LINEAR_FAMILIES = frozenset(
     {"q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"}
 )
 _CANDIDATE_METHODS = ("mean", "covariance", "hybrid")
+_COVARIANCE_ESTIMATORS = (
+    "centered_population_covariance",
+    "uncentered_second_moment",
+)
+_TOKEN_MASK_SCOPES = ("discovery", "discovery_calibration", "all")
+_TOKEN_MASK_MODES = (
+    "none",
+    "random",
+    "top_surprisal",
+    "advantage_entropy_stable_band",
+)
 _WINDOWED_CANDIDATE_METHODS = (
     "raw_momentum",
     "adam_update",
     "consensus_hybrid",
 )
+
+
+def probe_token_keep_count(
+    valid_tokens: int,
+    *,
+    keep_ratio: float,
+    min_keep: int,
+    final_tokens: int,
+) -> int:
+    """Return the exact number of valid response tokens retained by a probe mask."""
+
+    if valid_tokens < 0:
+        raise ValueError("valid_tokens must be non-negative")
+    if not 0.0 < keep_ratio <= 1.0:
+        raise ValueError("full_gradient_probe_token_keep_ratio must be in (0, 1]")
+    if min_keep < 0 or final_tokens < 0:
+        raise ValueError("probe token minimums must be non-negative")
+    requested = max(math.ceil(valid_tokens * keep_ratio), min_keep, final_tokens)
+    return min(valid_tokens, requested)
+
+
+def build_probe_token_mask(
+    log_prob: torch.Tensor,
+    response_mask: torch.Tensor,
+    *,
+    mode: str,
+    keep_ratio: float,
+    min_keep: int,
+    final_tokens: int,
+    entropy: torch.Tensor | None = None,
+    advantages: torch.Tensor | None = None,
+    seed: int = 0,
+    sample_key: str = "",
+    surprisal_upper_quantile: float = 0.95,
+) -> torch.Tensor:
+    """Build a detached, deterministic token mask for probe-gradient discovery.
+
+    All modes keep an exact per-response budget. ``top_surprisal`` reserves the
+    final tokens and fills the remainder by descending sampled-token surprisal.
+    ``random`` draws a deterministic density-matched control. The stable-band
+    selector ranks by ``abs(advantage) * entropy`` after excluding the extreme
+    sampled-surprisal tail whenever the requested budget permits it.
+    """
+
+    if log_prob.shape != response_mask.shape:
+        raise ValueError("log_prob and response_mask must have identical shapes")
+    if log_prob.ndim != 2:
+        raise ValueError("probe token masking expects [batch, response_length] tensors")
+    normalized_mode = str(mode).lower()
+    if normalized_mode not in _TOKEN_MASK_MODES:
+        raise ValueError(f"Unknown full-gradient probe token mask mode: {mode}")
+    if normalized_mode == "none":
+        return response_mask.detach().clone()
+
+    output = torch.zeros_like(response_mask).detach()
+    if not 0.0 < surprisal_upper_quantile <= 1.0:
+        raise ValueError("surprisal_upper_quantile must be in (0, 1]")
+    if normalized_mode == "advantage_entropy_stable_band":
+        if entropy is None or advantages is None:
+            raise ValueError(
+                "advantage_entropy_stable_band requires entropy and advantages"
+            )
+        if entropy.shape != log_prob.shape or advantages.shape != log_prob.shape:
+            raise ValueError("entropy and advantages must match log_prob shape")
+
+    detached_surprisal = -log_prob.detach().float()
+    valid = response_mask.detach() > 0
+    for row in range(valid.shape[0]):
+        valid_indices = torch.nonzero(valid[row], as_tuple=False).flatten()
+        keep_count = probe_token_keep_count(
+            int(valid_indices.numel()),
+            keep_ratio=keep_ratio,
+            min_keep=min_keep,
+            final_tokens=final_tokens,
+        )
+        if keep_count == 0:
+            continue
+        if normalized_mode == "random":
+            generator = torch.Generator(device="cpu")
+            generator.manual_seed(
+                _stable_seed(seed, f"{sample_key}:{row}", "random_token_mask")
+            )
+            order = torch.randperm(int(valid_indices.numel()), generator=generator)
+            selected_indices = valid_indices.index_select(0, order[:keep_count].to(valid_indices.device))
+            output[row, selected_indices] = response_mask[row, selected_indices].detach()
+            continue
+        if normalized_mode == "advantage_entropy_stable_band":
+            row_surprisal = detached_surprisal[row, valid_indices]
+            cutoff = torch.quantile(row_surprisal, surprisal_upper_quantile)
+            stable = valid_indices[row_surprisal <= cutoff]
+            if stable.numel() < keep_count:
+                stable = valid_indices
+            score = (
+                advantages.detach().float()[row, stable].abs()
+                * entropy.detach().float()[row, stable]
+            )
+            order = torch.argsort(score, descending=True, stable=True)
+            selected_indices = stable[order[:keep_count]]
+            output[row, selected_indices] = response_mask[row, selected_indices].detach()
+            continue
+        suffix_count = min(final_tokens, keep_count)
+        suffix_indices = (
+            valid_indices[-suffix_count:]
+            if suffix_count
+            else valid_indices.new_empty((0,))
+        )
+        remaining_budget = keep_count - suffix_count
+        prefix_indices = (
+            valid_indices[:-suffix_count] if suffix_count else valid_indices
+        )
+        if remaining_budget:
+            order = torch.argsort(
+                detached_surprisal[row, prefix_indices],
+                descending=True,
+                stable=True,
+            )
+            selected_indices = torch.cat(
+                (prefix_indices[order[:remaining_budget]], suffix_indices)
+            )
+        else:
+            selected_indices = suffix_indices
+        output[row, selected_indices] = response_mask[row, selected_indices].detach()
+    return output
+
+
+def deterministic_rollout_halves(
+    seed: int,
+    prompt_id: str,
+    response_count: int,
+    split_count: int,
+) -> list[tuple[tuple[int, ...], tuple[int, ...]]]:
+    """Return reproducible, balanced rollout half-splits for one prompt."""
+
+    if response_count < 2 or response_count % 2:
+        raise ValueError("cross-fit requires a positive even response count")
+    if split_count <= 0:
+        raise ValueError("split_count must be positive")
+    midpoint = response_count // 2
+    splits: list[tuple[tuple[int, ...], tuple[int, ...]]] = []
+    seen: set[tuple[int, ...]] = set()
+    attempts = 0
+    while len(splits) < split_count:
+        generator = torch.Generator(device="cpu")
+        generator.manual_seed(
+            _stable_seed(seed + attempts, prompt_id, "crossfit_rollout_split")
+        )
+        first = tuple(sorted(torch.randperm(response_count, generator=generator)[:midpoint].tolist()))
+        canonical = min(first, tuple(index for index in range(response_count) if index not in first))
+        attempts += 1
+        if canonical in seen:
+            if attempts > split_count * 32:
+                raise ValueError(
+                    f"Requested {split_count} unique half-splits from only {response_count} responses"
+                )
+            continue
+        seen.add(canonical)
+        second = tuple(index for index in range(response_count) if index not in first)
+        splits.append((first, second))
+    return splits
+
+
+def principal_subspace_overlap(
+    first: torch.Tensor, second: torch.Tensor
+) -> dict[str, float]:
+    """Summarize canonical-angle overlap for two row-orthonormal bases."""
+
+    if first.ndim != 2 or second.ndim != 2 or first.shape[1] != second.shape[1]:
+        raise ValueError("principal overlap expects compatible rank-by-width bases")
+    singular_values = torch.linalg.svdvals(first.float() @ second.float().T).clamp(0, 1)
+    if not singular_values.numel():
+        return {"mean_cosine": 0.0, "mean_squared_cosine": 0.0, "min_cosine": 0.0}
+    return {
+        "mean_cosine": float(singular_values.mean().item()),
+        "mean_squared_cosine": float(singular_values.square().mean().item()),
+        "min_cosine": float(singular_values.min().item()),
+    }
+
+
+def covariance_effective_ranks(values: torch.Tensor, eps: float = 1e-12) -> dict[str, float]:
+    """Return stable and entropy ranks for a non-negative covariance spectrum."""
+
+    spectrum = values.detach().float().clamp_min(0)
+    total = spectrum.sum()
+    if float(total.item()) <= eps:
+        return {"stable_rank": 0.0, "entropy_rank": 0.0, "positive_rank": 0.0}
+    probabilities = spectrum / total
+    nonzero = probabilities > 0
+    entropy = -(probabilities[nonzero] * probabilities[nonzero].log()).sum()
+    return {
+        "stable_rank": float((total / spectrum.max().clamp_min(eps)).item()),
+        "entropy_rank": float(entropy.exp().item()),
+        "positive_rank": float((spectrum > eps * spectrum.max()).sum().item()),
+    }
+
+
+def probe_token_mask_active(*, mode: str, scope: str, phase: str) -> bool:
+    """Return whether token masking is active for one probe phase."""
+
+    if mode == "none":
+        return False
+    if scope not in _TOKEN_MASK_SCOPES:
+        raise ValueError(f"Unknown full-gradient token mask scope: {scope}")
+    if phase not in {"discovery", "calibration", "audit"}:
+        raise ValueError(f"Unknown full-gradient probe phase: {phase}")
+    if scope == "all":
+        return True
+    if scope == "discovery_calibration":
+        return phase in {"discovery", "calibration"}
+    return phase == "discovery"
+
+
+def covariance_sketch(
+    second_moment_y: torch.Tensor,
+    mean: torch.Tensor,
+    omega: torch.Tensor,
+    count: int,
+    *,
+    estimator: str,
+) -> torch.Tensor:
+    """Build ``C Omega`` for centered covariance or an uncentered second moment."""
+
+    if count <= 0:
+        raise ValueError("covariance sketch requires at least one observation")
+    normalized = str(estimator).lower()
+    if normalized not in _COVARIANCE_ESTIMATORS:
+        raise ValueError(f"Unknown full-gradient covariance estimator: {estimator}")
+    result = second_moment_y / count
+    if normalized == "centered_population_covariance":
+        result = result - mean.T @ (mean @ omega)
+    return result
 
 
 def deterministic_response_offset(
@@ -145,6 +387,188 @@ def _orthonormal_completion(
         completion = torch.linalg.qr(random_rows, mode="reduced").Q[:, :missing].T
         kept = torch.cat((kept, completion), dim=0)
     return kept.contiguous()
+
+
+def positive_spectrum_rank(
+    values: torch.Tensor,
+    *,
+    relative_threshold: float = 1e-7,
+    eps: float = 1e-12,
+) -> int:
+    """Count numerically supported directions in a non-negative spectrum."""
+
+    if values.ndim != 1:
+        raise ValueError("spectrum must be one-dimensional")
+    if relative_threshold < 0 or eps < 0:
+        raise ValueError("spectrum thresholds must be non-negative")
+    spectrum = values.detach().float().clamp_min(0)
+    if not spectrum.numel():
+        return 0
+    threshold = max(float(spectrum.max().item()) * relative_threshold, eps)
+    return int((spectrum > threshold).sum().item())
+
+
+def stability_supported_hybrid_basis(
+    stable_basis: torch.Tensor,
+    stable_values: torch.Tensor,
+    fallback_basis: torch.Tensor,
+    fallback_values: torch.Tensor,
+    rank: int,
+    *,
+    stable_directions: int,
+    seed: int,
+    relative_threshold: float = 1e-7,
+    eps: float = 1e-12,
+) -> tuple[torch.Tensor, torch.Tensor, int]:
+    """Keep supported stable rows and fill the remaining rank from fallback rows.
+
+    Candidate rows are accepted in order with re-orthogonalization. Zero-spectrum
+    completion rows in ``stable_basis`` are therefore never treated as signal.
+    The fallback is expected to be ordered by discovery importance.
+    """
+
+    if rank <= 0 or stable_directions < 0:
+        raise ValueError("rank must be positive and stable_directions non-negative")
+    if stable_basis.ndim != 2 or fallback_basis.ndim != 2:
+        raise ValueError("hybrid inputs must be rank-by-width matrices")
+    if stable_basis.shape[1] != fallback_basis.shape[1]:
+        raise ValueError("hybrid inputs must have the same width")
+    if stable_values.ndim != 1 or fallback_values.ndim != 1:
+        raise ValueError("hybrid spectra must be one-dimensional")
+    if stable_values.numel() < stable_basis.shape[0]:
+        raise ValueError("stable spectrum is shorter than its basis")
+    if fallback_values.numel() < fallback_basis.shape[0]:
+        raise ValueError("fallback spectrum is shorter than its basis")
+    if rank > stable_basis.shape[1]:
+        raise ValueError("hybrid rank cannot exceed basis width")
+
+    supported = min(
+        stable_directions,
+        positive_spectrum_rank(
+            stable_values,
+            relative_threshold=relative_threshold,
+            eps=eps,
+        ),
+        stable_basis.shape[0],
+        rank,
+    )
+    accepted: list[torch.Tensor] = []
+    source_values: list[torch.Tensor] = []
+    selected_stable = 0
+
+    def append_rows(
+        rows: torch.Tensor,
+        values: torch.Tensor,
+        limit: int,
+        *,
+        stable: bool,
+    ) -> None:
+        nonlocal selected_stable
+        for index in range(limit):
+            if len(accepted) == rank:
+                return
+            row = rows[index].float()
+            if accepted:
+                current = torch.stack(accepted)
+                row = row - current.T @ (current @ row)
+                row = row - current.T @ (current @ row)
+            norm = row.norm()
+            if float(norm.item()) <= eps:
+                continue
+            accepted.append(row / norm)
+            source_values.append(values[index].detach().float().clamp_min(0))
+            if stable:
+                selected_stable += 1
+
+    append_rows(stable_basis, stable_values, supported, stable=True)
+    append_rows(fallback_basis, fallback_values, fallback_basis.shape[0], stable=False)
+
+    rows = (
+        torch.stack(accepted)
+        if accepted
+        else torch.empty((0, stable_basis.shape[1]), dtype=torch.float32)
+    )
+    if rows.shape[0] < rank:
+        rows = _orthonormal_completion(rows, rank, seed=seed)
+        source_values.extend(
+            torch.tensor(0.0, dtype=torch.float32)
+            for _ in range(rank - len(source_values))
+        )
+    values = torch.stack(source_values[:rank]).to(dtype=torch.float32)
+    return rows[:rank].contiguous(), values.contiguous(), selected_stable
+
+
+def signal_random_hybrid_basis(
+    signal_basis: torch.Tensor,
+    rank: int,
+    *,
+    signal_directions: int,
+    seed: int,
+    eps: float = 1e-8,
+    orthogonality_atol: float = 3e-4,
+) -> torch.Tensor:
+    """Preserve an ordered signal prefix and fill its orthogonal complement randomly.
+
+    Rows represent LoRA A input directions.  The random draw always has the same
+    ``rank x width`` shape, so comparisons at different signal counts share the
+    same underlying random matrix before residualization.
+    """
+
+    if signal_basis.ndim != 2:
+        raise ValueError("signal_basis must be a rank-by-width matrix")
+    width = int(signal_basis.shape[1])
+    if not 0 < rank <= width:
+        raise ValueError(f"rank must be in [1, {width}]")
+    if not 0 <= signal_directions <= min(rank, signal_basis.shape[0]):
+        raise ValueError("signal_directions exceeds the available signal basis")
+    signal = signal_basis[:signal_directions].detach().float().cpu().contiguous()
+    if signal.numel():
+        gram_error = float(
+            (signal @ signal.T - torch.eye(signal_directions)).abs().max().item()
+        )
+        if gram_error > orthogonality_atol:
+            raise ValueError(
+                f"Signal prefix is not orthonormal: {gram_error} > {orthogonality_atol}"
+            )
+    if signal_directions == rank:
+        return signal.clone()
+
+    generator = torch.Generator(device="cpu")
+    generator.manual_seed(seed)
+    random_rows = torch.randn((rank, width), generator=generator, dtype=torch.float32)
+    accepted = [signal[index].clone() for index in range(signal_directions)]
+    for candidate in random_rows:
+        if len(accepted) == rank:
+            break
+        row = candidate.clone()
+        if accepted:
+            current = torch.stack(accepted)
+            row -= current.T @ (current @ row)
+            row -= current.T @ (current @ row)
+        norm = torch.linalg.vector_norm(row)
+        if float(norm.item()) > eps:
+            accepted.append(row / norm)
+    if len(accepted) < rank:
+        for coordinate in range(width):
+            if len(accepted) == rank:
+                break
+            row = torch.zeros(width, dtype=torch.float32)
+            row[coordinate] = 1.0
+            current = torch.stack(accepted)
+            row -= current.T @ (current @ row)
+            row -= current.T @ (current @ row)
+            norm = torch.linalg.vector_norm(row)
+            if float(norm.item()) > eps:
+                accepted.append(row / norm)
+    if len(accepted) != rank:
+        raise RuntimeError(f"Could only construct {len(accepted)}/{rank} hybrid rows")
+    result = torch.stack(accepted).contiguous()
+    error = float((result @ result.T - torch.eye(rank)).abs().max().item())
+    if error > orthogonality_atol:
+        raise RuntimeError(
+            f"Signal/random hybrid is not orthonormal: {error} > {orthogonality_atol}"
+        )
+    return result
 
 
 def _right_singular_basis(
@@ -285,6 +709,56 @@ class FullGradientRLProbeCollector:
         self.confidence_z = float(_get(config, "full_gradient_probe_confidence_z", 1.0))
         self.seed = int(_get(config, "gradient_probe_seed", 42))
         self.eps = float(_get(config, "full_gradient_probe_eps", 1e-12))
+        self.covariance_estimator = str(
+            _get(
+                config,
+                "full_gradient_probe_covariance_estimator",
+                "centered_population_covariance",
+            )
+        ).lower()
+        if self.covariance_estimator not in _COVARIANCE_ESTIMATORS:
+            raise ValueError(
+                "full_gradient_probe_covariance_estimator must be "
+                "centered_population_covariance or uncentered_second_moment"
+            )
+        self.token_mask_mode = str(
+            _get(config, "full_gradient_probe_token_mask_mode", "none")
+        ).lower()
+        self.token_keep_ratio = float(
+            _get(config, "full_gradient_probe_token_keep_ratio", 0.5)
+        )
+        self.token_min_keep = int(
+            _get(config, "full_gradient_probe_token_min_keep", 128)
+        )
+        self.token_keep_final = int(
+            _get(config, "full_gradient_probe_token_keep_final", 128)
+        )
+        self.token_mask_discovery_only = bool(
+            _get(config, "full_gradient_probe_token_mask_discovery_only", True)
+        )
+        configured_mask_scope = str(
+            _get(config, "full_gradient_probe_token_mask_scope", "legacy")
+        ).lower()
+        if configured_mask_scope == "legacy":
+            configured_mask_scope = (
+                "discovery" if self.token_mask_discovery_only else "all"
+            )
+        if configured_mask_scope not in _TOKEN_MASK_SCOPES:
+            raise ValueError(
+                "full_gradient_probe_token_mask_scope must be legacy, discovery, "
+                "discovery_calibration or all"
+            )
+        self.token_mask_scope = configured_mask_scope
+        if self.token_mask_mode not in {"none", "top_surprisal"}:
+            raise ValueError(
+                "full_gradient_probe_token_mask_mode must be none or top_surprisal"
+            )
+        probe_token_keep_count(
+            0,
+            keep_ratio=self.token_keep_ratio,
+            min_keep=self.token_min_keep,
+            final_tokens=self.token_keep_final,
+        )
         output = str(_get(config, "gradient_probe_output_dir", ""))
         if not output:
             raise ValueError(
@@ -354,6 +828,10 @@ class FullGradientRLProbeCollector:
         self.losses: list[float] = []
         self.response_counts: list[int] = []
         self.response_tokens: list[int] = []
+        self.probe_tokens: list[int] = []
+        self.token_mask_active: list[bool] = []
+        self.selected_surprisal: list[float | None] = []
+        self.unselected_surprisal: list[float | None] = []
         self.advantage_rms: list[float] = []
         self.raw_norms: list[float] = []
         self.scales: list[float] = []
@@ -478,9 +956,16 @@ class FullGradientRLProbeCollector:
                 seed=_stable_seed(self.seed, name, "mean_svd"),
                 device=self.svd_device,
             )
+            covariance_y = covariance_sketch(
+                self.covariance_y[name],
+                mean,
+                self.omegas[name],
+                self.discovery_count,
+                estimator=self.covariance_estimator,
+            )
             covariance_basis, covariance_values, covariance_residual = (
                 _nystrom_covariance_basis(
-                    self.covariance_y[name] / self.discovery_count,
+                    covariance_y,
                     self.omegas[name],
                     self.rank,
                     seed=_stable_seed(self.seed, name, "covariance_completion"),
@@ -563,6 +1048,10 @@ class FullGradientRLProbeCollector:
         response_count: int,
         response_tokens: int,
         advantage_rms: float,
+        probe_tokens: int | None = None,
+        token_mask_active: bool = False,
+        selected_surprisal: float | None = None,
+        unselected_surprisal: float | None = None,
     ) -> dict[str, float]:
         if self.ready:
             return self.metrics()
@@ -575,6 +1064,16 @@ class FullGradientRLProbeCollector:
         self.losses.append(float(loss))
         self.response_counts.append(int(response_count))
         self.response_tokens.append(int(response_tokens))
+        self.probe_tokens.append(
+            int(response_tokens if probe_tokens is None else probe_tokens)
+        )
+        self.token_mask_active.append(bool(token_mask_active))
+        self.selected_surprisal.append(
+            None if selected_surprisal is None else float(selected_surprisal)
+        )
+        self.unselected_surprisal.append(
+            None if unselected_surprisal is None else float(unselected_surprisal)
+        )
         self.advantage_rms.append(float(advantage_rms))
 
         if current_phase == "discovery":
@@ -721,11 +1220,21 @@ class FullGradientRLProbeCollector:
         summary = {
             "schema_version": 1,
             "method": "full_gradient_signed_grpo_nystrom_v1",
+            "covariance_estimator": self.covariance_estimator,
             "candidate_methods": list(_CANDIDATE_METHODS),
             "r_max": self.rank,
             "constant_scaling": 2.0,
             "loss": "prompt-group signed GRPO policy gradient at ratio=1",
             "aggregation": "token-mean within prompt group",
+            "token_mask": {
+                "mode": self.token_mask_mode,
+                "keep_ratio": self.token_keep_ratio,
+                "min_keep_per_response": self.token_min_keep,
+                "keep_final_tokens_per_response": self.token_keep_final,
+                "discovery_only": self.token_mask_discovery_only,
+                "scope": self.token_mask_scope,
+                "selection_score": "negative detached current-policy log probability",
+            },
             "discovery_prompts": self.discovery_count,
             "calibration_prompts": self.calibration_count,
             "audit_prompts": self.audit_count,
@@ -748,11 +1257,1516 @@ class FullGradientRLProbeCollector:
                 "losses": self.losses,
                 "response_counts": self.response_counts,
                 "response_tokens": self.response_tokens,
+                "probe_tokens": self.probe_tokens,
+                "token_mask_active": self.token_mask_active,
+                "selected_surprisal": self.selected_surprisal,
+                "unselected_surprisal": self.unselected_surprisal,
                 "advantage_rms": self.advantage_rms,
             },
             "artifacts": artifact_paths,
             "modules": module_summary,
         }
+        path = self.output_dir / "probe_summary.json"
+        temporary = path.with_suffix(path.suffix + ".tmp")
+        temporary.write_text(
+            json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        os.replace(temporary, path)
+
+
+class _Phase0MomentAccumulator:
+    """CPU statistics for one selector over a fixed prompt subset."""
+
+    def __init__(
+        self,
+        module_shapes: dict[str, tuple[int, int]],
+        omegas: dict[str, torch.Tensor],
+    ) -> None:
+        self.omegas = omegas
+        self.mean_sums = {
+            name: torch.zeros(shape, dtype=torch.float32)
+            for name, shape in module_shapes.items()
+        }
+        self.second_y = {
+            name: torch.zeros(
+                (shape[1], omegas[name].shape[1]), dtype=torch.float32
+            )
+            for name, shape in module_shapes.items()
+        }
+        self.energy_sums = {name: 0.0 for name in module_shapes}
+        self.count = 0
+
+    def add(
+        self,
+        gradients: dict[str, torch.Tensor],
+        second_updates: dict[str, torch.Tensor] | None,
+        scale: float,
+    ) -> None:
+        for name, gradient in gradients.items():
+            scaled = gradient * scale
+            self.mean_sums[name].add_(scaled)
+            if second_updates is None:
+                omega = self.omegas[name]
+                update = gradient.T @ (gradient @ omega)
+            else:
+                update = second_updates[name]
+            self.second_y[name].add_(update, alpha=scale * scale)
+            self.energy_sums[name] += float(gradient.square().sum().item()) * scale * scale
+        self.count += 1
+
+    def mean(self, name: str) -> torch.Tensor:
+        return self.mean_sums[name] / self.count
+
+    def sketch(self, name: str, estimator: str) -> torch.Tensor:
+        return covariance_sketch(
+            self.second_y[name],
+            self.mean(name),
+            self.omegas[name],
+            self.count,
+            estimator=estimator,
+        )
+
+    def raw_second_moment(self, name: str) -> torch.Tensor:
+        return self.second_y[name] / self.count
+
+
+class _Phase0CrossAccumulator:
+    """Symmetric cross-half covariance statistics for one rollout split."""
+
+    def __init__(
+        self,
+        module_shapes: dict[str, tuple[int, int]],
+        omegas: dict[str, torch.Tensor],
+    ) -> None:
+        self.omegas = omegas
+        self.mean_a = {
+            name: torch.zeros(shape, dtype=torch.float32)
+            for name, shape in module_shapes.items()
+        }
+        self.mean_b = {
+            name: torch.zeros(shape, dtype=torch.float32)
+            for name, shape in module_shapes.items()
+        }
+        sketch_shapes = {
+            name: (shape[1], omegas[name].shape[1])
+            for name, shape in module_shapes.items()
+        }
+        self.second_a = {
+            name: torch.zeros(shape, dtype=torch.float32)
+            for name, shape in sketch_shapes.items()
+        }
+        self.second_b = {
+            name: torch.zeros(shape, dtype=torch.float32)
+            for name, shape in sketch_shapes.items()
+        }
+        self.cross_y = {
+            name: torch.zeros(shape, dtype=torch.float32)
+            for name, shape in sketch_shapes.items()
+        }
+        self.full_energy_sums = {name: 0.0 for name in module_shapes}
+        self.count = 0
+
+    def add(
+        self,
+        gradients_a: dict[str, torch.Tensor],
+        gradients_b: dict[str, torch.Tensor],
+        scale: float,
+        device: torch.device,
+    ) -> None:
+        for name in gradients_a:
+            a_cpu = gradients_a[name] * scale
+            b_cpu = gradients_b[name] * scale
+            self.mean_a[name].add_(a_cpu)
+            self.mean_b[name].add_(b_cpu)
+            a = a_cpu.to(device)
+            b = b_cpu.to(device)
+            omega = self.omegas[name].to(device)
+            a_omega = a @ omega
+            b_omega = b @ omega
+            second_a = a.T @ a_omega
+            second_b = b.T @ b_omega
+            cross_ab = a.T @ b_omega
+            cross_ba = b.T @ a_omega
+            self.second_a[name].add_(second_a.cpu())
+            self.second_b[name].add_(second_b.cpu())
+            self.cross_y[name].add_(((cross_ab + cross_ba) * 0.5).cpu())
+            full = (a_cpu + b_cpu) * 0.5
+            self.full_energy_sums[name] += float(full.square().sum().item())
+        self.count += 1
+
+    def cross_sketch(self, name: str, *, centered: bool = True) -> torch.Tensor:
+        result = self.cross_y[name] / self.count
+        if centered:
+            mean_a = self.mean_a[name] / self.count
+            mean_b = self.mean_b[name] / self.count
+            omega = self.omegas[name]
+            result = result - 0.5 * (
+                mean_a.T @ (mean_b @ omega) + mean_b.T @ (mean_a @ omega)
+            )
+        return result
+
+    def half_sketch(self, name: str, half: str) -> torch.Tensor:
+        if half == "a":
+            second, mean = self.second_a[name], self.mean_a[name] / self.count
+        elif half == "b":
+            second, mean = self.second_b[name], self.mean_b[name] / self.count
+        else:
+            raise ValueError(f"Unknown cross-fit half: {half}")
+        return second / self.count - mean.T @ (mean @ self.omegas[name])
+
+    def raw_full_second_moment(self, name: str) -> torch.Tensor:
+        return (
+            self.second_a[name] + self.second_b[name] + 2.0 * self.cross_y[name]
+        ) / (4.0 * self.count)
+
+
+def _nystrom_projected_energy(
+    y: torch.Tensor,
+    omega: torch.Tensor,
+    basis: torch.Tensor,
+    eps: float,
+) -> float:
+    """Estimate ``trace(P C P^T)`` from the same Nyström sketch used for C."""
+
+    w = (omega.T @ y + y.T @ omega) * 0.5
+    eigenvalues, eigenvectors = torch.linalg.eigh(w.float())
+    threshold = max(
+        float(eigenvalues.max().item()) * 1e-7 if eigenvalues.numel() else 0.0,
+        eps,
+    )
+    positive = eigenvalues > threshold
+    if not bool(positive.any()):
+        return 0.0
+    whitener = eigenvectors[:, positive] * eigenvalues[positive].rsqrt().unsqueeze(0)
+    factor = y.float() @ whitener
+    return float((basis.float() @ factor).square().sum().item())
+
+
+def _consensus_basis(
+    bases: list[torch.Tensor],
+    values: list[torch.Tensor],
+    rank: int,
+    *,
+    seed: int,
+    eps: float,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    weighted = []
+    for basis, spectrum in zip(bases, values):
+        weights = spectrum.clamp_min(0)
+        weights = weights / (weights.sum() + eps)
+        weighted.append(basis * weights.sqrt().unsqueeze(1))
+    pooled = torch.cat(weighted, dim=0)
+    _, singular_values, vh = torch.linalg.svd(pooled, full_matrices=False)
+    basis = _orthonormal_completion(vh[:rank], rank, seed=seed)
+    spectrum = torch.zeros(rank, dtype=torch.float32)
+    available = min(rank, singular_values.numel())
+    spectrum[:available] = singular_values[:available].square()
+    return basis, spectrum
+
+
+class Phase0GradientDiagnosticsCollector:
+    """Run all Phase-0 selectors on shared rollout groups without training."""
+
+    mode = "phase0_diagnostics"
+    is_phase0 = True
+
+    def __init__(self, model: torch.nn.Module, config: Any) -> None:
+        self.model = model
+        self.config = config
+        self.rank = int(_get(config, "full_gradient_probe_rank", 32))
+        self.sketch_width = int(
+            _get(config, "full_gradient_probe_sketch_width", self.rank + 8)
+        )
+        self.discovery_target = int(
+            _get(config, "full_gradient_probe_discovery_prompts", 64)
+        )
+        self.calibration_target = int(
+            _get(config, "full_gradient_probe_calibration_prompts", 32)
+        )
+        self.audit_target = int(_get(config, "full_gradient_probe_audit_prompts", 16))
+        self.crossfit_splits = int(
+            _get(config, "full_gradient_probe_crossfit_splits", 3)
+        )
+        self.keep_ratio = float(
+            _get(config, "full_gradient_probe_token_keep_ratio", 0.5)
+        )
+        self.min_keep = int(_get(config, "full_gradient_probe_token_min_keep", 128))
+        self.keep_final = int(
+            _get(config, "full_gradient_probe_token_keep_final", 128)
+        )
+        self.stable_surprisal_quantile = float(
+            _get(config, "full_gradient_probe_stable_surprisal_quantile", 0.95)
+        )
+        default_hybrid_ranks = ",".join(
+            str(value) for value in (0, 2, 4, 8, 16) if value <= self.rank
+        )
+        hybrid_ranks = str(
+            _get(
+                config,
+                "full_gradient_probe_hybrid_ranks",
+                default_hybrid_ranks or "0",
+            )
+        )
+        self.hybrid_ranks = tuple(
+            sorted({int(value.strip()) for value in hybrid_ranks.split(",") if value.strip()})
+        )
+        self.hybrid_support_relative_threshold = float(
+            _get(
+                config,
+                "full_gradient_probe_hybrid_support_relative_threshold",
+                1e-7,
+            )
+        )
+        self.clip_factor = float(_get(config, "full_gradient_probe_clip_factor", 2.5))
+        self.seed = int(_get(config, "gradient_probe_seed", 42))
+        self.eps = float(_get(config, "full_gradient_probe_eps", 1e-12))
+        configured_device = str(
+            _get(config, "full_gradient_probe_svd_device", "auto")
+        ).lower()
+        if configured_device == "auto":
+            configured_device = "cuda" if torch.cuda.is_available() else "cpu"
+        if configured_device not in {"cpu", "cuda"}:
+            raise ValueError("full_gradient_probe_svd_device must be auto, cpu or cuda")
+        self.compute_device = torch.device(configured_device)
+        output = str(_get(config, "gradient_probe_output_dir", ""))
+        if not output:
+            raise ValueError("gradient_probe_output_dir is required for Phase 0")
+        self.output_dir = Path(output).expanduser().resolve()
+        if self.rank <= 0 or self.sketch_width < self.rank:
+            raise ValueError("Phase 0 requires sketch_width >= rank > 0")
+        if min(self.discovery_target, self.calibration_target, self.audit_target) <= 0:
+            raise ValueError("Phase 0 requires positive discovery/calibration/audit sizes")
+        if self.crossfit_splits <= 0:
+            raise ValueError("full_gradient_probe_crossfit_splits must be positive")
+        if not self.hybrid_ranks or self.hybrid_ranks[0] < 0:
+            raise ValueError("full_gradient_probe_hybrid_ranks must be non-negative")
+        if self.hybrid_ranks[-1] > self.rank:
+            raise ValueError("Phase-0 hybrid directions cannot exceed probe rank")
+        if self.hybrid_support_relative_threshold < 0:
+            raise ValueError("Phase-0 hybrid support threshold must be non-negative")
+        probe_token_keep_count(
+            0,
+            keep_ratio=self.keep_ratio,
+            min_keep=self.min_keep,
+            final_tokens=self.keep_final,
+        )
+
+        families = _target_families(_get(config, "target_modules", "all-linear"))
+        self.module_names: dict[int, str] = {}
+        self.module_shapes: dict[str, tuple[int, int]] = {}
+        for name, module in model.named_modules():
+            if isinstance(module, torch.nn.Linear) and name.rsplit(".", 1)[-1] in families:
+                stable_name = normalize_target_name(name)
+                self.module_names[id(module)] = stable_name
+                self.module_shapes[stable_name] = (
+                    int(module.out_features),
+                    int(module.in_features),
+                )
+        if not self.module_names:
+            raise ValueError("Phase 0 found no target Linear modules")
+        if any(min(shape) < self.rank for shape in self.module_shapes.values()):
+            raise ValueError("full_gradient_probe_rank exceeds a target module dimension")
+
+        self.distributed = (
+            torch.distributed.is_available() and torch.distributed.is_initialized()
+        )
+        self.is_primary = not self.distributed or torch.distributed.get_rank() == 0
+        self.omegas: dict[str, torch.Tensor] = {}
+        for name, (_, in_features) in self.module_shapes.items():
+            generator = torch.Generator(device="cpu")
+            generator.manual_seed(_stable_seed(self.seed, name, "phase0_omega"))
+            omega = torch.randn(
+                (in_features, self.sketch_width),
+                generator=generator,
+                dtype=torch.float32,
+            )
+            self.omegas[name] = torch.linalg.qr(omega, mode="reduced").Q
+
+        self.standard = (
+            {
+                selector: _Phase0MomentAccumulator(self.module_shapes, self.omegas)
+                for selector in ("P0", "P1", "P2")
+            }
+            if self.is_primary
+            else {}
+        )
+        self.standard_prompt_splits = (
+            {
+                selector: [
+                    _Phase0MomentAccumulator(self.module_shapes, self.omegas)
+                    for _ in range(2)
+                ]
+                for selector in ("P0", "P1", "P2")
+            }
+            if self.is_primary
+            else {}
+        )
+        self.cross = (
+            [
+                _Phase0CrossAccumulator(self.module_shapes, self.omegas)
+                for _ in range(self.crossfit_splits)
+            ]
+            if self.is_primary
+            else []
+        )
+        self.cross_prompt_splits = (
+            [
+                [
+                    _Phase0CrossAccumulator(self.module_shapes, self.omegas)
+                    for _ in range(self.crossfit_splits)
+                ]
+                for _ in range(2)
+            ]
+            if self.is_primary
+            else []
+        )
+        self.norm_references: dict[str, list[float]] = {
+            selector: [] for selector in ("P0", "P1", "P2", "P3")
+        }
+        self.candidate_sets: dict[str, dict[str, torch.Tensor]] = {}
+        self.spectra: dict[str, dict[str, torch.Tensor]] = {}
+        self.module_diagnostics: dict[str, dict[str, dict[str, Any]]] = {}
+        self.held_out: dict[str, dict[str, dict[str, Any]]] = {}
+        self.discovery_count = 0
+        self.calibration_count = 0
+        self.audit_count = 0
+        self.prompt_ids: list[str] = []
+        self.response_counts: list[int] = []
+        self.response_tokens: list[int] = []
+        self.advantage_rms: list[float] = []
+        self.total_prompts = 0
+        self.total_rollouts = 0
+        self.positive_rollouts = 0
+        self.rollout_cache: list[dict[str, Any]] = []
+        self.ready = False
+        self._cross_prompt_id: str | None = None
+        self._cross_selector = "P3"
+        self._cross_memberships: list[tuple[tuple[int, ...], tuple[int, ...]]] = []
+        self._cross_sums: list[list[dict[str, torch.Tensor]]] = []
+        self._cross_tokens: list[list[int]] = []
+
+    @property
+    def phase(self) -> str:
+        if self.discovery_count < self.discovery_target:
+            return "discovery"
+        if self.calibration_count < self.calibration_target:
+            return "calibration"
+        if self.audit_count < self.audit_target:
+            return "audit"
+        return "complete"
+
+    def record_rollout_batch(self, meta: dict[str, Any]) -> None:
+        self.total_prompts += int(meta.get("full_gradient_total_prompts", 0))
+        self.total_rollouts += int(meta.get("full_gradient_total_rollouts", 0))
+        self.positive_rollouts += int(meta.get("full_gradient_positive_rollouts", 0))
+
+    def cache_prompt_group(
+        self, *, phase: str, prompt_id: str, batch: Any
+    ) -> None:
+        """Persist the exact shared rollout group needed to replay Phase 0."""
+
+        if not self.is_primary:
+            return
+        from safetensors.torch import save_file
+
+        cache_dir = self.output_dir / "rollout_cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        ordinal = self.discovery_count + self.calibration_count + self.audit_count
+        prompt_hash = hashlib.sha256(str(prompt_id).encode()).hexdigest()[:12]
+        path = cache_dir / f"{ordinal:04d}_{phase}_{prompt_hash}.safetensors"
+        keys = (
+            "input_ids",
+            "attention_mask",
+            "position_ids",
+            "responses",
+            "response_mask",
+            "advantages",
+            "old_log_probs",
+            "token_level_scores",
+        )
+        tensors = {
+            key: batch[key].detach().cpu().contiguous().clone()
+            for key in keys
+            if key in batch
+        }
+        temporary = path.with_suffix(path.suffix + ".tmp")
+        save_file(tensors, str(temporary))
+        os.replace(temporary, path)
+        self.rollout_cache.append(
+            {
+                "ordinal": ordinal,
+                "phase": phase,
+                "prompt_id": str(prompt_id),
+                "path": str(path),
+                "tensor_keys": sorted(tensors),
+            }
+        )
+
+    def _units_and_contexts(self):
+        if isinstance(self.model, FSDP):
+            units = _leaf_fsdp_modules(self.model) or [self.model]
+            return [
+                (unit, FSDP.summon_full_params(unit, writeback=False, with_grads=True))
+                for unit in units
+            ]
+        return [(self.model, nullcontext())]
+
+    def _collect_gradients(
+        self, *, with_second: bool
+    ) -> tuple[dict[str, torch.Tensor], dict[str, torch.Tensor], float]:
+        gradients: dict[str, torch.Tensor] = {}
+        second_updates: dict[str, torch.Tensor] = {}
+        found: set[str] = set()
+        norm_square = 0.0
+        for unit, context in self._units_and_contexts():
+            with context:
+                for module in unit.modules():
+                    if id(module) not in self.module_names:
+                        continue
+                    name = self.module_names[id(module)]
+                    if name in found:
+                        raise RuntimeError(f"Phase 0 encountered {name} more than once")
+                    found.add(name)
+                    gradient = module.weight.grad
+                    if gradient is None or tuple(gradient.shape) != self.module_shapes[name]:
+                        raise RuntimeError(f"Phase 0 is missing weight gradient for {name}")
+                    value = gradient.detach().float()
+                    if not bool(torch.isfinite(value).all()):
+                        raise FloatingPointError(f"Non-finite Phase-0 gradient for {name}")
+                    norm_square += float(value.square().sum().item())
+                    if self.is_primary:
+                        gradients[name] = value.cpu().contiguous()
+                    if with_second and self.is_primary:
+                        omega = self.omegas[name].to(value.device, non_blocking=True)
+                        second_updates[name] = (
+                            value.T @ (value @ omega)
+                        ).cpu().contiguous()
+        if len(found) != len(self.module_names):
+            missing = sorted(set(self.module_names.values()) - found)
+            raise RuntimeError(
+                f"Phase 0 captured {len(found)}/{len(self.module_names)} modules; "
+                f"missing={missing[:5]}"
+            )
+        return gradients, second_updates, math.sqrt(norm_square)
+
+    def _scale(self, selector: str, raw_norm: float) -> float:
+        reference = self.norm_references[selector]
+        threshold = max(
+            statistics.median(reference[: self.discovery_target] or [raw_norm])
+            * self.clip_factor,
+            self.eps,
+        )
+        reference.append(raw_norm)
+        return min(1.0, threshold / max(raw_norm, self.eps))
+
+    def _held_out_scale(self, raw_norm: float) -> float:
+        reference = self.norm_references["P0"][: self.discovery_target]
+        threshold = max(
+            statistics.median(reference or [raw_norm]) * self.clip_factor,
+            self.eps,
+        )
+        return min(1.0, threshold / max(raw_norm, self.eps))
+
+    @torch.no_grad()
+    def capture_standard_discovery(self, selector: str) -> float:
+        if selector not in {"P0", "P1", "P2"} or self.phase != "discovery":
+            raise ValueError(f"Invalid Phase-0 discovery selector/state: {selector}/{self.phase}")
+        gradients, second_updates, raw_norm = self._collect_gradients(with_second=True)
+        scale = self._scale(selector, raw_norm)
+        if self.is_primary:
+            self.standard[selector].add(gradients, second_updates, scale)
+            self.standard_prompt_splits[selector][self.discovery_count % 2].add(
+                gradients, second_updates, scale
+            )
+        return raw_norm
+
+    def begin_crossfit_prompt(self, prompt_id: str, response_count: int) -> None:
+        if self._cross_prompt_id is not None:
+            raise RuntimeError("Previous Phase-0 cross-fit prompt was not finished")
+        self._cross_prompt_id = str(prompt_id)
+        self._cross_memberships = deterministic_rollout_halves(
+            self.seed, str(prompt_id), response_count, self.crossfit_splits
+        )
+        self._cross_sums = [[{}, {}] for _ in range(self.crossfit_splits)]
+        self._cross_tokens = [[0, 0] for _ in range(self.crossfit_splits)]
+
+    @torch.no_grad()
+    def capture_crossfit_response(self, response_offset: int, selected_tokens: int) -> None:
+        if self._cross_prompt_id is None:
+            raise RuntimeError("begin_crossfit_prompt must be called first")
+        gradients, _, _ = self._collect_gradients(with_second=False)
+        if not self.is_primary:
+            return
+        for split_index, (first, _) in enumerate(self._cross_memberships):
+            half = 0 if response_offset in first else 1
+            self._cross_tokens[split_index][half] += int(selected_tokens)
+            destination = self._cross_sums[split_index][half]
+            for name, gradient in gradients.items():
+                if name in destination:
+                    destination[name].add_(gradient)
+                else:
+                    destination[name] = gradient.clone()
+
+    @torch.no_grad()
+    def finish_crossfit_prompt(self) -> list[float]:
+        if self._cross_prompt_id is None:
+            raise RuntimeError("No Phase-0 cross-fit prompt is active")
+        if not self.is_primary:
+            self._cross_prompt_id = None
+            self._cross_memberships = []
+            self._cross_sums = []
+            self._cross_tokens = []
+            self.norm_references[self._cross_selector].append(0.0)
+            return [0.0] * self.crossfit_splits
+        raw_norms: list[float] = []
+        prompt_partition = self.discovery_count % 2
+        for split_index in range(self.crossfit_splits):
+            denominators = self._cross_tokens[split_index]
+            if min(denominators) <= 0:
+                raise RuntimeError("A Phase-0 rollout half selected no tokens")
+            raw_norm = math.sqrt(
+                sum(
+                    float(
+                        (
+                            (
+                                self._cross_sums[split_index][0][name]
+                                / denominators[0]
+                                + self._cross_sums[split_index][1][name]
+                                / denominators[1]
+                            )
+                            * 0.5
+                        )
+                        .square()
+                        .sum()
+                        .item()
+                    )
+                    for name in self._cross_sums[split_index][0]
+                )
+            )
+            raw_norms.append(raw_norm)
+        shared_raw_norm = float(statistics.mean(raw_norms))
+        scale = self._scale(self._cross_selector, shared_raw_norm)
+        for split_index in range(self.crossfit_splits):
+            denominators = self._cross_tokens[split_index]
+            gradients_a = {
+                name: value / denominators[0]
+                for name, value in self._cross_sums[split_index][0].items()
+            }
+            gradients_b = {
+                name: value / denominators[1]
+                for name, value in self._cross_sums[split_index][1].items()
+            }
+            self.cross[split_index].add(
+                gradients_a, gradients_b, scale, self.compute_device
+            )
+            self.cross_prompt_splits[prompt_partition][split_index].add(
+                gradients_a, gradients_b, scale, self.compute_device
+            )
+        self._cross_prompt_id = None
+        self._cross_memberships = []
+        self._cross_sums = []
+        self._cross_tokens = []
+        return raw_norms
+
+    def complete_discovery_prompt(
+        self,
+        *,
+        prompt_id: str,
+        response_count: int,
+        response_tokens: int,
+        advantage_rms: float,
+    ) -> None:
+        self.prompt_ids.append(str(prompt_id))
+        self.response_counts.append(int(response_count))
+        self.response_tokens.append(int(response_tokens))
+        self.advantage_rms.append(float(advantage_rms))
+        self.discovery_count += 1
+        if self.discovery_count == self.discovery_target:
+            if self.is_primary:
+                self._finish_discovery()
+            if self.distributed:
+                torch.distributed.barrier()
+
+    def _basis_from_moment(
+        self,
+        accumulator: _Phase0MomentAccumulator,
+        name: str,
+        estimator: str,
+        purpose: str,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        basis, values, _ = _nystrom_covariance_basis(
+            accumulator.sketch(name, estimator),
+            self.omegas[name],
+            self.rank,
+            seed=_stable_seed(self.seed, name, purpose),
+            eps=self.eps,
+        )
+        return basis, values
+
+    def _basis_from_cross(
+        self,
+        accumulator: _Phase0CrossAccumulator,
+        name: str,
+        purpose: str,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        basis, values, _ = _nystrom_covariance_basis(
+            accumulator.cross_sketch(name),
+            self.omegas[name],
+            self.rank,
+            seed=_stable_seed(self.seed, name, purpose),
+            eps=self.eps,
+        )
+        return basis, values
+
+    @staticmethod
+    def _average_overlap(items: list[dict[str, float]]) -> dict[str, float]:
+        if not items:
+            return {"mean_cosine": 0.0, "mean_squared_cosine": 0.0, "min_cosine": 0.0}
+        return {
+            key: float(statistics.mean(item[key] for item in items))
+            for key in items[0]
+        }
+
+    def _crossfit_module_result(
+        self, name: str, *, seed_label: str
+    ) -> tuple[
+        torch.Tensor,
+        torch.Tensor,
+        dict[str, Any],
+        list[tuple[torch.Tensor, torch.Tensor]],
+    ]:
+        response_bases: list[torch.Tensor] = []
+        response_values: list[torch.Tensor] = []
+        half_overlaps: list[dict[str, float]] = []
+        for split_index, accumulator in enumerate(self.cross):
+            basis, values = self._basis_from_cross(
+                accumulator, name, f"{seed_label}_response_split_{split_index}"
+            )
+            response_bases.append(basis)
+            response_values.append(values)
+            half_a, _, _ = _nystrom_covariance_basis(
+                accumulator.half_sketch(name, "a"),
+                self.omegas[name],
+                self.rank,
+                seed=_stable_seed(
+                    self.seed, name, f"{seed_label}_half_a_{split_index}"
+                ),
+                eps=self.eps,
+            )
+            half_b, _, _ = _nystrom_covariance_basis(
+                accumulator.half_sketch(name, "b"),
+                self.omegas[name],
+                self.rank,
+                seed=_stable_seed(
+                    self.seed, name, f"{seed_label}_half_b_{split_index}"
+                ),
+                eps=self.eps,
+            )
+            half_overlaps.append(principal_subspace_overlap(half_a, half_b))
+        basis, values = _consensus_basis(
+            response_bases,
+            response_values,
+            self.rank,
+            seed=_stable_seed(self.seed, name, f"{seed_label}_consensus"),
+            eps=self.eps,
+        )
+        response_overlaps = [
+            principal_subspace_overlap(response_bases[left], response_bases[right])
+            for left in range(len(response_bases))
+            for right in range(left + 1, len(response_bases))
+        ]
+        prompt_partition_results: list[tuple[torch.Tensor, torch.Tensor]] = []
+        for partition in range(2):
+            split_results = [
+                self._basis_from_cross(
+                    accumulator,
+                    name,
+                    f"{seed_label}_prompt_{partition}_response_{split_index}",
+                )
+                for split_index, accumulator in enumerate(
+                    self.cross_prompt_splits[partition]
+                )
+            ]
+            prompt_partition_results.append(
+                _consensus_basis(
+                    [item[0] for item in split_results],
+                    [item[1] for item in split_results],
+                    self.rank,
+                    seed=_stable_seed(
+                        self.seed,
+                        name,
+                        f"{seed_label}_prompt_{partition}_consensus",
+                    ),
+                    eps=self.eps,
+                )
+            )
+        discovery_captures = []
+        discovery_projected_energies = []
+        discovery_total_energies = []
+        for accumulator in self.cross:
+            projected = _nystrom_projected_energy(
+                accumulator.raw_full_second_moment(name),
+                self.omegas[name],
+                basis,
+                self.eps,
+            )
+            denominator = accumulator.full_energy_sums[name] / accumulator.count
+            discovery_captures.append(projected / max(denominator, self.eps))
+            discovery_projected_energies.append(projected)
+            discovery_total_energies.append(denominator)
+        diagnostics = {
+            "discovery_capture": float(statistics.mean(discovery_captures)),
+            "discovery_projected_energy": float(
+                statistics.mean(discovery_projected_energies)
+            ),
+            "discovery_total_energy": float(statistics.mean(discovery_total_energies)),
+            "prompt_split_overlap": principal_subspace_overlap(
+                prompt_partition_results[0][0], prompt_partition_results[1][0]
+            ),
+            "cross_half_overlap": self._average_overlap(half_overlaps),
+            "response_split_overlap": self._average_overlap(response_overlaps),
+            "effective_rank": self._average_overlap(
+                [
+                    covariance_effective_ranks(value, self.eps)
+                    for value in response_values
+                ]
+            ),
+        }
+        return basis, values, diagnostics, prompt_partition_results
+
+    @torch.no_grad()
+    def _finish_discovery(self) -> None:
+        hybrid_methods = tuple(f"H{count}" for count in self.hybrid_ranks)
+        methods = (
+            "P0",
+            "P0_uncentered",
+            "P1",
+            "P1_uncentered",
+            "P2",
+            "P2_uncentered",
+            "P3",
+            *hybrid_methods,
+        )
+        self.candidate_sets = {method: {} for method in methods}
+        self.spectra = {method: {} for method in methods}
+        self.module_diagnostics = {method: {} for method in methods}
+        for name in sorted(self.module_shapes):
+            p2_basis: torch.Tensor | None = None
+            p2_values: torch.Tensor | None = None
+            p2_prompt_results: list[tuple[torch.Tensor, torch.Tensor]] | None = None
+            for selector in ("P0", "P1", "P2"):
+                for estimator, suffix in (
+                    ("centered_population_covariance", ""),
+                    ("uncentered_second_moment", "_uncentered"),
+                ):
+                    method = selector + suffix
+                    basis, values = self._basis_from_moment(
+                        self.standard[selector], name, estimator, f"{method}_main"
+                    )
+                    split_results = [
+                        self._basis_from_moment(
+                            split,
+                            name,
+                            estimator,
+                            f"{method}_prompt_split_{index}",
+                        )
+                        for index, split in enumerate(self.standard_prompt_splits[selector])
+                    ]
+                    discovery_energy = _nystrom_projected_energy(
+                        self.standard[selector].raw_second_moment(name),
+                        self.omegas[name],
+                        basis,
+                        self.eps,
+                    )
+                    denominator = self.standard[selector].energy_sums[name] / self.standard[selector].count
+                    self.candidate_sets[method][name] = basis
+                    self.spectra[method][name] = values
+                    self.module_diagnostics[method][name] = {
+                        "discovery_capture": discovery_energy / max(denominator, self.eps),
+                        "discovery_projected_energy": discovery_energy,
+                        "discovery_total_energy": denominator,
+                        "prompt_split_overlap": principal_subspace_overlap(
+                            split_results[0][0], split_results[1][0]
+                        ),
+                        "effective_rank": covariance_effective_ranks(values, self.eps),
+                    }
+                    if method == "P2":
+                        p2_basis = basis
+                        p2_values = values
+                        p2_prompt_results = split_results
+
+            if p2_basis is None or p2_values is None or p2_prompt_results is None:
+                raise RuntimeError("Phase-0 P2 basis construction did not complete")
+
+            (
+                p3_basis,
+                p3_values,
+                p3_diagnostics,
+                prompt_partition_results,
+            ) = self._crossfit_module_result(name, seed_label="P3")
+            self.candidate_sets["P3"][name] = p3_basis
+            self.spectra["P3"][name] = p3_values
+            self.module_diagnostics["P3"][name] = p3_diagnostics
+
+            p2_denominator = (
+                self.standard["P2"].energy_sums[name] / self.standard["P2"].count
+            )
+            for stable_directions in self.hybrid_ranks:
+                method = f"H{stable_directions}"
+                if stable_directions == 0:
+                    hybrid_basis = p2_basis.clone()
+                    hybrid_values = p2_values.clone()
+                    selected_stable = 0
+                    hybrid_prompt_bases = [item[0] for item in p2_prompt_results]
+                else:
+                    hybrid_basis, hybrid_values, selected_stable = (
+                        stability_supported_hybrid_basis(
+                            p3_basis,
+                            p3_values,
+                            p2_basis,
+                            p2_values,
+                            self.rank,
+                            stable_directions=stable_directions,
+                            seed=_stable_seed(self.seed, name, f"{method}_main"),
+                            relative_threshold=self.hybrid_support_relative_threshold,
+                            eps=self.eps,
+                        )
+                    )
+                    hybrid_prompt_bases = []
+                    for partition in range(2):
+                        prompt_basis, _, _ = stability_supported_hybrid_basis(
+                            prompt_partition_results[partition][0],
+                            prompt_partition_results[partition][1],
+                            p2_prompt_results[partition][0],
+                            p2_prompt_results[partition][1],
+                            self.rank,
+                            stable_directions=stable_directions,
+                            seed=_stable_seed(
+                                self.seed,
+                                name,
+                                f"{method}_prompt_split_{partition}",
+                            ),
+                            relative_threshold=self.hybrid_support_relative_threshold,
+                            eps=self.eps,
+                        )
+                        hybrid_prompt_bases.append(prompt_basis)
+                projected = _nystrom_projected_energy(
+                    self.standard["P2"].raw_second_moment(name),
+                    self.omegas[name],
+                    hybrid_basis,
+                    self.eps,
+                )
+                self.candidate_sets[method][name] = hybrid_basis
+                self.spectra[method][name] = hybrid_values
+                self.module_diagnostics[method][name] = {
+                    "discovery_capture": projected
+                    / max(p2_denominator, self.eps),
+                    "discovery_projected_energy": projected,
+                    "discovery_total_energy": p2_denominator,
+                    "prompt_split_overlap": principal_subspace_overlap(
+                        hybrid_prompt_bases[0], hybrid_prompt_bases[1]
+                    ),
+                    "effective_rank": covariance_effective_ranks(
+                        hybrid_values, self.eps
+                    ),
+                    "p3_consensus_supported_rank": float(
+                        positive_spectrum_rank(
+                            p3_values,
+                            relative_threshold=self.hybrid_support_relative_threshold,
+                            eps=self.eps,
+                        )
+                    ),
+                    "selected_p3_directions": float(selected_stable),
+                    "fallback_p2_directions": float(self.rank - selected_stable),
+                }
+
+        self.held_out = {
+            split: {
+                method: {
+                    name: {
+                        "projected_energy": torch.zeros(self.rank, dtype=torch.float64),
+                        "total_energy": 0.0,
+                    }
+                    for name in self.module_shapes
+                }
+                for method in methods
+            }
+            for split in ("calibration", "audit")
+        }
+
+    @torch.no_grad()
+    def capture_held_out(
+        self,
+        *,
+        split: str,
+        prompt_id: str,
+        response_count: int,
+        response_tokens: int,
+        advantage_rms: float,
+    ) -> None:
+        if split not in {"calibration", "audit"} or self.phase != split:
+            raise ValueError(f"Invalid Phase-0 held-out split/state: {split}/{self.phase}")
+        gradients, _, raw_norm = self._collect_gradients(with_second=False)
+        scale = self._held_out_scale(raw_norm)
+        if self.is_primary:
+            for method, candidates in self.candidate_sets.items():
+                for name, basis in candidates.items():
+                    gradient = gradients[name] * scale
+                    projected = gradient @ basis.T
+                    stats = self.held_out[split][method][name]
+                    stats["projected_energy"].add_(
+                        projected.double().square().sum(dim=0)
+                    )
+                    stats["total_energy"] += float(gradient.square().sum().item())
+        self.prompt_ids.append(str(prompt_id))
+        self.response_counts.append(int(response_count))
+        self.response_tokens.append(int(response_tokens))
+        self.advantage_rms.append(float(advantage_rms))
+        if split == "calibration":
+            self.calibration_count += 1
+        else:
+            self.audit_count += 1
+        if self.phase == "complete":
+            self.ready = True
+            if self.is_primary:
+                self._export()
+            if self.distributed:
+                torch.distributed.barrier()
+
+    def metrics(self) -> dict[str, float]:
+        return {
+            "full_gradient_probe/discovery_prompts": float(self.discovery_count),
+            "full_gradient_probe/calibration_prompts": float(self.calibration_count),
+            "full_gradient_probe/audit_prompts": float(self.audit_count),
+            "full_gradient_probe/artifact_ready": float(self.ready),
+        }
+
+    def _global_capture(self, split: str, method: str) -> float:
+        projected = sum(
+            float(stats["projected_energy"].sum().item())
+            for stats in self.held_out[split][method].values()
+        )
+        total = sum(
+            float(stats["total_energy"])
+            for stats in self.held_out[split][method].values()
+        )
+        return projected / max(total, self.eps)
+
+    def _global_discovery_capture(self, method: str) -> float:
+        projected = sum(
+            float(item["discovery_projected_energy"])
+            for item in self.module_diagnostics[method].values()
+        )
+        total = sum(
+            float(item["discovery_total_energy"])
+            for item in self.module_diagnostics[method].values()
+        )
+        return projected / max(total, self.eps)
+
+    def _aggregate_module_diagnostic(
+        self, method: str, field: str
+    ) -> dict[str, float]:
+        items = [item[field] for item in self.module_diagnostics[method].values()]
+        return {
+            key: float(statistics.mean(item[key] for item in items))
+            for key in items[0]
+        }
+
+    def _export(self) -> None:
+        from safetensors.torch import save_file
+
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        artifacts: dict[str, dict[str, str]] = {}
+        diagnostics: dict[str, dict[str, Any]] = {}
+        for method in self.candidate_sets:
+            candidate_path = self.output_dir / f"candidates_{method}.safetensors"
+            score_path = self.output_dir / f"atom_scores_{method}.safetensors"
+            score_tensors: dict[str, torch.Tensor] = {}
+            for name in self.module_shapes:
+                calibration = self.held_out["calibration"][method][name]
+                audit = self.held_out["audit"][method][name]
+                calibration_f = (
+                    calibration["projected_energy"] / self.calibration_count
+                ).float()
+                audit_f = (audit["projected_energy"] / self.audit_count).float()
+                score_tensors[f"{name}.F"] = calibration_f
+                score_tensors[f"{name}.P"] = calibration_f / (
+                    calibration_f.sum() + self.eps
+                )
+                score_tensors[f"{name}.U"] = score_tensors[f"{name}.P"].clone()
+                score_tensors[f"{name}.audit_F"] = audit_f
+                score_tensors[f"{name}.audit_P"] = audit_f / (
+                    audit_f.sum() + self.eps
+                )
+                score_tensors[f"{name}.audit_U"] = score_tensors[
+                    f"{name}.audit_P"
+                ].clone()
+                score_tensors[f"{name}.spectrum"] = self.spectra[method][name]
+            for path, tensors in (
+                (candidate_path, self.candidate_sets[method]),
+                (score_path, score_tensors),
+            ):
+                temporary = path.with_suffix(path.suffix + ".tmp")
+                save_file(
+                    {
+                        key: value.float().cpu().contiguous()
+                        for key, value in tensors.items()
+                    },
+                    str(temporary),
+                )
+                os.replace(temporary, path)
+            artifacts[method] = {
+                "candidates": str(candidate_path),
+                "atom_scores": str(score_path),
+            }
+            discovery_capture = self._global_discovery_capture(method)
+            calibration_capture = self._global_capture("calibration", method)
+            audit_capture = self._global_capture("audit", method)
+            diagnostics[method] = {
+                "discovery_capture_nystrom_mean_over_modules": discovery_capture,
+                "calibration_capture": calibration_capture,
+                "audit_capture": audit_capture,
+                "capture_gap": discovery_capture - audit_capture,
+                "prompt_split_overlap": self._aggregate_module_diagnostic(
+                    method, "prompt_split_overlap"
+                ),
+                "effective_rank": self._aggregate_module_diagnostic(
+                    method, "effective_rank"
+                ),
+            }
+            if method == "P3":
+                diagnostics[method]["cross_half_overlap"] = self._aggregate_module_diagnostic(
+                    method, "cross_half_overlap"
+                )
+                diagnostics[method]["response_split_overlap"] = self._aggregate_module_diagnostic(
+                    method, "response_split_overlap"
+                )
+            if method.startswith("H"):
+                diagnostics[method]["requested_p3_directions"] = int(method[1:])
+                for field in (
+                    "p3_consensus_supported_rank",
+                    "selected_p3_directions",
+                    "fallback_p2_directions",
+                ):
+                    diagnostics[method][f"mean_{field}"] = float(
+                        statistics.mean(
+                            item[field]
+                            for item in self.module_diagnostics[method].values()
+                        )
+                    )
+
+        discovery_end = self.discovery_count
+        calibration_end = discovery_end + self.calibration_count
+        summary = {
+            "schema_version": 4,
+            "method": "phase0_shared_rollout_gradient_diagnostics_v1",
+            "candidate_methods": list(self.candidate_sets),
+            "score_labels": ["F", "P", "U"],
+            "constant_scaling": 2.0,
+            "selection_uses_audit": False,
+            "held_out_scoring_space": "unmasked_full_prompt_group_policy_gradient",
+            "selectors": {
+                "P0": "centered covariance, no mask",
+                "P1": "centered covariance, deterministic density-matched random mask",
+                "P2": "centered covariance, top surprisal plus final tokens",
+                "P3": "symmetric centered cross-fit covariance, advantage-entropy stable band",
+            },
+            "uncentered_controls": ["P0_uncentered", "P1_uncentered", "P2_uncentered"],
+            "stability_supported_hybrids": {
+                "methods": [f"H{count}" for count in self.hybrid_ranks],
+                "requested_p3_directions": list(self.hybrid_ranks),
+                "fallback": "P2 centered top-surprisal basis, residualized in discovery order",
+                "support_rule": "P3 consensus spectrum > max(max_spectrum * relative_threshold, eps)",
+                "relative_threshold": self.hybrid_support_relative_threshold,
+                "selection_uses_calibration": False,
+                "selection_uses_audit": False,
+            },
+            "r_max": self.rank,
+            "sketch_width": self.sketch_width,
+            "crossfit_splits": self.crossfit_splits,
+            "token_mask": {
+                "keep_ratio": self.keep_ratio,
+                "min_keep_per_response": self.min_keep,
+                "top_surprisal_final_tokens": self.keep_final,
+                "stable_surprisal_upper_quantile": self.stable_surprisal_quantile,
+                "calibration_audit_mask": "none",
+            },
+            "discovery_prompts": self.discovery_count,
+            "calibration_prompts": self.calibration_count,
+            "audit_prompts": self.audit_count,
+            "discovery_prompt_ids": self.prompt_ids[:discovery_end],
+            "calibration_prompt_ids": self.prompt_ids[discovery_end:calibration_end],
+            "audit_prompt_ids": self.prompt_ids[calibration_end:],
+            "prompt_splits_disjoint": len(set(self.prompt_ids)) == len(self.prompt_ids),
+            "shared_rollouts_across_selectors": True,
+            "rollout_cache": self.rollout_cache,
+            "total_prompts": self.total_prompts,
+            "total_rollouts": self.total_rollouts,
+            "positive_rollouts": self.positive_rollouts,
+            "diagnostics": diagnostics,
+            "artifacts": artifacts,
+            "samples": {
+                "response_counts": self.response_counts,
+                "response_tokens": self.response_tokens,
+                "advantage_rms": self.advantage_rms,
+                "norm_references": self.norm_references,
+            },
+            "modules": {
+                name: {
+                    "shape": list(shape),
+                    "candidate_rank": self.rank,
+                    "diagnostics": {
+                        method: self.module_diagnostics[method][name]
+                        for method in self.candidate_sets
+                    },
+                }
+                for name, shape in self.module_shapes.items()
+            },
+        }
+        path = self.output_dir / "probe_summary.json"
+        temporary = path.with_suffix(path.suffix + ".tmp")
+        temporary.write_text(
+            json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        os.replace(temporary, path)
+
+
+class Phase06CrossfitReplayCollector(Phase0GradientDiagnosticsCollector):
+    """Sequentially replay one Phase-0 cache through cross-fit token masks."""
+
+    mode = "phase06_crossfit_replay"
+    is_phase0 = False
+    is_phase06_replay = True
+    replay_method_masks = {
+        "C0": "none",
+        "C2": "top_surprisal",
+        "C3": "advantage_entropy_stable_band",
+    }
+
+    def __init__(self, model: torch.nn.Module, config: Any) -> None:
+        super().__init__(model, config)
+        source = str(_get(config, "full_gradient_probe_replay_source_dir", ""))
+        if not source:
+            raise ValueError(
+                "full_gradient_probe_replay_source_dir is required for Phase 0.6 replay"
+            )
+        self.source_dir = Path(source).expanduser().resolve()
+        if self.source_dir == self.output_dir:
+            raise ValueError("Phase 0.6 replay output must differ from its source artifact")
+        self.source_summary = json.loads(
+            (self.source_dir / "probe_summary.json").read_text(encoding="utf-8")
+        )
+        if int(self.source_summary.get("schema_version", -1)) != 4:
+            raise ValueError("Phase 0.6 requires a validated schema-4 Phase-0 source")
+        expected_counts = (
+            self.discovery_target,
+            self.calibration_target,
+            self.audit_target,
+        )
+        source_counts = tuple(
+            int(self.source_summary[field])
+            for field in (
+                "discovery_prompts",
+                "calibration_prompts",
+                "audit_prompts",
+            )
+        )
+        if source_counts != expected_counts:
+            raise ValueError(
+                f"Phase 0.6 source split counts differ: {source_counts} != {expected_counts}"
+            )
+        if int(self.source_summary.get("r_max", -1)) != self.rank:
+            raise ValueError("Phase 0.6 source candidate rank differs")
+        if int(self.source_summary.get("sketch_width", -1)) != self.sketch_width:
+            raise ValueError("Phase 0.6 source sketch width differs")
+        source_shapes = {
+            name: tuple(int(value) for value in item["shape"])
+            for name, item in self.source_summary["modules"].items()
+        }
+        if source_shapes != self.module_shapes:
+            raise ValueError("Phase 0.6 model modules differ from the source artifact")
+        if "P3" not in self.source_summary.get("candidate_methods", []):
+            raise ValueError("Phase 0.6 source artifact has no P3 candidate")
+
+        self.source_prompt_ids = [
+            str(value)
+            for field in (
+                "discovery_prompt_ids",
+                "calibration_prompt_ids",
+                "audit_prompt_ids",
+            )
+            for value in self.source_summary[field]
+        ]
+        self.source_rollout_cache = list(self.source_summary["rollout_cache"])
+        if len(self.source_rollout_cache) != sum(expected_counts):
+            raise ValueError("Phase 0.6 source cache manifest has the wrong length")
+        for ordinal, entry in enumerate(self.source_rollout_cache):
+            if int(entry["ordinal"]) != ordinal:
+                raise ValueError("Phase 0.6 source cache ordinals are not contiguous")
+            if str(entry["prompt_id"]) != self.source_prompt_ids[ordinal]:
+                raise ValueError("Phase 0.6 source cache prompt IDs differ")
+            path = Path(entry["path"]).expanduser().resolve()
+            if not path.is_file() or path.stat().st_size <= 0:
+                raise ValueError(f"Phase 0.6 source cache is missing: {path}")
+
+        # The parent allocates the same peak-safe single cross-fit state used by P3.
+        # Standard P0/P1/P2 accumulators are unnecessary for replay and are released.
+        self.standard.clear()
+        self.standard_prompt_splits.clear()
+        gc.collect()
+        source_p0_norms = self.source_summary["samples"]["norm_references"]["P0"]
+        if len(source_p0_norms) < self.discovery_target:
+            raise ValueError("Phase 0.6 source is missing P0 clipping references")
+        self.norm_references = {
+            "P0": [float(value) for value in source_p0_norms],
+            **{method: [] for method in self.replay_method_masks},
+        }
+        self.candidate_sets = {method: {} for method in self.replay_method_masks}
+        self.spectra = {method: {} for method in self.replay_method_masks}
+        self.module_diagnostics = {
+            method: {} for method in self.replay_method_masks
+        }
+        self.held_out = {}
+        self.rollout_cache = self.source_rollout_cache
+        self.total_prompts = int(self.source_summary.get("total_prompts", 0))
+        self.total_rollouts = int(self.source_summary.get("total_rollouts", 0))
+        self.positive_rollouts = int(self.source_summary.get("positive_rollouts", 0))
+        self._active_replay_method: str | None = None
+
+    @staticmethod
+    def _prompt_ids_sha256(values: list[str]) -> str:
+        payload = json.dumps(values, ensure_ascii=True, separators=(",", ":"))
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+    def entries_for_phase(self, phase: str) -> list[dict[str, Any]]:
+        entries = [entry for entry in self.source_rollout_cache if entry["phase"] == phase]
+        expected = {
+            "discovery": self.discovery_target,
+            "calibration": self.calibration_target,
+            "audit": self.audit_target,
+        }
+        if phase not in expected or len(entries) != expected[phase]:
+            raise ValueError(f"Phase 0.6 source has an invalid {phase} cache split")
+        return entries
+
+    def start_replay_method(self, method: str) -> None:
+        if method not in self.replay_method_masks:
+            raise ValueError(f"Unknown Phase 0.6 replay method: {method}")
+        if self._active_replay_method is not None:
+            raise RuntimeError("A Phase 0.6 replay method is already active")
+        if self.discovery_count not in {0, self.discovery_target}:
+            raise RuntimeError("Previous Phase 0.6 discovery replay is incomplete")
+        self.discovery_count = 0
+        if self.is_primary and not self.cross:
+            self.cross = [
+                _Phase0CrossAccumulator(self.module_shapes, self.omegas)
+                for _ in range(self.crossfit_splits)
+            ]
+            self.cross_prompt_splits = [
+                [
+                    _Phase0CrossAccumulator(self.module_shapes, self.omegas)
+                    for _ in range(self.crossfit_splits)
+                ]
+                for _ in range(2)
+            ]
+        self._cross_selector = method
+        self._active_replay_method = method
+
+    def complete_replay_discovery_prompt(
+        self,
+        *,
+        prompt_id: str,
+        response_count: int,
+        response_tokens: int,
+        advantage_rms: float,
+    ) -> None:
+        if self._active_replay_method is None:
+            raise RuntimeError("No Phase 0.6 replay method is active")
+        if self._active_replay_method == "C0":
+            self.prompt_ids.append(str(prompt_id))
+            self.response_counts.append(int(response_count))
+            self.response_tokens.append(int(response_tokens))
+            self.advantage_rms.append(float(advantage_rms))
+        self.discovery_count += 1
+        if self.discovery_count > self.discovery_target:
+            raise RuntimeError("Phase 0.6 replay exceeded the discovery target")
+
+    @torch.no_grad()
+    def finish_replay_method(self) -> None:
+        method = self._active_replay_method
+        if method is None or self.discovery_count != self.discovery_target:
+            raise RuntimeError("Phase 0.6 replay method did not reach its target")
+        if self.is_primary:
+            seed_label = "P3" if method == "C3" else method
+            for name in sorted(self.module_shapes):
+                basis, values, diagnostics, _ = self._crossfit_module_result(
+                    name, seed_label=seed_label
+                )
+                self.candidate_sets[method][name] = basis
+                self.spectra[method][name] = values
+                self.module_diagnostics[method][name] = diagnostics
+        self.cross = []
+        self.cross_prompt_splits = []
+        self._active_replay_method = None
+        self._cross_prompt_id = None
+        self._cross_memberships = []
+        self._cross_sums = []
+        self._cross_tokens = []
+        gc.collect()
+
+    def prepare_held_out_replay(self) -> None:
+        if self._active_replay_method is not None:
+            raise RuntimeError("Cannot score held-out data during discovery replay")
+        if self.is_primary and any(
+            len(values) != len(self.module_shapes)
+            for values in self.candidate_sets.values()
+        ):
+            raise RuntimeError("Phase 0.6 candidates are incomplete")
+        self.discovery_count = self.discovery_target
+        self.calibration_count = 0
+        self.audit_count = 0
+        self.held_out = {
+            split: {
+                method: {
+                    name: {
+                        "projected_energy": torch.zeros(self.rank, dtype=torch.float64),
+                        "total_energy": 0.0,
+                    }
+                    for name in self.module_shapes
+                }
+                for method in self.replay_method_masks
+            }
+            for split in ("calibration", "audit")
+        }
+
+    def _export(self) -> None:
+        from safetensors.torch import save_file
+
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        artifacts: dict[str, dict[str, str]] = {}
+        diagnostics: dict[str, dict[str, Any]] = {}
+        for method in self.replay_method_masks:
+            candidate_path = self.output_dir / f"candidates_{method}.safetensors"
+            score_path = self.output_dir / f"atom_scores_{method}.safetensors"
+            score_tensors: dict[str, torch.Tensor] = {}
+            for name in self.module_shapes:
+                calibration = self.held_out["calibration"][method][name]
+                audit = self.held_out["audit"][method][name]
+                calibration_f = (
+                    calibration["projected_energy"] / self.calibration_count
+                ).float()
+                audit_f = (audit["projected_energy"] / self.audit_count).float()
+                score_tensors[f"{name}.F"] = calibration_f
+                score_tensors[f"{name}.P"] = calibration_f / (
+                    calibration_f.sum() + self.eps
+                )
+                score_tensors[f"{name}.U"] = score_tensors[f"{name}.P"].clone()
+                score_tensors[f"{name}.audit_F"] = audit_f
+                score_tensors[f"{name}.audit_P"] = audit_f / (
+                    audit_f.sum() + self.eps
+                )
+                score_tensors[f"{name}.audit_U"] = score_tensors[
+                    f"{name}.audit_P"
+                ].clone()
+                score_tensors[f"{name}.spectrum"] = self.spectra[method][name]
+            for path, tensors in (
+                (candidate_path, self.candidate_sets[method]),
+                (score_path, score_tensors),
+            ):
+                temporary = path.with_suffix(path.suffix + ".tmp")
+                save_file(
+                    {
+                        key: value.float().cpu().contiguous()
+                        for key, value in tensors.items()
+                    },
+                    str(temporary),
+                )
+                os.replace(temporary, path)
+            artifacts[method] = {
+                "candidates": str(candidate_path),
+                "atom_scores": str(score_path),
+            }
+            discovery_capture = self._global_discovery_capture(method)
+            audit_capture = self._global_capture("audit", method)
+            diagnostics[method] = {
+                "discovery_capture_nystrom_mean_over_modules": discovery_capture,
+                "calibration_capture": self._global_capture("calibration", method),
+                "audit_capture": audit_capture,
+                "capture_gap": discovery_capture - audit_capture,
+                "prompt_split_overlap": self._aggregate_module_diagnostic(
+                    method, "prompt_split_overlap"
+                ),
+                "cross_half_overlap": self._aggregate_module_diagnostic(
+                    method, "cross_half_overlap"
+                ),
+                "response_split_overlap": self._aggregate_module_diagnostic(
+                    method, "response_split_overlap"
+                ),
+                "effective_rank": self._aggregate_module_diagnostic(
+                    method, "effective_rank"
+                ),
+            }
+
+        source_hash = self._prompt_ids_sha256(self.source_prompt_ids)
+        replay_hash = self._prompt_ids_sha256(self.prompt_ids)
+        discovery_end = self.discovery_count
+        calibration_end = discovery_end + self.calibration_count
+        summary = {
+            "schema_version": 1,
+            "method": "phase06_sequential_crossfit_cache_replay_v1",
+            "candidate_methods": list(self.replay_method_masks),
+            "score_labels": ["F", "P", "U"],
+            "constant_scaling": 2.0,
+            "selection_uses_audit": False,
+            "held_out_scoring_space": "replayed_unmasked_full_prompt_group_policy_gradient",
+            "source_artifact": str(self.source_dir),
+            "source_prompt_ids_sha256": source_hash,
+            "replayed_prompt_ids_sha256": replay_hash,
+            "replay_method_masks": self.replay_method_masks,
+            "r_max": self.rank,
+            "sketch_width": self.sketch_width,
+            "crossfit_splits": self.crossfit_splits,
+            "token_mask": {
+                "keep_ratio": self.keep_ratio,
+                "min_keep_per_response": self.min_keep,
+                "top_surprisal_final_tokens": self.keep_final,
+                "stable_surprisal_upper_quantile": self.stable_surprisal_quantile,
+                "calibration_audit_mask": "none",
+            },
+            "discovery_prompts": self.discovery_count,
+            "calibration_prompts": self.calibration_count,
+            "audit_prompts": self.audit_count,
+            "discovery_prompt_ids": self.prompt_ids[:discovery_end],
+            "calibration_prompt_ids": self.prompt_ids[discovery_end:calibration_end],
+            "audit_prompt_ids": self.prompt_ids[calibration_end:],
+            "prompt_splits_disjoint": len(set(self.prompt_ids)) == len(self.prompt_ids),
+            "shared_rollouts_across_selectors": True,
+            "rollout_cache": self.source_rollout_cache,
+            "total_prompts": self.total_prompts,
+            "total_rollouts": self.total_rollouts,
+            "positive_rollouts": self.positive_rollouts,
+            "diagnostics": diagnostics,
+            "artifacts": artifacts,
+            "samples": {
+                "response_counts": self.response_counts,
+                "response_tokens": self.response_tokens,
+                "advantage_rms": self.advantage_rms,
+                "norm_references": self.norm_references,
+            },
+            "modules": {
+                name: {
+                    "shape": list(shape),
+                    "candidate_rank": self.rank,
+                    "diagnostics": {
+                        method: self.module_diagnostics[method][name]
+                        for method in self.replay_method_masks
+                    },
+                }
+                for name, shape in self.module_shapes.items()
+            },
+        }
+        if source_hash != replay_hash:
+            raise RuntimeError("Phase 0.6 replay prompt IDs differ from the source")
         path = self.output_dir / "probe_summary.json"
         temporary = path.with_suffix(path.suffix + ".tmp")
         temporary.write_text(
@@ -1323,12 +3337,21 @@ class WindowedAdamConsensusCollector:
 
 def build_full_gradient_probe_collector(
     model: torch.nn.Module, config: Any
-) -> FullGradientRLProbeCollector | WindowedAdamConsensusCollector:
+) -> (
+    FullGradientRLProbeCollector
+    | WindowedAdamConsensusCollector
+    | Phase0GradientDiagnosticsCollector
+    | Phase06CrossfitReplayCollector
+):
     mode = str(_get(config, "full_gradient_probe_mode", "legacy")).lower()
     if mode == "legacy":
         return FullGradientRLProbeCollector(model, config)
     if mode == "windowed_adam_consensus":
         return WindowedAdamConsensusCollector(model, config)
+    if mode == "phase0_diagnostics":
+        return Phase0GradientDiagnosticsCollector(model, config)
+    if mode == "phase06_crossfit_replay":
+        return Phase06CrossfitReplayCollector(model, config)
     raise ValueError(f"Unknown full_gradient_probe_mode: {mode}")
 
 

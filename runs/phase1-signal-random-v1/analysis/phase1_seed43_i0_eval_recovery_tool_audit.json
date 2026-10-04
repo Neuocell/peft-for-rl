@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "verified_static_recovery_tool_contract",
+  "created_at": "2026-10-04T01:04:52+08:00",
+  "tool": {
+    "path": "runs/phase1-signal-random-v1/ops/resume_seed43_i0_eval_missing_shards.sh",
+    "previous_sha256": "ad9df154ecc82a577d118032f1a105374a099fc3c146efc2891e2033b5c6df18",
+    "current_sha256": "bce6bb415033ccaaa512b7e6b96b54f5e6a7ef2a9e908f8334c462c692495d80",
+    "mode": "0755"
+  },
+  "change_reason": "The previous implementation treated a missing or empty shard record file as recoverable even when a manifest already existed. That partial state was narrower than a valid completed shard but broader than the documented completely-missing-shard recovery contract.",
+  "current_state_machine": {
+    "summary_exists_and_verifies": "Return success without launching recovery.",
+    "target_evaluator_or_any_enginecore_exists": "Refuse recovery.",
+    "shard_and_manifest_both_absent": "Mark exactly that shard as eligible for recovery.",
+    "only_one_of_shard_or_manifest_exists": "Fail closed with exit status 2.",
+    "shard_or_manifest_exists_but_is_empty": "Fail closed with exit status 2.",
+    "both_exist_and_are_nonempty": "Require complete record, partition, invariant, protocol, path, and manifest validation before reuse.",
+    "any_recovery_child_fails": "Preserve all outputs and return failure without aggregation.",
+    "all_four_shards_validate": "Aggregate and run the frozen full-benchmark verifier."
+  },
+  "static_checks": {
+    "bash_n": "passed",
+    "executable_mode": "passed",
+    "manual_control_flow_review": "passed",
+    "shellcheck": "not_available_in_environment"
+  },
+  "runtime_actions": {
+    "recovery_executed": false,
+    "gpu_process_launched": false,
+    "evaluation_output_read_for_progress": false,
+    "evaluation_output_modified": false
+  },
+  "operational_rule": "Do not invoke this tool while the current evaluation is healthy. On a later card, first establish that no target evaluator or residual EngineCore exists, then invoke --dry-run before any recovery execution."
+}

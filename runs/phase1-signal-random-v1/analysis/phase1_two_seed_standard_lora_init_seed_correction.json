@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "status": "corrected_before_any_matched_standard_lora_result",
+  "created_at": "2026-10-03T22:52:52+08:00",
+  "scope": "Prospective correction of the standard-LoRA initialization-seed policy in the conditional two-seed paper-baseline plan. This artifact does not change or authorize the active Phase-1 controller, I0/I8 allocations, training, evaluation, or gate.",
+  "observation_boundary": {
+    "known": [
+      "Complete seed-42 Phase-1 I0/I8 results.",
+      "Seed-43 I0 training is active.",
+      "The active I0/I8 allocations use one fixed complement draw with complement_seed 42.",
+      "No protocol-matched standard-LoRA-r32 result exists."
+    ],
+    "unobserved": [
+      "All seed-43 Phase-1 evaluation results.",
+      "All protocol-matched standard-LoRA-r32 training and evaluation results."
+    ]
+  },
+  "corrected_artifact": {
+    "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_paper_baseline_amendment.json",
+    "sha256": "02978fcdc0f6ce43682440582deb0ff427fdfeda189d457ad45cf31f13a3931b",
+    "field": "standard_initializer.seed_policy",
+    "old_policy": "Do not introduce an extra initializer seed or seed-dependent direction construction. Use the same worker/model initialization path as Phase 1; training-seed variation remains the fixed data-loader and rollout seed variation.",
+    "reason_for_correction": "The current standard-LoRA code path calls PEFT get_peft_model without explicitly seeding the RNG that initializes LoRA A. The configured FSDP engine seed is not applied when full_determinism is false, and FSDP sync_module_states only synchronizes ranks within one run. Therefore the old policy does not guarantee equal initial A tensors across training seeds."
+  },
+  "authoritative_code_evidence": {
+    "active_training_launcher": {
+      "path": "examples/verl_train/run_dapo_math_boxed_stable_lora_1p5b_4gpu_8k.sh",
+      "sha256": "915edb150517297aca8616d4722ceb3510e1c5a2c92ff84edcc0171d04c0c309",
+      "finding": "DATA_SEED, PPO_DATA_LOADER_SEED, and ROLLOUT_SEED are configurable, but no standard-LoRA initialization seed is passed."
+    },
+    "legacy_fsdp_worker": {
+      "path": "verl/workers/fsdp_workers.py",
+      "sha256": "108fb34862e65750b26a4c973dcc881290f0f116a2bac30cbcbd42a830a059e3",
+      "finding": "The lora branch constructs LoraConfig and calls get_peft_model directly; no scoped RNG seed is applied before PEFT initializes A. FSDP later uses sync_module_states=true, which is intra-run synchronization only."
+    },
+    "engine_fsdp_worker": {
+      "path": "verl/workers/engine/fsdp/transformer_impl.py",
+      "sha256": "1cd1154d0f24fdd267da7c86fa82064a24e6a69dfb39a3908e0826641061b2b5",
+      "finding": "The reorganized FSDP path has the same direct LoraConfig/get_peft_model behavior. It calls enable_full_determinism only when full_determinism is true."
+    },
+    "fsdp_engine_config": {
+      "path": "verl/trainer/config/engine/fsdp.yaml",
+      "sha256": "6198459de2737451ca52e9d594eabeaa3f96096d74eec423474592104774277a",
+      "configured_seed": 42,
+      "full_determinism": false,
+      "finding": "A configured but unapplied seed is not evidence that PEFT A is reproducible across separate runs."
+    },
+    "engine_dataclass": {
+      "path": "verl/workers/config/engine.py",
+      "sha256": "82cb9eaa7e06eaf98a8bdbc139ca4e4eee82a3af09011f21245ea579c961725c"
+    }
+  },
+  "corrected_policy": {
+    "standard_lora_init_seed": 42,
+    "independent_of_training_seed": true,
+    "training_seeds": [42, 43],
+    "required_initial_state_relation": "The standard-LoRA-r32 runs for training seeds 42 and 43 must start from bitwise-identical LoRA A and B tensors. A uses the PEFT 0.19.1 default Kaiming-uniform rule under init seed 42; B is exactly zero.",
+    "rng_scope": "Apply the seed only in a forked/scoped RNG context immediately around standard PEFT LoRA construction, then restore the outer CPU/device RNG states. Do not enable global full_determinism merely to initialize LoRA.",
+    "method_isolation": "DATA_SEED, PPO_DATA_LOADER_SEED, and ROLLOUT_SEED remain equal to the training seed. The fixed init seed isolates on-policy training-trajectory variation, matching the fixed-allocation I0/I8 design.",
+    "forbidden": [
+      "Using TRAIN_SEED as the standard-LoRA initialization seed.",
+      "Leaving standard-LoRA A initialization to an unrecorded process RNG state.",
+      "Changing PEFT init_lora_weights away from its default true value.",
+      "Reusing the fixed init-seed comparison as evidence of initialization-seed robustness."
+    ]
+  },
+  "implementation_requirements_after_activation": [
+    "Add an explicit standard-LoRA-only initialization-seed field; do not change active grad_subspace initialization semantics.",
+    "Use a scoped RNG helper around every supported standard-LoRA get_peft_model construction path and restore the caller RNG state afterward.",
+    "Before optimizer construction or the first rollout, export or hash the complete initial LoRA A/B state in a canonical tensor order.",
+    "Store init seed, PEFT version, initializer semantics, per-tensor shapes/dtypes, canonical initial-state hash, and B-zero verification in each immutable training contract.",
+    "Require seed-42 and seed-43 standard-LoRA contracts to have the same canonical initial-state hash before accepting either comparison."
+  ],
+  "required_tests_before_real_results": [
+    "Two constructions with init seed 42 produce bitwise-identical A/B tensors and canonical hashes.",
+    "Changing only training seed metadata from 42 to 43 does not change initial A/B tensors.",
+    "Changing init seed from 42 to 43 changes at least one A tensor while every B tensor remains exactly zero.",
+    "The scoped initializer restores outer CPU and relevant device RNG states.",
+    "All distributed ranks agree on the canonical initial-state hash.",
+    "A missing init seed, mismatched cross-run initial-state hash, nonzero B, unexpected PEFT version, or changed initializer source hash fails closed."
+  ],
+  "claim_boundary": {
+    "purpose": "This correction makes the matched standard-LoRA comparison symmetric with the fixed-allocation I0/I8 training-seed experiment.",
+    "not_covered": "It does not test standard-LoRA or I8 robustness to initialization seed and does not broaden any fixed-model/task claim."
+  },
+  "execution_policy": {
+    "active_scope_change": false,
+    "automatic_launch": false,
+    "no_new_run_authorized": true,
+    "earliest_code_change": "Only after the active Phase-1 controller terminates.",
+    "earliest_training": "Only after the I8 two-seed fixed-model/task gate activates the matched baseline and the corrected initializer tests and contracts pass."
+  }
+}

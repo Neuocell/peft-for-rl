@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "status": "verified",
+  "method": "phase1_seed43_postverification_v1",
+  "created_at": "2026-10-04T10:30:50+08:00",
+  "candidate_method": "I0",
+  "training_seed": 43,
+  "train_name": "phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3",
+  "evaluation_name": "phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42",
+  "counts": {
+    "merged_records": 7248,
+    "shard_records": [
+      1812,
+      1812,
+      1812,
+      1812
+    ]
+  },
+  "verification": {
+    "training_contract": {
+      "adapter_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/global_step_50/actor/peft_adapter/adapter_model.safetensors",
+      "adapter_sha256": "0037992fca30100e435c48f6e03f67f09031949324869c20524eb2dee96b7ec5",
+      "candidate_method": "I0",
+      "contract_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_manifests/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3.json",
+      "experiment_name": "phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3",
+      "preparation_kind": "phase1",
+      "status": "verified",
+      "training_seed": 43
+    },
+    "full_benchmark": {
+      "adapter_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/global_step_50/actor/peft_adapter",
+      "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+      "benchmark_record_counts": {
+        "aime24": 960,
+        "aime25": 960,
+        "amc23": 1280,
+        "hmmt_feb": 960,
+        "math500": 2000,
+        "minerva": 1088
+      },
+      "benchmarks": [
+        "aime24",
+        "aime25",
+        "amc23",
+        "hmmt_feb",
+        "math500",
+        "minerva"
+      ],
+      "evaluation_name": "phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42",
+      "num_samples": 7248,
+      "num_shards": 4,
+      "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+      "status": "verified"
+    }
+  },
+  "artifacts": {
+    "records": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42/records/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42.jsonl",
+      "sha256": "a5d8f67ae6461f6577e4891a9049b5d8f37e6f71b1ec5bf0f9152b4ac02224da"
+    },
+    "summary": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42/summary/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42.json",
+      "sha256": "f2942bee41a19d31733032e437a184a8b3c5394bb5eef82b64e017df87e1b5de"
+    },
+    "adapter": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3/global_step_50/actor/peft_adapter/adapter_model.safetensors",
+      "sha256": "0037992fca30100e435c48f6e03f67f09031949324869c20524eb2dee96b7ec5"
+    },
+    "training_contract": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_manifests/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3.json",
+      "sha256": "6470539ab870d2e0ef3c75f534186ce5f289839005fc3db3429e0df02311a673"
+    },
+    "manifests": [
+      {
+        "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42/manifests/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42.shard-00-of-04.json",
+        "sha256": "4232db4c6b9ff39a3ed3948ed4db924106337539ee0310348267c45226ae2e17"
+      },
+      {
+        "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42/manifests/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42.shard-01-of-04.json",
+        "sha256": "bd56e1c882668560deedc86a9ac66c71c4c559dd34a46144d2a4bf8b34c39462"
+      },
+      {
+        "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42/manifests/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42.shard-02-of-04.json",
+        "sha256": "35e477f1ae26c0eba1d3880611b44c475c6f2b60698ecf7c87dc9a90f0b34f39"
+      },
+      {
+        "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/outputs/full_bench_eval/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42/manifests/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3_fullbench_32768_seed42.shard-03-of-04.json",
+        "sha256": "99007bbf49c2d2c9b931ba9a2e44c95459055715189c0ae254ed629d94293876"
+      }
+    ],
+    "operational_script": {
+      "path": "/root/peft-for-rl/runs/phase1-signal-random-v1/ops/seed43_i0_postverify.sh",
+      "sha256": "c25685daa65bb66b5f5974857e3e3cc32e61a81359e90983cc1dcd6f542ffaa0"
+    }
+  },
+  "verifier_code": {
+    "training_contract_sha256": "7660390028739a1db83c1fa4de96235faf754e4fcbad604d946c0aab283bf80c",
+    "full_benchmark_sha256": "4bcd33a1a336397c56778eb866d39fc65b70229c7cb2e9fdc80b412745dea3f9"
+  }
+}

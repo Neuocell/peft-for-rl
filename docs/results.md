@@ -1,5 +1,8 @@
 # 当前结果
 
+本机 2026-09 的 SPAR-LoRA、random-B、full-gradient、token-mask covariance、rank 和续训实验已集中整理到
+[`local_gradient_subspace_experiments_2026_09_zh.md`](local_gradient_subspace_experiments_2026_09_zh.md)。该报告包含统一 full-benchmark 明细、训练动态、probe/rank 配置、checkpoint 状态和对照中的混杂因素。
+
 这里只记录当前仓库要保留的核心基线结果。早期 OpenRS3、OrthRes、critique、format/cos reward、overlong buffer 等探索保留在原 Tina 工作目录中，不作为这个复现实验仓库的主体。
 
 ## Stable LoRA Fullbench 32K
@@ -69,4 +72,3 @@ OFT_DROPOUT=0.0
 ## 不再作为当前主线的内容
 
 早期 OrthRes/OpenRS3 试验显示可以影响训练动态，但当时 reward、format、生成长度、数据难度和评测协议没有完全稳定，难以作为 clean baseline 的结论来源。本仓库现在只保留稳定基线和最小工具；OrthRes 后续若重新比较，应在本 stable recipe 上只改方法项。
-

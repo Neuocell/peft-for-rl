@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "status": "pruned_and_postverified",
+  "action": "prune_step50_training_recovery_state_after_verified_evaluation",
+  "run": "phase1_i32_uniform_r32_b64m16n8_step50_seed42_v3",
+  "checkpoint": "global_step_50",
+  "checkpoint_root": "runs/phase1-signal-random-v1/ckpts/verl/DAPO-Math-17k/phase1_i32_uniform_r32_b64m16n8_step50_seed42_v3/global_step_50",
+  "inventory_completed_at": "2026-10-03T17:20:54+08:00",
+  "reason": "After deleting I32 step 25, available capacity was still insufficient for two seed-43 checkpoints plus runtime margin. I32 training and evaluation are final, so only restart state is pruned while the adapter and all evaluation evidence are retained.",
+  "prerequisites": {
+    "training_contract_status_before_pruning": "verified",
+    "full_benchmark_status_before_pruning": "verified",
+    "num_shards": 4,
+    "num_samples": 7248,
+    "paired_comparison_sha256": "3b25ec1ee7a51433347a88fc3089b30a41c0210e7a42fc6b1912ad7822d370b4",
+    "seed42_selection_sha256": "247fc05892648c41815252cecccb70c0152eddab940be642dc5d29fea65c27c8"
+  },
+  "storage_before_pruning": {
+    "filesystem": "/dev/vda3",
+    "available_bytes": 16859111424,
+    "used_percent": 92,
+    "checkpoint_directory_bytes": 7715487815
+  },
+  "pruned_inventory": {
+    "file_count": 13,
+    "file_payload_bytes": 7556249984,
+    "files": [
+      {"path": "actor/extra_state_world_size_4_rank_0.pt", "bytes": 15141, "sha256": "46f92cf2b15a6e460a5f49ebe4b33076cb4707a2ae47b94f007bf93b64c92e02"},
+      {"path": "actor/extra_state_world_size_4_rank_1.pt", "bytes": 15141, "sha256": "1bc5987a4d9b9db0a09819d966a4082665c71b77dc71ef4d1b8fe1ced336edcf"},
+      {"path": "actor/extra_state_world_size_4_rank_2.pt", "bytes": 15141, "sha256": "771c7dc76558fc445c011f4d685130ade26b47790cac3dd1d052488536807f9c"},
+      {"path": "actor/extra_state_world_size_4_rank_3.pt", "bytes": 15141, "sha256": "5eb22251cf6ecce403fec33f8a0ac03fc22d6558f21af409160dee2987ca5bfa"},
+      {"path": "actor/model_world_size_4_rank_0.pt", "bytes": 1814714347, "sha256": "842acf6b0d500a0bae13881aeaccb147998e69b2ce5d741f59b4bbc8c779f420"},
+      {"path": "actor/model_world_size_4_rank_1.pt", "bytes": 1814714347, "sha256": "91e3cfb5d0c5adedb95f58c896d192c740539bce8a10082adbd3f73da8fd5b62"},
+      {"path": "actor/model_world_size_4_rank_2.pt", "bytes": 1814714347, "sha256": "250b676c1a3b41943180b7f421d50b44287f3f75bdc0476f050091efe85db0a3"},
+      {"path": "actor/model_world_size_4_rank_3.pt", "bytes": 1814714347, "sha256": "eff58b497726305849a4ded708ac5c32d3380ef229f4e856b164d3a8606d2539"},
+      {"path": "actor/optim_world_size_4_rank_0.pt", "bytes": 74331291, "sha256": "f9f683b074afcea20e86eb07ad146571472f7ba56c16a575ab0363bc1f871c5f"},
+      {"path": "actor/optim_world_size_4_rank_1.pt", "bytes": 74331291, "sha256": "76934569cd71fc2fed83721be7270e27b6dca00d8ecb614573be7ad82ac0efa1"},
+      {"path": "actor/optim_world_size_4_rank_2.pt", "bytes": 74331291, "sha256": "0a33111c5a914b13dfe6940010df8d3fda3ed81e225cdfc8d941ab3593875810"},
+      {"path": "actor/optim_world_size_4_rank_3.pt", "bytes": 74331291, "sha256": "9a3ee32251a8ca1f3041322c014dc68094df0afc475d58bc1801c050ecb20f5b"},
+      {"path": "data.pt", "bytes": 6868, "sha256": "970b8c1522bd4b8d1de7e5154bbbfde740351d857c61aa4dbf3da0874a12e874"}
+    ]
+  },
+  "retained_inventory": {
+    "file_count": 9,
+    "file_payload_bytes": 159221447,
+    "files": [
+      {"path": "actor/fsdp_config.json", "bytes": 46, "sha256": "68c204b2d3b755db051979376990d46558934c0d7ce0ac06bd1e19d3ee8dcf6d"},
+      {"path": "actor/huggingface/chat_template.jinja", "bytes": 2246, "sha256": "56a1447ad31926fdc21fb07e56e5642bd9c850c4f52d8c8af7bbe5f079a84f5f"},
+      {"path": "actor/huggingface/config.json", "bytes": 1361, "sha256": "afdd35536cfe6eebdb6cb4f0aa10efc482ed679becc22b4422f3435435172da9"},
+      {"path": "actor/huggingface/generation_config.json", "bytes": 181, "sha256": "f5e432959a722c3d3cde9a9c6606ddff8c618c1fe5a67f685f3b5b43d806ee53"},
+      {"path": "actor/huggingface/special_tokens_map.json", "bytes": 485, "sha256": "59cda48bbe8bab9d61ffb410e6e3c07b6d98bff73cee7c88ff8b51f95f21ab1c"},
+      {"path": "actor/huggingface/tokenizer.json", "bytes": 11422778, "sha256": "e20ddafc659ba90242154b55275402edeca0715e5dbb30f56815a4ce081f4893"},
+      {"path": "actor/huggingface/tokenizer_config.json", "bytes": 4490, "sha256": "55edc67ee25d8e0d4b7a13036ee61cdb880b49db4398533cc6a29710d1790ade"},
+      {"path": "actor/peft_adapter/adapter_config.json", "bytes": 19396, "sha256": "01839feee13d95fa6255cb0917bf12ced3504562d824128263c7a98514dce0eb"},
+      {"path": "actor/peft_adapter/adapter_model.safetensors", "bytes": 147770464, "sha256": "05fd90b6dd106587913c6016375ecf2f7ed3206e3b9959afccdfffec875923ac"}
+    ]
+  },
+  "external_evidence_retained": [
+    "training contract",
+    "full-benchmark shard manifests and logs",
+    "7248 merged evaluation records",
+    "JSON and CSV summaries",
+    "I0 versus I32 paired comparison",
+    "seed-42 selection"
+  ],
+  "recoverability": "After pruning, I32 step 50 cannot resume optimizer/training state and cannot reconstruct the full FSDP model checkpoint from the retained files. The PEFT adapter remains independently loadable for evaluation and analysis.",
+  "pruning": {
+    "completed_at": "2026-10-03T17:22:34+08:00",
+    "all_13_targets_absent": true,
+    "irrecoverable": true
+  },
+  "storage_after_pruning": {
+    "filesystem": "/dev/vda3",
+    "available_bytes": 24414089216,
+    "used_percent": 88,
+    "observed_net_bytes_released": 7554977792,
+    "note": "Observed free-space change includes concurrent seed-43 training writes."
+  },
+  "post_pruning_verification": {
+    "retained_file_hashes_match": true,
+    "training_contract_status": "verified",
+    "full_benchmark_status": "verified",
+    "num_shards": 4,
+    "num_samples": 7248,
+    "step50_adapter_sha256": "05fd90b6dd106587913c6016375ecf2f7ed3206e3b9959afccdfffec875923ac"
+  }
+}

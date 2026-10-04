@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "status": "conditionally_preregistered_before_seed43_evaluation_results",
+  "created_at": "2026-10-03T22:31:48+08:00",
+  "scope": "Two-training-seed amendment to the paper-baseline plan after the user reduced the active fixed-model/task confirmation to seeds 42 and 43. This artifact does not authorize an automatic launch and does not change the active I0/I8 experiment.",
+  "observation_boundary": {
+    "known": [
+      "Complete seed-42 Phase-1 I0/I8 results.",
+      "Seed-43 I0 training is active.",
+      "No protocol-matched standard LoRA rank-32 result exists."
+    ],
+    "unobserved": [
+      "All seed-43 I0 evaluation results.",
+      "All seed-43 I8 training and evaluation results.",
+      "All protocol-matched standard LoRA rank-32 results."
+    ]
+  },
+  "authoritative_dependencies": {
+    "original_three_seed_plan": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_paper_baseline_requirements.json",
+      "sha256": "daefd41f3ac580f7b491c6ff32a3dc00534088837e6525e1299913cec1e22ee1"
+    },
+    "active_two_seed_scope": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_scope_amendment.json",
+      "sha256": "92d44f339e0129c81c43fd691395c3d87399a17c7fbbe9b42f34149fcf2cc65d"
+    },
+    "two_seed_gate_spec": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_final_gate_execution_spec.json",
+      "sha256": "7c146c48bfb35759386e32eda2761b20a003fae04f430bceca57c548f462596d"
+    }
+  },
+  "superseded_active_scope": {
+    "original_standard_lora_training_seeds": [42, 43, 44],
+    "amended_initial_standard_lora_training_seeds": [42, 43],
+    "future_seed44": "A later seed-44 extension must be disclosed as subsequent work and cannot be silently folded into the two-seed decision.",
+    "interpretation": "The original three-seed standard-LoRA superiority gate is unevaluable under the amended scope; it is neither passed nor failed."
+  },
+  "launch_policy": {
+    "automatic_launch": false,
+    "activation_artifact": "runs/phase1-signal-random-v1/analysis/phase1_i0_vs_i8_two_seed_fixed_setting_gate.json",
+    "required_activation_decision": "fixed_model_task_replication",
+    "earliest_launch": "Only after seed-43 I0 and I8 records and postverification artifacts are complete, the active controller is terminated, and the frozen two-seed gate implementation and tests pass.",
+    "do_not_launch_if": [
+      "The I8 two-seed fixed-model/task confirmation does not pass all four required unfiltered/filtered gates.",
+      "The Phase-1 controller or any provenance-locked Phase-1 process is still active.",
+      "The experiment owner has not allocated enough capacity for two complete training/evaluation runs and their fixed checkpoint-retention protocol.",
+      "Any required launcher, contract, verifier, or evaluation protocol differs from the frozen values below."
+    ]
+  },
+  "matched_standard_lora_r32": {
+    "training_seeds": [42, 43],
+    "model": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+    "training_data": "/data/peft-for-rl-runtime/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet",
+    "peft_type": "lora",
+    "target_modules": "all-linear",
+    "expected_target_module_count": 196,
+    "rank": 32,
+    "alpha": 64,
+    "scaling": 2.0,
+    "dropout": 0.0,
+    "bias": "none",
+    "rank_pattern": null,
+    "adapter_path": null,
+    "lora_freeze_a": false,
+    "optimizer_steps": 50,
+    "prompts_per_step": 64,
+    "prompt_minibatch_size": 16,
+    "responses_per_prompt": 8,
+    "ppo_epochs": 1,
+    "learning_rate": 0.000001,
+    "learning_rate_warmup_steps": 0,
+    "learning_rate_scheduler": "constant",
+    "weight_decay": 0.0,
+    "clip_ratio_low": 0.2,
+    "clip_ratio_high": 0.28,
+    "use_kl_in_reward": false,
+    "use_kl_loss": false,
+    "rollout_temperature": 1.0,
+    "rollout_top_p": 1.0,
+    "rollout_top_k": -1,
+    "train_shuffle": true,
+    "actor_shuffle": false,
+    "data_seed_equals_training_seed": true,
+    "actor_data_loader_seed_equals_training_seed": true,
+    "rollout_seed_equals_training_seed": true,
+    "checkpoint_steps": [25, 50],
+    "checkpoint_contents": ["model", "optimizer", "extra"],
+    "resume_mode": "disable"
+  },
+  "standard_initializer": {
+    "package": "peft",
+    "version": "0.19.1",
+    "distribution_direct_url": null,
+    "lora_config_init_lora_weights": true,
+    "linear_lora_A": "torch.nn.init.kaiming_uniform_(weight, a=sqrt(5))",
+    "linear_lora_B": "torch.nn.init.zeros_(weight)",
+    "initial_delta_weight": "exactly zero because B is initialized to zero",
+    "explicit_initializer_override_allowed": false,
+    "seed_policy": "Do not introduce an extra initializer seed or seed-dependent direction construction. Use the same worker/model initialization path as Phase 1; training-seed variation remains the fixed data-loader and rollout seed variation.",
+    "installed_source_sha256": {
+      "peft/tuners/lora/config.py": "a9f95e1a143b8320cf2e0a3139f29c807d937876591f5fc1ce24fc4fd7833b59",
+      "peft/tuners/lora/layer.py": "444bba0e5dbc5c55ed51a288a8366c18aa7ebe533d081312a19347eb48b215b6"
+    },
+    "verl_source_sha256": {
+      "verl/workers/fsdp_workers.py": "108fb34862e65750b26a4c973dcc881290f0f116a2bac30cbcbd42a830a059e3",
+      "verl/workers/engine/fsdp/transformer_impl.py": "1cd1154d0f24fdd267da7c86fa82064a24e6a69dfb39a3908e0826641061b2b5",
+      "verl/workers/config/model.py": "6c6e1d30a66bbe157a999c460228a7d979a17db555c422b70a1051c54c7c18ae"
+    }
+  },
+  "fixed_evaluation": {
+    "benchmark_snapshot_records": "/data/peft-for-rl-runtime/outputs/full_bench_eval/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42/records/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42.jsonl",
+    "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+    "benchmarks": ["aime24", "aime25", "amc23", "hmmt_feb", "math500", "minerva"],
+    "evaluation_seed": 42,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "max_new_tokens": 32768,
+    "max_model_len": 34816,
+    "samples_small": 32,
+    "samples_large": 4,
+    "records": 7248,
+    "problems": 902,
+    "fixed_overlap_filter": "Use the same immutable conservative_union of 30 problems and require 6680 records/872 problems after filtering."
+  },
+  "base_model_reference": {
+    "required": true,
+    "training_runs": 0,
+    "evaluation_runs": 1,
+    "protocol": "Use the exact fixed evaluation snapshot and generation parameters above without any adapter.",
+    "role": "Absolute no-RL reference only; it is not a training-seed paired method."
+  },
+  "required_comparisons": {
+    "i8_minus_standard_lora_r32": {
+      "views": ["unfiltered", "fixed_30_problem_filtered"],
+      "per_seed": "Exactly matched problem-cluster bootstrap for seeds 42 and 43 with 10000 samples and random seed 42.",
+      "two_seed_summary": "Use the same point checks and descriptive hierarchical bootstrap algorithm as the frozen I0-versus-I8 two-seed execution spec.",
+      "claim_gate": "Both views must pass the seed-43 and two-seed descriptive gates from the frozen two-seed execution spec before claiming improvement over standard LoRA in this fixed setting."
+    },
+    "i0_minus_standard_lora_r32": {
+      "views": ["unfiltered", "fixed_30_problem_filtered"],
+      "per_seed": "Exactly matched problem-cluster bootstrap for seeds 42 and 43.",
+      "role": "Separate the effect of the matched random-orthogonal initialization from the P2-plus-random I8 increment."
+    },
+    "methods_minus_base_model": {
+      "role": "Report absolute RL improvement/degradation without treating the base-model evaluation as a paired training-seed population comparison."
+    }
+  },
+  "implementation_requirements_after_activation": [
+    "Create a dedicated standard-LoRA rank-32 launcher; do not modify or reuse the historical rank-8/dropout-0.05 launcher as if it were protocol matched.",
+    "Create an immutable training contract that records PEFT version, initializer semantics, environment/package lock, exact configuration, code provenance, adapter hash, module count, and trainable/stored parameter counts.",
+    "Refuse an existing nonempty training directory and never silently resume or overwrite a run.",
+    "Use the same independent full-benchmark verifier and postverification artifact format as Phase 1.",
+    "Implement and test the standard-LoRA comparison by extending the already frozen two-seed gate machinery without changing thresholds or claim wording after results are visible."
+  ],
+  "historical_runs": {
+    "usable_as_primary_matched_baselines": false,
+    "forbidden_launcher_as_matched_baseline": "scripts/local/start_standard_lora_r8_b64_50_4gpu.sh",
+    "reasons": [
+      "Historical standard LoRA is rank 8 rather than rank 32.",
+      "Historical alpha is 16 rather than 64.",
+      "Historical dropout is 0.05 rather than 0.0.",
+      "Historical checkpoint contents/cadence and provenance chain differ from Phase 1."
+    ]
+  },
+  "reporting_requirements": [
+    "Trainable and stored adapter parameter counts for I0, I8, and standard LoRA rank 32.",
+    "Peak GPU memory and training/evaluation wall time for every method/seed.",
+    "The P2 probe cost reported separately from I8's 50-step RL training; standard LoRA has zero probe cost.",
+    "Original and fixed 30-problem-filtered results.",
+    "Exact PEFT version and initializer source hashes.",
+    "Disclosure that only two training seeds were tested and seed 42 participated in I8 selection."
+  ],
+  "estimated_additional_wall_time": {
+    "standard_lora_r32_two_training_and_evaluation_runs_hours": "approximately 19-21 serial hours under current measurements",
+    "base_model_evaluation_hours": "approximately 2.3-2.9 hours",
+    "note": "Do not spend this compute unless the I8 two-seed fixed-model/task gate passes."
+  },
+  "claim_policy": {
+    "without_matched_standard_lora": "Only superiority over the matched random-orthogonal I0 baseline may be claimed.",
+    "if_i8_beats_standard_lora_gate": "May claim improvement over protocol-matched standard LoRA only in this fixed 1.5B math-RL setting and only for the two tested training seeds.",
+    "disallowed_even_if_passed": [
+      "Stable across training seeds.",
+      "Broad generalization across models, tasks, domains, or datasets.",
+      "The original three-seed standard-LoRA gate passed."
+    ]
+  },
+  "researcher_degrees_of_freedom": "No training seed, initializer, PEFT version, rank, alpha, dropout, target module, optimizer/RL setting, evaluation sample, filter, threshold, averaging unit, comparison orientation, or claim branch may be changed after seed-43 Phase-1 results or standard-LoRA results become available."
+}

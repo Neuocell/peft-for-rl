@@ -20,6 +20,7 @@ Single Process Actor
 import json
 import logging
 import os
+import statistics
 import time
 from pathlib import Path
 
@@ -31,12 +32,20 @@ from torch.distributed.tensor import DTensor
 import verl.utils.torch_functional as verl_F
 from verl import DataProto
 from verl.trainer.ppo.core_algos import agg_loss, get_policy_loss_fn, kl_penalty
-from verl.utils.attention_utils import index_first_axis, pad_input, rearrange, unpad_input
+from verl.utils.attention_utils import (
+    index_first_axis,
+    pad_input,
+    rearrange,
+    unpad_input,
+)
 from verl.utils.device import get_device_id, get_device_name
 from verl.utils.fsdp_utils import FSDPModule, fsdp2_clip_grad_norm_
 from verl.utils.full_gradient_rl_probe import (
     build_full_gradient_probe_collector,
+    build_probe_token_mask,
     deterministic_response_offset,
+    probe_token_mask_active,
+    probe_token_keep_count,
     unbiased_single_response_scale,
 )
 from verl.utils.peft_adalora import find_adalora_model, update_and_allocate
@@ -47,14 +56,57 @@ from verl.utils.py_functional import append_to_dict
 from verl.utils.seqlen_balancing import prepare_dynamic_batch, restore_dynamic_batch
 from verl.utils.torch_dtypes import PrecisionType
 from verl.utils.torch_functional import logprobs_from_logits
-from verl.utils.ulysses import gather_outputs_and_unpad, ulysses_pad, ulysses_pad_and_slice_inputs
+from verl.utils.ulysses import (
+    gather_outputs_and_unpad,
+    ulysses_pad,
+    ulysses_pad_and_slice_inputs,
+)
 from verl.workers.actor import BasePPOActor
 from verl.workers.config import ActorConfig
 
-__all__ = ["DataParallelPPOActor"]
+__all__ = ["DataParallelPPOActor", "gradient_subspace_allocation_metrics"]
 
 logger = logging.getLogger(__file__)
 logger.setLevel(os.getenv("VERL_LOGGING_LEVEL", "WARN"))
+
+
+def gradient_subspace_allocation_metrics(allocation: dict) -> dict[str, float]:
+    """Extract metrics shared by generic and SPAR gradient-subspace schemas."""
+
+    metrics: dict[str, float] = {}
+    if "trainable_parameters" in allocation:
+        metrics["actor/active_parameter_count"] = float(
+            allocation["trainable_parameters"]
+        )
+    ranks = allocation.get("rank_pattern")
+    if isinstance(ranks, dict) and ranks:
+        rank_values = [float(value) for value in ranks.values()]
+        metrics.update(
+            {
+                "gradient_subspace/rank_mean": float(statistics.mean(rank_values)),
+                "gradient_subspace/rank_min": float(min(rank_values)),
+                "gradient_subspace/rank_max": float(max(rank_values)),
+            }
+        )
+    structure = allocation.get("structure")
+    if not isinstance(structure, dict):
+        return metrics
+    metrics.update(
+        {
+            "spar_structure/rank_mean": float(structure["active_rank_mean"]),
+            "spar_structure/rank_min": float(structure["active_rank_min"]),
+            "spar_structure/rank_max": float(structure["active_rank_max"]),
+            "spar_structure/calibration_energy_capture": float(
+                structure["calibration_energy_capture"]
+            ),
+            "spar_structure/u_score_capture": float(structure["u_score_capture"]),
+        }
+    )
+    for family, value in structure["rank_by_family"].items():
+        metrics[f"spar_structure/rank_family_{family}"] = float(value)
+    for segment, value in structure["rank_by_layer_segment"].items():
+        metrics[f"spar_structure/rank_segment_{segment}"] = float(value)
+    return metrics
 
 
 def _aggregate_adalora_loss_metrics(
@@ -70,10 +122,12 @@ def _aggregate_adalora_loss_metrics(
         raise ValueError("loss_weight_sum must be positive")
 
     return {
-        "adalora/orthogonal_regularization": weighted_regularization_sum / loss_weight_sum,
+        "adalora/orthogonal_regularization": weighted_regularization_sum
+        / loss_weight_sum,
         "adalora/orthogonal_loss": weighted_orthogonal_loss_sum / loss_weight_sum,
         "adalora/pg_loss_abs": weighted_pg_abs_sum / loss_weight_sum,
-        "adalora/orthogonal_to_pg_abs_ratio": weighted_orthogonal_loss_sum / max(weighted_pg_abs_sum, 1e-8),
+        "adalora/orthogonal_to_pg_abs_ratio": weighted_orthogonal_loss_sum
+        / max(weighted_pg_abs_sum, 1e-8),
     }
 
 
@@ -86,7 +140,12 @@ class DataParallelPPOActor(BasePPOActor):
         actor_optimizer (torch.optim.Optimizer, optional): Actor optimizer. Defaults to None.
     """
 
-    def __init__(self, config: ActorConfig, actor_module: nn.Module, actor_optimizer: torch.optim.Optimizer = None):
+    def __init__(
+        self,
+        config: ActorConfig,
+        actor_module: nn.Module,
+        actor_optimizer: torch.optim.Optimizer = None,
+    ):
         """When optimizer is None, it is Reference Policy"""
         super().__init__(config)
         self.actor_module = actor_module
@@ -101,7 +160,9 @@ class DataParallelPPOActor(BasePPOActor):
             and model_config.get("peft_type", "lora") == "adalora"
             and self._adalora_model is None
         ):
-            raise RuntimeError("AdaLoRA is configured but PEFT AdaLoraModel was not found")
+            raise RuntimeError(
+                "AdaLoRA is configured but PEFT AdaLoraModel was not found"
+            )
         role = "Ref" if actor_optimizer is None else "Actor"
 
         self.use_remove_padding = self.config.get("use_remove_padding", False)
@@ -121,11 +182,15 @@ class DataParallelPPOActor(BasePPOActor):
 
         self.compute_entropy_from_logits = (
             torch.compile(entropy_from_logits, dynamic=True)
-            if self.config.get("use_torch_compile", True)  # use torch compile by default
+            if self.config.get(
+                "use_torch_compile", True
+            )  # use torch compile by default
             else entropy_from_logits
         )
         self.device_name = get_device_name()
-        self.param_dtype = PrecisionType.to_dtype(self.config.fsdp_config.get("dtype", "bfloat16"))
+        self.param_dtype = PrecisionType.to_dtype(
+            self.config.fsdp_config.get("dtype", "bfloat16")
+        )
         if self.param_dtype == torch.float16:
             from torch.distributed.fsdp.sharded_grad_scaler import ShardedGradScaler
 
@@ -141,16 +206,24 @@ class DataParallelPPOActor(BasePPOActor):
             and model_config.get("peft_type", "lora") == "grad_probe"
         ):
             if self.scaler is not None:
-                raise NotImplementedError("peft_type=grad_probe currently requires bf16 or fp32, not fp16 scaling")
-            self._gradient_probe_collector = GradientProbeCollector(actor_module, model_config)
+                raise NotImplementedError(
+                    "peft_type=grad_probe currently requires bf16 or fp32, not fp16 scaling"
+                )
+            self._gradient_probe_collector = GradientProbeCollector(
+                actor_module, model_config
+            )
         if (
             actor_optimizer is not None
             and model_config is not None
             and model_config.get("peft_type", "lora") == "spar_probe"
         ):
             if self.scaler is not None:
-                raise NotImplementedError("peft_type=spar_probe currently requires bf16 or fp32, not fp16 scaling")
-            self._spar_probe_collector = SparPositiveProbeCollector(actor_module, model_config)
+                raise NotImplementedError(
+                    "peft_type=spar_probe currently requires bf16 or fp32, not fp16 scaling"
+                )
+            self._spar_probe_collector = SparPositiveProbeCollector(
+                actor_module, model_config
+            )
         if (
             actor_optimizer is not None
             and model_config is not None
@@ -164,30 +237,28 @@ class DataParallelPPOActor(BasePPOActor):
                 actor_module, model_config
             )
 
-        trainable_parameters = sum(parameter.numel() for parameter in actor_module.parameters() if parameter.requires_grad)
-        self._static_actor_metrics = {"actor/active_parameter_count": float(trainable_parameters)}
-        if model_config is not None and model_config.get("peft_type", "lora") == "grad_subspace":
+        trainable_parameters = sum(
+            parameter.numel()
+            for parameter in actor_module.parameters()
+            if parameter.requires_grad
+        )
+        self._static_actor_metrics = {
+            "actor/active_parameter_count": float(trainable_parameters)
+        }
+        if (
+            model_config is not None
+            and model_config.get("peft_type", "lora") == "grad_subspace"
+        ):
             rank_map_path = model_config.get("gradient_subspace_rank_map_path")
-            allocation_path = Path(str(rank_map_path)).expanduser().resolve().parent / "allocation_summary.json"
+            allocation_path = (
+                Path(str(rank_map_path)).expanduser().resolve().parent
+                / "allocation_summary.json"
+            )
             if allocation_path.is_file():
                 allocation = json.loads(allocation_path.read_text(encoding="utf-8"))
-                structure = allocation["structure"]
                 self._static_actor_metrics.update(
-                    {
-                        "actor/active_parameter_count": float(allocation["trainable_parameters"]),
-                        "spar_structure/rank_mean": float(structure["active_rank_mean"]),
-                        "spar_structure/rank_min": float(structure["active_rank_min"]),
-                        "spar_structure/rank_max": float(structure["active_rank_max"]),
-                        "spar_structure/calibration_energy_capture": float(
-                            structure["calibration_energy_capture"]
-                        ),
-                        "spar_structure/u_score_capture": float(structure["u_score_capture"]),
-                    }
+                    gradient_subspace_allocation_metrics(allocation)
                 )
-                for family, value in structure["rank_by_family"].items():
-                    self._static_actor_metrics[f"spar_structure/rank_family_{family}"] = float(value)
-                for segment, value in structure["rank_by_layer_segment"].items():
-                    self._static_actor_metrics[f"spar_structure/rank_segment_{segment}"] = float(value)
 
     def run_spar_probe(self, data: DataProto) -> dict[str, list[float] | float]:
         """Run synchronized per-sample token-mean CE backwards without updates."""
@@ -232,12 +303,20 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_optimizer.zero_grad()
         return metrics
 
-    def run_full_gradient_probe(self, data: DataProto) -> dict[str, list[float] | float]:
+    def run_full_gradient_probe(
+        self, data: DataProto
+    ) -> dict[str, list[float] | float]:
         """Accumulate one signed-GRPO full-weight gradient per prompt group."""
 
         collector = self._full_gradient_probe_collector
         if collector is None:
-            raise RuntimeError("run_full_gradient_probe requires peft_type=full_gradient_probe")
+            raise RuntimeError(
+                "run_full_gradient_probe requires peft_type=full_gradient_probe"
+            )
+        if getattr(collector, "is_phase06_replay", False):
+            return self._run_phase06_crossfit_replay(data, collector)
+        if getattr(collector, "is_phase0", False):
+            return self._run_phase0_full_gradient_probe(data, collector)
         if getattr(collector, "is_windowed", False):
             return self._run_windowed_full_gradient_probe(data, collector)
         self.actor_module.train()
@@ -246,7 +325,9 @@ class DataParallelPPOActor(BasePPOActor):
         temperature = float(data.meta_info["temperature"])
         prompt_ids = data.non_tensor_batch.get("full_gradient_prompt_id")
         if prompt_ids is None:
-            raise ValueError("Full-gradient probe batch is missing full_gradient_prompt_id")
+            raise ValueError(
+                "Full-gradient probe batch is missing full_gradient_prompt_id"
+            )
 
         groups: dict[str, list[int]] = {}
         for index, prompt_id in enumerate(prompt_ids):
@@ -266,13 +347,41 @@ class DataParallelPPOActor(BasePPOActor):
             )
             if float(advantage_rms.item()) <= 0:
                 continue
+            phase = collector.phase
+            token_mask_active = probe_token_mask_active(
+                mode=collector.token_mask_mode,
+                scope=collector.token_mask_scope,
+                phase=phase,
+            )
+            if token_mask_active:
+                probe_token_count = sum(
+                    probe_token_keep_count(
+                        int(row.sum().item()),
+                        keep_ratio=collector.token_keep_ratio,
+                        min_keep=collector.token_min_keep,
+                        final_tokens=collector.token_keep_final,
+                    )
+                    for row in response_mask
+                )
+            else:
+                probe_token_count = int(token_count.item())
+            if probe_token_count <= 0:
+                continue
 
             capture_started = time.perf_counter()
-            distributed = torch.distributed.is_available() and torch.distributed.is_initialized()
+            distributed = (
+                torch.distributed.is_available() and torch.distributed.is_initialized()
+            )
             is_rank_zero = not distributed or torch.distributed.get_rank() == 0
-            captured = collector.discovery_count + collector.calibration_count + collector.audit_count
+            captured = (
+                collector.discovery_count
+                + collector.calibration_count
+                + collector.audit_count
+            )
             capture_target = (
-                collector.discovery_target + collector.calibration_target + collector.audit_target
+                collector.discovery_target
+                + collector.calibration_target
+                + collector.audit_target
             )
             if is_rank_zero:
                 logger.warning(
@@ -287,6 +396,10 @@ class DataParallelPPOActor(BasePPOActor):
                 )
             self.actor_optimizer.zero_grad()
             group_loss = torch.zeros((), device=get_device_id(), dtype=torch.float32)
+            selected_surprisal_sum = 0.0
+            unselected_surprisal_sum = 0.0
+            observed_selected_tokens = 0
+            observed_unselected_tokens = 0
             # A response can already approach the actor token budget. Accumulate
             # the group gradient response-by-response while retaining the exact
             # token-mean denominator for the complete prompt group.
@@ -298,13 +411,37 @@ class DataParallelPPOActor(BasePPOActor):
                     temperature=temperature,
                     calculate_entropy=False,
                 )
+                response_mask_device = model_inputs["response_mask"].float()
+                if token_mask_active:
+                    probe_mask = build_probe_token_mask(
+                        log_prob,
+                        response_mask_device,
+                        mode=collector.token_mask_mode,
+                        keep_ratio=collector.token_keep_ratio,
+                        min_keep=collector.token_min_keep,
+                        final_tokens=collector.token_keep_final,
+                    )
+                else:
+                    probe_mask = response_mask_device
+                with torch.no_grad():
+                    valid = response_mask_device > 0
+                    selected = probe_mask > 0
+                    unselected = valid & ~selected
+                    surprisal = -log_prob.detach().float()
+                    selected_surprisal_sum += float(surprisal[selected].sum().item())
+                    observed_selected_tokens += int(selected.sum().item())
+                    if bool(unselected.any()):
+                        unselected_surprisal_sum += float(
+                            surprisal[unselected].sum().item()
+                        )
+                        observed_unselected_tokens += int(unselected.sum().item())
                 sample_loss = -(
-                    log_prob.float()
-                    * model_inputs["advantages"].float()
-                    * model_inputs["response_mask"].float()
-                ).sum() / token_count.to(get_device_id())
+                    log_prob.float() * model_inputs["advantages"].float() * probe_mask
+                ).sum() / float(probe_token_count)
                 if not torch.isfinite(sample_loss):
-                    raise FloatingPointError("Full-gradient signed-GRPO probe loss is non-finite")
+                    raise FloatingPointError(
+                        "Full-gradient signed-GRPO probe loss is non-finite"
+                    )
                 group_loss = group_loss + sample_loss.detach()
                 sample_loss.backward()
 
@@ -314,13 +451,37 @@ class DataParallelPPOActor(BasePPOActor):
                 response_count=len(indices),
                 response_tokens=int(token_count.item()),
                 advantage_rms=float(advantage_rms.item()),
+                probe_tokens=observed_selected_tokens,
+                token_mask_active=token_mask_active,
+                selected_surprisal=(
+                    selected_surprisal_sum / observed_selected_tokens
+                    if observed_selected_tokens
+                    else None
+                ),
+                unselected_surprisal=(
+                    unselected_surprisal_sum / observed_unselected_tokens
+                    if observed_unselected_tokens
+                    else None
+                ),
             )
+            metric_prefix = f"full_gradient_probe/{phase}_token"
+            probe_metrics[f"{metric_prefix}_keep_rate"] = (
+                observed_selected_tokens / max(int(token_count.item()), 1)
+            )
+            if observed_selected_tokens:
+                probe_metrics[f"{metric_prefix}_selected_surprisal"] = (
+                    selected_surprisal_sum / observed_selected_tokens
+                )
+            if observed_unselected_tokens:
+                probe_metrics[f"{metric_prefix}_unselected_surprisal"] = (
+                    unselected_surprisal_sum / observed_unselected_tokens
+                )
             metrics.update(probe_metrics)
             if is_rank_zero:
                 logger.warning(
                     "Full-gradient probe prompt complete: phase=%s progress=%d/%d "
                     "elapsed_s=%.3f raw_grad_norm=%.6g clip_scale=%.6g prompt_id=%s",
-                    collector.phase,
+                    phase,
                     collector.discovery_count
                     + collector.calibration_count
                     + collector.audit_count,
@@ -333,7 +494,338 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_optimizer.zero_grad()
         return metrics
 
-    def _run_windowed_full_gradient_probe(self, data: DataProto, collector) -> dict[str, list[float] | float]:
+    def _run_phase0_full_gradient_probe(
+        self, data: DataProto, collector
+    ) -> dict[str, list[float] | float]:
+        """Evaluate all Phase-0 selectors on the same prompt-group rollouts."""
+
+        self.actor_module.train()
+        collector.record_rollout_batch(data.meta_info)
+        metrics: dict[str, list[float] | float] = dict(self._static_actor_metrics)
+        temperature = float(data.meta_info["temperature"])
+        prompt_ids = data.non_tensor_batch.get("full_gradient_prompt_id")
+        if prompt_ids is None:
+            raise ValueError("Phase-0 probe batch is missing full_gradient_prompt_id")
+
+        groups: dict[str, list[int]] = {}
+        for index, prompt_id in enumerate(prompt_ids):
+            groups.setdefault(str(prompt_id), []).append(index)
+        for prompt_id, indices in groups.items():
+            if collector.ready:
+                break
+            group = data.select_idxs(indices)
+            response_mask = group.batch["response_mask"].float()
+            advantages = group.batch["advantages"].float()
+            token_count = int(response_mask.sum().item())
+            if token_count <= 0:
+                continue
+            weighted_advantages = advantages * response_mask
+            advantage_rms = float(
+                torch.sqrt(
+                    weighted_advantages.square().sum()
+                    / response_mask.sum().clamp_min(1)
+                ).item()
+            )
+            if advantage_rms <= 0:
+                continue
+
+            phase = collector.phase
+            collector.cache_prompt_group(
+                phase=phase,
+                prompt_id=prompt_id,
+                batch=group.batch,
+            )
+            if phase == "discovery":
+                selector_modes = {
+                    "P0": "none",
+                    "P1": "random",
+                    "P2": "top_surprisal",
+                }
+                for selector, mode in selector_modes.items():
+                    probe_token_count = token_count
+                    if mode != "none":
+                        probe_token_count = sum(
+                            probe_token_keep_count(
+                                int(row.sum().item()),
+                                keep_ratio=collector.keep_ratio,
+                                min_keep=collector.min_keep,
+                                final_tokens=(
+                                    collector.keep_final
+                                    if mode == "top_surprisal"
+                                    else 0
+                                ),
+                            )
+                            for row in response_mask
+                        )
+                    self.actor_optimizer.zero_grad()
+                    for response_offset, index in enumerate(indices):
+                        sample = data.select_idxs([index]).to(get_device_id())
+                        model_inputs = {**sample.batch, **sample.non_tensor_batch}
+                        _, log_prob = self._forward_micro_batch(
+                            model_inputs,
+                            temperature=temperature,
+                            calculate_entropy=False,
+                        )
+                        mask = build_probe_token_mask(
+                            log_prob,
+                            model_inputs["response_mask"].float(),
+                            mode=mode,
+                            keep_ratio=collector.keep_ratio,
+                            min_keep=collector.min_keep,
+                            final_tokens=(
+                                collector.keep_final if mode == "top_surprisal" else 0
+                            ),
+                            seed=collector.seed,
+                            sample_key=f"{prompt_id}:{response_offset}",
+                        )
+                        loss = -(
+                            log_prob.float() * model_inputs["advantages"].float() * mask
+                        ).sum() / float(probe_token_count)
+                        if not torch.isfinite(loss):
+                            raise FloatingPointError(
+                                f"Phase-0 {selector} loss is non-finite"
+                            )
+                        loss.backward()
+                    raw_norm = collector.capture_standard_discovery(selector)
+                    metrics[f"full_gradient_probe/{selector}_raw_grad_norm"] = raw_norm
+
+                collector.begin_crossfit_prompt(prompt_id, len(indices))
+                for response_offset, index in enumerate(indices):
+                    self.actor_optimizer.zero_grad()
+                    sample = data.select_idxs([index]).to(get_device_id())
+                    model_inputs = {**sample.batch, **sample.non_tensor_batch}
+                    entropy, log_prob = self._forward_micro_batch(
+                        model_inputs,
+                        temperature=temperature,
+                        calculate_entropy=True,
+                    )
+                    mask = build_probe_token_mask(
+                        log_prob,
+                        model_inputs["response_mask"].float(),
+                        mode="advantage_entropy_stable_band",
+                        keep_ratio=collector.keep_ratio,
+                        min_keep=collector.min_keep,
+                        final_tokens=0,
+                        entropy=entropy,
+                        advantages=model_inputs["advantages"].float(),
+                        surprisal_upper_quantile=collector.stable_surprisal_quantile,
+                    )
+                    selected_tokens = int((mask > 0).sum().item())
+                    loss = -(
+                        log_prob.float() * model_inputs["advantages"].float() * mask
+                    ).sum()
+                    if not torch.isfinite(loss):
+                        raise FloatingPointError("Phase-0 P3 loss is non-finite")
+                    loss.backward()
+                    collector.capture_crossfit_response(
+                        response_offset, selected_tokens
+                    )
+                p3_norms = collector.finish_crossfit_prompt()
+                metrics["full_gradient_probe/P3_raw_grad_norm"] = float(
+                    statistics.mean(p3_norms)
+                )
+                collector.complete_discovery_prompt(
+                    prompt_id=prompt_id,
+                    response_count=len(indices),
+                    response_tokens=token_count,
+                    advantage_rms=advantage_rms,
+                )
+            else:
+                self.actor_optimizer.zero_grad()
+                for index in indices:
+                    sample = data.select_idxs([index]).to(get_device_id())
+                    model_inputs = {**sample.batch, **sample.non_tensor_batch}
+                    _, log_prob = self._forward_micro_batch(
+                        model_inputs,
+                        temperature=temperature,
+                        calculate_entropy=False,
+                    )
+                    loss = -(
+                        log_prob.float()
+                        * model_inputs["advantages"].float()
+                        * model_inputs["response_mask"].float()
+                    ).sum() / float(token_count)
+                    if not torch.isfinite(loss):
+                        raise FloatingPointError("Phase-0 held-out loss is non-finite")
+                    loss.backward()
+                collector.capture_held_out(
+                    split=phase,
+                    prompt_id=prompt_id,
+                    response_count=len(indices),
+                    response_tokens=token_count,
+                    advantage_rms=advantage_rms,
+                )
+            metrics.update(collector.metrics())
+        self.actor_optimizer.zero_grad()
+        return metrics
+
+    def _run_phase06_crossfit_replay(
+        self, data: DataProto, collector
+    ) -> dict[str, list[float] | float]:
+        """Replay one Phase-0 cache sequentially through C0/C2/C3."""
+
+        import gc
+
+        from safetensors.torch import load_file
+
+        self.actor_module.train()
+        metrics: dict[str, list[float] | float] = dict(self._static_actor_metrics)
+        temperature = float(data.meta_info["temperature"])
+        device = get_device_id()
+        distributed = (
+            torch.distributed.is_available() and torch.distributed.is_initialized()
+        )
+        is_rank_zero = not distributed or torch.distributed.get_rank() == 0
+
+        for method, mode in collector.replay_method_masks.items():
+            collector.start_replay_method(method)
+            for entry in collector.entries_for_phase("discovery"):
+                prompt_id = str(entry["prompt_id"])
+                cached = load_file(str(entry["path"]), device="cpu")
+                response_mask = cached["response_mask"].float()
+                advantages = cached["advantages"].float()
+                response_count = int(response_mask.shape[0])
+                response_tokens = int(response_mask.sum().item())
+                advantage_rms = float(
+                    torch.sqrt(
+                        ((advantages * response_mask).square().sum())
+                        / response_mask.sum().clamp_min(1)
+                    ).item()
+                )
+                if response_tokens <= 0 or advantage_rms <= 0:
+                    raise ValueError(
+                        f"Invalid Phase 0.6 cached discovery prompt: {prompt_id}"
+                    )
+                collector.begin_crossfit_prompt(prompt_id, response_count)
+                for response_offset in range(response_count):
+                    self.actor_optimizer.zero_grad()
+                    model_inputs = {
+                        key: value[response_offset : response_offset + 1].to(device)
+                        for key, value in cached.items()
+                    }
+                    calculate_entropy = mode == "advantage_entropy_stable_band"
+                    entropy, log_prob = self._forward_micro_batch(
+                        model_inputs,
+                        temperature=temperature,
+                        calculate_entropy=calculate_entropy,
+                    )
+                    if mode == "none":
+                        mask = model_inputs["response_mask"].float()
+                    else:
+                        mask = build_probe_token_mask(
+                            log_prob,
+                            model_inputs["response_mask"].float(),
+                            mode=mode,
+                            keep_ratio=collector.keep_ratio,
+                            min_keep=collector.min_keep,
+                            final_tokens=(
+                                collector.keep_final if mode == "top_surprisal" else 0
+                            ),
+                            entropy=entropy,
+                            advantages=model_inputs["advantages"].float(),
+                            surprisal_upper_quantile=collector.stable_surprisal_quantile,
+                            seed=collector.seed,
+                            sample_key=f"{prompt_id}:{response_offset}",
+                        )
+                    selected_tokens = int((mask > 0).sum().item())
+                    loss = -(
+                        log_prob.float() * model_inputs["advantages"].float() * mask
+                    ).sum()
+                    if not torch.isfinite(loss):
+                        raise FloatingPointError(
+                            f"Phase 0.6 {method} loss is non-finite"
+                        )
+                    loss.backward()
+                    collector.capture_crossfit_response(
+                        response_offset, selected_tokens
+                    )
+                collector.finish_crossfit_prompt()
+                collector.complete_replay_discovery_prompt(
+                    prompt_id=prompt_id,
+                    response_count=response_count,
+                    response_tokens=response_tokens,
+                    advantage_rms=advantage_rms,
+                )
+                if is_rank_zero:
+                    logger.warning(
+                        "Phase 0.6 replay discovery complete: method=%s progress=%d/%d prompt_id=%s",
+                        method,
+                        collector.discovery_count,
+                        collector.discovery_target,
+                        prompt_id,
+                    )
+                del cached
+            collector.finish_replay_method()
+            if distributed:
+                torch.distributed.barrier()
+            gc.collect()
+
+        collector.prepare_held_out_replay()
+        for phase in ("calibration", "audit"):
+            for entry in collector.entries_for_phase(phase):
+                prompt_id = str(entry["prompt_id"])
+                cached = load_file(str(entry["path"]), device="cpu")
+                response_mask = cached["response_mask"].float()
+                advantages = cached["advantages"].float()
+                response_count = int(response_mask.shape[0])
+                response_tokens = int(response_mask.sum().item())
+                advantage_rms = float(
+                    torch.sqrt(
+                        ((advantages * response_mask).square().sum())
+                        / response_mask.sum().clamp_min(1)
+                    ).item()
+                )
+                if response_tokens <= 0 or advantage_rms <= 0:
+                    raise ValueError(
+                        f"Invalid Phase 0.6 cached held-out prompt: {prompt_id}"
+                    )
+                self.actor_optimizer.zero_grad()
+                for response_offset in range(response_count):
+                    model_inputs = {
+                        key: value[response_offset : response_offset + 1].to(device)
+                        for key, value in cached.items()
+                    }
+                    _, log_prob = self._forward_micro_batch(
+                        model_inputs,
+                        temperature=temperature,
+                        calculate_entropy=False,
+                    )
+                    loss = -(
+                        log_prob.float()
+                        * model_inputs["advantages"].float()
+                        * model_inputs["response_mask"].float()
+                    ).sum() / float(response_tokens)
+                    if not torch.isfinite(loss):
+                        raise FloatingPointError(
+                            f"Phase 0.6 {phase} loss is non-finite"
+                        )
+                    loss.backward()
+                collector.capture_held_out(
+                    split=phase,
+                    prompt_id=prompt_id,
+                    response_count=response_count,
+                    response_tokens=response_tokens,
+                    advantage_rms=advantage_rms,
+                )
+                if is_rank_zero:
+                    logger.warning(
+                        "Phase 0.6 replay held-out complete: phase=%s calibration=%d/%d audit=%d/%d prompt_id=%s",
+                        phase,
+                        collector.calibration_count,
+                        collector.calibration_target,
+                        collector.audit_count,
+                        collector.audit_target,
+                        prompt_id,
+                    )
+                del cached
+
+        self.actor_optimizer.zero_grad()
+        metrics.update(collector.metrics())
+        return metrics
+
+    def _run_windowed_full_gradient_probe(
+        self, data: DataProto, collector
+    ) -> dict[str, list[float] | float]:
         """Accumulate fixed prompt windows using one unbiased rollout per prompt."""
 
         self.actor_module.train()
@@ -342,7 +834,9 @@ class DataParallelPPOActor(BasePPOActor):
         temperature = float(data.meta_info["temperature"])
         prompt_ids = data.non_tensor_batch.get("full_gradient_prompt_id")
         if prompt_ids is None:
-            raise ValueError("Full-gradient probe batch is missing full_gradient_prompt_id")
+            raise ValueError(
+                "Full-gradient probe batch is missing full_gradient_prompt_id"
+            )
 
         groups: dict[str, list[int]] = {}
         for index, prompt_id in enumerate(prompt_ids):
@@ -354,10 +848,14 @@ class DataParallelPPOActor(BasePPOActor):
                 f"{len(ordered_groups)} prompts is not divisible by {collector.window_prompts}"
             )
 
-        distributed = torch.distributed.is_available() and torch.distributed.is_initialized()
+        distributed = (
+            torch.distributed.is_available() and torch.distributed.is_initialized()
+        )
         is_rank_zero = not distributed or torch.distributed.get_rank() == 0
         capture_target = (
-            collector.discovery_target + collector.calibration_target + collector.audit_target
+            collector.discovery_target
+            + collector.calibration_target
+            + collector.audit_target
         )
         for start in range(0, len(ordered_groups), collector.window_prompts):
             if collector.ready:
@@ -393,7 +891,9 @@ class DataParallelPPOActor(BasePPOActor):
                     weighted_advantages.square().sum() / token_count.clamp_min(1)
                 )
                 if float(advantage_rms.item()) <= 0:
-                    raise ValueError(f"Probe prompt {prompt_id} has zero GRPO advantage")
+                    raise ValueError(
+                        f"Probe prompt {prompt_id} has zero GRPO advantage"
+                    )
                 offset = deterministic_response_offset(
                     collector.seed, prompt_id, window_index, len(indices)
                 )
@@ -407,11 +907,15 @@ class DataParallelPPOActor(BasePPOActor):
                 scale = unbiased_single_response_scale(
                     len(indices), collector.window_prompts
                 )
-                sample_loss = -scale * (
-                    log_prob.float()
-                    * model_inputs["advantages"].float()
-                    * model_inputs["response_mask"].float()
-                ).sum() / token_count.to(get_device_id())
+                sample_loss = (
+                    -scale
+                    * (
+                        log_prob.float()
+                        * model_inputs["advantages"].float()
+                        * model_inputs["response_mask"].float()
+                    ).sum()
+                    / token_count.to(get_device_id())
+                )
                 if not torch.isfinite(sample_loss):
                     raise FloatingPointError(
                         "Windowed single-response policy-gradient loss is non-finite"
@@ -448,7 +952,11 @@ class DataParallelPPOActor(BasePPOActor):
         return metrics
 
     def _forward_micro_batch(
-        self, micro_batch, temperature, calculate_entropy=False, capture_adalora_orthogonal_loss=False
+        self,
+        micro_batch,
+        temperature,
+        calculate_entropy=False,
+        capture_adalora_orthogonal_loss=False,
     ) -> tuple[torch.Tensor, torch.Tensor]:
         """
         Returns:
@@ -461,7 +969,9 @@ class DataParallelPPOActor(BasePPOActor):
         if "multi_modal_inputs" in micro_batch.keys():
             from verl.utils.model import extract_multi_modal_inputs
 
-            multi_modal_inputs = extract_multi_modal_inputs(micro_batch["multi_modal_inputs"])
+            multi_modal_inputs = extract_multi_modal_inputs(
+                micro_batch["multi_modal_inputs"]
+            )
 
         with torch.autocast(device_type=self.device_name, dtype=self.param_dtype):
             input_ids = micro_batch["input_ids"]
@@ -470,7 +980,9 @@ class DataParallelPPOActor(BasePPOActor):
             position_ids = micro_batch["position_ids"]
             entropy = None
             if position_ids.dim() == 3:  # qwen2vl mrope
-                position_ids = position_ids.transpose(0, 1)  # (bsz, 4, seqlen) -> (4, bsz, seqlen)
+                position_ids = position_ids.transpose(
+                    0, 1
+                )  # (bsz, 4, seqlen) -> (4, bsz, seqlen)
 
             if self.use_remove_padding:
                 input_ids_rmpad, indices, cu_seqlens, *_ = unpad_input(
@@ -481,13 +993,16 @@ class DataParallelPPOActor(BasePPOActor):
                 # unpad the position_ids to align the rotary
                 if position_ids.dim() == 3:
                     position_ids_rmpad = (
-                        index_first_axis(rearrange(position_ids, "c b s ... -> (b s) c ..."), indices)
+                        index_first_axis(
+                            rearrange(position_ids, "c b s ... -> (b s) c ..."), indices
+                        )
                         .transpose(0, 1)
                         .unsqueeze(1)
                     )  # (4, bsz, seqlen) -> (4, 1, bsz * seqlen)
                 else:
                     position_ids_rmpad = index_first_axis(
-                        rearrange(position_ids.unsqueeze(-1), "b s ... -> (b s) ..."), indices
+                        rearrange(position_ids.unsqueeze(-1), "b s ... -> (b s) ..."),
+                        indices,
                     ).transpose(0, 1)
 
                 is_mask_all_zero = attention_mask.sum() == 0
@@ -499,7 +1014,11 @@ class DataParallelPPOActor(BasePPOActor):
                     )
                     if position_ids.dim() == 3:
                         position_ids_rmpad = torch.zeros(
-                            (position_ids.shape[0], 1, self.ulysses_sequence_parallel_size),
+                            (
+                                position_ids.shape[0],
+                                1,
+                                self.ulysses_sequence_parallel_size,
+                            ),
                             device=position_ids.device,
                             dtype=position_ids.dtype,
                         )
@@ -511,19 +1030,28 @@ class DataParallelPPOActor(BasePPOActor):
                         )
 
                 if "image_bound" in multi_modal_inputs:
-                    from verl.utils.dataset.vision_utils import process_multi_modal_inputs_for_minicpmo
+                    from verl.utils.dataset.vision_utils import (
+                        process_multi_modal_inputs_for_minicpmo,
+                    )
 
                     multi_modal_inputs = process_multi_modal_inputs_for_minicpmo(
-                        input_ids, attention_mask, position_ids, cu_seqlens, multi_modal_inputs
+                        input_ids,
+                        attention_mask,
+                        position_ids,
+                        cu_seqlens,
+                        multi_modal_inputs,
                     )
 
                 # for compute the log_prob
-                input_ids_rmpad_rolled = torch.roll(input_ids_rmpad, shifts=-1, dims=1)  # (1, total_nnz)
+                input_ids_rmpad_rolled = torch.roll(
+                    input_ids_rmpad, shifts=-1, dims=1
+                )  # (1, total_nnz)
 
                 # pad and slice the inputs if sp > 1
                 if self.use_ulysses_sp:
                     is_vlm_model = hasattr(
-                        getattr(self.actor_module, "module", self.actor_module).config, "vision_config"
+                        getattr(self.actor_module, "module", self.actor_module).config,
+                        "vision_config",
                     )
                     if is_vlm_model:
                         # vlm model's inputs will be sliced after embedding
@@ -533,10 +1061,12 @@ class DataParallelPPOActor(BasePPOActor):
                             sp_size=self.ulysses_sequence_parallel_size,
                         )
                     else:
-                        input_ids_rmpad, position_ids_rmpad, pad_size = ulysses_pad_and_slice_inputs(
-                            input_ids_rmpad,
-                            position_ids_rmpad=position_ids_rmpad,
-                            sp_size=self.ulysses_sequence_parallel_size,
+                        input_ids_rmpad, position_ids_rmpad, pad_size = (
+                            ulysses_pad_and_slice_inputs(
+                                input_ids_rmpad,
+                                position_ids_rmpad=position_ids_rmpad,
+                                sp_size=self.ulysses_sequence_parallel_size,
+                            )
                         )
                     input_ids_rmpad_rolled, _, _ = ulysses_pad_and_slice_inputs(
                         input_ids_rmpad_rolled,
@@ -544,7 +1074,9 @@ class DataParallelPPOActor(BasePPOActor):
                         sp_size=self.ulysses_sequence_parallel_size,
                     )
 
-                input_ids_rmpad_rolled = input_ids_rmpad_rolled.squeeze(0)  # ((total_nnz / sp) + pad)
+                input_ids_rmpad_rolled = input_ids_rmpad_rolled.squeeze(
+                    0
+                )  # ((total_nnz / sp) + pad)
 
                 # only pass input_ids and position_ids to enable flash_attn_varlen
                 extra_args = {}
@@ -592,7 +1124,9 @@ class DataParallelPPOActor(BasePPOActor):
                     # compute entropy
                     if calculate_entropy:
                         if not self.config.entropy_checkpointing:
-                            entropy_rmpad = self.compute_entropy_from_logits(logits_rmpad)  # ((total_nnz / sp) + pad)
+                            entropy_rmpad = self.compute_entropy_from_logits(
+                                logits_rmpad
+                            )  # ((total_nnz / sp) + pad)
                         else:
                             entropy_rmpad = torch.utils.checkpoint.checkpoint(
                                 self.compute_entropy_from_logits, logits_rmpad
@@ -637,8 +1171,12 @@ class DataParallelPPOActor(BasePPOActor):
 
                 # only return response part:
                 if calculate_entropy:
-                    entropy = full_entropy.squeeze(-1)[:, -response_length - 1 : -1]  # (bsz, response_length)
-                log_probs = full_log_probs.squeeze(-1)[:, -response_length - 1 : -1]  # (bsz, response_length)
+                    entropy = full_entropy.squeeze(-1)[
+                        :, -response_length - 1 : -1
+                    ]  # (bsz, response_length)
+                log_probs = full_log_probs.squeeze(-1)[
+                    :, -response_length - 1 : -1
+                ]  # (bsz, response_length)
 
             else:  # not using rmpad and no ulysses sp
                 extra_args = {}
@@ -664,23 +1202,33 @@ class DataParallelPPOActor(BasePPOActor):
 
                 if self.use_fused_kernels:
                     log_probs = output.log_probs[:, -response_length - 1 : -1]
-                    entropy = output.entropy[:, -response_length - 1 : -1]  # (bsz, response_length)
+                    entropy = output.entropy[
+                        :, -response_length - 1 : -1
+                    ]  # (bsz, response_length)
 
                 else:
                     logits = output.logits
 
                     logits.div_(temperature)
-                    logits = logits[:, -response_length - 1 : -1, :]  # (bsz, response_length, vocab_size)
+                    logits = logits[
+                        :, -response_length - 1 : -1, :
+                    ]  # (bsz, response_length, vocab_size)
                     log_probs = logprobs_from_logits(logits, micro_batch["responses"])
                     if calculate_entropy:
                         if not self.config.entropy_checkpointing:
-                            entropy = verl_F.entropy_from_logits(logits)  # (bsz, response_length)
+                            entropy = verl_F.entropy_from_logits(
+                                logits
+                            )  # (bsz, response_length)
                         else:
-                            entropy = torch.utils.checkpoint.checkpoint(verl_F.entropy_from_logits, logits)
+                            entropy = torch.utils.checkpoint.checkpoint(
+                                verl_F.entropy_from_logits, logits
+                            )
 
         if capture_adalora_orthogonal_loss:
             if not isinstance(getattr(output, "loss", None), torch.Tensor):
-                raise RuntimeError("PEFT AdaLoRA forward did not return its official orthogonal loss")
+                raise RuntimeError(
+                    "PEFT AdaLoRA forward did not return its official orthogonal loss"
+                )
             self._last_adalora_orth_loss = output.loss
 
         return entropy, log_probs
@@ -706,11 +1254,17 @@ class DataParallelPPOActor(BasePPOActor):
         if self.scaler is not None:
             self.scaler.unscale_(self.actor_optimizer)
         if isinstance(self.actor_module, FSDP):
-            grad_norm = self.actor_module.clip_grad_norm_(max_norm=self.config.grad_clip)
+            grad_norm = self.actor_module.clip_grad_norm_(
+                max_norm=self.config.grad_clip
+            )
         elif isinstance(self.actor_module, FSDPModule):
-            grad_norm = fsdp2_clip_grad_norm_(self.actor_module.parameters(), max_norm=self.config.grad_clip)
+            grad_norm = fsdp2_clip_grad_norm_(
+                self.actor_module.parameters(), max_norm=self.config.grad_clip
+            )
         else:
-            grad_norm = torch.nn.utils.clip_grad_norm_(self.actor_module.parameters(), max_norm=self.config.grad_clip)
+            grad_norm = torch.nn.utils.clip_grad_norm_(
+                self.actor_module.parameters(), max_norm=self.config.grad_clip
+            )
 
         if isinstance(grad_norm, DTensor):
             grad_norm = grad_norm.full_tensor()
@@ -721,14 +1275,18 @@ class DataParallelPPOActor(BasePPOActor):
             self.scaler.update()
         else:
             if not torch.isfinite(grad_norm):
-                print(f"WARN: rank {torch.distributed.get_rank()} grad_norm is not finite: {grad_norm}")
+                print(
+                    f"WARN: rank {torch.distributed.get_rank()} grad_norm is not finite: {grad_norm}"
+                )
                 self.actor_optimizer.zero_grad()
             elif apply_update:
                 self.actor_optimizer.step()
         return grad_norm
 
     @GPUMemoryLogger(role="dp actor", logger=logger)
-    def compute_log_prob(self, data: DataProto, calculate_entropy=False) -> torch.Tensor:
+    def compute_log_prob(
+        self, data: DataProto, calculate_entropy=False
+    ) -> torch.Tensor:
         """Compute the log probability of the responses given input_ids, attention_mask and position_ids
 
         Args:
@@ -750,17 +1308,27 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_module.eval()
 
         micro_batch_size = data.meta_info["micro_batch_size"]
-        temperature = data.meta_info["temperature"]  # temperature must be in the data.meta_info to avoid silent error
+        temperature = data.meta_info[
+            "temperature"
+        ]  # temperature must be in the data.meta_info to avoid silent error
         use_dynamic_bsz = data.meta_info["use_dynamic_bsz"]
         has_multi_modal_inputs = "multi_modal_inputs" in data.non_tensor_batch.keys()
         select_keys = ["responses", "input_ids", "attention_mask", "position_ids"]
-        non_tensor_select_keys = ["multi_modal_inputs"] if has_multi_modal_inputs else []
+        non_tensor_select_keys = (
+            ["multi_modal_inputs"] if has_multi_modal_inputs else []
+        )
 
-        data = data.select(batch_keys=select_keys, non_tensor_batch_keys=non_tensor_select_keys)
+        data = data.select(
+            batch_keys=select_keys, non_tensor_batch_keys=non_tensor_select_keys
+        )
 
         if use_dynamic_bsz:
-            max_token_len = data.meta_info["max_token_len"] * self.ulysses_sequence_parallel_size
-            micro_batches, batch_idx_list = prepare_dynamic_batch(data, max_token_len=max_token_len)
+            max_token_len = (
+                data.meta_info["max_token_len"] * self.ulysses_sequence_parallel_size
+            )
+            micro_batches, batch_idx_list = prepare_dynamic_batch(
+                data, max_token_len=max_token_len
+            )
         else:
             micro_batches = data.split(micro_batch_size)
 
@@ -771,7 +1339,9 @@ class DataParallelPPOActor(BasePPOActor):
             model_inputs = {**micro_batch.batch, **micro_batch.non_tensor_batch}
             with torch.no_grad():
                 entropy, log_probs = self._forward_micro_batch(
-                    model_inputs, temperature=temperature, calculate_entropy=calculate_entropy
+                    model_inputs,
+                    temperature=temperature,
+                    calculate_entropy=calculate_entropy,
                 )
             log_probs_lst.append(log_probs)
             if calculate_entropy:
@@ -794,7 +1364,9 @@ class DataParallelPPOActor(BasePPOActor):
         # make sure we are in training mode
         self.actor_module.train()
 
-        temperature = data.meta_info["temperature"]  # temperature must be in the data.meta_info to avoid silent error
+        temperature = data.meta_info[
+            "temperature"
+        ]  # temperature must be in the data.meta_info to avoid silent error
 
         select_keys = [
             "responses",
@@ -816,9 +1388,13 @@ class DataParallelPPOActor(BasePPOActor):
             select_keys.append("rollout_log_probs")
 
         has_multi_modal_inputs = "multi_modal_inputs" in data.non_tensor_batch.keys()
-        non_tensor_select_keys = ["multi_modal_inputs"] if has_multi_modal_inputs else []
+        non_tensor_select_keys = (
+            ["multi_modal_inputs"] if has_multi_modal_inputs else []
+        )
 
-        data = data.select(batch_keys=select_keys, non_tensor_batch_keys=non_tensor_select_keys)
+        data = data.select(
+            batch_keys=select_keys, non_tensor_batch_keys=non_tensor_select_keys
+        )
 
         # Split to make minibatch iterator for updating the actor
         # See PPO paper for details. https://arxiv.org/abs/1707.06347
@@ -841,19 +1417,34 @@ class DataParallelPPOActor(BasePPOActor):
         }
         metrics.update(self._static_actor_metrics)
         model_config = getattr(self.config, "model_config", None)
-        is_adalora = model_config is not None and model_config.get("peft_type", "lora") == "adalora"
+        is_adalora = (
+            model_config is not None
+            and model_config.get("peft_type", "lora") == "adalora"
+        )
         is_gradient_probe = self._gradient_probe_collector is not None
-        adalora_orth_reg_weight = float(model_config.get("adalora_orth_reg_weight", 0.0)) if is_adalora else 0.0
+        adalora_orth_reg_weight = (
+            float(model_config.get("adalora_orth_reg_weight", 0.0))
+            if is_adalora
+            else 0.0
+        )
         for _ in range(self.config.ppo_epochs):
             for batch_idx, mini_batch in enumerate(mini_batches):
                 if self.config.use_dynamic_bsz:
-                    max_token_len = self.config.ppo_max_token_len_per_gpu * self.ulysses_sequence_parallel_size
-                    micro_batches, _ = prepare_dynamic_batch(mini_batch, max_token_len=max_token_len)
+                    max_token_len = (
+                        self.config.ppo_max_token_len_per_gpu
+                        * self.ulysses_sequence_parallel_size
+                    )
+                    micro_batches, _ = prepare_dynamic_batch(
+                        mini_batch, max_token_len=max_token_len
+                    )
                 else:
                     self.gradient_accumulation = (
-                        self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size_per_gpu
+                        self.config.ppo_mini_batch_size
+                        // self.config.ppo_micro_batch_size_per_gpu
                     )
-                    micro_batches = mini_batch.split(self.config.ppo_micro_batch_size_per_gpu)
+                    micro_batches = mini_batch.split(
+                        self.config.ppo_micro_batch_size_per_gpu
+                    )
 
                 self.actor_optimizer.zero_grad()
 
@@ -873,10 +1464,14 @@ class DataParallelPPOActor(BasePPOActor):
                     entropy_coeff = self.config.entropy_coeff
                     loss_agg_mode = self.config.loss_agg_mode
 
-                    calculate_entropy = self.config.calculate_entropy or (entropy_coeff != 0)
+                    calculate_entropy = self.config.calculate_entropy or (
+                        entropy_coeff != 0
+                    )
 
                     if self.config.use_dynamic_bsz:
-                        loss_scale_factor = response_mask.shape[0] / self.config.ppo_mini_batch_size
+                        loss_scale_factor = (
+                            response_mask.shape[0] / self.config.ppo_mini_batch_size
+                        )
                     else:
                         loss_scale_factor = 1 / self.gradient_accumulation
 
@@ -889,7 +1484,10 @@ class DataParallelPPOActor(BasePPOActor):
                     )
 
                     # for fully_async_policy recipe
-                    if hasattr(self.config, "use_rollout_log_probs") and self.config.use_rollout_log_probs:
+                    if (
+                        hasattr(self.config, "use_rollout_log_probs")
+                        and self.config.use_rollout_log_probs
+                    ):
                         old_log_prob = model_inputs["old_log_probs"]
                     else:
                         if on_policy:
@@ -925,19 +1523,29 @@ class DataParallelPPOActor(BasePPOActor):
                     if loss_mode != "bypass_mode" and rollout_log_prob is not None:
                         # Compute metrics using CURRENT policy π_θ vs π_rollout
                         # Tracks evolving off-policy gap as π_θ updates during mini-batch training
-                        from verl.trainer.ppo.rollout_corr_helper import compute_rollout_corr_metrics_from_logprobs
+                        from verl.trainer.ppo.rollout_corr_helper import (
+                            compute_rollout_corr_metrics_from_logprobs,
+                        )
 
-                        rollout_corr_metrics = compute_rollout_corr_metrics_from_logprobs(
-                            log_prob=log_prob,
-                            rollout_log_prob=rollout_log_prob,
-                            response_mask=response_mask,
+                        rollout_corr_metrics = (
+                            compute_rollout_corr_metrics_from_logprobs(
+                                log_prob=log_prob,
+                                rollout_log_prob=rollout_log_prob,
+                                response_mask=response_mask,
+                            )
                         )
                         micro_batch_metrics.update(rollout_corr_metrics)
 
                     policy_loss = pg_loss
                     if calculate_entropy and entropy is not None:
-                        entropy_agg = agg_loss(loss_mat=entropy, loss_mask=response_mask, loss_agg_mode=loss_agg_mode)
-                        micro_batch_metrics["actor/entropy"] = entropy_agg.detach().item()
+                        entropy_agg = agg_loss(
+                            loss_mat=entropy,
+                            loss_mask=response_mask,
+                            loss_agg_mode=loss_agg_mode,
+                        )
+                        micro_batch_metrics["actor/entropy"] = (
+                            entropy_agg.detach().item()
+                        )
                         if entropy_coeff != 0:
                             policy_loss -= entropy_agg * entropy_coeff
 
@@ -945,12 +1553,20 @@ class DataParallelPPOActor(BasePPOActor):
                         ref_log_prob = model_inputs["ref_log_prob"]
                         # compute kl loss
                         kld = kl_penalty(
-                            logprob=log_prob, ref_logprob=ref_log_prob, kl_penalty=self.config.kl_loss_type
+                            logprob=log_prob,
+                            ref_logprob=ref_log_prob,
+                            kl_penalty=self.config.kl_loss_type,
                         )
-                        kl_loss = agg_loss(loss_mat=kld, loss_mask=response_mask, loss_agg_mode=loss_agg_mode)
+                        kl_loss = agg_loss(
+                            loss_mat=kld,
+                            loss_mask=response_mask,
+                            loss_agg_mode=loss_agg_mode,
+                        )
 
                         policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
-                        metrics["actor/kl_loss"] += kl_loss.detach().item() * loss_scale_factor
+                        metrics["actor/kl_loss"] += (
+                            kl_loss.detach().item() * loss_scale_factor
+                        )
                         micro_batch_metrics["actor/kl_coef"] = self.config.kl_loss_coef
 
                     if adalora_orth_reg_weight > 0:
@@ -960,12 +1576,23 @@ class DataParallelPPOActor(BasePPOActor):
                                 "PEFT AdaLoRA official orthogonal loss was not returned by model forward"
                             )
                         if not torch.isfinite(orth_loss):
-                            raise FloatingPointError(f"AdaLoRA orthogonal loss is non-finite: {orth_loss.detach()}")
-                        policy_loss = policy_loss + orth_loss.to(dtype=policy_loss.dtype)
+                            raise FloatingPointError(
+                                f"AdaLoRA orthogonal loss is non-finite: {orth_loss.detach()}"
+                            )
+                        policy_loss = policy_loss + orth_loss.to(
+                            dtype=policy_loss.dtype
+                        )
                         orthogonal_regularization = orth_loss / adalora_orth_reg_weight
-                        adalora_regularization_sum += orthogonal_regularization.detach().item() * loss_scale_factor
-                        adalora_orthogonal_loss_sum += orth_loss.detach().abs().item() * loss_scale_factor
-                        adalora_pg_abs_sum += pg_loss.detach().abs().item() * loss_scale_factor
+                        adalora_regularization_sum += (
+                            orthogonal_regularization.detach().item()
+                            * loss_scale_factor
+                        )
+                        adalora_orthogonal_loss_sum += (
+                            orth_loss.detach().abs().item() * loss_scale_factor
+                        )
+                        adalora_pg_abs_sum += (
+                            pg_loss.detach().abs().item() * loss_scale_factor
+                        )
                         adalora_loss_weight_sum += loss_scale_factor
 
                     biso_raw_l2_coef = float(self.config.get("biso_raw_l2_coef", 0.0))
@@ -974,8 +1601,12 @@ class DataParallelPPOActor(BasePPOActor):
                         if biso_raw_l2 is not None:
                             biso_raw_l2_loss = biso_raw_l2 * biso_raw_l2_coef
                             policy_loss = policy_loss + biso_raw_l2_loss
-                            micro_batch_metrics["actor/biso_raw_l2"] = biso_raw_l2.detach().item()
-                            micro_batch_metrics["actor/biso_raw_l2_loss"] = biso_raw_l2_loss.detach().item()
+                            micro_batch_metrics["actor/biso_raw_l2"] = (
+                                biso_raw_l2.detach().item()
+                            )
+                            micro_batch_metrics["actor/biso_raw_l2_loss"] = (
+                                biso_raw_l2_loss.detach().item()
+                            )
 
                     if self.config.use_dynamic_bsz:
                         # relative to the dynamic bsz
@@ -987,7 +1618,9 @@ class DataParallelPPOActor(BasePPOActor):
                     else:
                         loss.backward()
 
-                    metrics["actor/pg_loss"] += pg_loss.detach().item() * loss_scale_factor
+                    metrics["actor/pg_loss"] += (
+                        pg_loss.detach().item() * loss_scale_factor
+                    )
                     append_to_dict(metrics, micro_batch_metrics)
 
                 probe_metrics = {}
@@ -1023,5 +1656,7 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_optimizer.zero_grad()
         if is_gradient_probe:
             trainer_step = int(data.meta_info.get("global_steps", 0))
-            metrics.update(self._gradient_probe_collector.finish_trainer_step(trainer_step))
+            metrics.update(
+                self._gradient_probe_collector.finish_trainer_step(trainer_step)
+            )
         return metrics

@@ -22,6 +22,8 @@
 tina_run/datasets/
 runs/
 data/
+!verl/trainer/config/data/
+!verl/trainer/config/data/legacy_data.yaml
 evaluation/
 **/*.safetensors
 **/*.bin

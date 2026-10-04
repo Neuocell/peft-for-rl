@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "status": "measured_from_completed_artifacts_before_seed43_evaluation_results",
+  "created_at": "2026-10-03T22:56:54+08:00",
+  "scope": "Measured compute-cost and claim-boundary audit for the P2 source used by Phase-1 I8/I16/I32. This artifact does not change or authorize any active run, gate, baseline, or controller action.",
+  "source_probe": {
+    "run_name": "phase05_hybrid_shared_rollout_d64c32a16_r32_seed42_v3",
+    "hardware": "4 GPUs on the same server class used for Phase-1 training",
+    "log": {
+      "path": "runs/phase0-gradient-diagnostics-v1/logs/verl/phase05_hybrid_shared_rollout_d64c32a16_r32_seed42_v3.log",
+      "sha256": "1bb78e162fb69b2a85766b5caf3d019a561b4234db18a605c9f3673ec29f18ed",
+      "created_at": "2026-09-30T21:39:04.159397308+08:00"
+    },
+    "summary": {
+      "path": "runs/phase0-gradient-diagnostics-v1/analysis/phase05_hybrid_shared_rollout_d64c32a16_r32_seed42_v3/probe_summary.json",
+      "sha256": "f1bc8c3fc23b56d4853de84756bf7e6090136e7087f7fe0cf044e0ee8b6ce1bb",
+      "created_at": "2026-10-01T02:33:45.102299834+08:00"
+    },
+    "configuration": {
+      "raw_prompt_groups": 208,
+      "raw_rollouts": 1664,
+      "accepted_discovery_prompts": 64,
+      "accepted_calibration_prompts": 32,
+      "accepted_audit_prompts": 16,
+      "accepted_unique_prompts": 112,
+      "responses_per_prompt": 8,
+      "accepted_prompt_rollouts": 896,
+      "positive_rollouts": 595,
+      "crossfit_splits": 3,
+      "candidate_rank": 32,
+      "sketch_width": 40
+    }
+  },
+  "measured_probe_timing": {
+    "wall_seconds_log_creation_to_summary_write": 17680.942902526,
+    "wall_hours": 4.911372,
+    "four_gpu_hours": 19.645492,
+    "logged_steps": 13,
+    "sum_step_seconds": 17541.454618981,
+    "sum_step_hours": 4.872626,
+    "mean_step_seconds": 1349.342663,
+    "min_step_seconds": 364.473538,
+    "max_step_seconds": 2453.348854,
+    "sum_generation_seconds": 1552.975403867,
+    "sum_generation_hours": 0.431382,
+    "sum_full_gradient_probe_backward_seconds": 15215.214089774,
+    "sum_full_gradient_probe_backward_hours": 4.226449,
+    "unlogged_startup_and_finalize_seconds": 139.488283545,
+    "interpretation": "The wall interval is corroborated by the 13 logged step timings. Full-gradient probe backward dominates the measured cost; this is not primarily an idle-file or postprocessing interval."
+  },
+  "reference_i8_training": {
+    "run_name": "phase1_i8_uniform_r32_b64m16n8_step50_seed42_v3",
+    "log_path": "runs/phase1-signal-random-v1/logs/verl/phase1_i8_uniform_r32_b64m16n8_step50_seed42_v3.log",
+    "log_sha256": "d5b8a0eecefd673cbe36a75915c447d66fc6821ec72a2aa23db32a1188285bb7",
+    "steps": 50,
+    "sum_step_seconds": 25991.462512016,
+    "sum_step_hours": 7.219851,
+    "four_gpu_hours": 28.879403
+  },
+  "cost_comparison": {
+    "probe_as_percent_of_one_i8_50_step_training": 68.026183,
+    "probe_wall_time_equivalent_at_i8_mean_step_rate": 34.013091,
+    "one_seed_probe_plus_i8_training_hours_before_evaluation": 12.131223,
+    "two_seed_i8_training_hours_without_probe": 14.439701,
+    "two_seed_probe_plus_i8_training_hours_before_evaluation": 19.351074,
+    "probe_as_percent_of_two_i8_trainings": 34.013091,
+    "amortized_probe_hours_per_seed_for_two_training_seeds": 2.455686,
+    "reuse_policy": "The fixed P2 is reused across I8/I16/I32 and all training seeds in this model/task setting. The measured cost is paid once for this setting, not once per Phase-1 run.",
+    "portability_policy": "A new model or task requires a new probe unless an independently validated transfer protocol is specified; the current fixed P2 cannot be treated as zero-cost universal metadata."
+  },
+  "measurement_limits": [
+    "This is the measured cost of the current shared Phase-0.5 pipeline, not a proof that an optimized P2-only implementation cannot be faster.",
+    "The pipeline jointly produced multiple diagnostics/candidates, although generation and full-gradient backward dominate the measured time and are shared by P2.",
+    "Evaluation wall time is excluded from both sides of the training-side percentages; identical fixed evaluation should be reported separately for every method.",
+    "Wall-time-equivalent steps are descriptive and do not imply that 34 additional standard-LoRA steps are statistically or optimization-wise equivalent to the probe."
+  ],
+  "paper_reporting_policy": {
+    "required": [
+      "Report the 4.911-hour probe wall time and approximately 19.65 four-GPU-hours separately from I8 training.",
+      "Report method training wall/GPU-hours and complete pipeline wall/GPU-hours, with the one-time probe amortization rule stated explicitly.",
+      "Label the planned 50-step I8-versus-standard-LoRA comparison as equal training steps and matched training protocol, not equal total compute.",
+      "For cross-model or cross-task results, charge a newly measured probe cost to each new setting unless the same probe is legitimately shared."
+    ],
+    "forbidden_without_a_separate_compute_matched_experiment": [
+      "I8 is more compute efficient than standard LoRA.",
+      "I8 reaches the result with equal total compute.",
+      "The P2 initialization is free or negligible.",
+      "The measured probe cost can be omitted because it is amortized across two seeds."
+    ]
+  },
+  "execution_policy": {
+    "active_scope_change": false,
+    "automatic_launch": false,
+    "no_new_run_authorized": true,
+    "compute_matched_extension": "Not authorized by this audit. The current paper plan may report equal-step accuracy and full measured cost while making no compute-efficiency claim."
+  }
+}

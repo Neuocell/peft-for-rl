@@ -6,11 +6,30 @@ from __future__ import annotations
 import argparse
 import json
 import math
+from collections import defaultdict
 from pathlib import Path
 
 import torch
 from safetensors import safe_open
 from safetensors.torch import save_file
+
+
+def _module_family(name: str) -> str:
+    return name.rsplit(".", 1)[-1]
+
+
+def _layer_index(name: str) -> int:
+    parts = name.split(".")
+    return int(parts[parts.index("layers") + 1])
+
+
+def _layer_segment(index: int, maximum: int) -> str:
+    third = (maximum + 1) / 3
+    if index < third:
+        return "low"
+    if index < 2 * third:
+        return "middle"
+    return "top"
 
 
 def build_gradient_probe_uniform_allocation(
@@ -89,6 +108,30 @@ def build_gradient_probe_uniform_allocation(
         "constant_scaling": scaling,
         "subspace_path": str(subspace_path),
     }
+    family_ranks: dict[str, list[int]] = defaultdict(list)
+    segment_ranks: dict[str, list[int]] = defaultdict(list)
+    maximum_layer = max(_layer_index(name) for name in ranks)
+    for name, rank in ranks.items():
+        family_ranks[_module_family(name)].append(rank)
+        segment_ranks[_layer_segment(_layer_index(name), maximum_layer)].append(rank)
+    structure = {
+        "active_rank_mean": sum(ranks.values()) / len(ranks),
+        "active_rank_min": min(ranks.values()),
+        "active_rank_max": max(ranks.values()),
+        "rank_by_family": {
+            key: sum(values) / len(values)
+            for key, values in sorted(family_ranks.items())
+        },
+        "rank_by_layer_segment": {
+            key: sum(values) / len(values)
+            for key, values in sorted(segment_ranks.items())
+        },
+        # Legacy energy-probe artifacts do not retain per-atom F/U scores, so
+        # capture cannot be reconstructed after truncating the saved basis.
+        "calibration_energy_capture": 0.0,
+        "u_score_capture": 0.0,
+        "capture_metrics_available": False,
+    }
     allocation = {
         **rank_map,
         "source_artifact": str(artifact_dir.resolve()),
@@ -98,6 +141,7 @@ def build_gradient_probe_uniform_allocation(
         "active_rank_min": uniform_rank,
         "active_rank_max": uniform_rank,
         "orthogonality_error_max": maximum_orthogonality_error,
+        "structure": structure,
         "modules": module_records,
     }
     (output_dir / "rank_map.json").write_text(

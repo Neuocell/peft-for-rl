@@ -1,0 +1,84 @@
+{
+  "baseline_checkpoint": "phase1_i0_uniform_r32_b64m16n8_step50_seed42_v3_fullbench_32768_seed42",
+  "benchmarks": [
+    {
+      "baseline_avg_at_k": 0.253125,
+      "benchmark": "aime24",
+      "candidate_avg_at_k": 0.278125,
+      "ci95_high": 0.08125,
+      "ci95_low": -0.030208333333333334,
+      "delta_avg_at_k": 0.025000000000000022,
+      "num_problems": 30,
+      "num_samples": 960,
+      "probability_delta_gt_zero": 0.82075
+    },
+    {
+      "baseline_avg_at_k": 0.2125,
+      "benchmark": "aime25",
+      "candidate_avg_at_k": 0.225,
+      "ci95_high": 0.058333333333333334,
+      "ci95_low": -0.01875,
+      "delta_avg_at_k": 0.012500000000000011,
+      "num_problems": 30,
+      "num_samples": 960,
+      "probability_delta_gt_zero": 0.6857
+    },
+    {
+      "baseline_avg_at_k": 0.58984375,
+      "benchmark": "amc23",
+      "candidate_avg_at_k": 0.69921875,
+      "ci95_high": 0.15859375,
+      "ci95_low": 0.06326171875000001,
+      "delta_avg_at_k": 0.109375,
+      "num_problems": 40,
+      "num_samples": 1280,
+      "probability_delta_gt_zero": 1.0
+    },
+    {
+      "baseline_avg_at_k": 0.08854166666666667,
+      "benchmark": "hmmt_feb",
+      "candidate_avg_at_k": 0.09791666666666667,
+      "ci95_high": 0.03854166666666667,
+      "ci95_low": -0.013541666666666667,
+      "delta_avg_at_k": 0.009374999999999994,
+      "num_problems": 30,
+      "num_samples": 960,
+      "probability_delta_gt_zero": 0.75035
+    },
+    {
+      "baseline_avg_at_k": 0.632,
+      "benchmark": "math500",
+      "candidate_avg_at_k": 0.6945,
+      "ci95_high": 0.082,
+      "ci95_low": 0.0435,
+      "delta_avg_at_k": 0.0625,
+      "num_problems": 500,
+      "num_samples": 2000,
+      "probability_delta_gt_zero": 1.0
+    },
+    {
+      "baseline_avg_at_k": 0.20496323529411764,
+      "benchmark": "minerva",
+      "candidate_avg_at_k": 0.20220588235294118,
+      "ci95_high": 0.01838235294117647,
+      "ci95_low": -0.02389705882352941,
+      "delta_avg_at_k": -0.002757352941176461,
+      "num_problems": 272,
+      "num_samples": 1088,
+      "probability_delta_gt_zero": 0.3917
+    }
+  ],
+  "bootstrap_samples": 10000,
+  "bootstrap_seed": 42,
+  "candidate_checkpoint": "phase1_i8_uniform_r32_b64m16n8_step50_seed42_v3_fullbench_32768_seed42",
+  "ci95_high": 0.051859048202614375,
+  "ci95_low": 0.020846982230392157,
+  "interpretation": "single_seed_screen_only",
+  "macro_delta_avg_at_k": 0.035998774509803926,
+  "method": "matched_problem_cluster_bootstrap_v1",
+  "num_problems": 902,
+  "num_samples": 7248,
+  "probability_delta_gt_zero": 1.0,
+  "record_keys_exactly_matched": true,
+  "schema_version": 1
+}

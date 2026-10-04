@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "status": "active_experiment_not_submission_ready",
+  "created_at": "2026-10-04T01:18:08+08:00",
+  "scope": "Evidence-readiness snapshot for turning the current local-gradient-subspace result into a defensible COLING submission. This artifact separates the active fixed-model/task confirmation from paper-baseline sufficiency and broader generalization; it does not authorize any run.",
+  "active_claim_boundary": {
+    "current": "Seed 42 provides a verified positive single-training-seed screen for I8 versus the matched random-orthogonal I0 baseline. Seed-43 confirmation is incomplete, so no replication claim is currently available.",
+    "maximum_if_active_two_seed_gate_passes": "In this fixed 1.5B math-RL setting, the I8 initialization improvement over the matched random-orthogonal baseline replicated on one held-out training seed and was positive on both tested seeds.",
+    "still_disallowed_after_two_seed_gate": [
+      "Stable across training seeds.",
+      "Robust to initialization or random-complement seed.",
+      "Superior to standard LoRA before the protocol-matched comparison passes.",
+      "Broad generalization across models, tasks, domains, or datasets.",
+      "The original three-seed preregistered gate passed."
+    ]
+  },
+  "authoritative_policy": {
+    "two_seed_scope": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_scope_amendment.json",
+      "sha256": "92d44f339e0129c81c43fd691395c3d87399a17c7fbbe9b42f34149fcf2cc65d"
+    },
+    "two_seed_gate_spec": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_final_gate_execution_spec.json",
+      "sha256": "7c146c48bfb35759386e32eda2761b20a003fae04f430bceca57c548f462596d"
+    },
+    "paper_baseline_amendment": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_paper_baseline_amendment.json",
+      "sha256": "02978fcdc0f6ce43682440582deb0ff427fdfeda189d457ad45cf31f13a3931b"
+    },
+    "standard_lora_init_correction": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_standard_lora_init_seed_correction.json",
+      "sha256": "2d66fb8756eae2f0bb984a968a137b01fcf46070c1ad3e4136aa73221b17d28a"
+    },
+    "fixed_complement_boundary": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_fixed_complement_seed_stability_audit.json",
+      "sha256": "fd6867bda07fc41e366ad6e0feec76157f65e40a018d7577af81188a6be4e4fb"
+    },
+    "probe_compute_cost": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_p2_probe_compute_cost_audit.json",
+      "sha256": "7445c35faf0686dd345d760ad9cc8dc3b17313776deedcefaa70efb7a944fb33"
+    }
+  },
+  "evidence_matrix": [
+    {
+      "id": "seed42_i0_i8_fixed_protocol",
+      "role": "Selection-seed efficacy and matched-I0 comparison.",
+      "status": "complete_verified",
+      "evidence": [
+        {
+          "path": "runs/phase1-signal-random-v1/analysis/verification/phase1_i0_uniform_r32_b64m16n8_step50_seed42_v3_postverify.json",
+          "sha256": "0ecb6922f59e7487e6d1ee3bacfc1bcaf8164ad1a76d8fe7824b73ac83fd33d4",
+          "records_sha256": "7ea31a89f04ab52e3044f079e3f191e402639b52667fa85cf7b88b79236fd9ad"
+        },
+        {
+          "path": "runs/phase1-signal-random-v1/analysis/verification/phase1_i8_uniform_r32_b64m16n8_step50_seed42_v3_postverify.json",
+          "sha256": "46fdc7b0108e2decd26951904cfa59e331e2571fd7c8f955e8095dfb58205e2f",
+          "records_sha256": "9e1c31b6f4aace7408362fbc612b1ad6f22be8291e7b73c89f270f72b97892b6"
+        }
+      ],
+      "interpretation": "Verified positive single-training-seed screen only; seed 42 participated in candidate selection."
+    },
+    {
+      "id": "seed43_i0_baseline",
+      "role": "Held-out training-seed matched baseline.",
+      "status": "training_complete_evaluation_last_audited_active",
+      "evidence": [
+        {
+          "path": "runs/phase1-signal-random-v1/analysis/phase1_seed43_i0_step50_training_completion_audit.json",
+          "sha256": "0fcfd63d19f116fbf1036a18f4a843a350c40cc2fcbef1290bc5617abf3ddb90",
+          "audit_status": "training_complete_evaluation_active",
+          "observed_at": "2026-10-04T00:45:14+08:00"
+        }
+      ],
+      "missing_acceptance_evidence": "A verified seed-43 I0 postverification artifact binding 7,248 records, summary, adapter, contract, four shards, and four manifests."
+    },
+    {
+      "id": "seed43_i8_candidate",
+      "role": "Sole held-out training-seed replication of the selected mixed candidate.",
+      "status": "required_not_started",
+      "release_condition": "Start only after seed-43 I0 postverification and storage review, using the guarded next-card entry; do not start seed 44."
+    },
+    {
+      "id": "two_seed_fixed_setting_gate",
+      "role": "Decision for the strongest currently authorized fixed-model/task claim.",
+      "status": "not_computable_and_implementation_deferred",
+      "missing_inputs": [
+        "Verified seed-43 I0 records and postverification artifact.",
+        "Verified seed-43 I8 records and postverification artifact."
+      ],
+      "implementation_boundary": {
+        "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_analyzer_readiness_audit.json",
+        "sha256": "224b2c2ce9a241c97bc40f7897ce29bbd97183fdd573fd9cf62f28f66e0199c4",
+        "rule": "Implement and test the dedicated analyzer only after the active controller is stopped and all four method/seed inputs are immutable and independently verified."
+      }
+    },
+    {
+      "id": "protocol_matched_standard_lora_r32",
+      "role": "Mandatory external PEFT baseline for any superiority-over-standard-LoRA paper claim.",
+      "status": "conditionally_required_not_started",
+      "required_runs": "Training seeds 42 and 43, each with 50-step matched training and the fixed six-benchmark evaluation.",
+      "activation": "Only if the I8 two-seed fixed-setting gate returns fixed_model_task_replication.",
+      "estimated_wall_time_hours": "approximately 19-21 serial hours",
+      "current_output_inventory": "No evaluation-directory name matching standard LoRA rank 32 was found under the active runtime output root at this snapshot."
+    },
+    {
+      "id": "same_snapshot_base_model_reference",
+      "role": "Absolute no-RL reference; not a paired training-seed method.",
+      "status": "conditionally_required_not_started",
+      "required_runs": "One fixed 7,248-record six-benchmark evaluation with no adapter.",
+      "estimated_wall_time_hours": "approximately 2.3-2.9",
+      "current_output_inventory": "No evaluation-directory name matching a same-snapshot base-model-only run was found under the active runtime output root at this snapshot."
+    },
+    {
+      "id": "random_complement_initialization_robustness",
+      "role": "Determine whether the I8 effect survives independent random-complement draws.",
+      "status": "not_covered_future_extension",
+      "current_limitation": "Training seeds 42 and 43 reuse the same complement_seed=42 allocation bytes, so they vary training trajectory but not initialization draw.",
+      "priority": "After the active gate and mandatory matched standard-LoRA baseline."
+    },
+    {
+      "id": "cross_task_generalization",
+      "role": "Support claims beyond the current math-RL task and data distribution.",
+      "status": "missing_future_extension",
+      "minimum_evidence": "A prospectively fixed second task/data setting with matched I0/I8/standard-LoRA protocols and independent verification."
+    },
+    {
+      "id": "cross_model_generalization",
+      "role": "Support claims beyond DeepSeek-R1-Distill-Qwen-1.5B.",
+      "status": "missing_future_extension",
+      "minimum_evidence": "A prospectively fixed second base-model family or scale with a newly paid and reported probe cost and matched baselines."
+    },
+    {
+      "id": "compute_and_resource_accounting",
+      "role": "Prevent an unsupported efficiency claim.",
+      "status": "probe_and_seed42_i8_measured_comparative_accounting_incomplete",
+      "known": "The P2 probe costs 4.911 hours on four GPUs and is 68.0% of one measured seed-42 I8 training wall time; probe cost must be reported separately.",
+      "missing": "Matched standard-LoRA and complete per-method training/evaluation wall time, peak memory, and parameter-count table.",
+      "disallowed_claim": "I8 is more compute efficient than standard LoRA."
+    }
+  ],
+  "operational_readiness": {
+    "seed43_i8_storage": {
+      "status": "not_ready",
+      "inventory": {
+        "path": "runs/phase1-signal-random-v1/analysis/phase1_seed43_i8_storage_readiness_inventory.json",
+        "sha256": "8bb0679409e9781ad115fc20034d56b5ec2cd81a88310021a2f93a7e2489475a"
+      },
+      "available_bytes_at_inventory": 8840220672,
+      "guarded_start_minimum_bytes": 16500000000,
+      "rule": "After I0 postverification and explicit retention/cache decisions, re-run the guarded preflight and do not start I8 below the minimum. The inventory authorizes no deletion."
+    }
+  },
+  "ordered_next_decisions": [
+    "Finish and independently postverify seed-43 I0; generate the non-destructive step-25 inventory before any storage deletion decision.",
+    "Run only seed-43 I8 on the next sufficiently long card, then independently postverify it and stop the controller before seed 44.",
+    "Implement the frozen two-seed analyzer and all required boundary/adversarial tests, then produce phase1_i0_vs_i8_two_seed_fixed_setting_gate.json.",
+    "If and only if the fixed-setting gate passes, implement and run matched standard-LoRA-r32 for seeds 42/43 and the same-snapshot base-model reference.",
+    "After the mandatory baseline table, prioritize independent complement-seed robustness; add a second task and second model before making broad generalization claims."
+  ],
+  "submission_readiness_decision": "not_ready",
+  "submission_blockers": [
+    "The held-out seed-43 I8 replication and two-seed final gate are incomplete.",
+    "The protocol-matched standard-LoRA-r32 baseline is absent.",
+    "The same-snapshot base-model reference is absent.",
+    "Initialization-draw robustness is untested.",
+    "Cross-task and cross-model evidence is absent."
+  ],
+  "automatic_launch_authorized": false,
+  "active_runtime_modified": false
+}

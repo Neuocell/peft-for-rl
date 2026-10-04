@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "status": "preregistered_conditional_plan",
+  "created_at": "2026-10-03T10:32:29+08:00",
+  "scope": "Matched paper baselines required after, and only after, I8 satisfies the Phase-1 primary and held-out claim gates.",
+  "launch_now": false,
+  "activation_condition": {
+    "source": "runs/phase1-signal-random-v1/analysis/phase1_heldout_claim_gate_preregistration.json",
+    "source_sha256": "07502ef7ff60070977ae03db4b884ae232fa13e5b34d531a621ace405fdbb55a",
+    "required_outcome": "stable_cross_seed_generalization"
+  },
+  "existing_historical_baselines": {
+    "usable_as_primary_matched_comparisons": false,
+    "reasons": [
+      "Existing standard LoRA uses rank 8 and dropout 0.05 rather than rank 32 and dropout 0.",
+      "Existing random-B rank-8 and original random-B runs use different rank, initialization, probe, and dropout protocols.",
+      "Historical runs are single training seed and were not generated inside the fixed Phase-1 provenance and paired-comparison chain."
+    ]
+  },
+  "required_baselines": {
+    "standard_lora_r32": {
+      "role": "Parameter-matched standard PEFT LoRA baseline.",
+      "training_seeds": [42, 43, 44],
+      "steps": 50,
+      "train_batch_size": 64,
+      "responses_per_prompt": 8,
+      "target_modules": "all-linear",
+      "expected_target_module_count": 196,
+      "rank": 32,
+      "alpha": 64,
+      "scaling": 2.0,
+      "dropout": 0.0,
+      "standard_initialization": "PEFT default LoRA initialization with B initialized to zero; record the exact PEFT version and initializer.",
+      "optimizer_and_rl_protocol": "Identical to Phase 1, including learning rate, clipping, minibatch size, data seed, rollout seed, and checkpoint cadence.",
+      "evaluation": "The fixed six-benchmark snapshot, evaluation seed 42, 7248 records, and identical generation parameters."
+    },
+    "base_model": {
+      "role": "No-RL reference on the same fixed evaluation snapshot.",
+      "training_runs": 0,
+      "evaluation_runs": 1,
+      "evaluation": "The fixed six-benchmark snapshot, evaluation seed 42, 7248 records, and identical generation parameters."
+    }
+  },
+  "required_comparisons": {
+    "i8_vs_standard_lora_r32": {
+      "per_seed": "Matched problem-cluster bootstrap for seeds 42, 43, and 44.",
+      "aggregate": "Training-seed by problem hierarchical bootstrap using the existing Phase-1 thresholds.",
+      "claim_rule": "I8 cannot be claimed to improve standard LoRA unless this comparison passes the existing three-seed primary gate and the held-out claim gates."
+    },
+    "i0_vs_standard_lora_r32": {
+      "per_seed": "Matched problem-cluster bootstrap for seeds 42, 43, and 44.",
+      "purpose": "Separate the effect of random orthogonal A initialization from the P2-plus-random mixture."
+    },
+    "all_methods_vs_base": {
+      "purpose": "Report absolute RL improvement or degradation without using the untrained base as a paired training-seed claim."
+    }
+  },
+  "secondary_if_compute_allows": {
+    "standard_lora_r8_same_protocol": "Run at least seed 42 with dropout 0 and the same snapshot to show the rank/parameter tradeoff; do not substitute the existing dropout-0.05 run."
+  },
+  "reporting_requirements": [
+    "Trainable and stored adapter parameter counts.",
+    "Peak GPU memory, training wall time, probe wall time, and evaluation wall time.",
+    "The 112-prompt P2 discovery/calibration/audit overhead reported separately from 50-step RL training.",
+    "Original and fixed 30-problem overlap-filtered results.",
+    "No historical baseline may be relabeled as protocol matched."
+  ],
+  "estimated_additional_wall_time": {
+    "standard_lora_r32_three_seeds_training_and_eval_hours": "approximately 29-31 serial hours under current measurements",
+    "base_model_eval_hours": "approximately 2.3-2.9 hours",
+    "note": "Do not spend this compute if I8 fails Phase 1 or either held-out claim gate."
+  },
+  "registration_state": {
+    "standard_lora_r32_result_artifacts_present": false,
+    "seed_43_or_44_phase1_result_artifacts_present": false
+  }
+}

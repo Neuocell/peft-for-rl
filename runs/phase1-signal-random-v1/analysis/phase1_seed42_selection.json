@@ -1,0 +1,43 @@
+{
+  "baseline_method": "I0",
+  "candidates": {
+    "I16": {
+      "eligible_for_selection": true,
+      "macro_delta_avg_at_k": -0.016664726307189542,
+      "probability_delta_gt_zero": 0.0133,
+      "screen_decision": "stop_single_seed",
+      "screen_reason": "seed-42 effect did not pass the preregistered multi-seed screen"
+    },
+    "I32": {
+      "eligible_for_selection": false,
+      "macro_delta_avg_at_k": 0.04631709558823529,
+      "probability_delta_gt_zero": 1.0,
+      "screen_decision": "advance_multiseed",
+      "screen_reason": "seed-42 effect and paired problem-bootstrap probability passed"
+    },
+    "I8": {
+      "eligible_for_selection": true,
+      "macro_delta_avg_at_k": 0.035998774509803926,
+      "probability_delta_gt_zero": 1.0,
+      "screen_decision": "advance_multiseed",
+      "screen_reason": "seed-42 effect and paired problem-bootstrap probability passed"
+    }
+  },
+  "decision": "advance_multiseed",
+  "eligible_methods": [
+    "I8",
+    "I16"
+  ],
+  "method": "phase1_seed42_mixed_candidate_selection_v1",
+  "reason": "best seed-42 mixed candidate passed the preregistered screen",
+  "schema_version": 1,
+  "selected_method": "I8",
+  "selection_metric": "macro_delta_avg_at_k",
+  "selection_seed": 42,
+  "signal_only_control": "I32",
+  "thresholds": {
+    "minimum_macro_delta_avg_at_k": 0.005,
+    "minimum_probability_delta_gt_zero": 0.9
+  },
+  "tie_break": "smaller signal direction count"
+}

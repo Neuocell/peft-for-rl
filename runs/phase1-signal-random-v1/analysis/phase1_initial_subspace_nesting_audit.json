@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "status": "audited_before_seed43_evaluation_results",
+  "created_at": "2026-10-03T23:12:10+08:00",
+  "scope": "Read-only design audit of the fixed Phase-1 I0/I8/I16/I32 initialization tensors. This artifact does not change or authorize any active training, evaluation, allocation, gate, or controller action.",
+  "authoritative_evidence": {
+    "preparation": {
+      "path": "runs/phase1-signal-random-v1/analysis/training_allocations/phase1_training_preparation.json",
+      "sha256": "d60fc87775a5b1a0e1d27f922b6c4f2b100f0e8614faeb261afaf2c1c88dd386",
+      "rank": 32,
+      "module_count": 196,
+      "complement_seed": 42
+    },
+    "constructor": {
+      "path": "verl/utils/full_gradient_rl_probe.py",
+      "sha256": "54b6142200bff55fb41ad7a20fcb3a9f35f669d0571ce9bfcf8c1072af6d30d6",
+      "function": "signal_random_hybrid_basis"
+    },
+    "preparation_code": {
+      "path": "scripts/analysis/prepare_phase1_signal_random_artifacts.py",
+      "sha256": "fec360a1d9f664244518d036de7308be1b03fce5bd08511b5060a034faa572e8"
+    },
+    "allocations": {
+      "I0": {
+        "signal_directions": 0,
+        "random_directions": 32,
+        "path": "runs/phase1-signal-random-v1/analysis/training_allocations/I0_uniform_r32/subspaces.safetensors",
+        "sha256": "30e0a7eba1ff06b6798805c2feeb3eb21501c79ea53a71906889ea7051a2e276"
+      },
+      "I8": {
+        "signal_directions": 8,
+        "random_directions": 24,
+        "path": "runs/phase1-signal-random-v1/analysis/training_allocations/I8_uniform_r32/subspaces.safetensors",
+        "sha256": "63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135"
+      },
+      "I16": {
+        "signal_directions": 16,
+        "random_directions": 16,
+        "path": "runs/phase1-signal-random-v1/analysis/training_allocations/I16_uniform_r32/subspaces.safetensors",
+        "sha256": "9452bbe57076291a4f92b833277d2263b36c3d491091c5d9794680a22115ed35"
+      },
+      "I32": {
+        "signal_directions": 32,
+        "random_directions": 0,
+        "path": "runs/phase1-signal-random-v1/analysis/training_allocations/I32_uniform_r32/subspaces.safetensors",
+        "sha256": "a9e33ccadf14a0e6253ae22919fac86a4a812df6d4db27ee22a26ca852c4b9dc"
+      }
+    }
+  },
+  "construction_interpretation": {
+    "shared_draw": "For each module, every method resets the same stable per-module seed and draws the same 32-by-width Gaussian matrix before residualization.",
+    "span_rule": "For signal count s, the returned orthonormal basis spans the first s ordered P2 signal rows together with the first 32-s rows of the shared Gaussian draw.",
+    "pair_rule": "For s < t, the two rank-32 spaces therefore share s signal generators and 32-t random generators, giving an expected generic intersection dimension of 32-(t-s).",
+    "basis_row_caveat": "Residualization is repeated against each method's accepted prefix. Consequently, only the shared signal prefix is row-wise bit-identical; random-complement basis rows are generally rotated even where their generated subspace component is shared."
+  },
+  "audit_method": {
+    "principal_cosines": "For each module and method pair, compute the singular values of Q_a Q_b^T from the stored orthonormal row bases.",
+    "shared_dimension_threshold": "principal cosine >= 1 - 1e-5",
+    "projector_overlap": "sum(principal_cosine^2) / 32",
+    "execution": "CPU-only, torch float32, two CPU threads; no training log, checkpoint, GPU, evaluation output, or active process state was read."
+  },
+  "integrity_checks": {
+    "module_keys_identical": true,
+    "module_count": 196,
+    "orthogonality_error_max": {
+      "I0": 7.748603820800781e-07,
+      "I8": 8.344650268554688e-07,
+      "I16": 9.5367431640625e-07,
+      "I32": 9.5367431640625e-07
+    },
+    "signal_prefix_bitwise_equality": {
+      "I8_vs_I16_first_8": {
+        "equal_modules": 196,
+        "max_abs_diff": 0.0
+      },
+      "I8_vs_I32_first_8": {
+        "equal_modules": 196,
+        "max_abs_diff": 0.0
+      },
+      "I16_vs_I32_first_16": {
+        "equal_modules": 196,
+        "max_abs_diff": 0.0
+      }
+    }
+  },
+  "pairwise_results": {
+    "I0_vs_I8": {
+      "expected_shared_dimension": 24,
+      "observed_shared_dimension_min": 24,
+      "observed_shared_dimension_max": 24,
+      "shared_cosine_min": 0.999999463558197,
+      "first_nonshared_cosine_max": 0.17422056198120117,
+      "mean_projector_overlap": 0.7511965936543991
+    },
+    "I0_vs_I16": {
+      "expected_shared_dimension": 16,
+      "observed_shared_dimension_min": 16,
+      "observed_shared_dimension_max": 16,
+      "shared_cosine_min": 0.999999463558197,
+      "first_nonshared_cosine_max": 0.22532202303409576,
+      "mean_projector_overlap": 0.5046512609233662
+    },
+    "I0_vs_I32": {
+      "expected_shared_dimension": 0,
+      "observed_shared_dimension_min": 0,
+      "observed_shared_dimension_max": 0,
+      "first_nonshared_cosine_max": 0.31331828236579895,
+      "mean_projector_overlap": 0.01838636295917463
+    },
+    "I8_vs_I16": {
+      "expected_shared_dimension": 24,
+      "observed_shared_dimension_min": 24,
+      "observed_shared_dimension_max": 24,
+      "shared_cosine_min": 0.999998927116394,
+      "first_nonshared_cosine_max": 0.17511127889156342,
+      "mean_projector_overlap": 0.751168002887648
+    },
+    "I8_vs_I32": {
+      "expected_shared_dimension": 8,
+      "observed_shared_dimension_min": 8,
+      "observed_shared_dimension_max": 8,
+      "shared_cosine_min": 0.9999992251396179,
+      "first_nonshared_cosine_max": 0.2724978029727936,
+      "mean_projector_overlap": 0.2603781211132906
+    },
+    "I16_vs_I32": {
+      "expected_shared_dimension": 16,
+      "observed_shared_dimension_min": 16,
+      "observed_shared_dimension_max": 16,
+      "shared_cosine_min": 0.9999991059303284,
+      "first_nonshared_cosine_max": 0.2224578559398651,
+      "mean_projector_overlap": 0.5046606839311366
+    }
+  },
+  "finding": {
+    "design_claim": "The four allocations form a controlled signal-slot replacement sequence at the generator/span level. I8 differs from I0 in an eight-dimensional component while retaining an exactly 24-dimensional intersection in every module; I16 analogously replaces another eight-dimensional component relative to I8.",
+    "causal_value": "The strong matched intersections make the non-monotone seed-42 I0/I8/I16 outcome more specifically attributable to which input directions are available than to unrelated independent 32-dimensional random draws.",
+    "limits": "This is a design and geometry statement, not a performance result. It does not prove that the eight replaced signal directions caused the evaluation gain, that individual random basis rows were held fixed, or that the result generalizes to another complement draw, training seed, model, or task."
+  },
+  "relation_to_seed42_weight_geometry": {
+    "source_path": "runs/phase1-signal-random-v1/analysis/phase1_seed42_weight_update_geometry_diagnostic.json",
+    "source_sha256": "4d816f6f68ad36275430a8202c1823c838868349a0922efd877cd9495dd4c216",
+    "interpretation": "Despite the large prescribed initial intersections, the final full update-direction cosines reported by the source diagnostic are only 0.0145-0.0810. This is consistent with small input-subspace substitutions steering distinct finite-step on-policy paths, but remains single-seed post-hoc evidence rather than causal identification."
+  },
+  "claim_policy": {
+    "allowed": [
+      "Shared Gaussian complement draw before residualization.",
+      "Controlled signal-slot replacement at the generator/span level.",
+      "Exact per-module intersection dimensions at the stated numerical threshold.",
+      "Bitwise-identical shared signal prefixes."
+    ],
+    "disallowed": [
+      "All retained random-complement basis rows are bitwise identical across methods.",
+      "I8 is a literal row-wise replacement of eight rows of I0.",
+      "The nesting audit by itself establishes a causal evaluation benefit.",
+      "The nesting audit establishes robustness to initialization or complement seed."
+    ]
+  },
+  "execution_policy": {
+    "active_scope_change": false,
+    "automatic_launch": false,
+    "no_new_run_authorized": true,
+    "gate_unchanged": true
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "created_at": "2026-10-03T17:30:00+08:00",
+  "scope": "Post-hoc seed-42 I32 endpoint mechanism and overlap diagnostic; not a selection metric, not multi-seed evidence, and not authorization to train I32 on additional seeds.",
+  "inputs": {
+    "i0_records_sha256": "7ea31a89f04ab52e3044f079e3f191e402639b52667fa85cf7b88b79236fd9ad",
+    "i8_records_sha256": "9e1c31b6f4aace7408362fbc612b1ad6f22be8291e7b73c89f270f72b97892b6",
+    "i32_records_sha256": "304ecd812b6b7db853dda2235d43ac473e2b3a6be66167e7d1653ae0342357bc"
+  },
+  "matching": {
+    "record_keys_exactly_matched": true,
+    "matched_records": 7248,
+    "matched_problems": 902,
+    "benchmarks": [
+      "aime24",
+      "aime25",
+      "amc23",
+      "hmmt_feb",
+      "math500",
+      "minerva"
+    ]
+  },
+  "problem_level_vs_i0": {
+    "i8": {
+      "macro_delta_avg_at_k": 0.035998774509803926,
+      "positive_problems": 222,
+      "zero_problems": 567,
+      "negative_problems": 113,
+      "benchmark_balanced_positive_fraction": 0.29644934640522874,
+      "benchmark_balanced_negative_fraction": 0.17544934640522877
+    },
+    "i32": {
+      "macro_delta_avg_at_k": 0.046317095588235296,
+      "positive_problems": 239,
+      "zero_problems": 559,
+      "negative_problems": 104,
+      "benchmark_balanced_positive_fraction": 0.32189542483660133,
+      "benchmark_balanced_negative_fraction": 0.15016339869281045,
+      "per_benchmark": {
+        "aime24": {"mean_delta": 0.051041666666666666, "positive": 13, "zero": 11, "negative": 6},
+        "aime25": {"mean_delta": 0.022916666666666665, "positive": 7, "zero": 17, "negative": 6},
+        "amc23": {"mean_delta": 0.11484375, "positive": 25, "zero": 9, "negative": 6},
+        "hmmt_feb": {"mean_delta": 0.016666666666666666, "positive": 6, "zero": 20, "negative": 4},
+        "math500": {"mean_delta": 0.066, "positive": 150, "zero": 300, "negative": 50},
+        "minerva": {"mean_delta": 0.006433823529411764, "positive": 38, "zero": 202, "negative": 32}
+      }
+    },
+    "i32_minus_i8_macro_avg_at_k": 0.01031832107843137
+  },
+  "i8_i32_positive_problem_overlap": {
+    "both_positive": 163,
+    "i8_positive_i32_nonpositive": 59,
+    "i8_nonpositive_i32_positive": 76,
+    "both_nonpositive": 604,
+    "positive_set_jaccard": 0.5469798657718121
+  },
+  "sample_level_transitions_vs_i0": {
+    "i8": {
+      "correct_0_to_1": 745,
+      "correct_1_to_0": 438,
+      "net_correct_flips": 307,
+      "format_invalid_to_valid": 913,
+      "format_valid_to_invalid": 556,
+      "net_format_flips": 357
+    },
+    "i32": {
+      "correct_0_to_1": 819,
+      "correct_1_to_0": 446,
+      "net_correct_flips": 373,
+      "format_invalid_to_valid": 942,
+      "format_valid_to_invalid": 545,
+      "net_format_flips": 397
+    }
+  },
+  "format_conditioned_accuracy_delta_vs_i0": {
+    "i8": {
+      "overall_format_rate_delta": 0.04925496688741726,
+      "overall_accuracy_given_format_delta": 0.022262300125744983
+    },
+    "i32": {
+      "overall_format_rate_delta": 0.05477373068432667,
+      "overall_accuracy_given_format_delta": 0.029599575960905844,
+      "aime24": 0.0429767475870137,
+      "aime25": 0.009059354390836494,
+      "amc23": 0.04789361093410671,
+      "hmmt_feb": 0.014307836594036949,
+      "math500": 0.017329246096369433,
+      "minerva": 0.009605048558084361
+    }
+  },
+  "interpretation": [
+    "I32 has more improving problems, fewer degrading problems, and higher benchmark-balanced breadth than I8 on seed 42; its stronger macro result is not produced by only one benchmark or a handful of isolated problems.",
+    "Only 163 improving problems are shared, while 59 improve only under I8 and 76 improve only under I32. The 0.547 positive-set Jaccard shows that I32 is not merely an amplitude-scaled version of I8.",
+    "I32 improves both format validity and correctness conditional on valid format on all six benchmarks, so parsing alone does not explain the endpoint result.",
+    "The I8/I16/I32 pattern remains non-monotone in signal fraction and is compatible with basis-composition and finite-optimization-path interactions; this diagnostic does not identify a causal mechanism.",
+    "I32 was preregistered as an ineligible signal-only control. No post-hoc breadth or mechanism result may change the selected I8 candidate or authorize I32 seeds 43/44.",
+    "All findings are single-training-seed post-hoc diagnostics and cannot satisfy the stable-generalization or held-out claim gates."
+  ]
+}

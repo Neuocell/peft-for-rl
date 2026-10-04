@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "created_at": "2026-10-03T10:15:00+08:00",
+  "updated_at": "2026-10-03T10:26:33+08:00",
+  "scope": "Post-hoc train/evaluation overlap sensitivity for I8 versus I0 at training seed 42; not a candidate-selection metric, not a semantic decontamination guarantee, and not multi-seed evidence.",
+  "inputs": {
+    "train_parquet": "/data/peft-for-rl-runtime/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet",
+    "train_sha256": "8e3c9314db8b83c61ab62a3dc85e0a704dcc5f3a9d404d236943f719095ce82f",
+    "baseline_records_sha256": "7ea31a89f04ab52e3044f079e3f191e402639b52667fa85cf7b88b79236fd9ad",
+    "candidate_records_sha256": "9e1c31b6f4aace7408362fbc612b1ad6f22be8291e7b73c89f270f72b97892b6"
+  },
+  "population": {
+    "train_rows": 17917,
+    "train_unique_whitespace_normalized_problems": 17185,
+    "eval_unique_problems": 902,
+    "eval_samples": 7248
+  },
+  "matching_methods": {
+    "whitespace_normalized_exact": "Unicode NFKC, lowercase, strip, and collapse whitespace.",
+    "latex_layout_normalized_exact": "Whitespace-normalized exact matching after removing LaTeX layout-only tokens left, right, comma-space, negative-space, semicolon-space, colon-space, quad, qquad, dollar signs, and braces.",
+    "conservative_word_5gram": "Lowercase Unicode NFKC word/number tokens; flag a training problem when word 5-gram Jaccard is at least 0.8 or shorter-document containment is at least 0.9. This lexical rule can include related templates with different answers and is not guaranteed to contain every layout-normalized exact match.",
+    "conservative_union": "Union of latex_layout_normalized_exact and conservative_word_5gram. This is the most conservative exclusion set used in this artifact."
+  },
+  "overlap": {
+    "whitespace_normalized_exact": {
+      "count": 9,
+      "per_benchmark": {
+        "aime24": 0,
+        "aime25": 0,
+        "amc23": 5,
+        "hmmt_feb": 0,
+        "math500": 4,
+        "minerva": 0
+      },
+      "problem_keys": [
+        ["amc23", 3],
+        ["amc23", 13],
+        ["amc23", 17],
+        ["amc23", 27],
+        ["amc23", 28],
+        ["math500", 80],
+        ["math500", 276],
+        ["math500", 285],
+        ["math500", 412]
+      ]
+    },
+    "latex_layout_normalized_exact": {
+      "count": 13,
+      "per_benchmark": {
+        "aime24": 0,
+        "aime25": 0,
+        "amc23": 7,
+        "hmmt_feb": 0,
+        "math500": 6,
+        "minerva": 0
+      },
+      "all_gold_answers_match": true,
+      "problem_keys": [
+        ["amc23", 3],
+        ["amc23", 5],
+        ["amc23", 13],
+        ["amc23", 14],
+        ["amc23", 17],
+        ["amc23", 27],
+        ["amc23", 28],
+        ["math500", 80],
+        ["math500", 175],
+        ["math500", 276],
+        ["math500", 285],
+        ["math500", 292],
+        ["math500", 412]
+      ]
+    },
+    "conservative_word_5gram": {
+      "count": 29,
+      "per_benchmark": {
+        "aime24": 0,
+        "aime25": 0,
+        "amc23": 16,
+        "hmmt_feb": 0,
+        "math500": 13,
+        "minerva": 0
+      },
+      "problem_keys": [
+        ["amc23", 3],
+        ["amc23", 4],
+        ["amc23", 5],
+        ["amc23", 6],
+        ["amc23", 8],
+        ["amc23", 12],
+        ["amc23", 13],
+        ["amc23", 14],
+        ["amc23", 16],
+        ["amc23", 17],
+        ["amc23", 20],
+        ["amc23", 27],
+        ["amc23", 28],
+        ["amc23", 34],
+        ["amc23", 37],
+        ["amc23", 38],
+        ["math500", 46],
+        ["math500", 80],
+        ["math500", 101],
+        ["math500", 110],
+        ["math500", 115],
+        ["math500", 123],
+        ["math500", 138],
+        ["math500", 276],
+        ["math500", 285],
+        ["math500", 292],
+        ["math500", 320],
+        ["math500", 412],
+        ["math500", 497]
+      ]
+    },
+    "conservative_union": {
+      "count": 30,
+      "per_benchmark": {
+        "aime24": 0,
+        "aime25": 0,
+        "amc23": 16,
+        "hmmt_feb": 0,
+        "math500": 14,
+        "minerva": 0
+      },
+      "exact_matches_not_captured_by_word_5gram": [
+        ["math500", 175]
+      ],
+      "problem_keys": [
+        ["amc23", 3],
+        ["amc23", 4],
+        ["amc23", 5],
+        ["amc23", 6],
+        ["amc23", 8],
+        ["amc23", 12],
+        ["amc23", 13],
+        ["amc23", 14],
+        ["amc23", 16],
+        ["amc23", 17],
+        ["amc23", 20],
+        ["amc23", 27],
+        ["amc23", 28],
+        ["amc23", 34],
+        ["amc23", 37],
+        ["amc23", 38],
+        ["math500", 46],
+        ["math500", 80],
+        ["math500", 101],
+        ["math500", 110],
+        ["math500", 115],
+        ["math500", 123],
+        ["math500", 138],
+        ["math500", 175],
+        ["math500", 276],
+        ["math500", 285],
+        ["math500", 292],
+        ["math500", 320],
+        ["math500", 412],
+        ["math500", 497]
+      ]
+    }
+  },
+  "dataloader_replay": {
+    "evidence": {
+      "torch_version": "2.8.0+cu128",
+      "torchdata_version": "0.11.0+cpu",
+      "dataset_rows_after_filtering": 17917,
+      "filter_overlong_prompts": false,
+      "batch_size": 64,
+      "steps": 50,
+      "samples_yielded_in_i0_step50_data_pt": 3200,
+      "samples_yielded_in_i8_step50_data_pt": 3200,
+      "i0_i8_sampler_states_equal": true,
+      "recorded_seed42_generator_equals_manual_seed42": true,
+      "replay_rule": "First 3200 indices of torch.randperm(17917, generator=torch.Generator().manual_seed(training_seed))."
+    },
+    "seed_42": {
+      "methods_with_identical_data_order": ["I0", "I8", "I16", "I32"],
+      "exact_exposed_eval_problems": 1,
+      "exact_exposed_train_rows": 1,
+      "exact_exposure": [
+        {"benchmark": "math500", "problem_index": 175, "training_step": 30}
+      ],
+      "conservative_union_exposed_eval_problems": 8,
+      "conservative_union_exposed_train_rows": 8,
+      "conservative_union_exposure": [
+        {"benchmark": "amc23", "problem_index": 5, "training_step": 36},
+        {"benchmark": "amc23", "problem_index": 16, "training_step": 48},
+        {"benchmark": "amc23", "problem_index": 34, "training_step": 35},
+        {"benchmark": "amc23", "problem_index": 38, "training_step": 4},
+        {"benchmark": "math500", "problem_index": 46, "training_step": 13},
+        {"benchmark": "math500", "problem_index": 101, "training_step": 13},
+        {"benchmark": "math500", "problem_index": 110, "training_step": 5},
+        {"benchmark": "math500", "problem_index": 175, "training_step": 30}
+      ]
+    },
+    "seed_43_planned": {
+      "exact_exposed_eval_problems": 3,
+      "exact_exposed_train_rows": 3,
+      "exact_exposure": [
+        {"benchmark": "amc23", "problem_index": 14, "training_step": 4},
+        {"benchmark": "amc23", "problem_index": 27, "training_step": 3},
+        {"benchmark": "amc23", "problem_index": 28, "training_step": 11}
+      ],
+      "conservative_union_exposed_eval_problems": 6,
+      "conservative_union_exposed_train_rows": 6,
+      "conservative_union_exposure": [
+        {"benchmark": "amc23", "problem_index": 14, "training_step": 4},
+        {"benchmark": "amc23", "problem_index": 27, "training_step": 3},
+        {"benchmark": "amc23", "problem_index": 28, "training_step": 11},
+        {"benchmark": "amc23", "problem_index": 34, "training_step": 8},
+        {"benchmark": "math500", "problem_index": 115, "training_step": 27},
+        {"benchmark": "math500", "problem_index": 276, "training_step": 17}
+      ]
+    },
+    "seed_44_planned": {
+      "exact_exposed_eval_problems": 1,
+      "exact_exposed_train_rows": 1,
+      "exact_exposure": [
+        {"benchmark": "math500", "problem_index": 276, "training_step": 24}
+      ],
+      "conservative_union_exposed_eval_problems": 3,
+      "conservative_union_exposed_train_rows": 3,
+      "conservative_union_exposure": [
+        {"benchmark": "amc23", "problem_index": 13, "training_step": 47},
+        {"benchmark": "math500", "problem_index": 46, "training_step": 36},
+        {"benchmark": "math500", "problem_index": 276, "training_step": 24}
+      ]
+    }
+  },
+  "p2_probe_source_overlap": {
+    "source": "runs/phase0-gradient-diagnostics-v1/analysis/phase05_hybrid_shared_rollout_d64c32a16_r32_seed42_v3/probe_summary.json",
+    "source_sha256": "f1bc8c3fc23b56d4853de84756bf7e6090136e7087f7fe0cf044e0ee8b6ce1bb",
+    "source_candidate": "P2",
+    "prompt_id_field": "DAPO extra_info.index UUID",
+    "prompt_splits_disjoint": true,
+    "all_prompt_ids_unique": true,
+    "all_prompt_ids_resolved_to_train_parquet": true,
+    "rollout_cache_entries": 112,
+    "splits": {
+      "discovery": {
+        "prompt_ids": 64,
+        "latex_layout_normalized_exact_hits": 0,
+        "conservative_word_5gram_hits": 0,
+        "conservative_union_hits": 0
+      },
+      "calibration": {
+        "prompt_ids": 32,
+        "latex_layout_normalized_exact_hits": 0,
+        "conservative_word_5gram_hits": 0,
+        "conservative_union_hits": 0
+      },
+      "audit": {
+        "prompt_ids": 16,
+        "latex_layout_normalized_exact_hits": 0,
+        "conservative_word_5gram_hits": 0,
+        "conservative_union_hits": 0
+      }
+    },
+    "interpretation": "The P2 discovery and held-out scoring prompt UUIDs do not directly expose the method to any evaluation problem in the fixed 30-problem lexical union. This does not rule out base-model pretraining contamination or semantic paraphrases below the lexical thresholds."
+  },
+  "paired_sensitivity": {
+    "method": "Matched problem-cluster bootstrap with equal benchmark weighting, 10000 draws, and seed 42.",
+    "unfiltered": {
+      "num_problems": 902,
+      "num_samples": 7248,
+      "macro_delta_avg_at_k": 0.035998774509803926,
+      "ci95_low": 0.020846982230392157,
+      "ci95_high": 0.051859048202614375,
+      "probability_delta_gt_zero": 1.0
+    },
+    "exclude_latex_layout_normalized_exact": {
+      "excluded_problems": 13,
+      "num_problems": 889,
+      "num_samples": 7000,
+      "macro_delta_avg_at_k": 0.03326808962451377,
+      "ci95_low": 0.018440475113873915,
+      "ci95_high": 0.04860693649852899,
+      "probability_delta_gt_zero": 1.0,
+      "benchmark_deltas": {
+        "aime24": 0.025000000000000022,
+        "aime25": 0.012500000000000011,
+        "amc23": 0.09375,
+        "hmmt_feb": 0.009374999999999994,
+        "math500": 0.061740890688259054,
+        "minerva": -0.002757352941176461
+      }
+    },
+    "exclude_conservative_word_5gram": {
+      "excluded_problems": 29,
+      "num_problems": 873,
+      "num_samples": 6684,
+      "macro_delta_avg_at_k": 0.03619751823556255,
+      "ci95_low": 0.020652053996222035,
+      "ci95_high": 0.052432709049460804,
+      "probability_delta_gt_zero": 1.0,
+      "benchmark_deltas": {
+        "aime24": 0.025000000000000022,
+        "aime25": 0.012500000000000011,
+        "amc23": 0.11197916666666663,
+        "hmmt_feb": 0.009374999999999994,
+        "math500": 0.0610882956878851,
+        "minerva": -0.002757352941176461
+      }
+    },
+    "exclude_conservative_union": {
+      "excluded_problems": 30,
+      "num_problems": 872,
+      "num_samples": 6680,
+      "macro_delta_avg_at_k": 0.036218467582506256,
+      "ci95_low": 0.0207104832995441,
+      "ci95_high": 0.052864700744623974,
+      "probability_delta_gt_zero": 1.0,
+      "benchmark_deltas": {
+        "aime24": 0.025000000000000022,
+        "aime25": 0.012500000000000011,
+        "amc23": 0.11197916666666663,
+        "hmmt_feb": 0.009374999999999994,
+        "math500": 0.06121399176954734,
+        "minerva": -0.002757352941176461
+      }
+    }
+  },
+  "interpretation": [
+    "The DAPO training parquet contains exact or layout-only matches for 13 of the 902 evaluation problems, concentrated in AMC23 and MATH500; the formal six-benchmark result must disclose this limitation.",
+    "Removing all 13 layout-normalized exact overlaps leaves a positive macro delta with a strictly positive problem-bootstrap interval, so known exact overlap does not explain the I8 seed-42 gain.",
+    "The word 5-gram rule flags 29 problems but misses one layout-normalized exact match, so the most conservative sensitivity excludes their 30-problem union; the positive macro delta and strictly positive interval remain.",
+    "Only one of the 13 exact-overlap evaluation problems was actually consumed in the seed-42 50-step data order, and all seed-42 methods consumed the same 3200 prompts.",
+    "None of the 112 disjoint P2 source prompt UUIDs used across discovery, calibration, and audit matches the exact, lexical, or conservative-union evaluation sets.",
+    "This post-hoc sensitivity does not alter the preregistered selector, does not establish semantic decontamination, and cannot replace training seeds 43 and 44."
+  ]
+}

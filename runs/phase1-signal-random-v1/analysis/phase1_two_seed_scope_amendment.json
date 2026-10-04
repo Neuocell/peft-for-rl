@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "status": "user_directed_active_scope_amendment_before_seed43_evaluation_results",
+  "created_at": "2026-10-03T18:55:11+08:00",
+  "scope": "Reduce the active model-task confirmation from training seeds 42/43/44 to seeds 42/43 only, prioritizing turnaround time and a fixed conclusion for this exact model and math-RL task. This is an explicit deviation from the original three-seed preregistration and must be disclosed.",
+  "user_direction": "Temporarily run only two seeds, accelerate the experiment, and fix the conclusion on this model and task.",
+  "observation_boundary": {
+    "known": [
+      "Complete seed-42 I0/I8/I16/I32 training and six-benchmark results.",
+      "I8 was selected from mixed candidates using seed 42.",
+      "Seed-43 I0 training is active."
+    ],
+    "unobserved": [
+      "Seed-43 I0 six-benchmark evaluation results.",
+      "All seed-43 I8 training and evaluation results.",
+      "All seed-44 results."
+    ]
+  },
+  "superseded_active_scope": {
+    "original_training_seeds": [42, 43, 44],
+    "amended_training_seeds": [42, 43],
+    "do_not_start_training_seed": 44,
+    "original_artifacts_retained": [
+      "runs/phase1-signal-random-v1/analysis/phase1_heldout_claim_gate_preregistration.json",
+      "runs/phase1-signal-random-v1/analysis/phase1_final_gate_execution_spec.json",
+      "runs/phase1-signal-random-v1/analysis/phase1b_i32_confirmation_preregistration.json"
+    ],
+    "interpretation": "The original three-seed stable-generalization gate becomes unevaluable under the amended scope; it is not considered passed or failed."
+  },
+  "active_runs": {
+    "baseline_method": "I0",
+    "candidate_method": "I8",
+    "selection_seed": 42,
+    "sole_heldout_training_seed": 43,
+    "required_method_seed_pairs": [
+      ["I0", 42],
+      ["I8", 42],
+      ["I0", 43],
+      ["I8", 43]
+    ],
+    "forbidden_automatic_pairs": [
+      ["I0", 44],
+      ["I8", 44]
+    ]
+  },
+  "fixed_protocol": {
+    "module_count": 196,
+    "uniform_rank": 32,
+    "alpha": 64,
+    "scaling": 2.0,
+    "dropout": 0.0,
+    "optimizer_steps": 50,
+    "prompts_per_step": 64,
+    "responses_per_prompt": 8,
+    "evaluation_seed": 42,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "max_new_tokens": 32768,
+    "samples_small": 32,
+    "samples_large": 4,
+    "records_per_evaluation": 7248,
+    "benchmarks": ["aime24", "aime25", "amc23", "hmmt_feb", "math500", "minerva"],
+    "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+  },
+  "seed43_heldout_gate": {
+    "unfiltered": {
+      "macro_delta_avg_at_k_min": 0.005,
+      "probability_delta_gt_zero_min": 0.9,
+      "positive_benchmark_delta_count_min": 4,
+      "worst_benchmark_delta_min": -0.02,
+      "all_conditions_required": true
+    },
+    "fixed_overlap_filtered": {
+      "exclusion_source": "runs/phase1-signal-random-v1/analysis/phase1_seed42_train_eval_overlap_sensitivity.json",
+      "exclusion_source_sha256": "65e39bc856e075240964e0aec4e20d73231686214861675a60e8790a444d5767",
+      "fixed_exclusion_set": "conservative_union",
+      "excluded_problem_count": 30,
+      "expected_filtered_records": 6680,
+      "expected_filtered_problems": 872,
+      "macro_delta_avg_at_k_min": 0.005,
+      "probability_delta_gt_zero_min": 0.9,
+      "positive_benchmark_delta_count_min": 4,
+      "worst_benchmark_delta_min": -0.02,
+      "all_conditions_required": true
+    },
+    "both_unfiltered_and_filtered_required": true
+  },
+  "two_seed_descriptive_checks": {
+    "both_seed_macro_deltas_strictly_gt": 0.0,
+    "mean_macro_delta_min": 0.005,
+    "positive_two_seed_benchmark_mean_count_min": 4,
+    "worst_two_seed_benchmark_mean_delta_min": -0.02,
+    "hierarchical_bootstrap": "Report the two-seed training-seed/problem bootstrap interval and probability as descriptive uncertainty only; do not equate a two-seed interval with a well-estimated seed population.",
+    "all_conditions_required_for_fixed_setting_claim": true
+  },
+  "decision_policy": {
+    "fixed_model_task_replication": "Allowed only if the seed-43 unfiltered gate, seed-43 fixed-overlap-filtered gate, and all two-seed descriptive checks pass.",
+    "promising_but_not_fixed": "If seed 43 is positive but any gate fails, report the exact result and call the method promising or seed-sensitive; do not claim the conclusion is fixed.",
+    "failure": "If seed-43 macro delta is non-positive in either unfiltered or fixed-filtered evaluation, the I8 method fails the amended confirmation.",
+    "no_i32_rescue": "Seed-42 I32 cannot rescue a failed I8 confirmation. Any I32 follow-up remains a separately disclosed Phase-1b experiment."
+  },
+  "allowed_claim_if_passed": {
+    "english": "In this fixed 1.5B math-RL setting, the I8 initialization improvement over the matched random-orthogonal baseline replicated on one held-out training seed and was positive on both tested seeds.",
+    "chinese": "在该固定 1.5B 数学 RL 设置中，I8 相对匹配随机正交基线的提升在一个未参与选择的训练 seed 上得到复现，并在两个已测试 seed 上均为正。"
+  },
+  "disallowed_claims": [
+    "Stable across training seeds.",
+    "Training-seed-stable generalization.",
+    "Broadly generalizes across models, tasks, domains, or datasets.",
+    "The original three-seed preregistered gate passed.",
+    "Superior to standard LoRA before a protocol-matched standard LoRA comparison is completed."
+  ],
+  "paper_baseline_scope": {
+    "matched_standard_lora_initial_seeds": [42, 43],
+    "base_model_same_snapshot_evaluation_required": true,
+    "claim_without_standard_lora": "Only superiority over the matched random-orthogonal I0 baseline, not over standard PEFT LoRA.",
+    "future_seed44": "May be added later as an explicitly subsequent robustness extension; it cannot be silently folded into this amended two-seed decision."
+  },
+  "controller_boundary_guard": {
+    "path_unit": "peft-phase1-stop-after-seed43.path",
+    "service_unit": "peft-phase1-stop-after-seed43.service",
+    "trigger_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/I0_vs_I8_step50_seed43_paired.json",
+    "action": "Send SIGSTOP to PGID 27424 before the controller can proceed to seed 44, then require manual artifact verification and controller termination.",
+    "deployed_at": "2026-10-03T18:55:11+08:00",
+    "state_at_deployment": "active_waiting",
+    "seed44_artifacts_present_at_deployment": false
+  },
+  "researcher_degrees_of_freedom": "No threshold, exclusion set, benchmark, averaging unit, or claim wording may be relaxed after observing seed-43 evaluation results."
+}

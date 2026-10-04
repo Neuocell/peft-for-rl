@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
+export RUNTIME_ROOT="${RUNTIME_ROOT:-${REPO_ROOT}/runs/phase0-gradient-diagnostics-v1}"
+export EXP_NAME="${EXP_NAME:-phase05_hybrid_shared_rollout_d64c32a16_r32_seed42_v2}"
+export GRADIENT_PROBE_OUTPUT_DIR="${GRADIENT_PROBE_OUTPUT_DIR:-${RUNTIME_ROOT}/analysis/${EXP_NAME}}"
+export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1,2,3}"
+export PEFT_TYPE=full_gradient_probe
+export FULL_GRADIENT_PROBE_MODE=phase0_diagnostics
+export FULL_GRADIENT_PROBE_RANK="${FULL_GRADIENT_PROBE_RANK:-32}"
+export FULL_GRADIENT_PROBE_SKETCH_WIDTH="${FULL_GRADIENT_PROBE_SKETCH_WIDTH:-40}"
+export FULL_GRADIENT_PROBE_DISCOVERY_PROMPTS="${FULL_GRADIENT_PROBE_DISCOVERY_PROMPTS:-64}"
+export FULL_GRADIENT_PROBE_CALIBRATION_PROMPTS="${FULL_GRADIENT_PROBE_CALIBRATION_PROMPTS:-32}"
+export FULL_GRADIENT_PROBE_AUDIT_PROMPTS="${FULL_GRADIENT_PROBE_AUDIT_PROMPTS:-16}"
+export FULL_GRADIENT_PROBE_CROSSFIT_SPLITS="${FULL_GRADIENT_PROBE_CROSSFIT_SPLITS:-3}"
+export FULL_GRADIENT_PROBE_TOKEN_KEEP_RATIO="${FULL_GRADIENT_PROBE_TOKEN_KEEP_RATIO:-0.5}"
+export FULL_GRADIENT_PROBE_TOKEN_MIN_KEEP="${FULL_GRADIENT_PROBE_TOKEN_MIN_KEEP:-128}"
+export FULL_GRADIENT_PROBE_TOKEN_KEEP_FINAL="${FULL_GRADIENT_PROBE_TOKEN_KEEP_FINAL:-128}"
+export FULL_GRADIENT_PROBE_STABLE_SURPRISAL_QUANTILE="${FULL_GRADIENT_PROBE_STABLE_SURPRISAL_QUANTILE:-0.95}"
+export FULL_GRADIENT_PROBE_HYBRID_RANKS="${FULL_GRADIENT_PROBE_HYBRID_RANKS:-0,2,4,8,16}"
+export FULL_GRADIENT_PROBE_HYBRID_SUPPORT_RELATIVE_THRESHOLD="${FULL_GRADIENT_PROBE_HYBRID_SUPPORT_RELATIVE_THRESHOLD:-1e-7}"
+export FULL_GRADIENT_PROBE_SVD_DEVICE="${FULL_GRADIENT_PROBE_SVD_DEVICE:-auto}"
+export LORA_RANK=0
+export LORA_ALPHA=0
+export LORA_DROPOUT=0.0
+export LORA_FREEZE_A=False
+export TARGET_MODULES="${TARGET_MODULES:-all-linear}"
+export MODEL_PATH="${MODEL_PATH:-/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base}"
+export TRAIN_FILE="${TRAIN_FILE:-/data/peft-for-rl-runtime/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet}"
+export TEST_FILE="${TEST_FILE:-${TRAIN_FILE}}"
+export RAY_TEMP_DIR="${RAY_TEMP_DIR:-/tmp/ray-phase0-gradient-v1}"
+export TRAIN_PROMPT_BSZ="${TRAIN_PROMPT_BSZ:-16}"
+export TRAIN_PROMPT_MINI_BSZ="${TRAIN_PROMPT_MINI_BSZ:-16}"
+export N_RESP_PER_PROMPT="${N_RESP_PER_PROMPT:-8}"
+export ACTOR_PPO_MAX_TOKEN_LEN="${ACTOR_PPO_MAX_TOKEN_LEN:-12288}"
+export INFER_PPO_MAX_TOKEN_LEN="${INFER_PPO_MAX_TOKEN_LEN:-12288}"
+export ROLLOUT_MAX_NUM_SEQS="${ROLLOUT_MAX_NUM_SEQS:-256}"
+export TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-30}"
+export SAVE_FREQ=0
+export RESUME_MODE=disable
+export DATA_SEED=42
+export PPO_DATA_LOADER_SEED=42
+export ACTOR_SHUFFLE=False
+export USE_ORIG_PARAMS=True
+export CONDA_ENV_NAME="${CONDA_ENV_NAME:-peft-for-rl}"
+export CONDA_BIN="${CONDA_BIN:-/home/node/anaconda3/bin/conda}"
+export LOG_DIR="${LOG_DIR:-${RUNTIME_ROOT}/logs/verl}"
+export LOG_FILE="${LOG_FILE:-${LOG_DIR}/${EXP_NAME}.log}"
+export FULL_GRADIENT_PROBE_ESTIMATED_PERSISTENT_GIB="${FULL_GRADIENT_PROBE_ESTIMATED_PERSISTENT_GIB:-132}"
+export FULL_GRADIENT_PROBE_ESTIMATED_PEAK_GIB="${FULL_GRADIENT_PROBE_ESTIMATED_PEAK_GIB:-180}"
+export FULL_GRADIENT_PROBE_MIN_AVAILABLE_MEMORY_GIB="${FULL_GRADIENT_PROBE_MIN_AVAILABLE_MEMORY_GIB:-190}"
+
+mkdir -p "${LOG_DIR}"
+cd "${REPO_ROOT}"
+export PYTHONPATH="${REPO_ROOT}"
+
+MEM_AVAILABLE_KIB="$(awk '/^MemAvailable:/ {print $2}' /proc/meminfo)"
+if [[ -z "${MEM_AVAILABLE_KIB}" ]]; then
+    echo "Unable to read MemAvailable from /proc/meminfo; refusing to start Phase 0." >&2
+    exit 1
+fi
+MEM_AVAILABLE_GIB="$((MEM_AVAILABLE_KIB / 1024 / 1024))"
+echo "Phase 0 memory preflight: available=${MEM_AVAILABLE_GIB} GiB, estimated persistent=${FULL_GRADIENT_PROBE_ESTIMATED_PERSISTENT_GIB} GiB, estimated peak=${FULL_GRADIENT_PROBE_ESTIMATED_PEAK_GIB} GiB, required available=${FULL_GRADIENT_PROBE_MIN_AVAILABLE_MEMORY_GIB} GiB."
+if (( MEM_AVAILABLE_GIB < FULL_GRADIENT_PROBE_MIN_AVAILABLE_MEMORY_GIB )); then
+    echo "Insufficient host memory for Phase 0; lower concurrent memory use or explicitly revise the estimate and threshold." >&2
+    exit 1
+fi
+
+exec >>"${LOG_FILE}" 2>&1
+echo "Phase 0 memory preflight passed with ${MEM_AVAILABLE_GIB} GiB available."
+exec "${CONDA_BIN}" run --no-capture-output -n "${CONDA_ENV_NAME}" \
+    bash "${REPO_ROOT}/examples/verl_train/run_dapo_math_boxed_stable_lora_1p5b_4gpu_8k.sh"

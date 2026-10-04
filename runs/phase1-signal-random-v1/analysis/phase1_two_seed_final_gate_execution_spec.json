@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "status": "frozen_before_seed43_evaluation_results",
+  "created_at": "2026-10-03T22:18:26+08:00",
+  "scope": "Execution specification for the user-directed two-training-seed fixed-model/task confirmation. This only resolves implementation details left open by the active scope amendment; it does not relax or replace any threshold, exclusion set, candidate, seed, benchmark, or claim restriction.",
+  "observation_boundary": {
+    "known": [
+      "Complete seed-42 I0 and I8 six-benchmark records and paired comparison.",
+      "I8 was selected among eligible mixed candidates using training seed 42.",
+      "Seed-43 I0 training is active."
+    ],
+    "unobserved": [
+      "Seed-43 I0 six-benchmark evaluation results.",
+      "All seed-43 I8 training and evaluation results."
+    ]
+  },
+  "authoritative_dependencies": {
+    "active_scope_amendment": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_scope_amendment.json",
+      "sha256": "92d44f339e0129c81c43fd691395c3d87399a17c7fbbe9b42f34149fcf2cc65d"
+    },
+    "fixed_exclusion_source": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_seed42_train_eval_overlap_sensitivity.json",
+      "sha256": "65e39bc856e075240964e0aec4e20d73231686214861675a60e8790a444d5767",
+      "json_pointer": "/overlap/conservative_union/problem_keys"
+    },
+    "paired_bootstrap_reference": {
+      "path": "scripts/analysis/compare_paired_full_bench.py",
+      "sha256": "5764621d26742238f77a4e8d47d5c37b14ca80ae2b65e6ea4bd3865cf2041fc8"
+    },
+    "hierarchical_bootstrap_reference": {
+      "path": "scripts/analysis/aggregate_multiseed_full_bench.py",
+      "sha256": "0ca4bb7fd01f59afd99cf991596626892ed18370b35d68fa74b76cb32a05460b"
+    },
+    "current_test_reference": {
+      "path": "tests/test_full_bench_eval.py",
+      "sha256": "9145b44358fea9f3014b116880fbcc6067b294834093c9ee69120820ed2bb279"
+    }
+  },
+  "fixed_inputs": {
+    "baseline_method": "I0",
+    "candidate_method": "I8",
+    "selection_training_seed": 42,
+    "sole_heldout_training_seed": 43,
+    "training_seeds": [42, 43],
+    "records_per_method_seed_unfiltered": 7248,
+    "problems_per_method_seed_unfiltered": 902,
+    "records_per_method_seed_filtered": 6680,
+    "problems_per_method_seed_filtered": 872,
+    "expected_benchmarks": [
+      "aime24",
+      "aime25",
+      "amc23",
+      "hmmt_feb",
+      "math500",
+      "minerva"
+    ],
+    "problem_counts": {
+      "aime24": 30,
+      "aime25": 30,
+      "amc23": 40,
+      "hmmt_feb": 30,
+      "math500": 500,
+      "minerva": 272
+    },
+    "record_counts": {
+      "aime24": 960,
+      "aime25": 960,
+      "amc23": 1280,
+      "hmmt_feb": 960,
+      "math500": 2000,
+      "minerva": 1088
+    },
+    "record_key": ["benchmark", "problem_index", "sample_index"],
+    "problem_key": ["benchmark", "problem_index"],
+    "matched_invariant_fields": ["id", "problem", "gold_answer", "samples_per_problem"],
+    "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+  },
+  "input_validation": [
+    "Require each of the four unfiltered records files to contain exactly 7248 unique keys, 902 unique problems, and all six fixed benchmarks with the fixed per-benchmark counts.",
+    "Require correctness to be a JSON Boolean for every record; reject missing, duplicate, extra, or non-Boolean values.",
+    "Require baseline and candidate record keys and matched invariant fields to agree exactly within each training seed.",
+    "Require record keys and matched invariant fields to agree exactly across training seeds 42 and 43.",
+    "Require an independently verified full-benchmark artifact for every method/seed input and verify the records SHA-256 against it.",
+    "Require the exclusion-source SHA-256 before reading exactly 30 unique conservative_union problem keys: 16 AMC23 and 14 MATH500.",
+    "After exclusion, require exactly 6680 records, 872 problems, and the six fixed benchmarks for every method/seed input.",
+    "Reject a changed snapshot hash, sample count, benchmark set, exclusion distribution, or input records hash."
+  ],
+  "metric_definition": {
+    "sample_delta": "float(I8.correct) - float(I0.correct) for one exactly matched record.",
+    "problem_delta": "Arithmetic mean of sample_delta within one (benchmark, problem_index).",
+    "benchmark_delta": "Arithmetic mean of problem_delta across retained problems in one benchmark.",
+    "seed_macro_delta": "Unweighted arithmetic mean of the six benchmark_delta values within one training seed.",
+    "two_seed_mean_macro_delta": "Unweighted arithmetic mean of seed-42 and seed-43 macro deltas.",
+    "two_seed_mean_benchmark_delta": "Unweighted arithmetic mean of the seed-42 and seed-43 delta for one benchmark.",
+    "filtering": "Remove all records whose (benchmark, problem_index) is in the frozen conservative_union before recomputing every problem, benchmark, seed, and two-seed statistic."
+  },
+  "bootstrap_protocol": {
+    "samples": 10000,
+    "random_seed": 42,
+    "single_seed_problem_bootstrap": "For each draw and benchmark, resample retained problems with replacement within that benchmark, preserve each problem's observed mean sample delta, then take the unweighted mean over the six benchmark draws.",
+    "probability_definition": "(number of draws greater than zero + 0.5 * number of draws equal to zero) / 10000.",
+    "ci_definition": "Linear-interpolated empirical 0.025 and 0.975 quantiles, matching compare_paired_full_bench.py.",
+    "two_seed_hierarchical_bootstrap": "For each draw, sample two training-seed indices with replacement from [42, 43]. For each selected seed and benchmark, resample retained problems with replacement within that seed/benchmark. Average selected-seed draws within benchmark, then average the six benchmark draws.",
+    "two_seed_bootstrap_role": "Report the interval and probability as descriptive uncertainty only. They are not pass/fail checks and must not be described as a well-estimated training-seed population interval."
+  },
+  "seed43_gate": {
+    "apply_identically_to": ["unfiltered", "fixed_30_problem_filtered"],
+    "checks": {
+      "macro_delta_avg_at_k_at_least_0.005": ">= 0.005; equality passes",
+      "problem_bootstrap_probability_at_least_0.90": ">= 0.90; equality passes",
+      "at_least_four_positive_benchmark_deltas": "At least four of six must be > 0.0; equality is not positive",
+      "worst_benchmark_delta_at_least_minus_0.02": ">= -0.02; equality passes"
+    },
+    "all_conditions_required": true
+  },
+  "two_seed_descriptive_gate": {
+    "apply_identically_to": ["unfiltered", "fixed_30_problem_filtered"],
+    "checks": {
+      "both_seed_macro_deltas_strictly_positive": "Seed 42 > 0.0 and seed 43 > 0.0; equality fails",
+      "mean_macro_delta_at_least_0.005": ">= 0.005; equality passes",
+      "at_least_four_positive_mean_benchmark_deltas": "At least four of six must be > 0.0; equality is not positive",
+      "worst_mean_benchmark_delta_at_least_minus_0.02": ">= -0.02; equality passes"
+    },
+    "all_conditions_required": true
+  },
+  "combined_decision": {
+    "fixed_model_task_replication": "Seed-43 unfiltered gate passes AND seed-43 fixed-filtered gate passes AND unfiltered two-seed descriptive gate passes AND fixed-filtered two-seed descriptive gate passes.",
+    "promising_but_not_fixed": "Seed-43 macro delta is positive in both views but at least one required gate fails.",
+    "failed_confirmation": "Seed-43 macro delta is non-positive in either the unfiltered or fixed-filtered view.",
+    "no_i32_rescue": true
+  },
+  "required_output": {
+    "path": "runs/phase1-signal-random-v1/analysis/phase1_i0_vs_i8_two_seed_fixed_setting_gate.json",
+    "required_fields": [
+      "SHA-256 and path of all four input records files and their verification artifacts",
+      "SHA-256 of this execution spec, the active scope amendment, fixed exclusion source, and implementation files",
+      "the exact 30 excluded problem keys",
+      "all record/problem/benchmark counts before and after filtering",
+      "seed-43 unfiltered and filtered paired bootstrap outputs",
+      "per-seed and two-seed per-benchmark deltas in both views",
+      "two-seed descriptive hierarchical bootstrap outputs in both views",
+      "every Boolean check and the combined decision",
+      "the exact allowed and disallowed claim text selected by the decision"
+    ],
+    "atomic_write_required": true
+  },
+  "required_tests_before_acceptance": [
+    "A fully passing synthetic case for unfiltered and fixed-filtered views.",
+    "Seed-43 macro delta equality at 0.005 passes and a value below 0.005 fails.",
+    "Seed-43 bootstrap probability equality at 0.90 passes and a value below 0.90 fails.",
+    "Exactly four positive benchmark deltas passes; three positives or a fourth delta equal to zero fails.",
+    "Worst benchmark delta equality at -0.02 passes and a value below -0.02 fails.",
+    "Either seed macro delta equal to zero fails the two-seed descriptive gate.",
+    "Two-seed mean macro equality at 0.005 and worst mean benchmark equality at -0.02 pass their checks.",
+    "Failure in any one of the four required gates prevents fixed_model_task_replication.",
+    "Deterministic bootstrap equality for repeated runs with 10000 samples and seed 42.",
+    "Failure for mismatched or duplicate record keys, changed matched invariants, non-Boolean correctness, wrong benchmark set, wrong counts, or cross-seed snapshot mismatch.",
+    "Failure for an altered exclusion-source hash, duplicate exclusion key, wrong exclusion count/distribution, or filtered counts other than 6680 records and 872 problems.",
+    "Failure for a records SHA-256 that does not match its independent postverification artifact.",
+    "Claim-policy tests that never emit stable-across-seeds, broad-generalization, original-three-seed-pass, or standard-LoRA-superiority wording."
+  ],
+  "claim_policy": {
+    "allowed_if_fixed_model_task_replication": {
+      "english": "In this fixed 1.5B math-RL setting, the I8 initialization improvement over the matched random-orthogonal baseline replicated on one held-out training seed and was positive on both tested seeds.",
+      "chinese": "在该固定 1.5B 数学 RL 设置中，I8 相对匹配随机正交基线的提升在一个未参与选择的训练 seed 上得到复现，并在两个已测试 seed 上均为正。"
+    },
+    "disallowed": [
+      "Stable across training seeds.",
+      "Training-seed-stable generalization.",
+      "Broadly generalizes across models, tasks, domains, or datasets.",
+      "The original three-seed preregistered gate passed.",
+      "Superior to standard LoRA."
+    ]
+  },
+  "implementation_timing": "Do not modify provenance-covered analysis code while the active Phase-1 controller is running. After the controller is stopped and all required immutable records are independently verified, implement this exact specification and its tests before reading the numerical gate output.",
+  "researcher_degrees_of_freedom": "No bootstrap count or seed, threshold, inequality direction, averaging unit, filter scope, exclusion key, benchmark, training seed, input validation, decision branch, or claim wording may be changed after seed-43 evaluation results become available."
+}

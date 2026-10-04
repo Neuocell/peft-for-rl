@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "status": "static_ready_runtime_release_pending_i0_postverify",
+  "created_at": "2026-10-04T01:12:22+08:00",
+  "tool": {
+    "path": "runs/phase1-signal-random-v1/ops/start_seed43_i8_next_card_guarded.sh",
+    "sha256": "7e8e35193eca3c524ee57ff3162ffd72b875958e8e7bffc2025cd8cf6b7aca6c",
+    "mode": "0755",
+    "default_mutation": false,
+    "explicit_execution_flag": "--execute"
+  },
+  "supported_runtime_cases": {
+    "existing": "Validate a stopped Phase-1 controller PID/PGID and the already loaded guards, then send SIGCONT only with --execute.",
+    "replacement": "On a rebooted instance with no controller and no partial seed-43 I8 state, stage the controller as a stopped session leader, bind newly deployed transient guards to its PGID, then send SIGCONT only after all guard checks pass."
+  },
+  "pinned_dependencies": {
+    "controller": {
+      "path": "scripts/local/run_phase1_signal_random_confirmation.sh",
+      "sha256": "b6d4bdfc7af77019fbdfad8bec76187ba0254db6e24a2e5acd632ac5ed6aaa0f"
+    },
+    "method_launcher": {
+      "path": "scripts/local/run_phase1_signal_random_step50_fullbench.sh",
+      "sha256": "e87909adbf9fcf985d4890b9dfd208aa53f700d1cba04e67b1a5979b291e0085"
+    },
+    "paired_comparator": {
+      "path": "scripts/analysis/compare_paired_full_bench.py",
+      "sha256": "5764621d26742238f77a4e8d47d5c37b14ca80ae2b65e6ea4bd3865cf2041fc8"
+    },
+    "seed42_selector": {
+      "path": "scripts/analysis/select_phase1_seed42_candidate.py",
+      "sha256": "ed2b580b637d70e0f7fb25a7868c264c15643647132ef1764140c7d7d6355989"
+    },
+    "postverify": {
+      "path": "runs/phase1-signal-random-v1/ops/seed43_i0_postverify.sh",
+      "sha256": "c25685daa65bb66b5f5974857e3e3cc32e61a81359e90983cc1dcd6f542ffaa0"
+    },
+    "two_seed_scope": {
+      "path": "runs/phase1-signal-random-v1/analysis/phase1_two_seed_scope_amendment.json",
+      "sha256": "92d44f339e0129c81c43fd691395c3d87399a17c7fbbe9b42f34149fcf2cc65d"
+    }
+  },
+  "required_runtime_preconditions": [
+    "The seed-42 selection artifact still advances I8.",
+    "The seed-43 I0 postverify artifact is verified and every bound artifact still matches its SHA-256.",
+    "No evaluator or vLLM EngineCore is running.",
+    "No seed-44 artifact and no seed-43 comparison already exists.",
+    "Existing mode requires the exact controller to be a stopped process-group leader with the expected working directory and active guards.",
+    "Replacement mode requires no controller, a free controller lock, no partial seed-43 I8 state, and no stale transient guards."
+  ],
+  "storage_capacity_gate": {
+    "mount": "/root",
+    "minimum_available_bytes_before_resume": 16500000000,
+    "reason": "Two measured seed-43 checkpoints require approximately 15.431 GB before evaluation records, logs, and runtime margin.",
+    "available_bytes_at_static_audit": 8840220672,
+    "current_deficit_bytes": 7659779328,
+    "seed43_i0_step25_disk_bytes": 7715557376,
+    "projected_available_if_only_step25_were_removed_at_the_audited_instant": 16555778048,
+    "projection_warning": "The projection is only 55,778,048 bytes above the gate and excludes the remaining evaluation output growth, so step-25 removal alone is not assumed sufficient.",
+    "automatic_deletion_or_cleanup": false
+  },
+  "guard_contract": {
+    "i8_summary": "Trigger the I8 postverify script with method I8.",
+    "seed43_comparison": "Stop the entire controller process group before the original controller can proceed to seed 44.",
+    "replacement_staging": "The replacement controller stops itself before executing the controller script; guard deployment precedes SIGCONT."
+  },
+  "replacement_mode_disclosure": "The original controller begins at its deterministic seed-42 verification section. Completed training and evaluation runs are verified and skipped, while seed-42 paired-comparison and selection artifacts are atomically regenerated before seed-43 I0 is verified and skipped. Their bound implementation hashes must match before launch.",
+  "static_checks": {
+    "bash_n": "passed",
+    "help_without_runtime_action": "passed",
+    "caller_working_directory_independence": "passed",
+    "storage_gate_precedes_all_runtime_mutations": "passed",
+    "git_diff_check": "passed",
+    "postverify_artifact_iteration_filter_fixture": "passed",
+    "shellcheck": "not_available_in_environment"
+  },
+  "actions_performed_during_audit": {
+    "execute_mode_invoked": false,
+    "controller_launched_or_resumed": false,
+    "systemd_unit_deployed_or_replaced": false,
+    "training_or_evaluation_output_read": false,
+    "training_or_evaluation_output_modified": false
+  }
+}

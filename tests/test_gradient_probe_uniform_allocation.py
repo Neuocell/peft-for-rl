@@ -46,6 +46,20 @@ def test_legacy_gradient_probe_can_be_truncated_to_equal_rank(tmp_path: Path) ->
     assert result["active_rank_mean"] == pytest.approx(2.0)
     assert result["constant_scaling"] == pytest.approx(2.0)
     assert all(alpha == 4 for alpha in result["alpha_pattern"].values())
+    assert result["structure"] == {
+        "active_rank_mean": pytest.approx(2.0),
+        "active_rank_min": 2,
+        "active_rank_max": 2,
+        "rank_by_family": {"q_proj": pytest.approx(2.0), "up_proj": pytest.approx(2.0)},
+        "rank_by_layer_segment": {"low": pytest.approx(2.0)},
+        "calibration_energy_capture": pytest.approx(0.0),
+        "u_score_capture": pytest.approx(0.0),
+        "capture_metrics_available": False,
+    }
+    written = json.loads(
+        (tmp_path / "uniform/allocation_summary.json").read_text(encoding="utf-8")
+    )
+    assert written["structure"]["active_rank_mean"] == pytest.approx(2.0)
     with safe_open(tmp_path / "uniform/subspaces.safetensors", framework="pt") as tensors:
         assert all(tuple(tensors.get_tensor(name).shape) == (2, bases[name].shape[1]) for name in bases)
 

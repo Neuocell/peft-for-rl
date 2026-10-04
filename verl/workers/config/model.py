@@ -145,6 +145,22 @@ class HFModelConfig(BaseConfig):
     full_gradient_probe_confidence_z: float = 1.0
     full_gradient_probe_eps: float = 1e-12
     full_gradient_probe_min_advantage_rms: float = 1e-6
+    full_gradient_probe_covariance_estimator: str = "centered_population_covariance"
+    full_gradient_probe_token_mask_mode: str = "none"
+    full_gradient_probe_token_keep_ratio: float = 0.5
+    full_gradient_probe_token_min_keep: int = 128
+    full_gradient_probe_token_keep_final: int = 128
+    full_gradient_probe_token_mask_discovery_only: bool = True
+    # "legacy" maps the discovery_only flag above to either discovery or all.
+    # New probes can mask discovery+calibration while leaving audit unmasked.
+    full_gradient_probe_token_mask_scope: str = "legacy"
+    # Phase-0 diagnostics compare selectors on the same rollout groups and use
+    # repeated deterministic response halves for cross-fit covariance.
+    full_gradient_probe_crossfit_splits: int = 3
+    full_gradient_probe_stable_surprisal_quantile: float = 0.95
+    full_gradient_probe_hybrid_ranks: str = "0,2,4,8,16"
+    full_gradient_probe_hybrid_support_relative_threshold: float = 1e-7
+    full_gradient_probe_replay_source_dir: Optional[str] = None
     full_gradient_probe_window_prompts: int = 16
     full_gradient_probe_discovery_windows: int = 8
     full_gradient_probe_calibration_windows: int = 2

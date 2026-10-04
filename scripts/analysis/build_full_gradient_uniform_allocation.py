@@ -38,6 +38,7 @@ def build_uniform_allocation(
     candidates: dict[str, torch.Tensor] = {}
     scores: dict[str, dict[str, torch.Tensor]] = {}
     shapes = {name: tuple(item["shape"]) for name, item in summary["modules"].items()}
+    score_labels = tuple(summary.get("score_labels", ("F", "S", "R", "P", "U")))
     candidate_path = artifact_dir / f"candidates_{candidate_method}.safetensors"
     score_path = artifact_dir / f"atom_scores_{candidate_method}.safetensors"
     with safe_open(candidate_path, framework="pt", device="cpu") as candidate_file:
@@ -46,7 +47,7 @@ def build_uniform_allocation(
                 candidates[name] = candidate_file.get_tensor(name).float()
                 scores[name] = {
                     label: score_file.get_tensor(f"{name}.{label}").float()
-                    for label in ("F", "S", "R", "P", "U")
+                    for label in score_labels
                 }
 
     allocation_scores = _selection_scores(scores, selection_utility)
@@ -86,10 +87,19 @@ def _selection_scores(
     scores: dict[str, dict[str, torch.Tensor]], utility: str
 ) -> dict[str, torch.Tensor]:
     if utility == "gain_lcb":
+        if any("U" not in module_scores for module_scores in scores.values()):
+            raise ValueError("gain_lcb allocation requires a U score")
         return {name: module_scores["U"] for name, module_scores in scores.items()}
     if utility == "future_lcb":
+        if any("U" not in module_scores for module_scores in scores.values()):
+            raise ValueError("future_lcb allocation requires a U score")
         return {name: module_scores["U"] for name, module_scores in scores.items()}
     if utility == "stable_energy":
+        if any(
+            not {"P", "R"}.issubset(module_scores)
+            for module_scores in scores.values()
+        ):
+            raise ValueError("stable_energy allocation requires P and R scores")
         return {
             name: module_scores["P"] * module_scores["R"]
             for name, module_scores in scores.items()
@@ -124,6 +134,7 @@ def build_adaptive_allocation(
     candidates: dict[str, torch.Tensor] = {}
     scores: dict[str, dict[str, torch.Tensor]] = {}
     shapes = {name: tuple(item["shape"]) for name, item in summary["modules"].items()}
+    score_labels = tuple(summary.get("score_labels", ("F", "S", "R", "P", "U")))
     candidate_path = artifact_dir / f"candidates_{candidate_method}.safetensors"
     score_path = artifact_dir / f"atom_scores_{candidate_method}.safetensors"
     with safe_open(candidate_path, framework="pt", device="cpu") as candidate_file:
@@ -132,7 +143,7 @@ def build_adaptive_allocation(
                 candidates[name] = candidate_file.get_tensor(name).float()
                 scores[name] = {
                     label: score_file.get_tensor(f"{name}.{label}").float()
-                    for label in ("F", "S", "R", "P", "U")
+                    for label in score_labels
                 }
 
     costs = {name: sum(shapes[name]) for name in shapes}

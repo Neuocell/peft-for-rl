@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import asyncio
+import hashlib
 import heapq
 import logging
 import os
@@ -470,9 +471,20 @@ class AgentLoopWorkerBase:
         for i in range(len(batch)):
             trace_this_sample = i in traced_indices
             kwargs = {k: v[i] for k, v in batch.non_tensor_batch.items()}
+            trajectory_sampling_params = sampling_params.copy()
+            rollout_seed = config.get("seed")
+            if rollout_seed is not None:
+                trajectory_sampling_params["seed"] = trajectory_sampling_seed(
+                    int(rollout_seed), trajectory_info[i]
+                )
             tasks.append(
                 asyncio.create_task(
-                    self._run_agent_loop(sampling_params, trajectory_info[i], trace=trace_this_sample, **kwargs)
+                    self._run_agent_loop(
+                        trajectory_sampling_params,
+                        trajectory_info[i],
+                        trace=trace_this_sample,
+                        **kwargs,
+                    )
                 )
             )
         outputs = await asyncio.gather(*tasks)
@@ -852,6 +864,22 @@ async def get_trajectory_info(step, index, validate):
             rollout_n = 0
         trajectory_info.append({"step": step, "sample_index": index[i], "rollout_n": rollout_n, "validate": validate})
     return trajectory_info
+
+
+def trajectory_sampling_seed(base_seed: int, trajectory: dict[str, Any]) -> int:
+    """Derive a stable per-rollout seed independent of async request ordering."""
+
+    payload = ":".join(
+        (
+            str(int(base_seed)),
+            str(trajectory["step"]),
+            str(trajectory["sample_index"]),
+            str(trajectory["rollout_n"]),
+            str(bool(trajectory["validate"])),
+        )
+    )
+    digest = hashlib.sha256(payload.encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], "little") % (2**31 - 1)
 
 
 class AgentLoopManager:

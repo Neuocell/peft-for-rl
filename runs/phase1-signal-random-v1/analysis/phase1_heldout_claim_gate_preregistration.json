@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "status": "preregistered_before_heldout_training",
+  "created_at": "2026-10-03T10:29:48+08:00",
+  "scope": "Paper-claim robustness supplement for the Phase-1 winner; this does not replace or modify the controller's preregistered three-seed gate.",
+  "observation_boundary": {
+    "known_at_registration": [
+      "Seed-42 I0, I8, and I16 training and evaluation results.",
+      "I8 is the only mixed candidate that passes the seed-42 screen.",
+      "I32 seed-42 training is in progress and cannot enter candidate selection.",
+      "The fixed 30-problem train/evaluation lexical-overlap union and seed-42 sensitivity results."
+    ],
+    "unobserved_at_registration": [
+      "All seed-43 training and evaluation results.",
+      "All seed-44 training and evaluation results."
+    ],
+    "seed_43_or_44_artifacts_present": false
+  },
+  "selection_bias_rationale": "Seed 42 selected I8 over I16, so a three-seed aggregate containing seed 42 is valid as the preregistered Phase-1 gate but is not by itself an unbiased held-out confirmation of stability.",
+  "required_primary_gate": {
+    "source": "scripts/analysis/aggregate_multiseed_full_bench.py",
+    "training_seeds": [42, 43, 44],
+    "mean_macro_delta_min": 0.005,
+    "positive_seed_count_min": 2,
+    "worst_seed_delta_min": -0.002,
+    "hierarchical_bootstrap_ci95_low_strictly_gt": 0.0,
+    "positive_benchmark_mean_count_min": 4,
+    "worst_benchmark_mean_delta_min": -0.02,
+    "all_conditions_required": true
+  },
+  "heldout_unfiltered_claim_gate": {
+    "training_seeds": [43, 44],
+    "individual_seed_macro_delta_strictly_gt": 0.0,
+    "mean_macro_delta_min": 0.005,
+    "positive_benchmark_mean_count_min": 4,
+    "worst_benchmark_mean_delta_min": -0.02,
+    "all_conditions_required": true
+  },
+  "heldout_overlap_filtered_claim_gate": {
+    "training_seeds": [43, 44],
+    "exclusion_source": "runs/phase1-signal-random-v1/analysis/phase1_seed42_train_eval_overlap_sensitivity.json",
+    "exclusion_source_sha256": "65e39bc856e075240964e0aec4e20d73231686214861675a60e8790a444d5767",
+    "fixed_exclusion_set": "conservative_union",
+    "excluded_problem_count": 30,
+    "individual_seed_macro_delta_strictly_gt": 0.0,
+    "mean_macro_delta_min": 0.005,
+    "positive_benchmark_mean_count_min": 4,
+    "worst_benchmark_mean_delta_min": -0.02,
+    "all_conditions_required": true
+  },
+  "claim_policy": {
+    "stable_cross_seed_generalization": "Allowed only if the preregistered three-seed primary gate, heldout_unfiltered_claim_gate, and heldout_overlap_filtered_claim_gate all pass.",
+    "phase1_pass_without_stable_claim": "If the primary gate passes but either held-out claim gate fails, report a Phase-1 pass or promising initialization effect, but do not call the method stable across training seeds.",
+    "failure": "If the preregistered primary gate fails, the method fails Phase 1 regardless of any held-out subset highlight.",
+    "i32_role": "I32 remains a signal-only dose-response endpoint and cannot rescue or replace a failed mixed-candidate gate."
+  },
+  "limitations": [
+    "Only two held-out training seeds are available, so the held-out gate uses transparent point constraints rather than claiming a well-estimated training-seed population interval.",
+    "The 30-problem lexical exclusion is a fixed sensitivity set, not proof of semantic decontamination.",
+    "Passing these gates is necessary for the intended claim but does not replace comparisons against standard LoRA and other paper baselines."
+  ]
+}

@@ -1552,6 +1552,27 @@ class RayPPOTrainer:
             prompt_ids.append(prompt_id)
             groups.setdefault(prompt_id, []).append(index)
 
+        # Phase 0.6 replays a completed on-disk rollout cache.  The live batch is
+        # only a carrier for the RPC and temperature metadata, so it must not be
+        # rejected when the newly generated rollouts happen to have zero GRPO
+        # advantage.  Repeat one row so every data-parallel actor enters replay.
+        if probe_mode == "phase06_crossfit_replay":
+            if len(batch) == 0:
+                raise ValueError("Phase 0.6 replay requires a non-empty carrier batch")
+            scores = batch.batch["token_level_scores"].sum(dim=-1)
+            selected = batch.select_idxs([0])
+            dp_size = self._get_dp_size(self.actor_rollout_wg, "actor")
+            return selected.repeat(repeat_times=dp_size, interleave=False), {
+                "full_gradient_probe/batch_prompts": float(len(groups)),
+                "full_gradient_probe/batch_rollouts": float(len(batch)),
+                "full_gradient_probe/batch_positive_rollouts": float(
+                    (scores >= 0.5).sum().item()
+                ),
+                "full_gradient_probe/batch_selected_prompts": 0.0,
+                "full_gradient_probe/batch_zero_advantage_prompts": 0.0,
+                "full_gradient_probe/cache_replay": 1.0,
+            }
+
         eligible: list[tuple[str, list[int]]] = []
         skipped_zero_advantage = 0
         for prompt_id, indices in groups.items():

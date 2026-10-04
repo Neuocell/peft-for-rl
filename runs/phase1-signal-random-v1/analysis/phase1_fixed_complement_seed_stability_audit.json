@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "status": "audited_before_seed43_evaluation_results",
+  "created_at": "2026-10-03T22:48:53+08:00",
+  "scope": "Claim-boundary audit for the active two-training-seed I0/I8 confirmation. This artifact does not change or authorize any active training, evaluation, allocation, gate, or controller action.",
+  "observation_boundary": {
+    "known": [
+      "Complete seed-42 I0/I8 training and evaluation results.",
+      "Seed-43 I0 training is active.",
+      "All Phase-1 allocations were prepared once with complement_seed 42."
+    ],
+    "unobserved": [
+      "All seed-43 I0 evaluation results.",
+      "All seed-43 I8 training and evaluation results.",
+      "Any I0/I8 result using a complement seed other than 42."
+    ]
+  },
+  "authoritative_evidence": {
+    "preparation": {
+      "path": "runs/phase1-signal-random-v1/analysis/training_allocations/phase1_training_preparation.json",
+      "sha256": "d60fc87775a5b1a0e1d27f922b6c4f2b100f0e8614faeb261afaf2c1c88dd386",
+      "complement_seed": 42
+    },
+    "launcher": {
+      "path": "scripts/local/start_phase1_signal_random_uniform_r32_4gpu.sh",
+      "sha256": "288c21a83028e92a60f17a2ee696ce4a989eaebd07db003f8dca181394e0617a",
+      "fixed_allocation_rule": "All training seeds read METHOD-specific rank_map.json and subspaces.safetensors from the same PHASE1_ARTIFACT_ROOT.",
+      "training_seed_rule": "TRAIN_SEED changes DATA_SEED, PPO_DATA_LOADER_SEED, and ROLLOUT_SEED only; it does not regenerate the allocation."
+    },
+    "wrapper": {
+      "path": "scripts/local/run_phase1_signal_random_step50_fullbench.sh",
+      "sha256": "e87909adbf9fcf985d4890b9dfd208aa53f700d1cba04e67b1a5979b291e0085"
+    },
+    "i0_allocation": {
+      "complement_seed": 42,
+      "random_complement_directions": 32,
+      "allocation_summary_sha256": "7d793a718f4640e54d6e10ca8201352a4eb2c06f80f61b7192fcc935621ecc88",
+      "rank_map_sha256": "9276de94a217c1fb1297d8531236b4d8a7113bafaa8f9482c31cb7f496c95927",
+      "subspace_sha256": "30e0a7eba1ff06b6798805c2feeb3eb21501c79ea53a71906889ea7051a2e276"
+    },
+    "i8_allocation": {
+      "complement_seed": 42,
+      "signal_directions": 8,
+      "random_complement_directions": 24,
+      "allocation_summary_sha256": "0c7ba14adca289fd1d88377d6c91afaab0f1b26914c03b088b0bddf78e55e131",
+      "rank_map_sha256": "2f20e70333a66f979d7630c83823304d9b9c196d65e86e74ce329200a87478f5",
+      "subspace_sha256": "63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135"
+    },
+    "contract_examples": {
+      "i8_seed42": {
+        "path": "runs/phase1-signal-random-v1/analysis/training_manifests/phase1_i8_uniform_r32_b64m16n8_step50_seed42_v3.json",
+        "sha256": "6d6ea833c79281fbf24f2d9673635d61d33a0ae2d89f2f47302ea09bba4038ed",
+        "training_seed": 42,
+        "rank_map_sha256": "2f20e70333a66f979d7630c83823304d9b9c196d65e86e74ce329200a87478f5",
+        "subspace_sha256": "63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135"
+      },
+      "i0_seed43_prepared": {
+        "path": "runs/phase1-signal-random-v1/analysis/training_manifests/phase1_i0_uniform_r32_b64m16n8_step50_seed43_v3.json",
+        "sha256_at_audit": "7e921eadbf4cd1d1d8297ce3781b69f0ee6277304bae178e6f693c19ca066a6c",
+        "training_seed": 43,
+        "rank_map_sha256": "9276de94a217c1fb1297d8531236b4d8a7113bafaa8f9482c31cb7f496c95927",
+        "subspace_sha256": "30e0a7eba1ff06b6798805c2feeb3eb21501c79ea53a71906889ea7051a2e276",
+        "mutable_note": "This prepared contract will change when finalized with the step-50 adapter; its embedded allocation hashes are the relevant evidence here."
+      }
+    }
+  },
+  "finding": {
+    "varied_by_training_seed": [
+      "Training-data shuffle order",
+      "PPO actor data-loader seed",
+      "On-policy rollout seed"
+    ],
+    "held_fixed_across_training_seeds": [
+      "P2 signal directions",
+      "I0 random orthogonal directions",
+      "I8 24-direction random complement",
+      "Rank maps and subspace tensor bytes",
+      "Evaluation snapshot and evaluation seed"
+    ],
+    "formal_interpretation": "The active seeds 42/43 experiment measures replication across two on-policy training trajectories under one fixed initialization draw. It does not measure robustness across random-complement or initialization seeds."
+  },
+  "claim_policy": {
+    "allowed_if_the_existing_two_seed_gate_passes": "Use only the frozen fixed-model/task wording: the improvement replicated on one held-out training seed and was positive on both tested training seeds.",
+    "disallowed": [
+      "Robust to initialization seed.",
+      "Stable across random-complement draws.",
+      "The 24 random complement directions are generally beneficial.",
+      "Stable across training seeds, models, tasks, domains, or datasets."
+    ]
+  },
+  "future_decision_boundary": {
+    "active_scope_change": false,
+    "no_new_run_authorized": true,
+    "if_i8_is_the_paper_method": "Initialization robustness requires fresh I0/I8 allocations with independently fixed complement seeds and matched training/evaluation protocols; changing TRAIN_SEED alone is insufficient.",
+    "if_i32_is_later_confirmed": "I32 has no random complement, so this specific robustness dimension is absent, but its post-selection Phase-1b status and fixed P2 discovery source must still be disclosed.",
+    "priority": "Complete the active two-seed gate and mandatory matched standard-LoRA baseline before spending compute on random-complement robustness. Do not reinterpret the current runs as covering that axis."
+  }
+}

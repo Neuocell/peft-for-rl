@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "status": "posthoc_single_seed_mechanism_diagnostic",
+  "created_at": "2026-10-03T23:03:51+08:00",
+  "scope": "Read-only parameter-space diagnostic of the four completed seed-42 Phase-1 endpoints. It is not a selection metric, gate, causal mechanism proof, or multi-seed result, and it does not authorize any run.",
+  "configuration": {
+    "methods": ["I0", "I8", "I16", "I32"],
+    "training_seed": 42,
+    "optimizer_steps": 50,
+    "modules": 196,
+    "rank": 32,
+    "alpha": 64,
+    "scaling": 2.0,
+    "lora_freeze_a": false,
+    "trainable_parameters_per_method": 36929536
+  },
+  "input_sha256": {
+    "I0": {
+      "adapter": "6f46a787faea8d65c259840024924a4f0f3b834d47b0fe8af867fcacad5164fc",
+      "initial_subspace": "30e0a7eba1ff06b6798805c2feeb3eb21501c79ea53a71906889ea7051a2e276",
+      "training_log": "3de946e6aaec9662be29b0a77555ee2963168cf999b8abc646c99fdcadb7d96f"
+    },
+    "I8": {
+      "adapter": "8d4dfe3ff8b93f75f777f0a774d812ffb23f06c5be78a46112f2a6a69325585a",
+      "initial_subspace": "63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135",
+      "training_log": "d5b8a0eecefd673cbe36a75915c447d66fc6821ec72a2aa23db32a1188285bb7"
+    },
+    "I16": {
+      "adapter": "df66bf8756b6888b1641b4b4f8766d33fcd1c1699f3c3aeb991faae83cdaffb6",
+      "initial_subspace": "9452bbe57076291a4f92b833277d2263b36c3d491091c5d9794680a22115ed35",
+      "training_log": "4beebd5e60c8df41d1e2be05e9cfa0f1a653fa1d8b30ffe16bdfe95c89c35015"
+    },
+    "I32": {
+      "adapter": "05fd90b6dd106587913c6016375ecf2f7ed3206e3b9959afccdfffec875923ac",
+      "initial_subspace": "a9e33ccadf14a0e6253ae22919fac86a4a812df6d4db27ee22a26ca852c4b9dc",
+      "training_log": "c33d3350fa44233505bbed3cafa246cfcaadba5f697852129f20e78e77518eb4"
+    }
+  },
+  "calculation": {
+    "effective_update": "DeltaW_m = 2 * B_m * A_m for each module m.",
+    "frobenius_without_materialization": "||B A||_F^2 = trace((B^T B)(A A^T)); aggregate DeltaW norm is the square root of the sum over modules after multiplying by scaling squared.",
+    "a_drift": "Global sqrt(sum_m ||A_final_m - A_initial_m||_F^2) divided by sqrt(sum_m ||A_initial_m||_F^2).",
+    "stable_rank": "Per-module ||B A||_F^2 / ||B A||_2^2, averaged equally over 196 modules; scaling cancels.",
+    "update_cosine": "Frobenius cosine after concatenating all module DeltaW tensors, computed exactly through rank-32 cross-Gram matrices.",
+    "initial_subspace_overlap": "Per-module ||A_initial_1 A_initial_2^T||_F^2 / 32, averaged equally over modules; all initial rows passed the existing orthonormality verifier.",
+    "spot_check": "For q_proj and down_proj in all four methods, explicit materialization of 2*B*A agreed with the rank-32 Frobenius formula within 9.1e-4 relative error in float32."
+  },
+  "method_results": {
+    "I0": {
+      "macro_avgk": 0.330162,
+      "mean_training_grad_norm": 0.0119165541,
+      "grad_norm_range": [0.0101974488, 0.0142809392],
+      "initial_a_fro": 79.19595924,
+      "final_a_fro": 79.19642698,
+      "a_drift_fro": 0.0193756812,
+      "a_drift_relative": 0.0002446549,
+      "final_b_fro": 0.0711891589,
+      "effective_delta_w_fro": 0.1423849598,
+      "mean_module_stable_rank": 5.65736338
+    },
+    "I8": {
+      "macro_avgk": 0.366161,
+      "mean_training_grad_norm": 0.0661837985,
+      "grad_norm_range": [0.0538659384, 0.0787356840],
+      "initial_a_fro": 79.19595969,
+      "final_a_fro": 79.19767609,
+      "a_drift_fro": 0.0130121354,
+      "a_drift_relative": 0.0001643030,
+      "final_b_fro": 0.0694695672,
+      "effective_delta_w_fro": 0.1389477656,
+      "mean_module_stable_rank": 11.97609931
+    },
+    "I16": {
+      "macro_avgk": 0.313498,
+      "mean_training_grad_norm": 0.0703623316,
+      "grad_norm_range": [0.0591802262, 0.0827306574],
+      "initial_a_fro": 79.19596055,
+      "final_a_fro": 79.19763215,
+      "a_drift_fro": 0.0113528406,
+      "a_drift_relative": 0.0001433513,
+      "final_b_fro": 0.0698327056,
+      "effective_delta_w_fro": 0.1396728654,
+      "mean_module_stable_rank": 12.38741331
+    },
+    "I32": {
+      "macro_avgk": 0.376479,
+      "mean_training_grad_norm": 0.0706942351,
+      "grad_norm_range": [0.0602570772, 0.0828455370],
+      "initial_a_fro": 79.19596380,
+      "final_a_fro": 79.19803250,
+      "a_drift_fro": 0.0121598092,
+      "a_drift_relative": 0.0001535408,
+      "final_b_fro": 0.0700336016,
+      "effective_delta_w_fro": 0.1400769811,
+      "mean_module_stable_rank": 11.76884311
+    }
+  },
+  "pairwise_results": {
+    "I0_vs_I8": {
+      "initial_subspace_overlap_mean": 0.75119668,
+      "effective_delta_w_cosine": 0.04488373,
+      "module_delta_norm_pearson": 0.99853451,
+      "module_delta_norm_spearman": 0.97235296,
+      "module_delta_norm_vector_cosine": 0.99957371
+    },
+    "I0_vs_I16": {
+      "initial_subspace_overlap_mean": 0.50465132,
+      "effective_delta_w_cosine": 0.02903095,
+      "module_delta_norm_pearson": 0.99814725,
+      "module_delta_norm_spearman": 0.96585199,
+      "module_delta_norm_vector_cosine": 0.99946266
+    },
+    "I0_vs_I32": {
+      "initial_subspace_overlap_mean": 0.01838636,
+      "effective_delta_w_cosine": 0.01447319,
+      "module_delta_norm_pearson": 0.99796415,
+      "module_delta_norm_spearman": 0.96907936,
+      "module_delta_norm_vector_cosine": 0.99941087
+    },
+    "I8_vs_I16": {
+      "initial_subspace_overlap_mean": 0.75116813,
+      "effective_delta_w_cosine": 0.04141717,
+      "module_delta_norm_pearson": 0.99930045,
+      "module_delta_norm_spearman": 0.97813354,
+      "module_delta_norm_vector_cosine": 0.99979925
+    },
+    "I8_vs_I32": {
+      "initial_subspace_overlap_mean": 0.26037820,
+      "effective_delta_w_cosine": 0.08096310,
+      "module_delta_norm_pearson": 0.99953952,
+      "module_delta_norm_spearman": 0.99033063,
+      "module_delta_norm_vector_cosine": 0.99986339
+    },
+    "I16_vs_I32": {
+      "initial_subspace_overlap_mean": 0.50466082,
+      "effective_delta_w_cosine": 0.06472634,
+      "module_delta_norm_pearson": 0.99841249,
+      "module_delta_norm_spearman": 0.97747691,
+      "module_delta_norm_vector_cosine": 0.99953902
+    }
+  },
+  "findings": [
+    "Final effective-update magnitude does not explain evaluation quality: all four global DeltaW Frobenius norms lie in [0.13895, 0.14238], while Macro Avg@k lies in [0.31350, 0.37648]; I0 has the largest update norm but is not the best method.",
+    "The 5.6-5.9x larger logged gradient norms for signal-informed methods versus I0 do not produce larger final DeltaW. They reflect factor/subspace parameterization and optimization geometry rather than a monotone measure of training strength or generalization.",
+    "A changes by only 0.014-0.024 percent in global Frobenius norm. Despite lora_freeze_a=false, these 50-step runs behave approximately as fixed-A subspace training with learning concentrated in B.",
+    "The distribution of update magnitudes across the same 196 modules is nearly identical across methods (Pearson 0.9980-0.9995; magnitude-vector cosine above 0.9994), but full update directions are almost orthogonal (cosine 0.0145-0.0810). The main differentiator is direction within modules, not which modules receive more update norm.",
+    "Signal-informed methods have higher mean module stable rank than I0, but I16 has the highest value and the worst Macro Avg@k. Stable rank is descriptive and is not a performance proxy.",
+    "The nested initial-overlap pattern and low final-update cosine support a finite-step path-interaction interpretation, but do not identify a causal mechanism."
+  ],
+  "limitations": [
+    "This is a post-hoc diagnostic on one training seed and cannot enter candidate selection or any fixed gate.",
+    "Parameter-space Frobenius geometry does not account for layer activation covariance, base-weight scale, or nonlinear function-space effects.",
+    "The four methods share training prompts and seed but generate different on-policy responses after their policies diverge; final update-direction differences are an outcome of both initialization and trajectory feedback.",
+    "A reusable checked analysis script should be added only after the active provenance-locked controller terminates if these numbers are used in the paper."
+  ],
+  "execution_policy": {
+    "active_scope_change": false,
+    "automatic_launch": false,
+    "no_new_run_authorized": true
+  }
+}

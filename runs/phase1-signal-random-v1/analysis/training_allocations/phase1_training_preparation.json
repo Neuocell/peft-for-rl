@@ -1,0 +1,73 @@
+{
+  "allocations": {
+    "I0": {
+      "allocation_summary_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I0_uniform_r32/allocation_summary.json",
+      "allocation_summary_sha256": "7d793a718f4640e54d6e10ca8201352a4eb2c06f80f61b7192fcc935621ecc88",
+      "directory": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I0_uniform_r32",
+      "random_complement_directions": 32,
+      "rank_map_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I0_uniform_r32/rank_map.json",
+      "rank_map_sha256": "9276de94a217c1fb1297d8531236b4d8a7113bafaa8f9482c31cb7f496c95927",
+      "signal_directions": 0,
+      "subspace_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I0_uniform_r32/subspaces.safetensors",
+      "subspace_sha256": "30e0a7eba1ff06b6798805c2feeb3eb21501c79ea53a71906889ea7051a2e276"
+    },
+    "I16": {
+      "allocation_summary_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I16_uniform_r32/allocation_summary.json",
+      "allocation_summary_sha256": "f4648ec41a7148ed822bb094ec16ac344351cf47253596cc05d18f3545c4bafe",
+      "directory": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I16_uniform_r32",
+      "random_complement_directions": 16,
+      "rank_map_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I16_uniform_r32/rank_map.json",
+      "rank_map_sha256": "cd40feb4847364f0c946450757a8cba4af9b27f00011b268ec831eb415705c89",
+      "signal_directions": 16,
+      "subspace_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I16_uniform_r32/subspaces.safetensors",
+      "subspace_sha256": "9452bbe57076291a4f92b833277d2263b36c3d491091c5d9794680a22115ed35"
+    },
+    "I32": {
+      "allocation_summary_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I32_uniform_r32/allocation_summary.json",
+      "allocation_summary_sha256": "028045d33910be3ace15fc373ce9efadc6f5be58b48431f7bc51a9fd928ddcc8",
+      "directory": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I32_uniform_r32",
+      "random_complement_directions": 0,
+      "rank_map_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I32_uniform_r32/rank_map.json",
+      "rank_map_sha256": "c6c7fbd5e765f2367d745c8380da862b3e6a84e34fb89a59989ef1fb3472182d",
+      "signal_directions": 32,
+      "subspace_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I32_uniform_r32/subspaces.safetensors",
+      "subspace_sha256": "a9e33ccadf14a0e6253ae22919fac86a4a812df6d4db27ee22a26ca852c4b9dc"
+    },
+    "I8": {
+      "allocation_summary_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I8_uniform_r32/allocation_summary.json",
+      "allocation_summary_sha256": "0c7ba14adca289fd1d88377d6c91afaab0f1b26914c03b088b0bddf78e55e131",
+      "directory": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I8_uniform_r32",
+      "random_complement_directions": 24,
+      "rank_map_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I8_uniform_r32/rank_map.json",
+      "rank_map_sha256": "2f20e70333a66f979d7630c83823304d9b9c196d65e86e74ce329200a87478f5",
+      "signal_directions": 8,
+      "subspace_path": "/root/peft-for-rl/runs/phase1-signal-random-v1/analysis/training_allocations/I8_uniform_r32/subspaces.safetensors",
+      "subspace_sha256": "63842778dad6064beeae7c5de6a497e2bfd58d83ee93c2f5f567592045950135"
+    }
+  },
+  "complement_seed": 42,
+  "method": "phase1_signal_random_orthogonal_a_preparation_v1",
+  "phase05_gate_sha256": "0439fc68c2a924ada78d720ce0d66857a93458ac4e8b22c960c4a35475c6b388",
+  "phase06_outcome_kind": "invalid_replay_fallback",
+  "phase06_outcome_path": "/root/peft-for-rl/runs/phase0-gradient-diagnostics-v1/analysis/phase06_crossfit_replay_d64c32a16_r32_seed42_v1/phase06_invalidation.json",
+  "phase06_outcome_sha256": "7eac808c53ad02adbc0a90ea5470736705bb8bbfb777c82a3cc8e6a614c4c5f4",
+  "replay_artifact": "/root/peft-for-rl/runs/phase0-gradient-diagnostics-v1/analysis/phase06_crossfit_replay_d64c32a16_r32_seed42_v1",
+  "replay_validation_sha256": "b4e188ac2157c80abe42c7dad96372f5adee061211af72d0bda6dfb24ccb82c6",
+  "schema_version": 1,
+  "signal_candidate_sha256": "a9e33ccadf14a0e6253ae22919fac86a4a812df6d4db27ee22a26ca852c4b9dc",
+  "signal_counts": [
+    0,
+    8,
+    16,
+    32
+  ],
+  "signal_method": "P2",
+  "source_artifact": "/root/peft-for-rl/runs/phase0-gradient-diagnostics-v1/analysis/phase05_hybrid_shared_rollout_d64c32a16_r32_seed42_v3",
+  "source_probe_validation": {
+    "module_count": 196.0,
+    "orthogonality_error_max": 9.5367431640625e-07
+  },
+  "source_validation_sha256": "ad583fb11b8302cb7ef1c7abd2b8279160027e88366660636b52aade32913144",
+  "status": "ready",
+  "uniform_rank": 32
+}

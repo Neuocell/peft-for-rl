@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "status": "conditionally_preregistered_before_seed43_or_seed44_evaluation_results",
+  "created_at": "2026-10-03T18:50:04+08:00",
+  "scope": "Optional Phase-1b confirmation of the preregistered signal-only I32 endpoint. This does not alter the active Phase-1 I8 selection, cannot rescue a failed Phase-1 gate, and does not authorize an automatic launch.",
+  "observation_boundary": {
+    "known": [
+      "Seed-42 I0, I8, I16, and I32 training and six-benchmark results.",
+      "I8 is the preregistered mixed candidate selected for Phase-1 multi-seed confirmation.",
+      "I32 has the highest seed-42 macro Avg@k and positive deltas on all six benchmarks, but was preregistered as ineligible for Phase-1 candidate selection.",
+      "Seed-43 I0 training has started."
+    ],
+    "unobserved": [
+      "All seed-43 and seed-44 six-benchmark evaluation results for I0 and I8.",
+      "All seed-43 and seed-44 I32 training and evaluation results."
+    ]
+  },
+  "rationale": "The seed-42 ordering I32 > I8 > I0 > I16 leaves the necessity of the random complement unresolved. A later I32 confirmation must be specified before held-out evaluation results, while remaining separate from the original Phase-1 candidate-selection claim.",
+  "launch_policy": {
+    "automatic_launch": false,
+    "earliest_launch": "Only after the active Phase-1 controller terminates and all I0/I8 seeds 42/43/44 records pass their formal verifiers and frozen gates.",
+    "required_capacity_check": true,
+    "required_user_or_experiment_owner_decision": true,
+    "do_not_launch_if": [
+      "The active controller or any provenance-locked Phase-1 process is still running.",
+      "Either seed-43 or seed-44 I0 baseline records are missing or unverified.",
+      "There is insufficient capacity for the fixed checkpoint-retention protocol.",
+      "The experiment owner decides that matched standard LoRA is the higher-priority use of compute."
+    ]
+  },
+  "fixed_method": {
+    "method": "I32",
+    "signal_directions": 32,
+    "random_complement_directions": 0,
+    "module_count": 196,
+    "uniform_rank": 32,
+    "alpha": 64,
+    "scaling": 2.0,
+    "dropout": 0.0,
+    "signal_source": "The same immutable P2 subspace used by seed-42 I32; no refit, rotation, reselection, or seed-dependent signal construction is allowed."
+  },
+  "fixed_training_and_evaluation_protocol": {
+    "new_training_seeds": [43, 44],
+    "reuse_existing_seed42_i32": true,
+    "reuse_verified_i0_baselines": [42, 43, 44],
+    "optimizer_steps": 50,
+    "prompts_per_step": 64,
+    "responses_per_prompt": 8,
+    "checkpoint_steps": [25, 50],
+    "rollout_seed_equals_training_seed": true,
+    "evaluation_seed": 42,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "max_new_tokens": 32768,
+    "samples_small": 32,
+    "samples_large": 4,
+    "benchmarks": ["aime24", "aime25", "amc23", "hmmt_feb", "math500", "minerva"],
+    "records_per_evaluation": 7248,
+    "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+  },
+  "i32_vs_i0_confirmation": {
+    "primary_gate": {
+      "training_seeds": [42, 43, 44],
+      "mean_macro_delta_min": 0.005,
+      "positive_seed_count_min": 2,
+      "worst_seed_delta_min": -0.002,
+      "hierarchical_bootstrap_ci95_low_strictly_gt": 0.0,
+      "positive_benchmark_mean_count_min": 4,
+      "worst_benchmark_mean_delta_min": -0.02,
+      "all_conditions_required": true
+    },
+    "heldout_unfiltered_gate": {
+      "training_seeds": [43, 44],
+      "both_seed_macro_deltas_strictly_gt": 0.0,
+      "mean_macro_delta_min": 0.005,
+      "positive_benchmark_mean_count_min": 4,
+      "worst_benchmark_mean_delta_min": -0.02,
+      "all_conditions_required": true
+    },
+    "heldout_overlap_filtered_gate": {
+      "training_seeds": [43, 44],
+      "exclusion_source": "runs/phase1-signal-random-v1/analysis/phase1_seed42_train_eval_overlap_sensitivity.json",
+      "exclusion_source_sha256": "65e39bc856e075240964e0aec4e20d73231686214861675a60e8790a444d5767",
+      "fixed_exclusion_set": "conservative_union",
+      "excluded_problem_count": 30,
+      "both_seed_macro_deltas_strictly_gt": 0.0,
+      "mean_macro_delta_min": 0.005,
+      "positive_benchmark_mean_count_min": 4,
+      "worst_benchmark_mean_delta_min": -0.02,
+      "all_conditions_required": true
+    }
+  },
+  "i8_vs_i32_mechanism_comparison": {
+    "role": "Secondary confirmatory comparison; never retroactively changes the original Phase-1 selector.",
+    "required_outputs": [
+      "Per-seed exactly matched paired problem-bootstrap comparisons for seeds 42, 43, and 44.",
+      "Three-seed hierarchical bootstrap comparison.",
+      "Held-out seeds 43/44 unfiltered comparison.",
+      "Held-out seeds 43/44 fixed 30-problem-filtered comparison."
+    ],
+    "random_complement_benefit_claim_gate": {
+      "orientation": "I8 minus I32",
+      "heldout_seed43_delta_strictly_gt": 0.0,
+      "heldout_seed44_delta_strictly_gt": 0.0,
+      "heldout_mean_macro_delta_min": 0.005,
+      "positive_heldout_benchmark_mean_count_min": 4,
+      "worst_heldout_benchmark_mean_delta_min": -0.02,
+      "must_pass_unfiltered_and_fixed_overlap_filtered": true
+    },
+    "signal_only_benefit_claim_gate": {
+      "orientation": "I32 minus I8",
+      "heldout_seed43_delta_strictly_gt": 0.0,
+      "heldout_seed44_delta_strictly_gt": 0.0,
+      "heldout_mean_macro_delta_min": 0.005,
+      "positive_heldout_benchmark_mean_count_min": 4,
+      "worst_heldout_benchmark_mean_delta_min": -0.02,
+      "must_pass_unfiltered_and_fixed_overlap_filtered": true
+    },
+    "no_directional_claim": "If neither symmetric held-out gate passes, report both methods without claiming that the random complement or signal-only endpoint is superior."
+  },
+  "claim_policy": {
+    "if_original_i8_phase1_fails": "The original Phase-1 method fails. A later I32 pass is a separate post-selection Phase-1b result and must not be presented as rescuing or satisfying the original I8 gate.",
+    "if_i8_passes_and_i32_fails": "I8 is the stable Phase-1 method; the random complement remains a plausible contributor, but a direct benefit claim additionally requires the I8-minus-I32 mechanism gate.",
+    "if_i8_fails_and_i32_passes": "I32 is a separately confirmed signal-only follow-up candidate. The paper must disclose seed-42 endpoint observation before Phase-1b and cannot describe I32 as the preregistered Phase-1 winner.",
+    "if_both_pass": "Both are stable signal-informed initializations. Choose the paper framing from the direct held-out I8-versus-I32 mechanism gate, not from seed-42 ranking.",
+    "if_both_fail": "The current P2 initialization family lacks the required training-seed stability and cannot support the main method claim."
+  },
+  "priority_relative_to_paper_baselines": "Matched standard PEFT LoRA r32 remains mandatory for a paper superiority claim. Phase-1b I32 is the mechanism-control priority; standard LoRA is the external-baseline priority. Their launch order must be chosen from compute capacity after Phase 1, not from favorable intermediate values.",
+  "researcher_degrees_of_freedom": "No seed, threshold, comparison orientation, exclusion set, averaging unit, or claim-policy branch may be changed after observing seed-43/44 evaluation results."
+}
