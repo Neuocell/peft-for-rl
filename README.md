@@ -4,8 +4,19 @@ This repository is a self-contained RLVR project built on top of `verl`.
 It includes the training framework code, PEFT method implementations, launch
 scripts, evaluation helpers, and reproducibility files needed to run the
 experiments on a fresh machine.
+
+> **New RLVR experiments must follow the frozen
+> [RLVR experiment protocol](RLVR_PROTOCOL.md).** Its launcher permits only
+> learning rate, PEFT method, and rank as scientific variables and verifies the
+> pinned seed-42 dataloader order over the original 17,917-row DAPO-Math file
+> before execution.
+
 Supported PEFT variants currently include LoRA, RLPO-init, RL gradient-subspace
 initialization, AdaLoRA, OFT, GeoRA, BISO, BOET, Skew, and SPO.
+
+For the complete experiment history, evidence grades, current Phase-1 results,
+failed branches, and paper-planning map, start with the
+[experiment documentation index](docs/experiments/README.md).
 
 ## Layout
 
@@ -38,6 +49,18 @@ pip install -r requirements-eval.txt
 ```
 
 ## Training
+
+For protocol-compliant experiments, use only:
+
+```bash
+LR=1e-5 METHOD=lora LORA_RANK=32 TARGET_STEP=50 \
+  bash scripts/local/run_rlvr_protocol_1p5b_4gpu.sh
+```
+
+This is a dry run by default. Set `DRY_RUN=0` to launch after reviewing the
+verified contract and generated command. The lower-level commands below are
+retained for historical reproduction and implementation debugging; they are
+not the entry point for new matched experiments.
 
 On this machine, the isolated runtime is rooted at `runs/`: model files,
 datasets, checkpoints, Ray state, and logs no longer use

@@ -50,6 +50,8 @@ from verl.utils.fsdp_utils import (
     collect_biso_full_params,
     collect_boet_full_params,
     collect_lora_params,
+    collect_nora_dora_full_params,
+    collect_nora_doft_full_params,
     collect_peft_full_params,
     collect_skew_full_params,
     collect_spo_full_params,
@@ -71,6 +73,9 @@ from verl.utils.peft_adalora import build_adalora_config, update_and_allocate
 from verl.utils.peft_biso import apply_biso_adapters
 from verl.utils.peft_boet import apply_boet_adapters
 from verl.utils.peft_geora import apply_geora_initialization
+from verl.utils.peft_lora_init import create_standard_lora_model, standard_lora_use_meta_tensor
+from verl.utils.peft_nora_dora import apply_nora_dora_adapters
+from verl.utils.peft_nora_doft import apply_nora_doft_adapters
 from verl.utils.peft_skew import apply_skew_adapters
 from verl.utils.peft_spo import apply_spo_adapters
 from verl.utils.peft_tinylora import apply_tinylora_adapters
@@ -143,6 +148,8 @@ class FSDPEngine(BaseEngine):
                 self._peft_type == "oft"
                 and (self.model_config.get("oft_block_size", 0) > 0 or self.model_config.get("oft_rank", 0) > 0)
             )
+            or (self._peft_type == "nora_dora" and self.model_config.get("nora_dora_rank", 0) > 0)
+            or (self._peft_type == "nora_doft" and self.model_config.get("nora_doft_rank", 0) > 0)
             or (self._peft_type == "skew" and self.model_config.get("skew_rank", 0) > 0)
             or (self._peft_type == "boet" and self.model_config.get("boet_rank", 0) > 0)
             or (self._peft_type == "biso" and self.model_config.get("biso_block_size", 0) > 0)
@@ -157,7 +164,7 @@ class FSDPEngine(BaseEngine):
             if self.engine_config.strategy != "fsdp":
                 raise NotImplementedError("Official AdaLoRA allocation currently requires FSDP1, not FSDP2")
             self.engine_config.use_orig_params = True
-        if self._peft_type == "tinylora":
+        if self._peft_type in {"tinylora", "nora_doft", "nora_dora"}:
             self.engine_config.use_orig_params = True
 
         if self.engine_config.entropy_from_logits_with_chunking:
@@ -244,8 +251,11 @@ class FSDPEngine(BaseEngine):
         torch_dtype = PrecisionType.to_dtype(torch_dtype)
 
         init_context = get_init_weight_context_manager(
-            use_meta_tensor=not self.model_config.hf_config.tie_word_embeddings
-            and self._peft_type not in ("geora", "tinylora"),
+            use_meta_tensor=standard_lora_use_meta_tensor(
+                not self.model_config.hf_config.tie_word_embeddings
+                and self._peft_type not in ("geora", "tinylora", "nora_doft", "nora_dora"),
+                self.model_config.get("lora_init_seed"),
+            ),
             mesh=self.device_mesh,
         )
 
@@ -324,7 +334,21 @@ class FSDPEngine(BaseEngine):
                         "lora_dropout": self.model_config.get("lora_dropout", 0.0),
                     }
                 )
-                module = get_peft_model(module, LoraConfig(**peft_config))
+                module, init_audit = create_standard_lora_model(
+                    module,
+                    LoraConfig(**peft_config),
+                    init_seed=self.model_config.get("lora_init_seed"),
+                    init_mode=self.model_config.get("lora_init_mode", "standard"),
+                    audit_path=self.model_config.get("lora_init_audit_path"),
+                    peer_audit_path=self.model_config.get("lora_init_peer_audit_path"),
+                )
+                if self.rank == 0 and init_audit is not None:
+                    print(
+                        "Applied audited standard-LoRA initialization: "
+                        f"seed={init_audit['init_seed']}, modules={init_audit['module_count']}, "
+                        f"parameters={init_audit['trainable_parameters']}, "
+                        f"sha256={init_audit['canonical_sha256']}"
+                    )
             elif self._peft_type == "geora":
                 peft_config.update(
                     {
@@ -349,6 +373,24 @@ class FSDPEngine(BaseEngine):
                     }
                 )
                 module = get_peft_model(module, OFTConfig(**peft_config))
+            elif self._peft_type == "nora_doft":
+                stats = apply_nora_doft_adapters(module, self.model_config)
+                print(
+                    "Applied NoRA-DOFT adapters: "
+                    f"layers={stats.num_layers}, trainable_params={stats.num_parameters}, "
+                    f"generator_rank={stats.generator_rank}, block_size={stats.block_size}, "
+                    f"normalization_error_max={stats.normalization_error_max:.3e}, "
+                    f"normalization={self.model_config.get('nora_doft_normalization', 'init')}, "
+                    f"magnitude={self.model_config.get('nora_doft_use_magnitude', True)}"
+                )
+            elif self._peft_type == "nora_dora":
+                stats = apply_nora_dora_adapters(module, self.model_config)
+                print(
+                    "Applied NoRA-DoRA adapters: "
+                    f"layers={stats.num_layers}, trainable_params={stats.num_parameters}, "
+                    f"rank={stats.rank}, normalization_error_max={stats.normalization_error_max:.3e}, "
+                    f"normalization={self.model_config.get('nora_dora_normalization', 'init')}"
+                )
             elif self._peft_type == "adalora":
                 adalora_config = build_adalora_config(
                     self.model_config, total_training_steps=self.optimizer_config.total_training_steps
@@ -802,6 +844,12 @@ class FSDPEngine(BaseEngine):
             skip_weight_key_conversion = True
         elif self._peft_type == "boet":
             params = collect_boet_full_params(module=self.module)
+            skip_weight_key_conversion = True
+        elif self._peft_type == "nora_doft":
+            params = collect_nora_doft_full_params(module=self.module)
+            skip_weight_key_conversion = True
+        elif self._peft_type == "nora_dora":
+            params = collect_nora_dora_full_params(module=self.module)
             skip_weight_key_conversion = True
         elif self._peft_type == "biso":
             params = collect_biso_full_params(module=self.module)

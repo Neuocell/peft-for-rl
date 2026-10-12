@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "experiment_family": "multi_timescale_delta_w_stability",
+  "runs": {
+    "S0": {
+      "experiment_name": "delta_stability_s0_standard_r32_seed42_v1",
+      "initialization": "peft_standard_kaiming_uniform_A_zero_B"
+    },
+    "O0": {
+      "experiment_name": "delta_stability_o0_random_orthogonal_r32_seed42_v1",
+      "initialization": "same_seeded_standard_A_then_row_QR_frobenius_norm_matched_zero_B"
+    }
+  },
+  "training": {
+    "base_model": "DeepSeek-R1-Distill-Qwen-1.5B",
+    "dataset": "DAPO-Math-17k boxed",
+    "algorithm": "GRPO",
+    "target_modules": "all-linear",
+    "expected_module_count": 196,
+    "rank": 32,
+    "alpha": 64,
+    "scaling": 2.0,
+    "dropout": 0.0,
+    "train_A": true,
+    "train_B": true,
+    "global_prompt_batch": 64,
+    "ppo_prompt_mini_batch": 16,
+    "rollouts_per_prompt": 8,
+    "ppo_epochs": 1,
+    "optimizer_updates_per_trainer_step": 4,
+    "learning_rate": 1e-6,
+    "scheduler": "constant",
+    "warmup_steps": 0,
+    "weight_decay": 0.0,
+    "loss_aggregation": "token-mean",
+    "max_prompt_tokens": 1024,
+    "max_response_tokens": 8192,
+    "training_seed": 42,
+    "data_seed": 42,
+    "ppo_dataloader_seed": 42,
+    "rollout_seed": 42,
+    "trainer_steps": 100,
+    "optimizer_updates": 400,
+    "checkpoint_steps": [0, 25, 50, 100],
+    "snapshot_every_trainer_steps": 1
+  },
+  "stability_analysis": {
+    "object": "DeltaW_t = (alpha/r) * B_t * A_t",
+    "horizons": [1, 5, 10, 25, 50],
+    "energy_thresholds": [0.9, 0.95],
+    "activation_calibration_prompts": 16,
+    "activation_tokens_per_prompt_per_module": 16,
+    "activation_source": "fixed benchmark snapshot prompts replayed through the frozen base model"
+  },
+  "evaluation": {
+    "steps": [25, 50, 100],
+    "benchmarks": ["aime24", "aime25", "amc23", "hmmt_feb", "math500", "minerva"],
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "max_new_tokens": 32768,
+    "seed": 42,
+    "samples_per_problem_small": 32,
+    "samples_per_problem_large": 4,
+    "expected_total_samples": 7248
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "status": "canonical_docs_experiment_index_as_of_2026_10_05",
+  "updated_at": "2026-10-05T00:00:00Z",
+  "scope": "/home/wangls/peft-for-rl/docs/*.md",
+  "authority_order": [
+    "raw_records_summaries_contracts_postverify_and_frozen_specs",
+    "run_specific_audits_and_retrospectives_under_runs_analysis",
+    "docs_experiments_canonical_synthesis",
+    "legacy_docs_design_and_runtime_notes"
+  ],
+  "canonical_synthesis": {
+    "navigation": "docs/experiments/README.md",
+    "timeline": "docs/experiments/experiment_timeline_202607_202610_zh.md",
+    "method_results_registry": "docs/experiments/method_and_results_registry_zh.md",
+    "open_questions_and_paper_map": "docs/experiments/open_questions_and_paper_map_zh.md"
+  },
+  "evidence_indexes": {
+    "historical_fullbench_inventory": {
+      "path": "runs/phase1-signal-random-v1/analysis/local_fullbench_evidence_inventory_20261004.json",
+      "entries": 119,
+      "active_repo": 23,
+      "legacy_tina": 96,
+      "with_records": 45,
+      "summary_only": 74,
+      "grade_counts": {"A": 3, "A-reference": 1, "B": 23, "C": 72, "D": 20},
+      "snapshot_note": "Predates completion of seed43 I8 rev4 and I32 v1; use the Phase-1 index for those runs."
+    },
+    "current_phase1": {
+      "path": "runs/phase1-signal-random-v1/analysis/experiment_evidence_index_20261005.json",
+      "status": "canonical_evidence_index_as_of_2026_10_05"
+    }
+  },
+  "documents": [
+    {"path":"docs/environment_eval.md","type":"environment","time_range":"current_runtime_guidance","status":"active_reference","authoritative_for":["evaluation_environment_guidance","benchmark_loading_and_eval_runtime"],"superseded_by":null,"contains_completed_results":false},
+    {"path":"docs/environment_train.md","type":"environment","time_range":"current_runtime_guidance","status":"active_reference","authoritative_for":["training_environment_guidance"],"superseded_by":null,"contains_completed_results":false},
+    {"path":"docs/experiment_config.md","type":"historical_protocol","time_range":"2026-07_to_2026-09_baseline_era","status":"historical_not_phase1_frozen_protocol","authoritative_for":["stable_baseline_recipe_context"],"superseded_by":"runs/phase1-signal-random-v1/analysis/method_and_results_matrix_20261005.md","contains_completed_results":false},
+    {"path":"docs/full_gradient_rl_probe_v1_zh.md","type":"method_design","time_range":"2026-09","status":"design_and_implementation_reference","authoritative_for":["full_gradient_probe_v1_definition"],"superseded_by":"docs/experiments/method_and_results_registry_zh.md","contains_completed_results":false},
+    {"path":"docs/local_gradient_subspace_experiments_2026_09_zh.md","type":"historical_experiment_archive","time_range":"2026-09-01_to_2026-10-04T13:31+08:00","status":"retained_archive_top_status_superseded","authoritative_for":["september_probe_configs","historical_artifact_paths","phase0_design_history"],"superseded_by":"docs/experiments/experiment_timeline_202607_202610_zh.md","contains_completed_results":true},
+    {"path":"docs/local_runtime_zh.md","type":"environment","time_range":"2026-09_to_2026-10_local_runtime","status":"active_runtime_reference_with_point_in_time_details","authoritative_for":["local_repository_and_runtime_layout"],"superseded_by":null,"contains_completed_results":false},
+    {"path":"docs/phase1_seed43_i8_migration_zh.md","type":"migration_archive","time_range":"2026-10-04_pre_rev4","status":"completed_historical_plan","authoritative_for":["seed43_i8_handoff_contents","rev3_migration_provenance"],"superseded_by":"runs/phase1-signal-random-v1/analysis/experiment_timeline_20261005.md","contains_completed_results":false},
+    {"path":"docs/quickstart_baselines_zh.md","type":"historical_runbook","time_range":"2026-07_to_2026-09_baseline_era","status":"historical_baseline_guide","authoritative_for":["stable_lora_oft_launcher_context"],"superseded_by":"docs/experiments/README.md","contains_completed_results":true},
+    {"path":"docs/results.md","type":"navigation","time_range":"as_of_2026-10-05","status":"canonical_entrypoint_only","authoritative_for":["experiment_document_navigation"],"superseded_by":"docs/experiments/method_and_results_registry_zh.md","contains_completed_results":false},
+    {"path":"docs/rl_adaptive_rank_minimal_experiment_zh.md","type":"research_design_and_diagnostics","time_range":"2026-09","status":"design_reference_not_current_result_summary","authoritative_for":["adaptive_rank_hypotheses","diagnostic_design"],"superseded_by":"docs/experiments/method_and_results_registry_zh.md","contains_completed_results":true},
+    {"path":"docs/rl_code_agent_compute_survey_zh.md","type":"future_experiment_survey","time_range":"2026-09-12","status":"planning_reference_no_completed_cross_domain_experiment","authoritative_for":["code_and_agent_task_compute_estimates"],"superseded_by":null,"contains_completed_results":false},
+    {"path":"docs/spar_lora_v0_static_zh.md","type":"method_design","time_range":"2026-09","status":"design_reference_results_tracked_elsewhere","authoritative_for":["spar_lora_v0_static_definition"],"superseded_by":"docs/experiments/method_and_results_registry_zh.md","contains_completed_results":false},
+    {"path":"docs/verl_adalora_code_walkthrough_zh.md","type":"implementation_reference","time_range":"2026-09","status":"implementation_reference_no_valid_final_method_run","authoritative_for":["verl_adalora_integration_path"],"superseded_by":"runs/analysis/adalora_experiment_retrospective_20260914/report.md","contains_completed_results":false},
+    {"path":"docs/verl_grpo_training_pipeline_zh.md","type":"implementation_reference","time_range":"2026-09","status":"active_code_walkthrough_with_historical_example_config","authoritative_for":["verl_grpo_execution_path"],"superseded_by":null,"contains_completed_results":false},
+    {"path":"docs/verl_rl_dominant_gradient_atom_probe_zh.md","type":"method_design","time_range":"2026-09","status":"design_reference_completed_result_tracked_elsewhere","authoritative_for":["dominant_atom_probe_definition"],"superseded_by":"runs/analysis/rlpo_oracle_gradient_probe_experiment_summary_20260921/report.md","contains_completed_results":false},
+    {"path":"docs/verl_rl_gradient_subspace_init_zh.md","type":"method_design_and_implementation","time_range":"2026-09","status":"historical_v1_design_reference","authoritative_for":["random_projection_gradient_subspace_identity","v1_artifact_design"],"superseded_by":"docs/experiments/method_and_results_registry_zh.md","contains_completed_results":false},
+    {"path":"docs/verl_rl_gradient_subspace_stable_snr_v2_zh.md","type":"method_design","time_range":"2026-09","status":"design_reference_fixed_a_gate_rejected","authoritative_for":["stable_snr_v2_v3_probe_definition"],"superseded_by":"runs/analysis/rlpo_oracle_gradient_probe_experiment_summary_20260921/report.md","contains_completed_results":false},
+    {"path":"docs/verl_rlpo_init_zh.md","type":"implementation_reference","time_range":"2026-09_pre_completion","status":"implementation_reference_status_section_superseded","authoritative_for":["rlpo_initialization_definition","verl_integration"],"superseded_by":"runs/analysis/rlpo_experiment_retrospective_20260914/report.md","contains_completed_results":false},
+    {"path":"docs/windowed_adam_consensus_probe_zh.md","type":"method_design","time_range":"2026-09","status":"design_reference_completed_result_tracked_elsewhere","authoritative_for":["windowed_adam_consensus_definition"],"superseded_by":"docs/experiments/method_and_results_registry_zh.md","contains_completed_results":false}
+  ]
+}

@@ -40,6 +40,24 @@ logger = logging.getLogger(__file__)
 logger.setLevel(os.getenv("VERL_LOGGING_LEVEL", "INFO"))
 
 
+def _discover_previous_actor_checkpoints(local_path: str) -> list[str]:
+    checkpoint_root = os.path.dirname(os.path.dirname(os.path.abspath(local_path)))
+    current_path = os.path.abspath(local_path)
+    discovered_paths = []
+    if os.path.isdir(checkpoint_root):
+        for entry in os.scandir(checkpoint_root):
+            if not entry.is_dir() or not entry.name.startswith("global_step_"):
+                continue
+            try:
+                step = int(entry.name.removeprefix("global_step_"))
+            except ValueError:
+                continue
+            actor_path = os.path.join(entry.path, "actor")
+            if os.path.isdir(actor_path) and os.path.abspath(actor_path) != current_path:
+                discovered_paths.append((step, actor_path))
+    return [path for _, path in sorted(discovered_paths)]
+
+
 @dataclass
 class FSDPConfig:
     """Configuration for FSDP checkpointing.
@@ -200,6 +218,12 @@ class FSDPCheckpointManager(BaseCheckpointManager):
 
         # record the previous global step
         self.previous_global_step = global_step
+
+        # A resumed trainer starts with an empty in-memory save history. Rebuild
+        # it from sibling global_step_* directories so retention also applies
+        # across separate processes, not only within one uninterrupted run.
+        if self.rank == 0 and max_ckpt_to_keep and not self.previous_saved_paths:
+            self.previous_saved_paths = _discover_previous_actor_checkpoints(local_path)
 
         # remove previous local_path, only rank 0 should do this
         if (

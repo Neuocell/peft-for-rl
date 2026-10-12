@@ -1,5 +1,7 @@
 # Windowed Adam Consensus Probe 设计
 
+> **状态（2026-10-05）：方法设计。** 历史 windowed-consensus full-bench 已完成，但本文本身不是当前结果入口；数值和比较边界见 [`experiments/method_and_results_registry_zh.md`](experiments/method_and_results_registry_zh.md)。
+
 ## 目标
 
 该实验只检验“初始化子空间是否具有 RL 泛化性”，第一轮固定使用 uniform-r8，

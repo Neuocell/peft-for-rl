@@ -1,5 +1,7 @@
 # RL 梯度子空间探测 v3：独立验证、分组预算与固定 A 训练
 
+> **状态（2026-10-05）：设计说明，fixed-A gate 已拒绝。** v2 出现模块族预算塌缩；v3 虽完成 probe，但独立 held-out capture 不足，fixed-A 正式训练未启动。trainable-A pilot 没有 full-bench。详见 [`experiments/method_and_results_registry_zh.md`](experiments/method_and_results_registry_zh.md)。
+
 ## 目标
 
 v1 使用每个 batch 独立随机的输出投影，并累计无符号 sketch 能量。它能够找到一个宽的候选

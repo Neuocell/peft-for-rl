@@ -1,5 +1,7 @@
 # SPAR-LoRA v0-static 设计与实验说明
 
+> **状态（2026-10-05）：历史方法设计。** 本文保留 SPAR v0-static 定义；已完成结果及其 allocator 证据边界统一登记在 [`experiments/method_and_results_registry_zh.md`](experiments/method_and_results_registry_zh.md)。
+
 ## 1. 目标和边界
 
 SPAR-LoRA（Stable Probe-and-Allocate LoRA）v0-static 在训练开始前完成一次正样本探测和静态 atom 分配。对线性模块 `m`：

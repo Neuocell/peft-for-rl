@@ -1,5 +1,7 @@
 # RLPO-init 在 verl 中的接入
 
+> **状态（2026-10-05）：实现说明，运行状态已被替代。** RLPO r32 后来已完成 270 steps；旧 full-bench 的 HMMT 输入损坏，修复后的描述性六任务 Macro 为 `0.39865`。完整结果和限制见 [`experiments/method_and_results_registry_zh.md`](experiments/method_and_results_registry_zh.md)。
+
 本实现对应论文 *Geometry-Preserving Orthonormal Initialization for
 Low-Rank Adaptation in RLVR* 及其公开仓库：
 

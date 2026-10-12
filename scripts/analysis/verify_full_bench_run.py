@@ -47,7 +47,7 @@ def verify_full_bench_run(
     records_path: Path,
     eval_dir: Path,
     eval_name: str,
-    adapter_dir: Path,
+    adapter_dir: Path | None,
     base_model: Path,
     snapshot_path: Path,
     snapshot_sha256: str,
@@ -67,7 +67,8 @@ def verify_full_bench_run(
     summary_path = summary_path.expanduser().resolve()
     records_path = records_path.expanduser().resolve()
     eval_dir = eval_dir.expanduser().resolve()
-    adapter_dir = adapter_dir.expanduser().resolve()
+    if adapter_dir is not None:
+        adapter_dir = adapter_dir.expanduser().resolve()
     base_model = base_model.expanduser().resolve()
     snapshot_path = snapshot_path.expanduser().resolve()
     if not eval_name:
@@ -198,7 +199,11 @@ def verify_full_bench_run(
                 raise ValueError(
                     f"Evaluation manifest field changed in {path}: {field}"
                 )
-        if _resolved(manifest.get("lora_adapter")) != adapter_dir:
+        manifest_adapter = manifest.get("lora_adapter")
+        if adapter_dir is None:
+            if manifest_adapter not in (None, ""):
+                raise ValueError(f"Unexpected evaluation adapter in {path}")
+        elif _resolved(manifest_adapter) != adapter_dir:
             raise ValueError(f"Evaluation adapter changed in {path}")
         if _resolved(manifest.get("base_model")) != base_model:
             raise ValueError(f"Evaluation base model changed in {path}")
@@ -216,7 +221,7 @@ def verify_full_bench_run(
         "benchmark_record_counts": expected_record_counts,
         "num_shards": expected_shards,
         "snapshot_sha256": snapshot_sha256,
-        "adapter_path": str(adapter_dir),
+        "adapter_path": None if adapter_dir is None else str(adapter_dir),
         "base_model_path": str(base_model),
     }
 
@@ -227,7 +232,9 @@ def main() -> None:
     parser.add_argument("--records", type=Path, required=True)
     parser.add_argument("--eval-dir", type=Path, required=True)
     parser.add_argument("--eval-name", required=True)
-    parser.add_argument("--adapter", type=Path, required=True)
+    adapter_group = parser.add_mutually_exclusive_group(required=True)
+    adapter_group.add_argument("--adapter", type=Path)
+    adapter_group.add_argument("--no-adapter", action="store_true")
     parser.add_argument("--base-model", type=Path, required=True)
     parser.add_argument("--snapshot", type=Path, required=True)
     parser.add_argument("--snapshot-sha256", required=True)
@@ -237,7 +244,7 @@ def main() -> None:
         args.records,
         args.eval_dir,
         args.eval_name,
-        args.adapter,
+        None if args.no_adapter else args.adapter,
         args.base_model,
         args.snapshot,
         args.snapshot_sha256,

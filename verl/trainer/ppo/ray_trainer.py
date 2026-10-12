@@ -343,7 +343,7 @@ class RayPPOTrainer:
         # if ref_in_actor is True, the reference policy will be actor without lora applied
         self.ref_in_actor = (
             config.actor_rollout_ref.model.get("lora_rank", 0) > 0
-            or config.actor_rollout_ref.model.get("peft_type", "lora") == "oft"
+            or config.actor_rollout_ref.model.get("peft_type", "lora") in {"oft", "nora_doft", "nora_dora"}
             or config.actor_rollout_ref.model.get("lora_adapter_path") is not None
         )
 
@@ -1186,12 +1186,26 @@ class RayPPOTrainer:
         local_latest_checkpointed_iteration = os.path.join(
             self.config.trainer.default_local_dir, "latest_checkpointed_iteration.txt"
         )
-        with open(local_latest_checkpointed_iteration, "w") as f:
+        latest_tmp = f"{local_latest_checkpointed_iteration}.{os.getpid()}.tmp"
+        with open(latest_tmp, "w") as f:
             f.write(str(self.global_steps))
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(latest_tmp, local_latest_checkpointed_iteration)
+
+    def _save_lora_snapshot(self) -> None:
+        snapshot_dir = self.config.trainer.get("lora_snapshot_dir")
+        every = int(self.config.trainer.get("lora_snapshot_every", 0))
+        if not snapshot_dir or every <= 0 or self.global_steps % every != 0:
+            return
+        optimizer_updates = int(self.config.trainer.get("optimizer_updates_per_step", 1))
+        self.actor_rollout_wg.save_lora_snapshot(
+            str(snapshot_dir), self.global_steps, self.global_steps * optimizer_updates
+        )
 
     def _load_checkpoint(self):
         if self.config.trainer.resume_mode == "disable":
-            return 0
+            return False
 
         # load from hdfs
         if self.config.trainer.default_hdfs_dir is not None:
@@ -1207,7 +1221,7 @@ class RayPPOTrainer:
         if self.config.trainer.resume_mode == "auto":
             if global_step_folder is None:
                 print("Training from scratch")
-                return 0
+                return False
         else:
             if self.config.trainer.resume_mode == "resume_path":
                 assert isinstance(self.config.trainer.resume_from_path, str), "resume ckpt must be str type"
@@ -1245,6 +1259,7 @@ class RayPPOTrainer:
             self.train_dataloader.load_state_dict(dataloader_state_dict)
         else:
             print(f"Warning: No dataloader state found at {dataloader_local_path}, will start from scratch")
+        return True
 
     def _load_warm_start_data_state(self) -> None:
         """Continue data/global-step state without restoring model or optimizer state."""
@@ -1680,8 +1695,17 @@ class RayPPOTrainer:
         self.global_steps = 0
 
         # load checkpoint before doing anything
-        self._load_checkpoint()
+        resumed_from_checkpoint = self._load_checkpoint()
         self._load_warm_start_data_state()
+
+        explicit_save_steps = self.config.trainer.get("save_steps")
+        explicit_save_steps = (
+            {int(step) for step in explicit_save_steps} if explicit_save_steps is not None else None
+        )
+        if self.global_steps == 0 and not resumed_from_checkpoint:
+            self._save_lora_snapshot()
+            if explicit_save_steps is not None and 0 in explicit_save_steps:
+                self._save_checkpoint()
 
         if self.global_steps >= self.total_training_steps:
             pprint(
@@ -1971,6 +1995,8 @@ class RayPPOTrainer:
                                 actor_output_metrics = reduce_metrics(actor_output.meta_info["metrics"])
                                 metrics.update(actor_output_metrics)
 
+                    self._save_lora_snapshot()
+
                     # Log rollout generations if enabled
                     rollout_data_dir = self.config.trainer.get("rollout_data_dir", None)
                     if rollout_data_dir:
@@ -2000,9 +2026,11 @@ class RayPPOTrainer:
                 # 2. It's the last training step.
                 # 3. The current step number is a multiple of the save frequency.
                 # 4. The ESI(Elastic Server Instance)/training plan is close to expiration.
-                if self.config.trainer.save_freq > 0 and (
-                    is_last_step or self.global_steps % self.config.trainer.save_freq == 0 or esi_close_to_expiration
-                ):
+                periodic_save = self.config.trainer.save_freq > 0 and (
+                    is_last_step or self.global_steps % self.config.trainer.save_freq == 0
+                )
+                explicit_save = explicit_save_steps is not None and self.global_steps in explicit_save_steps
+                if periodic_save or explicit_save or (self.config.trainer.save_freq > 0 and esi_close_to_expiration):
                     if esi_close_to_expiration:
                         print("Force saving checkpoint: ESI instance expiration approaching.")
                     with marked_timer("save_checkpoint", timing_raw, color="green"):

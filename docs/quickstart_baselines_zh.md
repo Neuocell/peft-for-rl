@@ -1,5 +1,7 @@
 # 快速启动：PeRL/Tina 对齐的 verl 基线
 
+> **状态（2026-10-05）：历史 baseline 启动指南。** 启动路径和 stable LoRA/OFT 背景仍可参考，但本文结果不是当前 Phase-1 matched protocol；完整历史和证据等级见 [`experiments/README.md`](experiments/README.md)。
+
 本文档记录当前推荐迁移到新机器继续跑的最小稳定基线。项目定位是复现和对齐 PeRL/Tina 风格的数学 RL + PEFT 实验，训练框架使用本仓库内独立放置的 `verl`。
 
 ## 目录结构

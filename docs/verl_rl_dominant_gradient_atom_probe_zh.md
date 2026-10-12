@@ -1,5 +1,7 @@
 # RL Dominant Gradient Atom Probe
 
+> **状态（2026-10-05）：方法设计，已有历史 pilot。** Dominant-atoms eq-r8 已完成 50-step full-bench，但事后 allocator 验证没有支持可靠跨模块 rank 排序；本文定义不能替代结果证据，见 [`experiments/method_and_results_registry_zh.md`](experiments/method_and_results_registry_zh.md)。
+
 ## 1. 动机
 
 此前 stable-SNR 探针优化的是独立窗口完整梯度 sketch 的 Frobenius 能量覆盖率。这个目标对

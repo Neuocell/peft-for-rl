@@ -1,5 +1,7 @@
 # Full-Gradient RL Probe v1
 
+> **状态（2026-10-05）：方法设计/实现说明。** 本文定义 probe，不单独证明该方法已完成或优于对照；实际 run、full-bench 和混杂因素见 [`experiments/method_and_results_registry_zh.md`](experiments/method_and_results_registry_zh.md)。
+
 ## 目标
 
 本实现移除旧梯度探针的输出侧随机投影。旧路径通过 `A=0, B=random` 观测

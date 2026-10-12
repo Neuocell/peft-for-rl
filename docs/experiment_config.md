@@ -1,5 +1,11 @@
 # 实验配置
 
+> **已由仓库根目录 [`RLVR_PROTOCOL.md`](../RLVR_PROTOCOL.md) 取代。** 2026-10-12
+> 之后的新 1.5B 数学 RLVR 实验必须使用冻结协议和受控启动器。本文只保留为历史配置说明，
+> 不再定义当前默认值。
+
+> **状态（2026-10-05）：历史 stable-baseline 配方。** 本文中的“当前后续实验稳定起点”不等于冻结 Phase-1 协议。Phase-1 的 50-step、dropout0、LR `1e-6`、fixed snapshot 配置见 [`experiments/method_and_results_registry_zh.md`](experiments/method_and_results_registry_zh.md)。
+
 这个配置是当前后续实验的稳定起点。它参考 PeRL/Tina 的数学 RL + PEFT 设定，但训练框架使用本仓库的 `verl`。
 
 ## 数据
@@ -127,4 +133,3 @@ samples_large=4
 3. 对难题数据，group 内全错会导致 correctness advantage 稀疏。解决方向应优先考虑数据难度、采样数、curriculum 或 critique/auxiliary signal，而不是把格式奖励调大。
 4. 评测必须多样本聚合。单 seed 或少量题的波动很大，尤其是 AIME/HMMT 这类小集合。
 5. 新 PEFT 方法先在 stable LoRA 对照上只改参数化本身。不要同时改 reward、prompt、长度和数据，否则无法归因。
-

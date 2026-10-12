@@ -138,6 +138,29 @@ def test_full_bench_run_verifier_locks_sampling_protocol(tmp_path: Path) -> None
     )
     assert verified["status"] == "verified"
     assert verified["num_samples"] == 6
+    assert verified["adapter_path"] == str(adapter_dir.resolve())
+
+    for manifest_path in sorted(manifest_dir.glob("*.json")):
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["lora_adapter"] = None
+        manifest_path.write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+    verified_merged_model = verify_full_bench_run(
+        summary_path,
+        records_path,
+        eval_dir,
+        eval_name,
+        None,
+        base_model,
+        snapshot_path,
+        snapshot_sha256,
+        expected_samples=6,
+        expected_benchmarks=benchmarks,
+        expected_benchmark_sizes=benchmark_sizes,
+        expected_shards=2,
+        expected_samples_small=1,
+        expected_samples_large=1,
+    )
+    assert verified_merged_model["adapter_path"] is None
 
     first_manifest = manifest_dir / f"{eval_name}.shard-00-of-02.json"
     tampered = json.loads(first_manifest.read_text(encoding="utf-8"))
@@ -149,7 +172,7 @@ def test_full_bench_run_verifier_locks_sampling_protocol(tmp_path: Path) -> None
             records_path,
             eval_dir,
             eval_name,
-            adapter_dir,
+            None,
             base_model,
             snapshot_path,
             snapshot_sha256,

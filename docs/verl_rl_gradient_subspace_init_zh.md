@@ -1,5 +1,7 @@
 # 基于 RL 累积梯度的 LoRA 子空间初始化
 
+> **状态（2026-10-05）：历史 v1 设计/实现说明。** 后续已发展出 Stable-SNR、Dominant、Phase-0 和 Phase-1 I-method；本文不代表当前冻结协议或最终结果，见 [`experiments/README.md`](experiments/README.md)。
+
 ## 1. 第一版实验目标
 
 这一版只回答一个问题：在不先训练一份完整 LoRA、也不依赖 base weight 主奇异空间的情况下，能否用少量真实 GRPO batch 找到稳定的 policy-gradient 子空间，并据此同时决定每个模块的 rank 和初始化方向。

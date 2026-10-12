@@ -6,9 +6,10 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 RUNTIME_ROOT="${RUNTIME_ROOT:-${REPO_ROOT}/runs}"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
 PROJECT_NAME="${PROJECT_NAME:-peft-for-rl}"
 METHOD="${METHOD:-lora}"
-DATASET="${DATASET:-dapo_heldout637_seed42}"
+DATASET="${DATASET:-dapo_full_boxed}"
 RUN_TAG="${RUN_TAG:-$(date +%Y%m%d_%H%M%S)}"
 
 cd "${REPO_ROOT}"
@@ -81,6 +82,7 @@ CLIP_RATIO_C="${CLIP_RATIO_C:-10.0}"
 
 DATA_SEED="${DATA_SEED:-42}"
 PPO_DATA_LOADER_SEED="${PPO_DATA_LOADER_SEED:-42}"
+ROLLOUT_SEED="${ROLLOUT_SEED:-42}"
 TRAIN_SHUFFLE="${TRAIN_SHUFFLE:-True}"
 ACTOR_SHUFFLE="${ACTOR_SHUFFLE:-False}"
 ADALORA_INIT_R="${ADALORA_INIT_R:-0}"
@@ -95,6 +97,8 @@ ADALORA_ORTH_REG_WEIGHT="${ADALORA_ORTH_REG_WEIGHT:-1e-3}"
 SAVE_FREQ="${SAVE_FREQ:-20}"
 MAX_ACTOR_CKPT_TO_KEEP="${MAX_ACTOR_CKPT_TO_KEEP:-20}"
 SAVE_CONTENTS="${SAVE_CONTENTS:-['model','extra']}"
+LORA_SNAPSHOT_DIR="${LORA_SNAPSHOT_DIR:-}"
+LORA_SNAPSHOT_EVERY="${LORA_SNAPSHOT_EVERY:-0}"
 RESUME_MODE="${RESUME_MODE:-disable}"
 
 NGPUS_PER_NODE="${NGPUS_PER_NODE:-4}"
@@ -105,6 +109,7 @@ RAY_TEMP_DIR="${RAY_TEMP_DIR:-${RUNTIME_ROOT}/ray_pc_${METHOD}_${RUN_TAG}}"
 TARGET_MODULES="${TARGET_MODULES:-all-linear}"
 OFFLOAD="${OFFLOAD:-True}"
 FSDP_SIZE="${FSDP_SIZE:--1}"
+FSDP_SEED="${FSDP_SEED:-42}"
 GEN_TP="${GEN_TP:-1}"
 GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-0.70}"
 
@@ -117,7 +122,23 @@ PEFT_TYPE="${PEFT_TYPE:-${METHOD}}"
 LORA_RANK="${LORA_RANK:-32}"
 LORA_ALPHA="${LORA_ALPHA:-64}"
 LORA_DROPOUT="${LORA_DROPOUT:-0.05}"
+LORA_FREEZE_A="${LORA_FREEZE_A:-False}"
+LORA_INIT_MODE="${LORA_INIT_MODE:-standard}"
+LORA_INIT_SEED="${LORA_INIT_SEED:-42}"
 USE_ORIG_PARAMS="${USE_ORIG_PARAMS:-False}"
+
+NORA_DOFT_RANK="${NORA_DOFT_RANK:-${LORA_RANK}}"
+NORA_DOFT_BLOCK_SIZE="${NORA_DOFT_BLOCK_SIZE:-32}"
+NORA_DOFT_ALPHA="${NORA_DOFT_ALPHA:-${LORA_ALPHA}}"
+NORA_DOFT_NORMALIZATION="${NORA_DOFT_NORMALIZATION:-init}"
+NORA_DOFT_USE_MAGNITUDE="${NORA_DOFT_USE_MAGNITUDE:-True}"
+NORA_DOFT_EPS="${NORA_DOFT_EPS:-1e-6}"
+NORA_DOFT_SEED="${NORA_DOFT_SEED:-42}"
+NORA_DORA_RANK="${NORA_DORA_RANK:-${LORA_RANK}}"
+NORA_DORA_ALPHA="${NORA_DORA_ALPHA:-${LORA_ALPHA}}"
+NORA_DORA_NORMALIZATION="${NORA_DORA_NORMALIZATION:-init}"
+NORA_DORA_EPS="${NORA_DORA_EPS:-1e-6}"
+NORA_DORA_SEED="${NORA_DORA_SEED:-42}"
 
 OFT_BLOCK_SIZE="${OFT_BLOCK_SIZE:-32}"
 OFT_RANK="${OFT_RANK:-0}"
@@ -184,6 +205,9 @@ RLPO_SVD_DEVICE="${RLPO_SVD_DEVICE:-auto}"
 
 case "${METHOD}" in
   lora) PEFT_TYPE="lora" ;;
+  nora_init) PEFT_TYPE="lora"; LORA_INIT_MODE="nora_init" ;;
+  nora_doft) PEFT_TYPE="nora_doft"; USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}" ;;
+  nora_dora) PEFT_TYPE="nora_dora"; USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}" ;;
   rlpo) PEFT_TYPE="rlpo" ;;
   adalora)
     PEFT_TYPE="adalora"
@@ -209,12 +233,25 @@ esac
 
 EXP_NAME="${EXP_NAME:-paper_clean_${DATASET}_${METHOD}_b${TRAIN_PROMPT_BSZ}m${TRAIN_PROMPT_MINI_BSZ}n${N_RESP_PER_PROMPT}_lr${LR}_wd0_${RUN_TAG}}"
 CKPTS_DIR="${CKPTS_DIR:-${RUNTIME_ROOT}/ckpts/verl/${PROJECT_NAME}/${EXP_NAME}}"
+LORA_INIT_AUDIT_PATH="${LORA_INIT_AUDIT_PATH:-${RUNTIME_ROOT}/protocol_contracts/${EXP_NAME}.initialization.json}"
 LOG_DIR="${LOG_DIR:-${RUNTIME_ROOT}/logs/paper_clean}"
 mkdir -p "${LOG_DIR}"
+if [[ -n "${LORA_SNAPSHOT_DIR}" ]]; then
+  mkdir -p "${LORA_SNAPSHOT_DIR}"
+fi
 
 if [[ "${RESUME_MODE}" == "disable" && -d "${CKPTS_DIR}" ]] && find "${CKPTS_DIR}" -maxdepth 1 -type d -name 'global_step_*' | grep -q .; then
   echo "Refusing to start: CKPTS_DIR already has checkpoints and RESUME_MODE=disable: ${CKPTS_DIR}" >&2
   echo "Set a new EXP_NAME/RUN_TAG, or set ALLOW_EXISTING_CKPT_DIR=1 to bypass this guard." >&2
+  if [[ "${ALLOW_EXISTING_CKPT_DIR:-0}" != "1" ]]; then
+    exit 3
+  fi
+fi
+
+if [[ "${RESUME_MODE}" == "disable" && -n "${LORA_SNAPSHOT_DIR}" && -d "${LORA_SNAPSHOT_DIR}" ]] \
+  && find "${LORA_SNAPSHOT_DIR}" -maxdepth 1 -type d -name 'step_*' | grep -q .; then
+  echo "Refusing to start: LORA_SNAPSHOT_DIR already has snapshots and RESUME_MODE=disable: ${LORA_SNAPSHOT_DIR}" >&2
+  echo "Set a new EXP_NAME/RUN_TAG, or resume the existing experiment." >&2
   if [[ "${ALLOW_EXISTING_CKPT_DIR:-0}" != "1" ]]; then
     exit 3
   fi
@@ -230,7 +267,7 @@ cleanup_ray_temp() {
   mkdir -p "${RAY_TEMP_DIR}"
 }
 
-TRAIN_ROWS="$(python3 - "${TRAIN_FILE}" <<'PY'
+TRAIN_ROWS="$("${PYTHON_BIN}" - "${TRAIN_FILE}" <<'PY'
 import sys
 import pyarrow.parquet as pq
 print(pq.ParquetFile(sys.argv[1]).metadata.num_rows)
@@ -239,6 +276,8 @@ PY
 
 printf '%s\n' \
   "===== paper clean config =====" \
+  "PROTOCOL_ID=${PROTOCOL_ID:-legacy_unfrozen}" \
+  "PROTOCOL_CONTRACT=${PROTOCOL_CONTRACT:-none}" \
   "METHOD=${METHOD}" \
   "PEFT_TYPE=${PEFT_TYPE}" \
   "DATASET=${DATASET}" \
@@ -253,6 +292,10 @@ printf '%s\n' \
   "PROMPT_EXPOSURE=$((TOTAL_TRAINING_STEPS * TRAIN_PROMPT_BSZ))" \
   "ROLLOUT_TRAJECTORIES=$((TOTAL_TRAINING_STEPS * TRAIN_PROMPT_BSZ * N_RESP_PER_PROMPT))" \
   "LR=${LR}" \
+  "LORA_RANK=${LORA_RANK}" \
+  "LORA_ALPHA=${LORA_ALPHA}" \
+  "LORA_DROPOUT=${LORA_DROPOUT}" \
+  "LORA_INIT_MODE=${LORA_INIT_MODE}" \
   "LR_WARMUP_STEPS=${LR_WARMUP_STEPS}" \
   "WEIGHT_DECAY=${WEIGHT_DECAY}" \
   "TINY_LORA_RANK=${TINY_LORA_RANK}" \
@@ -261,16 +304,22 @@ printf '%s\n' \
   "TINY_LORA_TIE_STRATEGY=${TINY_LORA_TIE_STRATEGY}" \
   "DATA_SEED=${DATA_SEED}" \
   "PPO_DATA_LOADER_SEED=${PPO_DATA_LOADER_SEED}" \
+  "ROLLOUT_SEED=${ROLLOUT_SEED}" \
+  "FSDP_SEED=${FSDP_SEED}" \
   "TRAIN_SHUFFLE=${TRAIN_SHUFFLE}" \
   "RESUME_MODE=${RESUME_MODE}" \
   "EXP_NAME=${EXP_NAME}" \
   "CKPTS_DIR=${CKPTS_DIR}" \
+  "LORA_SNAPSHOT_DIR=${LORA_SNAPSHOT_DIR:-disabled}" \
+  "LORA_SNAPSHOT_EVERY=${LORA_SNAPSHOT_EVERY}" \
+  "SAVE_FREQ=${SAVE_FREQ}" \
+  "MAX_ACTOR_CKPT_TO_KEEP=${MAX_ACTOR_CKPT_TO_KEEP}" \
   "RAY_TEMP_DIR=${RAY_TEMP_DIR}" \
   "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}" \
   "=============================="
 
 CMD=(
-  python3 -m verl.trainer.main_ppo
+  "${PYTHON_BIN}" -m verl.trainer.main_ppo
   "data.train_files=${TRAIN_FILE}"
   "data.val_files=${TEST_FILE}"
   "data.prompt_key=prompt"
@@ -304,6 +353,11 @@ CMD=(
   "+actor_rollout_ref.model.peft_type=${PEFT_TYPE}"
   "actor_rollout_ref.model.lora_rank=${LORA_RANK}"
   "actor_rollout_ref.model.lora_alpha=${LORA_ALPHA}"
+  "+actor_rollout_ref.model.lora_freeze_a=${LORA_FREEZE_A}"
+  "+actor_rollout_ref.model.lora_init_mode=${LORA_INIT_MODE}"
+  "+actor_rollout_ref.model.lora_init_seed=${LORA_INIT_SEED}"
+  "+actor_rollout_ref.model.lora_init_audit_path=${LORA_INIT_AUDIT_PATH}"
+  "+actor_rollout_ref.model.lora_init_peer_audit_path=null"
   "+actor_rollout_ref.model.lora_dropout=${LORA_DROPOUT}"
   "+actor_rollout_ref.model.rlpo_svd_device=${RLPO_SVD_DEVICE}"
   "+actor_rollout_ref.model.tinylora_rank=${TINY_LORA_RANK}"
@@ -332,6 +386,18 @@ CMD=(
   "+actor_rollout_ref.model.oft_block_share=${OFT_BLOCK_SHARE}"
   "+actor_rollout_ref.model.oft_use_cayley_neumann=${OFT_USE_CAYLEY_NEUMANN}"
   "+actor_rollout_ref.model.oft_num_cayley_neumann_terms=${OFT_NUM_CAYLEY_NEUMANN_TERMS}"
+  "+actor_rollout_ref.model.nora_doft_rank=${NORA_DOFT_RANK}"
+  "+actor_rollout_ref.model.nora_doft_block_size=${NORA_DOFT_BLOCK_SIZE}"
+  "+actor_rollout_ref.model.nora_doft_alpha=${NORA_DOFT_ALPHA}"
+  "+actor_rollout_ref.model.nora_doft_normalization=${NORA_DOFT_NORMALIZATION}"
+  "+actor_rollout_ref.model.nora_doft_use_magnitude=${NORA_DOFT_USE_MAGNITUDE}"
+  "+actor_rollout_ref.model.nora_doft_eps=${NORA_DOFT_EPS}"
+  "+actor_rollout_ref.model.nora_doft_seed=${NORA_DOFT_SEED}"
+  "+actor_rollout_ref.model.nora_dora_rank=${NORA_DORA_RANK}"
+  "+actor_rollout_ref.model.nora_dora_alpha=${NORA_DORA_ALPHA}"
+  "+actor_rollout_ref.model.nora_dora_normalization=${NORA_DORA_NORMALIZATION}"
+  "+actor_rollout_ref.model.nora_dora_eps=${NORA_DORA_EPS}"
+  "+actor_rollout_ref.model.nora_dora_seed=${NORA_DORA_SEED}"
   "+actor_rollout_ref.model.skew_rank=${SKEW_RANK}"
   "+actor_rollout_ref.model.skew_alpha=${SKEW_ALPHA}"
   "+actor_rollout_ref.model.skew_dropout=${SKEW_DROPOUT}"
@@ -377,6 +443,8 @@ CMD=(
   "actor_rollout_ref.actor.fsdp_config.optimizer_offload=${OFFLOAD}"
   "actor_rollout_ref.actor.fsdp_config.use_orig_params=${USE_ORIG_PARAMS}"
   "actor_rollout_ref.actor.fsdp_config.fsdp_size=${FSDP_SIZE}"
+  "actor_rollout_ref.actor.fsdp_config.seed=${FSDP_SEED}"
+  "actor_rollout_ref.actor.fsdp_config.dtype=bfloat16"
   "actor_rollout_ref.actor.entropy_coeff=0"
   "+actor_rollout_ref.actor.biso_raw_l2_coef=${BISO_RAW_L2_COEF}"
   "+actor_rollout_ref.actor.biso_gate_lr_scale=${BISO_GATE_LR_SCALE}"
@@ -386,6 +454,8 @@ CMD=(
   "actor_rollout_ref.actor.use_dynamic_bsz=True"
   "actor_rollout_ref.actor.ppo_max_token_len_per_gpu=${ACTOR_PPO_MAX_TOKEN_LEN}"
   "actor_rollout_ref.rollout.name=vllm"
+  "+actor_rollout_ref.rollout.seed=${ROLLOUT_SEED}"
+  "actor_rollout_ref.rollout.dtype=bfloat16"
   "actor_rollout_ref.rollout.load_format=dummy"
   "actor_rollout_ref.rollout.gpu_memory_utilization=${GPU_MEMORY_UTILIZATION}"
   "actor_rollout_ref.rollout.tensor_model_parallel_size=${GEN_TP}"
@@ -404,6 +474,8 @@ CMD=(
   "actor_rollout_ref.rollout.val_kwargs.do_sample=True"
   "actor_rollout_ref.rollout.val_kwargs.n=1"
   "actor_rollout_ref.ref.fsdp_config.param_offload=${OFFLOAD}"
+  "actor_rollout_ref.ref.fsdp_config.seed=${FSDP_SEED}"
+  "actor_rollout_ref.ref.fsdp_config.dtype=bfloat16"
   "actor_rollout_ref.ref.ulysses_sequence_parallel_size=1"
   "actor_rollout_ref.ref.log_prob_use_dynamic_bsz=True"
   "actor_rollout_ref.ref.log_prob_max_token_len_per_gpu=${INFER_PPO_MAX_TOKEN_LEN}"
@@ -424,6 +496,9 @@ CMD=(
   "trainer.val_before_train=False"
   "trainer.test_freq=0"
   "trainer.save_freq=${SAVE_FREQ}"
+  "+trainer.lora_snapshot_dir=${LORA_SNAPSHOT_DIR:-null}"
+  "+trainer.lora_snapshot_every=${LORA_SNAPSHOT_EVERY}"
+  "+trainer.optimizer_updates_per_step=1"
   "trainer.max_actor_ckpt_to_keep=${MAX_ACTOR_CKPT_TO_KEEP}"
   "trainer.total_epochs=1"
   "trainer.total_training_steps=${TOTAL_TRAINING_STEPS}"

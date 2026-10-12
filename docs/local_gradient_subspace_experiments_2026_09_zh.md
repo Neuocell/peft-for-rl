@@ -1,5 +1,7 @@
 # 本机 LoRA 梯度子空间实验汇总
 
+> **状态（2026-10-05）：历史档案。** 本文保留 2026-09 的详细配置、产物和 Phase-0/1 追加记录，但顶部 Phase-1 状态冻结在 2026-10-04 13:31（Asia/Shanghai），其中“seed-43 I8 尚未启动”等陈述已过期。当前时间线和结果请看 [`experiments/README.md`](experiments/README.md)。
+
 更新时间：2026-10-04 13:31（Asia/Shanghai）
 
 本文整理当前机器上围绕 SPAR-LoRA、random-B、full-gradient probe、token mask、梯度协方差和 rank 的主要实验。内容以现存启动脚本、Hydra 配置、训练日志、probe artifact、checkpoint 和 full-benchmark JSON 为准，不把仅存在于会话记忆中的数字当作正式结果。

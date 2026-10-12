@@ -1,74 +1,24 @@
-# 当前结果
+# 实验结果入口
 
-本机 2026-09 的 SPAR-LoRA、random-B、full-gradient、token-mask covariance、rank 和续训实验已集中整理到
-[`local_gradient_subspace_experiments_2026_09_zh.md`](local_gradient_subspace_experiments_2026_09_zh.md)。该报告包含统一 full-benchmark 明细、训练动态、probe/rank 配置、checkpoint 状态和对照中的混杂因素。
+更新时间：2026-10-06 UTC
 
-这里只记录当前仓库要保留的核心基线结果。早期 OpenRS3、OrthRes、critique、format/cos reward、overlong buffer 等探索保留在原 Tina 工作目录中，不作为这个复现实验仓库的主体。
+`docs/` 中的实验结果现已统一整理到 [实验文档总入口](experiments/README.md)。请从以下三份文档阅读：
 
-## Stable LoRA Fullbench 32K
+1. [2026-07 至 2026-10 实验时间线](experiments/experiment_timeline_202607_202610_zh.md)
+2. [方法与结果登记表](experiments/method_and_results_registry_zh.md)
+3. [最近两次实验汇总与下一轮执行单](experiments/recent_two_and_next_round_20261006_zh.md)
+4. [开放问题、后续实验与论文映射](experiments/open_questions_and_paper_map_zh.md)
 
-配置：
+旧版 `results.md` 中的 `base=0.315514` 是 summary-only 历史口径，不再作为当前 base。严格审计并可复用的 no-RL base 为 `0.3243481413`。
 
-```text
-Base model: DeepSeek-R1-Distill-Qwen-1.5B
-Train data: DAPO-Math-17k boxed
-Reward: boxed outcome accuracy only
-Train max_response_length: 8192
-Eval max_new_tokens: 32768
-Eval benchmarks: aime24,aime25,amc23,hmmt_feb,math500,minerva
-Small benchmark samples: 32
-Large benchmark samples: 4
-```
+当前 Phase-1 主结果为：
 
-总体结果：
+| 方法 | Seed42 | Seed43 | 两-seed简单均值 | 证据角色 |
+| --- | ---: | ---: | ---: | --- |
+| Matched standard LoRA r32 | `0.330053` | `0.338761` | `0.334407` | matched external baseline |
+| I0 | `0.330162` | `0.327747` | `0.328955` | matched random baseline |
+| I8 | `0.366161` | `0.341696` | `0.353928` | mixed candidate |
+| I16 | `0.313498` | 未运行 | n/a | seed42 negative screen |
+| I32 | `0.376479` | `0.333201` | `0.354840` | separate signal-only endpoint |
 
-| ckpt | macro avg | macro pass | parse | hit max | mean len |
-|---|---:|---:|---:|---:|---:|
-| base | 0.315514 | 0.571642 | 0.804084 | 0.040977 | 9241.7 |
-| step100 | 0.331179 | 0.588252 | 0.806567 | 0.036700 | 9137.2 |
-| step200 | 0.340859 | 0.586039 | 0.816915 | 0.036010 | 9005.7 |
-| step300 | 0.346207 | 0.611590 | 0.837610 | 0.041115 | 9118.6 |
-
-step300 分 benchmark：
-
-| benchmark | avg | pass | parse | hit max | mean len |
-|---|---:|---:|---:|---:|---:|
-| aime24 | 0.273958 | 0.733333 | 0.841667 | 0.078125 | 14027.8 |
-| aime25 | 0.205208 | 0.533333 | 0.860417 | 0.081250 | 13789.1 |
-| amc23 | 0.637500 | 0.925000 | 0.871094 | 0.033594 | 8224.7 |
-| hmmt_feb | 0.105208 | 0.366667 | 0.890625 | 0.072917 | 15092.9 |
-| math500 | 0.655000 | 0.784000 | 0.914000 | 0.010000 | 4122.8 |
-| minerva | 0.200368 | 0.327206 | 0.587316 | 0.011029 | 5629.9 |
-
-观察：
-
-```text
-base -> step300 macro avg: +0.030693
-base -> step300 macro pass: +0.039948
-base -> step300 parse: +0.033526
-平均长度没有明显失控，保持在约 9K
-```
-
-这说明当前 stable LoRA recipe 至少能产生正向训练信号，并且没有复现 overlong buffer 版本中的严重长度 hacking。
-
-## Stable OFT 状态
-
-```text
-exp_name=dapo_math_boxed_stable_oft_1p5b_4gpu_8k_v1_20260724
-global_step_100 actor checkpoint: 已在原机器生成
-step100 eval: 之前因 controller 路径/日志污染问题失败，当前脚本已修复
-step200/step300: 待继续训练和评测
-```
-
-OFT 后续应使用和 LoRA 完全相同的 stable v1 协议。差异只允许来自 PEFT 参数化：
-
-```text
-PEFT_TYPE=oft
-OFT_BLOCK_SIZE=32
-OFT_RANK=0
-OFT_DROPOUT=0.0
-```
-
-## 不再作为当前主线的内容
-
-早期 OrthRes/OpenRS3 试验显示可以影响训练动态，但当时 reward、format、生成长度、数据难度和评测协议没有完全稳定，难以作为 clean baseline 的结论来源。本仓库现在只保留稳定基线和最小工具；OrthRes 后续若重新比较，应在本 stable recipe 上只改方法项。
+I8 相对 matched standard LoRA 的两-seed mean delta 为 `+0.019521`，但 seed43 仅为 `+0.002934`；I32 在 seed43 则低 `0.005560`。这些值不能和旧 LoRA/OFT/RLPO/GradTop 等不同 step、dropout、snapshot 或设备协议的结果直接组成 leaderboard。所有历史数值、失败记录和 claim boundary 已在登记表中展开。

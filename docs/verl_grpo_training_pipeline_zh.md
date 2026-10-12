@@ -1,5 +1,7 @@
 # verl RLPO/GRPO 训练全链路代码讲解
 
+> **状态（2026-10-05）：代码链路说明。** 文中的 RLPO example config 是历史运行实例，不是当前 Phase-1 冻结协议；实验结果以 [`experiments/README.md`](experiments/README.md) 为入口。
+
 本文以当前仓库的标准 RLPO-init 训练入口和一次实际运行配置为主线，完整追踪：
 
 ```text

@@ -1,5 +1,7 @@
 # 面向 RL 的自适应 Rank LoRA：诊断优先的最小实验设计
 
+> **状态（2026-10-05）：研究设计与历史诊断。** 文中的 rank 假设仍可作为研究依据，但已完成/失败/缺失的实验由 [`experiments/method_and_results_registry_zh.md`](experiments/method_and_results_registry_zh.md) 统一登记。
+
 ## 1. 当前结论
 
 第一轮不直接实现完整的动态 rank 算法。先回答三个更基础的问题：

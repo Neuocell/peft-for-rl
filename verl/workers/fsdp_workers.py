@@ -67,6 +67,10 @@ from verl.utils.fsdp_utils import (
     collect_biso_full_params,
     collect_boet_full_params,
     collect_lora_params,
+    collect_nora_dora_adapter_params,
+    collect_nora_dora_full_params,
+    collect_nora_doft_adapter_params,
+    collect_nora_doft_full_params,
     collect_peft_full_params,
     collect_skew_full_params,
     collect_spo_full_params,
@@ -97,10 +101,13 @@ from verl.utils.peft_gradient_subspace import (
     freeze_lora_a_factors,
     initialize_gradient_probe,
 )
-from verl.utils.peft_spar_lora import initialize_spar_probe
+from verl.utils.peft_lora_init import create_standard_lora_model, standard_lora_use_meta_tensor
+from verl.utils.peft_nora_dora import apply_nora_dora_adapters
+from verl.utils.peft_nora_doft import apply_nora_doft_adapters
 from verl.utils.peft_oracle_lora import load_oracle_lora_patterns
 from verl.utils.peft_rlpo import apply_rlpo_initialization
 from verl.utils.peft_skew import apply_skew_adapters
+from verl.utils.peft_spar_lora import initialize_spar_probe
 from verl.utils.peft_spo import apply_spo_adapters
 from verl.utils.peft_tinylora import apply_tinylora_adapters
 from verl.utils.profiler import DistProfiler, DistProfilerExtension, ProfilerConfig, log_gpu_memory_usage, simple_timer
@@ -217,6 +224,8 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                 self._peft_type == "oft"
                 and (self.config.model.get("oft_block_size", 0) > 0 or self.config.model.get("oft_rank", 0) > 0)
             )
+            or (self._peft_type == "nora_dora" and self.config.model.get("nora_dora_rank", 0) > 0)
+            or (self._peft_type == "nora_doft" and self.config.model.get("nora_doft_rank", 0) > 0)
             or (self._peft_type == "skew" and self.config.model.get("skew_rank", 0) > 0)
             or (self._peft_type == "boet" and self.config.model.get("boet_rank", 0) > 0)
             or (self._peft_type == "biso" and self.config.model.get("biso_block_size", 0) > 0)
@@ -411,11 +420,16 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
 
         # NOTE(fix me): tie_word_embedding causes meta_tensor init to hang
         init_context = get_init_weight_context_manager(
-            use_meta_tensor=not actor_model_config.tie_word_embeddings
-            and self._peft_type not in ("geora", "rlpo", "grad_probe", "grad_subspace")
-            and self._peft_type != "full_gradient_probe"
-            and self._peft_type != "spar_probe"
-            and self._peft_type != "tinylora",
+            use_meta_tensor=standard_lora_use_meta_tensor(
+                not actor_model_config.tie_word_embeddings
+                and self._peft_type not in ("geora", "rlpo", "grad_probe", "grad_subspace")
+                and self._peft_type != "full_gradient_probe"
+                and self._peft_type != "spar_probe"
+                and self._peft_type != "tinylora"
+                and self._peft_type != "nora_dora"
+                and self._peft_type != "nora_doft",
+                self.config.model.get("lora_init_seed"),
+            ),
             mesh=self.device_mesh,
         )
 
@@ -540,7 +554,21 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                                 f"rank_range=[{patterns.rank_min}, {patterns.rank_max}], "
                                 f"alpha/r={patterns.scaling_ratio:g}"
                             )
-                    actor_module = get_peft_model(actor_module, LoraConfig(**peft_config))
+                    actor_module, init_audit = create_standard_lora_model(
+                        actor_module,
+                        LoraConfig(**peft_config),
+                        init_seed=self.config.model.get("lora_init_seed"),
+                        init_mode=self.config.model.get("lora_init_mode", "standard"),
+                        audit_path=self.config.model.get("lora_init_audit_path"),
+                        peer_audit_path=self.config.model.get("lora_init_peer_audit_path"),
+                    )
+                    if self.rank == 0 and init_audit is not None:
+                        print(
+                            "Applied audited standard-LoRA initialization: "
+                            f"seed={init_audit['init_seed']}, modules={init_audit['module_count']}, "
+                            f"parameters={init_audit['trainable_parameters']}, "
+                            f"sha256={init_audit['canonical_sha256']}"
+                        )
                 elif self._peft_type == "rlpo":
                     peft_config.update(
                         {
@@ -682,6 +710,24 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                         }
                     )
                     actor_module = get_peft_model(actor_module, OFTConfig(**peft_config))
+                elif self._peft_type == "nora_doft":
+                    stats = apply_nora_doft_adapters(actor_module, self.config.model)
+                    print(
+                        "Applied NoRA-DOFT adapters: "
+                        f"layers={stats.num_layers}, trainable_params={stats.num_parameters}, "
+                        f"generator_rank={stats.generator_rank}, block_size={stats.block_size}, "
+                        f"normalization_error_max={stats.normalization_error_max:.3e}, "
+                        f"normalization={self.config.model.get('nora_doft_normalization', 'init')}, "
+                        f"magnitude={self.config.model.get('nora_doft_use_magnitude', True)}"
+                    )
+                elif self._peft_type == "nora_dora":
+                    stats = apply_nora_dora_adapters(actor_module, self.config.model)
+                    print(
+                        "Applied NoRA-DoRA adapters: "
+                        f"layers={stats.num_layers}, trainable_params={stats.num_parameters}, "
+                        f"rank={stats.rank}, normalization_error_max={stats.normalization_error_max:.3e}, "
+                        f"normalization={self.config.model.get('nora_dora_normalization', 'init')}"
+                    )
                 elif self._peft_type == "adalora":
                     adalora_config = build_adalora_config(
                         self.config.model, total_training_steps=self.config.actor.optim.total_training_steps
@@ -765,8 +811,8 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         self.use_orig_params = fsdp_config.get("use_orig_params", False)
         if self._is_adalora:
             self.use_orig_params = True
-        if self._peft_type == "tinylora":
-            # TinyLoRA mixes frozen base tensors with shared trainable vectors.
+        if self._peft_type in {"tinylora", "nora_doft", "nora_dora"}:
+            # These custom wrappers mix frozen base tensors with trainable adapter parameters.
             self.use_orig_params = True
         if self._peft_type in {"grad_probe", "spar_probe", "full_gradient_probe"}:
             # FSDP only supports summon_full_params(with_grads=True) with
@@ -1046,6 +1092,12 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             skip_weight_key_conversion = True
         elif self._peft_type == "boet":
             params = collect_boet_full_params(module=self.actor_module_fsdp)
+            skip_weight_key_conversion = True
+        elif self._peft_type == "nora_doft":
+            params = collect_nora_doft_full_params(module=self.actor_module_fsdp)
+            skip_weight_key_conversion = True
+        elif self._peft_type == "nora_dora":
+            params = collect_nora_dora_full_params(module=self.actor_module_fsdp)
             skip_weight_key_conversion = True
         elif self._peft_type == "biso":
             params = collect_biso_full_params(module=self.actor_module_fsdp)
@@ -1479,6 +1531,112 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                 self.ref_policy.actor_module.reshard()
 
         return output
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def save_lora_snapshot(self, snapshot_dir, trainer_step, optimizer_update):
+        """Save a compact, method-complete evaluation snapshot on rank 0."""
+
+        from verl.utils.logger import log_with_rank
+
+        assert self._is_actor and self._is_peft
+        if self._is_offload_param:
+            load_fsdp_model_to_gpu(self.actor_module_fsdp)
+        peft_model = getattr(self, "actor_module", self.actor_module_fsdp)
+
+        self.actor_module_fsdp = self.actor_module_fsdp.to(get_device_name())
+        if self._is_lora:
+            if not hasattr(peft_model, "peft_config"):
+                raise RuntimeError("LoRA snapshot requested for an actor without PEFT configuration")
+            config = peft_model.peft_config["default"]
+            params = layered_summon_lora_params(self.actor_module_fsdp)
+            method_config = {
+                "rank": int(config.r),
+                "alpha": float(config.lora_alpha),
+                "scaling": float(config.lora_alpha) / int(config.r),
+            }
+            module_names = sorted(
+                key.removesuffix(".lora_A.weight")
+                for key in params
+                if key.endswith(".lora_A.weight")
+            )
+        elif self._peft_type == "nora_dora":
+            params = collect_nora_dora_adapter_params(self.actor_module_fsdp)
+            method_config = {
+                "rank": int(self.config.model.nora_dora_rank),
+                "alpha": float(self.config.model.nora_dora_alpha),
+                "normalization": str(self.config.model.nora_dora_normalization),
+                "eps": float(self.config.model.nora_dora_eps),
+                "seed": int(self.config.model.nora_dora_seed),
+            }
+            module_names = sorted({key.rsplit(".nora_dora_", 1)[0] for key in params})
+        elif self._peft_type == "nora_doft":
+            params = collect_nora_doft_adapter_params(self.actor_module_fsdp)
+            method_config = {
+                "rank": int(self.config.model.nora_doft_rank),
+                "block_size": int(self.config.model.nora_doft_block_size),
+                "alpha": float(self.config.model.nora_doft_alpha),
+                "normalization": str(self.config.model.nora_doft_normalization),
+                "use_magnitude": bool(self.config.model.nora_doft_use_magnitude),
+                "eps": float(self.config.model.nora_doft_eps),
+                "seed": int(self.config.model.nora_doft_seed),
+            }
+            module_names = sorted({key.rsplit(".nora_doft_", 1)[0] for key in params})
+        else:
+            raise RuntimeError(f"No compact evaluation snapshot exporter for PEFT type {self._peft_type!r}")
+
+        if dist.get_rank() == 0:
+            step_dir = os.path.join(snapshot_dir, f"step_{int(trainer_step):03d}")
+            os.makedirs(step_dir, exist_ok=True)
+            dtypes = sorted({str(tensor.dtype).removeprefix("torch.") for tensor in params.values()})
+            metadata = {
+                "schema_version": "1",
+                "artifact_kind": "evaluation_snapshot",
+                "peft_type": self._peft_type,
+                "trainer_step": str(int(trainer_step)),
+                "optimizer_update": str(int(optimizer_update)),
+                "method_config": json.dumps(method_config, separators=(",", ":"), sort_keys=True),
+                "dtypes": json.dumps(dtypes, separators=(",", ":")),
+                "module_names": json.dumps(module_names, separators=(",", ":")),
+            }
+            metadata.update(
+                {
+                    key: str(value)
+                    for key, value in method_config.items()
+                    if key in {"rank", "alpha", "scaling"}
+                }
+            )
+            snapshot_path = os.path.join(step_dir, "adapter_model.safetensors")
+            snapshot_tmp = os.path.join(step_dir, f".adapter_model.safetensors.{os.getpid()}.tmp")
+            manifest_path = os.path.join(step_dir, "manifest.json")
+            manifest_tmp = os.path.join(step_dir, f".manifest.json.{os.getpid()}.tmp")
+            save_file(params, snapshot_tmp, metadata=metadata)
+            manifest = {
+                **{
+                    key: json.loads(value) if key in {"dtypes", "method_config", "module_names"} else value
+                    for key, value in metadata.items()
+                },
+                "trainer_step": int(trainer_step),
+                "optimizer_update": int(optimizer_update),
+                "tensor_count": len(params),
+                "module_count": len(module_names),
+                "snapshot": "adapter_model.safetensors",
+                **method_config,
+            }
+            with open(manifest_tmp, "w", encoding="utf-8") as handle:
+                json.dump(manifest, handle, ensure_ascii=False, indent=2, sort_keys=True)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(snapshot_tmp, snapshot_path)
+            os.replace(manifest_tmp, manifest_path)
+        dist.barrier()
+        log_with_rank(
+            f"Saved evaluation snapshot step={trainer_step} optimizer_update={optimizer_update} under {snapshot_dir}",
+            rank=dist.get_rank(),
+            logger=logger,
+            log_only_rank_0=True,
+        )
+        if self._is_offload_param:
+            offload_fsdp_model_to_cpu(self.actor_module_fsdp)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None, global_step=0, max_ckpt_to_keep=None):

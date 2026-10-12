@@ -1,5 +1,7 @@
 # verl 训练链路与官方 AdaLoRA 接入说明
 
+> **状态（2026-10-05）：实现说明，不是有效结果报告。** 现有 AdaLoRA full-bench 来自有已知实现/数据缺陷的旧 run；最终修复实现尚未从 step 0 完成无缺失六任务评测。不得把旧 step150 数值写成 AdaLoRA 方法结论，见 [`experiments/method_and_results_registry_zh.md`](experiments/method_and_results_registry_zh.md)。
+
 本文对应本仓库的经典 verl PPO/FSDP 训练路径，以及 `peft==0.19.1` 的官方 AdaLoRA 实现。仓库没有复制或改写 Hugging Face 的 AdaLoRA 算法；这里只实现 verl 与官方 PEFT API 之间缺失的训练、FSDP 和 rollout 桥接。
 
 ## 1. 一次 GRPO 训练迭代经过哪些代码

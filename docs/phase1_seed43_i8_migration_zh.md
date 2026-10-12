@@ -1,5 +1,7 @@
 # Phase-1 seed-43 I8 异地迁移与恢复
 
+> **状态（2026-10-05）：已完成的迁移档案。** 原服务器 rev3 在 23/50 中断且没有 checkpoint；本机 rev4 已从冻结 base/allocation 独立完成 50 steps、7248-record full-bench 和 postverify，Macro Avg@k 为 `0.3416955678`。当前状态见 [`experiments/experiment_timeline_202607_202610_zh.md`](experiments/experiment_timeline_202607_202610_zh.md)。
+
 本文只覆盖当前固定模型/任务下的 seed-43 I8。它不重启历史 controller，不重跑 seed-42，不续训已经完成的 seed-43 I0，也不授权 seed 44。
 
 ## 迁移边界
