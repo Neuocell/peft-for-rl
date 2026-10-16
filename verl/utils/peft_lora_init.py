@@ -11,6 +11,8 @@ from typing import Any
 
 import torch
 
+from verl.utils.adapter_initialization import REFERENCE_INIT_VERSION, nora_normalize_columns
+
 
 def standard_lora_use_meta_tensor(base_use_meta: bool, init_seed: int | None) -> bool:
     """Audited LoRA initialization needs materialized tensors on every rank."""
@@ -133,7 +135,7 @@ def _normalize_lora_a_columns(model: torch.nn.Module) -> dict[str, Any]:
                 continue
             if parameter.ndim != 2:
                 raise ValueError(f"Cannot apply NoRA-init to LoRA-A tensor {name}: {tuple(parameter.shape)}")
-            normalized = torch.nn.functional.normalize(parameter.float(), p=2.0, dim=0)
+            normalized = nora_normalize_columns(parameter)
             parameter.copy_(normalized.to(device=parameter.device, dtype=parameter.dtype))
 
             column_norms = torch.linalg.vector_norm(parameter.detach().cpu().float(), dim=0)
@@ -229,10 +231,11 @@ def create_standard_lora_model(
             else (
                 "standard_seeded_a_then_row_qr_norm_matched_v1"
                 if init_mode == "random_orthogonal"
-                else "nora_init_rank_dimension_column_normalization_v1"
+                else "nora_init_kaiming_additive_eps_v2"
             )
         ),
         "init_mode": init_mode,
+        **({"nora_initialization_version": REFERENCE_INIT_VERSION} if init_mode == "nora_init" else {}),
         "init_seed": init_seed,
         "peft_version": peft_version,
         "initializer": {

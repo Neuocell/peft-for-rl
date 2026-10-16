@@ -41,7 +41,9 @@ def _reference_merge(child, method):
         scale = torch.where(base_norm > child.eps, magnitude / base_norm.clamp_min(child.eps), 1.0)
         return direction * scale[:, None]
     if method == "continuous":
-        a = a / torch.linalg.vector_norm(a, dim=0, keepdim=True).clamp_min(child.eps)
+        norm = torch.linalg.vector_norm(a, dim=0, keepdim=True)
+        denominator = norm.clamp_min(child.eps) if child.initialization_version == "legacy_v1" else norm + child.eps
+        a = a / denominator
     direction = weight + (child.alpha / child.rank) * (b @ a)
     return direction * (magnitude / torch.linalg.vector_norm(direction, dim=1).clamp_min(child.eps))[:, None]
 

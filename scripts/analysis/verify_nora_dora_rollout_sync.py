@@ -68,7 +68,7 @@ def fsdp_phase(args):
     from torch.distributed.fsdp import MixedPrecision, ShardedStateDictConfig, StateDictType
 
     from verl.utils.fsdp_utils import collect_nora_dora_full_params, get_fsdp_wrap_policy
-    from verl.utils.peft_nora_dora import NoRADoraLinear, apply_nora_dora_adapters
+    from verl.utils.peft_nora_dora import NoRADoraLinear, apply_nora_dora_adapters, nora_dora_snapshot_config
 
     torch.set_num_threads(2)
     torch.manual_seed(42)
@@ -79,7 +79,7 @@ def fsdp_phase(args):
     output.mkdir(parents=True, exist_ok=True)
     manifest = json.loads((Path(args.snapshot) / "manifest.json").read_text())
     method = manifest["method_config"]
-    config = {f"nora_dora_{key}": value for key, value in method.items()}
+    config = nora_dora_snapshot_config(method)
     model = AutoModelForCausalLM.from_pretrained(args.base_model, torch_dtype=torch.float32,
                                                 attn_implementation="flash_attention_2")
     stats = apply_nora_dora_adapters(model, config)
@@ -100,7 +100,11 @@ def fsdp_phase(args):
                 w = layer.base_layer.weight.detach().cuda().float()
                 a, b = layer.nora_dora_A.detach().cuda().float(), layer.nora_dora_B.detach().cuda().float()
                 if method["normalization"] == "continuous":
-                    a = torch.nn.functional.normalize(a, dim=0, eps=method["eps"])
+                    norm = torch.linalg.vector_norm(a, dim=0, keepdim=True)
+                    if config["nora_dora_initialization_version"] == "legacy_v1":
+                        a = a / norm.clamp_min(method["eps"])
+                    else:
+                        a = a / (norm + method["eps"])
                 direction = w + (method["alpha"] / method["rank"]) * (b @ a)
                 merged = direction * (layer.nora_dora_magnitude.detach().cuda().float() /
                                       direction.norm(dim=1).clamp_min(method["eps"]))[:, None]

@@ -1611,6 +1611,9 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                 "normalization": str(self.config.model.nora_dora_normalization),
                 "eps": float(self.config.model.nora_dora_eps),
                 "seed": int(self.config.model.nora_dora_seed),
+                "initialization_version": str(
+                    self.config.model.get("nora_dora_initialization_version", "peft_nora_reference_v2")
+                ),
             }
             module_names = sorted({key.rsplit(".nora_dora_", 1)[0] for key in params})
         elif self._peft_type == "nora_doft":

@@ -11,8 +11,13 @@ import torch
 from safetensors.torch import load_file
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, GenerationConfig
 
+from verl.utils.adapter_initialization import INIT_VERSIONS
 from verl.utils.fsdp_utils import collect_nora_dora_full_params
-from verl.utils.peft_nora_dora import DEFAULT_LINEAR_TARGETS, apply_nora_dora_adapters
+from verl.utils.peft_nora_dora import (
+    DEFAULT_LINEAR_TARGETS,
+    apply_nora_dora_adapters,
+    nora_dora_snapshot_config,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -20,11 +25,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--base_model", required=True)
     parser.add_argument("--wrapped_model", required=True)
     parser.add_argument("--output_dir", required=True)
-    parser.add_argument("--rank", type=int, default=8)
-    parser.add_argument("--alpha", type=float, default=8.0)
-    parser.add_argument("--normalization", choices=["standard", "init", "continuous"], default="init")
-    parser.add_argument("--eps", type=float, default=1e-6)
-    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--rank", type=int)
+    parser.add_argument("--alpha", type=float)
+    parser.add_argument("--normalization", choices=["standard", "init", "continuous"])
+    parser.add_argument("--eps", type=float)
+    parser.add_argument("--seed", type=int)
+    parser.add_argument("--initialization_version", choices=INIT_VERSIONS)
     parser.add_argument("--target_modules", default=",".join(sorted(DEFAULT_LINEAR_TARGETS)))
     parser.add_argument("--dtype", default="bfloat16", choices=["bfloat16", "float16", "float32"])
     return parser.parse_args()
@@ -48,9 +54,32 @@ def load_wrapped_state_dict(model_dir: Path) -> dict[str, torch.Tensor]:
     return state_dict
 
 
+def resolve_adapter_config(wrapped_dir: Path, args: argparse.Namespace) -> dict:
+    manifest_path = wrapped_dir / "manifest.json"
+    method = json.loads(manifest_path.read_text())["method_config"] if manifest_path.exists() else {}
+    defaults = {"rank": 8, "alpha": 8.0, "normalization": "init", "eps": 1e-6, "seed": 42}
+    for key in (*defaults, "initialization_version"):
+        supplied = getattr(args, key, None)
+        if supplied is not None:
+            if key in method and method[key] != supplied:
+                raise ValueError(f"Snapshot {key}={method[key]!r} conflicts with requested {supplied!r}")
+            # Absence of a version in an existing manifest is an explicit legacy
+            # semantic; callers may not silently reinterpret it as reference v2.
+            if key == "initialization_version" and manifest_path.exists() and key not in method:
+                if supplied != "legacy_v1":
+                    raise ValueError("Unversioned snapshot requires legacy_v1 normalization")
+            method[key] = supplied
+        elif key not in method and key in defaults:
+            method[key] = defaults[key]
+    config = nora_dora_snapshot_config(method)
+    config["target_modules"] = args.target_modules
+    return config
+
+
 def main() -> None:
     args = parse_args()
     wrapped_dir = Path(args.wrapped_model)
+    adapter_config = resolve_adapter_config(wrapped_dir, args)
     output_dir = Path(args.output_dir)
     dtype = {"bfloat16": torch.bfloat16, "float16": torch.float16, "float32": torch.float32}[args.dtype]
     config = AutoConfig.from_pretrained(args.base_model)
@@ -59,14 +88,7 @@ def main() -> None:
     )
     apply_nora_dora_adapters(
         model,
-        {
-            "nora_dora_rank": args.rank,
-            "nora_dora_alpha": args.alpha,
-            "nora_dora_normalization": args.normalization,
-            "nora_dora_eps": args.eps,
-            "nora_dora_seed": args.seed,
-            "target_modules": args.target_modules,
-        },
+        adapter_config,
     )
     state_dict = load_wrapped_state_dict(wrapped_dir)
     is_adapter_snapshot = (wrapped_dir / "adapter_model.safetensors").is_file()

@@ -195,6 +195,7 @@ class HFModelConfig(BaseConfig):
     nora_dora_normalization: str = "init"
     nora_dora_eps: float = 1e-6
     nora_dora_seed: int = 42
+    nora_dora_initialization_version: str = "peft_nora_reference_v2"
     skew_rank: int = 0
     skew_alpha: int = 16
     skew_dropout: float = 0.0

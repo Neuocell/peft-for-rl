@@ -135,6 +135,7 @@ else
 fi
 lock_value NORA_DORA_EPS 1e-6
 lock_value NORA_DORA_SEED 42
+lock_value NORA_DORA_INITIALIZATION_VERSION peft_nora_reference_v2
 lock_value NGPUS_PER_NODE 4
 lock_value NNODES 1
 lock_value ALLOW_EXISTING_CKPT_DIR 0

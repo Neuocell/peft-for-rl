@@ -100,18 +100,23 @@ def test_random_orthogonal_requires_seed():
 
 
 def test_nora_init_normalizes_each_a_column_and_keeps_b_zero():
+    standard, _ = build(42)
     model, audit = build(42, init_mode="nora_init")
 
     a = next(parameter for name, parameter in model.named_parameters() if ".lora_A." in name)
     b = next(parameter for name, parameter in model.named_parameters() if ".lora_B." in name)
     column_norms = torch.linalg.vector_norm(a.float(), dim=0)
 
-    assert torch.allclose(column_norms, torch.ones_like(column_norms), atol=1e-6, rtol=0)
+    raw_a = next(parameter for name, parameter in standard.named_parameters() if ".lora_A." in name)
+    expected = raw_a / (raw_a.norm(dim=0, keepdim=True) + 1e-6)
+    assert torch.equal(a, expected)
+    assert torch.all(column_norms <= 1.0)
     assert torch.count_nonzero(b).item() == 0
     assert audit["init_mode"] == "nora_init"
-    assert audit["method"] == "nora_init_rank_dimension_column_normalization_v1"
+    assert audit["method"] == "nora_init_kaiming_additive_eps_v2"
+    assert audit["nora_initialization_version"] == "peft_nora_reference_v2"
     assert audit["nora_normalization"]["normalization_dimension"] == "rank"
-    assert audit["nora_normalization"]["max_column_norm_error"] < 1e-6
+    assert audit["nora_normalization"]["max_column_norm_error"] < 1e-4
 
 
 def test_nora_init_requires_seed():

@@ -48,6 +48,11 @@ def make_identity(contract: dict, protocol: dict, repo: Path) -> dict:
         identity["rollout_export_version"] = exporter_version(repo / "verl/utils/fsdp_utils.py")
         implementation = "peft_nora_doft.py" if method == "nora_doft" else "peft_nora_dora.py"
         identity["method_source_sha256"] = sha256(repo / "verl/utils" / implementation)
+    if method in {"dora", "nora_dora", "nora_dora_continuous", "nora_init"}:
+        identity["initialization_version"] = "peft_nora_reference_v2"
+        identity["initialization_source_sha256"] = sha256(repo / "verl/utils/adapter_initialization.py")
+        if method == "nora_init":
+            identity["method_source_sha256"] = sha256(repo / "verl/utils/peft_lora_init.py")
     return identity
 
 
@@ -91,6 +96,8 @@ def main() -> None:
             "verl/utils/fsdp_utils.py",
             "verl/utils/peft_nora_dora.py",
             "verl/utils/peft_nora_doft.py",
+            "verl/utils/adapter_initialization.py",
+            "verl/utils/peft_lora_init.py",
             "scripts/local/run_rlvr_protocol_1p5b_4gpu.sh",
             "scripts/local/run_dapo_boxed_paper_clean_1p5b_4gpu.sh",
         ]

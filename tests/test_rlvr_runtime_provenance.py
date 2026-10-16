@@ -89,3 +89,25 @@ def test_target_step_is_execution_control_not_identity(tmp_path):
     before = runtime.make_identity(contract, protocol, tmp_path)
     contract["execution"]["target_step"] = 50
     assert runtime.make_identity(contract, protocol, tmp_path) == before
+
+
+@pytest.mark.parametrize("method", ["dora", "nora_dora", "nora_dora_continuous", "nora_init"])
+def test_shared_initializer_drift_is_part_of_runtime_identity(tmp_path, method):
+    source = tmp_path / "verl/utils"
+    source.mkdir(parents=True)
+    (source / "fsdp_utils.py").write_text('CUSTOM_PEFT_ROLLOUT_EXPORT_VERSION = "test-v1"\n')
+    (source / "peft_nora_dora.py").write_text("# wrapper version\n")
+    (source / "peft_lora_init.py").write_text("# native initializer\n")
+    helper = source / "adapter_initialization.py"
+    helper.write_text("# reference initial definition\n")
+    contract = {
+        "status": "verified", "protocol_id": "v1", "experiment_variables": {"method": method},
+        "assets": {}, "data_order": {},
+    }
+    protocol = {"protocol_id": "v1", "training": {"seed": 42}}
+    before = runtime.make_identity(contract, protocol, tmp_path)
+    assert before["initialization_version"] == "peft_nora_reference_v2"
+    helper.write_text("# changed initialization definition\n")
+    after = runtime.make_identity(contract, protocol, tmp_path)
+    assert before != after
+    assert before["initialization_source_sha256"] != after["initialization_source_sha256"]

@@ -26,6 +26,8 @@ def nora_dora_config(**overrides):
         "nora_dora_normalization": "init",
         "nora_dora_eps": 1e-6,
         "nora_dora_seed": 17,
+        # Retain the historical Gaussian/clamped-formula regression coverage.
+        "nora_dora_initialization_version": "legacy_v1",
         "target_modules": "q_proj",
     }
     config.update(overrides)

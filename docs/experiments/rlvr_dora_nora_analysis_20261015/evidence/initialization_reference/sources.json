@@ -1,0 +1,73 @@
+{
+  "refs": {
+    "Joluck/NoRA": "4669c35ce0ffd027456272ee5050c0f58ac8d22a",
+    "NVlabs/DoRA": "7e2f10abbe8efe212c8fca1d983ae1d04ef13a18",
+    "huggingface/peft": "ba6a19060d6ab54a87538a6e77e3e4d5a907375b"
+  },
+  "files": [
+    {
+      "repo": "Joluck/NoRA",
+      "commit": "4669c35ce0ffd027456272ee5050c0f58ac8d22a",
+      "path": "README.md",
+      "local_file": "nora_README.md.txt",
+      "sha256": "b1a714d353972856a0014ebae9817f38e7bb03972bcf9c7394d3791dffc87bf6",
+      "url": "https://github.com/Joluck/NoRA/blob/4669c35ce0ffd027456272ee5050c0f58ac8d22a/README.md"
+    },
+    {
+      "repo": "Joluck/NoRA",
+      "commit": "4669c35ce0ffd027456272ee5050c0f58ac8d22a",
+      "path": "peft/src/peft/tuners/lora/layer.py",
+      "local_file": "nora_layer.py.txt",
+      "sha256": "a7a0cc33473c328e751c22fa2710d60e5b7b9513e84916fae8037733d2a21c56",
+      "url": "https://github.com/Joluck/NoRA/blob/4669c35ce0ffd027456272ee5050c0f58ac8d22a/peft/src/peft/tuners/lora/layer.py"
+    },
+    {
+      "repo": "Joluck/NoRA",
+      "commit": "4669c35ce0ffd027456272ee5050c0f58ac8d22a",
+      "path": "peft/src/peft/tuners/lora/variants.py",
+      "local_file": "nora_variants.py.txt",
+      "sha256": "f3458a1eeffae5274f5463ca3c8ff6300d5ef58b4949cfdd89c71a74b2a7799b",
+      "url": "https://github.com/Joluck/NoRA/blob/4669c35ce0ffd027456272ee5050c0f58ac8d22a/peft/src/peft/tuners/lora/variants.py"
+    },
+    {
+      "repo": "Joluck/NoRA",
+      "commit": "4669c35ce0ffd027456272ee5050c0f58ac8d22a",
+      "path": "peft/src/peft/tuners/lora/dora.py",
+      "local_file": "nora_dora.py.txt",
+      "sha256": "2ff9d222eeada2ec82d6414ad2e0e46b17c6ccb76fc2cc0923a20c079ccf974c",
+      "url": "https://github.com/Joluck/NoRA/blob/4669c35ce0ffd027456272ee5050c0f58ac8d22a/peft/src/peft/tuners/lora/dora.py"
+    },
+    {
+      "repo": "huggingface/peft",
+      "commit": "ba6a19060d6ab54a87538a6e77e3e4d5a907375b",
+      "path": "src/peft/tuners/lora/layer.py",
+      "local_file": "peft_layer.py.txt",
+      "sha256": "444bba0e5dbc5c55ed51a288a8366c18aa7ebe533d081312a19347eb48b215b6",
+      "url": "https://github.com/huggingface/peft/blob/ba6a19060d6ab54a87538a6e77e3e4d5a907375b/src/peft/tuners/lora/layer.py"
+    },
+    {
+      "repo": "huggingface/peft",
+      "commit": "ba6a19060d6ab54a87538a6e77e3e4d5a907375b",
+      "path": "src/peft/tuners/lora/dora.py",
+      "local_file": "peft_dora.py.txt",
+      "sha256": "2ff9d222eeada2ec82d6414ad2e0e46b17c6ccb76fc2cc0923a20c079ccf974c",
+      "url": "https://github.com/huggingface/peft/blob/ba6a19060d6ab54a87538a6e77e3e4d5a907375b/src/peft/tuners/lora/dora.py"
+    },
+    {
+      "repo": "NVlabs/DoRA",
+      "commit": "7e2f10abbe8efe212c8fca1d983ae1d04ef13a18",
+      "path": "commonsense_reasoning/peft/src/peft/tuners/dora.py",
+      "local_file": "nvlabs_dora.py.txt",
+      "sha256": "a2b36c729ffd62904e320bb1cc7e18fabd2341b8c840b2c27475f04a0e107178",
+      "url": "https://github.com/NVlabs/DoRA/blob/7e2f10abbe8efe212c8fca1d983ae1d04ef13a18/commonsense_reasoning/peft/src/peft/tuners/dora.py"
+    },
+    {
+      "repo": "NVlabs/DoRA",
+      "commit": "7e2f10abbe8efe212c8fca1d983ae1d04ef13a18",
+      "path": "README.md",
+      "local_file": "nvlabs_README.md.txt",
+      "sha256": "fb18a7267cc4513625d824afc0d2d629c1f04e0e18d9306cde52d2a0228afee5",
+      "url": "https://github.com/NVlabs/DoRA/blob/7e2f10abbe8efe212c8fca1d983ae1d04ef13a18/README.md"
+    }
+  ]
+}

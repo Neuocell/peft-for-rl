@@ -3,21 +3,29 @@
 The learned direction is ``W + (alpha / rank) * B @ A``. The ``init`` and
 ``continuous`` modes use NoRA column normalization; ``standard`` uses the same
 Kaiming-uniform A and zero B initialization as matched PEFT LoRA. The trainable
-magnitude starts at the base weight's row norm, so every mode is exactly
-function preserving at initialization.
+magnitude starts at the base weight's row norm. Identity is exact in FP32 for
+rows with norm at least eps; storing magnitude in BF16 can introduce rounding at step zero.
 """
 
 from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import dataclass
-from math import isfinite, sqrt
+from math import isfinite
 from types import MethodType
 from typing import Any
 
 import torch
 from torch import nn
 from torch.nn import functional as F
+
+from verl.utils.adapter_initialization import (
+    INIT_VERSIONS,
+    LEGACY_INIT_VERSION,
+    REFERENCE_INIT_VERSION,
+    nora_normalize_columns,
+    seeded_peft_lora_a,
+)
 
 DEFAULT_LINEAR_TARGETS = {
     "q_proj",
@@ -72,6 +80,7 @@ class NoRADoraLinear(nn.Module):
         eps: float,
         seed: int,
         generator: torch.Generator | None = None,
+        initialization_version: str = REFERENCE_INIT_VERSION,
     ) -> None:
         super().__init__()
         if rank <= 0:
@@ -99,6 +108,9 @@ class NoRADoraLinear(nn.Module):
         self.normalization_mode = normalization_mode
         self.eps = float(eps)
         self.seed = int(seed)
+        if initialization_version not in INIT_VERSIONS:
+            raise ValueError(f"Unsupported adapter initialization version: {initialization_version!r}")
+        self.initialization_version = initialization_version
         self.adapter_disabled = False
 
         factory_kwargs = {"device": base_layer.weight.device, "dtype": base_layer.weight.dtype}
@@ -121,20 +133,13 @@ class NoRADoraLinear(nn.Module):
             generator = torch.Generator(device="cpu")
             generator.manual_seed(self.seed)
         initial_a = torch.empty(self.nora_dora_A.shape, device="cpu", dtype=torch.float32)
-        if self.normalization_mode == "standard":
-            # PEFT constructs lora_A and lora_B as nn.Linear modules before it
-            # resets A. Reproduce those constructor draws so the final A is
-            # elementwise matched to the audited standard-LoRA initialization.
-            constructor_a = torch.empty_like(initial_a)
-            constructor_b = torch.empty(
-                self.nora_dora_B.shape,
-                device="cpu",
-                dtype=torch.float32,
-            )
-            nn.init.kaiming_uniform_(constructor_a, a=sqrt(5), generator=generator)
-            nn.init.kaiming_uniform_(constructor_b, a=sqrt(5), generator=generator)
-            nn.init.kaiming_uniform_(initial_a, a=sqrt(5), generator=generator)
+        if self.normalization_mode == "standard" or self.initialization_version == REFERENCE_INIT_VERSION:
+            initial_a = seeded_peft_lora_a(self.nora_dora_A.shape, self.nora_dora_B.shape, generator)
+            if self.normalization_mode == "init":
+                initial_a = nora_normalize_columns(initial_a, self.eps)
         else:
+            # Historical runs used a separately seeded Gaussian per layer and
+            # clamped-denominator normalization in both NoRA modes.
             initial_a.normal_(generator=generator)
             initial_a = F.normalize(initial_a, p=2.0, dim=0, eps=self.eps)
         base_row_norm = torch.linalg.vector_norm(self.base_layer.weight.detach().float(), dim=1)
@@ -145,6 +150,8 @@ class NoRADoraLinear(nn.Module):
 
     def normalized_a(self) -> torch.Tensor:
         if self.normalization_mode == "continuous":
+            if self.initialization_version == REFERENCE_INIT_VERSION:
+                return nora_normalize_columns(self.nora_dora_A, self.eps)
             return F.normalize(self.nora_dora_A.float(), p=2.0, dim=0, eps=self.eps)
         return self.nora_dora_A.float()
 
@@ -193,7 +200,8 @@ def apply_nora_dora_adapters(model: nn.Module, config) -> NoRADoraApplyStats:
     model.requires_grad_(False)
     rank = int(_get(config, "nora_dora_rank", 8))
     alpha = float(_get(config, "nora_dora_alpha", rank))
-    normalization_mode = str(_get(config, "nora_dora_normalization", "init"))
+    normalization_mode = str(_get(config, "nora_dora_normalization", "init")).lower()
+    initialization_version = str(_get(config, "nora_dora_initialization_version", REFERENCE_INIT_VERSION))
     eps = float(_get(config, "nora_dora_eps", 1e-6))
     seed = int(_get(config, "nora_dora_seed", 42))
     target_modules = _as_target_set(_get(config, "target_modules", "all-linear"))
@@ -211,7 +219,7 @@ def apply_nora_dora_adapters(model: nn.Module, config) -> NoRADoraApplyStats:
 
     stats = NoRADoraApplyStats(rank=rank)
     standard_generator = None
-    if normalization_mode == "standard":
+    if normalization_mode == "standard" or initialization_version == REFERENCE_INIT_VERSION:
         standard_generator = torch.Generator(device="cpu")
         standard_generator.manual_seed(seed)
     for index, (name, module) in enumerate(replacements):
@@ -223,6 +231,7 @@ def apply_nora_dora_adapters(model: nn.Module, config) -> NoRADoraApplyStats:
             eps=eps,
             seed=seed + 1000003 * index,
             generator=standard_generator,
+            initialization_version=initialization_version,
         )
         _set_module(model, name, wrapped)
         stats.num_layers += 1
@@ -232,7 +241,7 @@ def apply_nora_dora_adapters(model: nn.Module, config) -> NoRADoraApplyStats:
             + wrapped.nora_dora_magnitude.numel()
         )
         if normalization_mode != "standard":
-            column_norms = torch.linalg.vector_norm(wrapped.nora_dora_A.detach().float(), dim=0)
+            column_norms = torch.linalg.vector_norm(wrapped.normalized_a().detach(), dim=0)
             error = float((column_norms - 1.0).abs().max().item())
             stats.normalization_error_max = max(stats.normalization_error_max, error)
 
@@ -250,3 +259,17 @@ def apply_nora_dora_adapters(model: nn.Module, config) -> NoRADoraApplyStats:
 
     model.disable_adapter = MethodType(disable_adapter, model)
     return stats
+
+
+def nora_dora_snapshot_config(method_config: dict) -> dict:
+    """Resolve snapshot semantics: unversioned snapshots always mean legacy.
+
+    Initialization matters for new runs; continuous normalization also matters
+    after loading A/B/m, so old snapshots must never inherit the new default.
+    """
+    version = method_config.get("initialization_version", LEGACY_INIT_VERSION)
+    if version not in INIT_VERSIONS:
+        raise ValueError(f"Unsupported snapshot initialization version: {version!r}")
+    config = {f"nora_dora_{key}": value for key, value in method_config.items()}
+    config["nora_dora_initialization_version"] = version
+    return config
