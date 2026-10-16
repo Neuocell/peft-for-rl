@@ -27,6 +27,7 @@ When working with Megatron:
 """
 
 import getpass
+import json
 import logging
 import os
 from dataclasses import asdict
@@ -238,6 +239,14 @@ class vLLMAsyncRollout(BaseRollout):
             weights: A generator that yields the name of the weight tensor and the tensor itself.
         """
         peft_config, base_sync_done = kwargs.get("peft_config", None), kwargs.get("base_sync_done", False)
+        verify_weight_names = kwargs.get("verify_weight_names")
+        if verify_weight_names is not None:
+            if peft_config is not None:
+                raise RuntimeError("Merged-weight verification cannot be used for a native LoRA payload")
+            weights = dict(weights)
+            missing = set(verify_weight_names) - weights.keys()
+            if not verify_weight_names or missing:
+                raise RuntimeError(f"Missing merged adapter weights before rollout load: {sorted(missing)}")
         if peft_config and base_sync_done:
             # In async mode, make sure the old lora is removed before adding the new one
             self.inference_engine.worker.remove_lora(VLLM_LORA_INT_ID)
@@ -249,7 +258,9 @@ class vLLMAsyncRollout(BaseRollout):
                 peft_config=asdict(peft_config),
                 lora_tensors=weights,
             )
-            self.inference_engine.worker.add_lora(lora_request)
+            added = self.inference_engine.worker.add_lora(lora_request)
+            if added is False:
+                raise RuntimeError("vLLM rejected the active LoRA adapter; refusing to generate with base weights")
             logger.info(f"vLLM load weights, loaded_params: {len(weights)}")
         else:
             from verl.utils.vllm.patch import patch_vllm_moe_model_weight_loader
@@ -261,13 +272,23 @@ class vLLMAsyncRollout(BaseRollout):
             # Add the FP8 related logic here as sharding manager has been deprecated.
             # Check if FP8 quantization is enabled and apply appropriate weight loading
             if is_fp8_model(model_runner.vllm_config):
+                if verify_weight_names is not None:
+                    raise RuntimeError("Exact merged-adapter verification requires an unquantized rollout model")
                 logger.info(f"FP8 model detected (async): {model_runner.vllm_config.quant_config}")
                 # Convert bf16 weights to fp8 format before loading
                 loaded_params = load_quanted_weights(weights, model_runner)
                 logger.info(f"FP8 weights loaded (async), loaded_params: {len(loaded_params)}")
             else:
                 logger.info("Loading standard weights (non-FP8, async)")
-                model.load_weights(weights)
+                model.load_weights(iter(weights.items()) if isinstance(weights, dict) else weights)
+            if verify_weight_names is not None:
+                from verl.utils.rollout_weight_verification import verify_rollout_weight_values
+
+                receipt = verify_rollout_weight_values(model, weights, verify_weight_names)
+                receipt["checkpoint_source"] = kwargs.get("verification_context", "initial_actor")
+                receipt["rank"] = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
+                print("[rollout_weight_verification] " + json.dumps(receipt, sort_keys=True), flush=True)
+                return receipt
 
     def generate_sequences(self, prompts: DataProto) -> DataProto:
         """Batch generate sequences in sync mode.

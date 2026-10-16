@@ -67,10 +67,10 @@ from verl.utils.fsdp_utils import (
     collect_biso_full_params,
     collect_boet_full_params,
     collect_lora_params,
-    collect_nora_dora_adapter_params,
-    collect_nora_dora_full_params,
     collect_nora_doft_adapter_params,
     collect_nora_doft_full_params,
+    collect_nora_dora_adapter_params,
+    collect_nora_dora_full_params,
     collect_peft_full_params,
     collect_skew_full_params,
     collect_spo_full_params,
@@ -102,8 +102,8 @@ from verl.utils.peft_gradient_subspace import (
     initialize_gradient_probe,
 )
 from verl.utils.peft_lora_init import create_standard_lora_model, standard_lora_use_meta_tensor
-from verl.utils.peft_nora_dora import apply_nora_dora_adapters
 from verl.utils.peft_nora_doft import apply_nora_doft_adapters
+from verl.utils.peft_nora_dora import apply_nora_dora_adapters
 from verl.utils.peft_oracle_lora import load_oracle_lora_patterns
 from verl.utils.peft_rlpo import apply_rlpo_initialization
 from verl.utils.peft_skew import apply_skew_adapters
@@ -1074,16 +1074,21 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         peft_model = getattr(self.actor_module_fsdp, "_fsdp_wrapped_module", self.actor_module_fsdp)
         if hasattr(peft_model, "peft_config") and self._is_lora:
             peft_config = peft_model.peft_config.get("default", None)
+            if peft_config is None:
+                raise RuntimeError("The active training LoRA adapter has no default PEFT configuration")
             if self._is_adalora:
                 peft_config = adalora_config_for_vllm(peft_config)
             params = collect_lora_params(
                 module=self.actor_module_fsdp,
                 layered_summon=self.config.rollout.get("layered_summon", False),
-                base_sync_done=self.base_sync_done,
+                # Collect the active adapter even on the first rollout. A
+                # resumed adapter is generally nonzero, so loading only the
+                # base model before this generation silently changes policy.
+                base_sync_done=True,
                 adalora=self._is_adalora,
             )
-            if not self.base_sync_done:
-                params = {replace_lora_wrapper(k, peft_config): v for k, v in params.items()}
+            if not params:
+                raise RuntimeError("No LoRA tensors collected for rollout; refusing to generate with base weights")
         elif hasattr(peft_model, "peft_config"):
             params = collect_peft_full_params(module=self.actor_module_fsdp)
             skip_weight_key_conversion = True
@@ -1116,14 +1121,17 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                 params, getattr(self.actor_module_fsdp, "_fsdp_wrapped_module", self.actor_module_fsdp)
             )
 
-        # Special handling for LoRA with sleep_level=2:
-        # When sleep_level=2, base model weights are destroyed during each sleep cycle.
-        # separately collect and update LoRA weights and base model weights through their respective interfaces.
-        # Here: params contains LoRA weights, base_model_params contains base model weights.
-        if peft_config is not None and getattr(self.rollout, "sleep_level", None) == 2:
+        # A dummy-loaded engine needs its base weights on the first rollout.
+        # Sleep level 2 destroys them on every sleep. In either case, load the
+        # base and the active adapter before allowing generation to start.
+        sync_lora_base = peft_config is not None and (
+            not self.base_sync_done or getattr(self.rollout, "sleep_level", None) == 2
+        )
+        if sync_lora_base:
             base_model_params = collect_lora_params(
                 module=self.actor_module_fsdp,
-                layered_summon=self.layered_summon,
+                # Layered collection supports adapter tensors only.
+                layered_summon=False,
                 base_sync_done=False,
                 adalora=self._is_adalora,
             )
@@ -1139,10 +1147,10 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
 
         set_expandable_segments(False)
 
-        if peft_config is not None and self.base_sync_done:
+        device = get_device_id()  # also needed by base reloads with sleep_level=2
+        if peft_config is not None:
             per_tensor_param = params.items() if isinstance(params, dict) else params  # Fixed: handle dict case
         else:
-            device = get_device_id()  # used when fsdp2 set cpu_offload_policy
             per_tensor_param = (
                 (name, param.to(device, non_blocking=True).full_tensor() if isinstance(param, DTensor) else param)
                 for name, param in params.items()
@@ -1152,7 +1160,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             await self.rollout.resume(tags=["weights"])
         log_gpu_memory_usage("After resume weights", logger=logger)
 
-        if peft_config is not None and getattr(self.rollout, "sleep_level", None) == 2:
+        if sync_lora_base:
             per_tensor_base_params = (
                 (name, param.to(device, non_blocking=True).full_tensor() if isinstance(param, DTensor) else param)
                 for name, param in base_model_params.items()
@@ -1160,7 +1168,43 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             await self.rollout.update_weights(per_tensor_base_params, base_sync_done=False)
             del base_model_params, per_tensor_base_params
 
-        await self.rollout.update_weights(per_tensor_param, peft_config=peft_config, base_sync_done=self.base_sync_done)
+        verify_weight_names = None
+        if (
+            self._peft_type in {"nora_dora", "nora_doft"}
+            and self.config.rollout.name == "vllm"
+            and self.config.rollout.tensor_model_parallel_size == 1
+            and self.config.rollout.pipeline_model_parallel_size == 1
+            and not getattr(self, "_custom_rollout_weights_verified", False)
+        ):
+            from verl.utils.peft_nora_doft import NoRADoftLinear
+            from verl.utils.peft_nora_dora import NoRADoraLinear
+
+            wrapper_type = NoRADoraLinear if self._peft_type == "nora_dora" else NoRADoftLinear
+            verify_weight_names = []
+            for name, child in peft_model.named_modules():
+                if isinstance(child, wrapper_type):
+                    name = ".".join(part for part in name.split(".") if part != "_fsdp_wrapped_module")
+                    verify_weight_names.append(f"{name}.weight" if name else "weight")
+            if not verify_weight_names:
+                raise RuntimeError(f"No {wrapper_type.__name__} weights found for first-rollout verification")
+
+        weight_update_receipt = await self.rollout.update_weights(
+            per_tensor_param,
+            peft_config=peft_config,
+            # The optional base update above has completed. Adapter dispatch
+            # must be active on this call, including the first resumed rollout.
+            base_sync_done=True if peft_config is not None else self.base_sync_done,
+            verify_weight_names=verify_weight_names,
+            verification_context=getattr(self, "_rollout_checkpoint_source", "initial_actor"),
+        )
+        if verify_weight_names:
+            if (
+                not isinstance(weight_update_receipt, dict)
+                or weight_update_receipt.get("status") != "verified"
+                or weight_update_receipt.get("tensor_count") != len(verify_weight_names)
+            ):
+                raise RuntimeError("Rollout backend did not acknowledge verification of every custom adapter weight")
+            self._custom_rollout_weights_verified = True
         log_gpu_memory_usage("After update_weights", logger=logger)
         del params, per_tensor_param
         aggressive_empty_cache(force_sync=True)
@@ -1711,12 +1755,20 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                 offload_fsdp_optimizer(self.actor_optimizer)
             return
 
+        if getattr(self, "_is_peft", False) and not self.checkpoint_manager.should_load_model:
+            raise RuntimeError("Adapter resume requires checkpoint load_contents to include 'model'")
+
         if self._is_offload_param:
             load_fsdp_model_to_gpu(self.actor_module_fsdp)
 
         self.checkpoint_manager.load_checkpoint(
             local_path=local_path, hdfs_path=hdfs_path, del_local_after_load=del_local_after_load
         )
+
+        # A prior receipt belongs to the pre-restore actor. The first rollout
+        # after every restore must read back the newly merged adapter weights.
+        self._custom_rollout_weights_verified = False
+        self._rollout_checkpoint_source = str(local_path)
 
         if self._is_offload_param:
             offload_fsdp_model_to_cpu(self.actor_module_fsdp)

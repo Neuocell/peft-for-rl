@@ -55,6 +55,39 @@ def test_nora_dora_is_exact_identity_with_nora_initialization():
     assert not wrapped.base_layer.bias.requires_grad
 
 
+def test_standard_dora_matches_seeded_standard_lora_initialization():
+    from peft import LoraConfig
+
+    from verl.utils.peft_lora_init import create_standard_lora_model
+
+    torch.manual_seed(3)
+    dora_model = TinyModel()
+    lora_model = TinyModel()
+    lora_model.load_state_dict(dora_model.state_dict())
+    inputs = torch.randn(4, 8)
+    base_output = dora_model(inputs).detach().clone()
+
+    apply_nora_dora_adapters(
+        dora_model,
+        nora_dora_config(nora_dora_normalization="standard"),
+    )
+    lora_model, _ = create_standard_lora_model(
+        lora_model,
+        LoraConfig(r=2, lora_alpha=2, lora_dropout=0.0, target_modules=["q_proj"]),
+        init_seed=17,
+    )
+
+    wrapped = dora_model.q_proj
+    peft_layer = lora_model.base_model.model.q_proj
+    assert torch.equal(wrapped.nora_dora_A, peft_layer.lora_A["default"].weight)
+    assert torch.equal(wrapped.nora_dora_B, peft_layer.lora_B["default"].weight)
+    assert torch.equal(dora_model(inputs), base_output)
+    assert not torch.allclose(
+        torch.linalg.vector_norm(wrapped.nora_dora_A.float(), dim=0),
+        torch.ones(wrapped.base_layer.in_features),
+    )
+
+
 def test_nora_dora_first_step_gradient_structure():
     model = TinyModel()
     apply_nora_dora_adapters(model, nora_dora_config())
@@ -181,6 +214,7 @@ def test_nora_dora_validates_configuration(overrides, message):
 def test_nora_dora_launcher_and_fsdp_paths_are_wired():
     launcher = (REPO_ROOT / "examples/verl_train/run_dapo_math_boxed_nora_dora_1p5b_4gpu_8k.sh").read_text()
     base_launcher = (REPO_ROOT / "examples/verl_train/run_dapo_math_boxed_stable_lora_1p5b_4gpu_8k.sh").read_text()
+    paper_clean_launcher = (REPO_ROOT / "scripts/local/run_dapo_boxed_paper_clean_1p5b_4gpu.sh").read_text()
     worker = (REPO_ROOT / "verl/workers/fsdp_workers.py").read_text()
     engine = (REPO_ROOT / "verl/workers/engine/fsdp/transformer_impl.py").read_text()
     trainer = (REPO_ROOT / "verl/trainer/ppo/ray_trainer.py").read_text()
@@ -191,6 +225,8 @@ def test_nora_dora_launcher_and_fsdp_paths_are_wired():
     assert 'export NORA_DORA_NORMALIZATION="${NORA_DORA_NORMALIZATION:-init}"' in launcher
     assert "['model','optimizer','extra']" in launcher
     assert "+actor_rollout_ref.model.nora_dora_rank" in base_launcher
+    assert 'nora_dora)\n    PEFT_TYPE="nora_dora"\n    LORA_RANK=0' in paper_clean_launcher
+    assert 'dora)\n    PEFT_TYPE="nora_dora"\n    LORA_RANK=0' in paper_clean_launcher
     assert 'elif self._peft_type == "nora_dora":' in worker
     assert "collect_nora_dora_full_params" in worker
     assert '"nora_dora"' in engine

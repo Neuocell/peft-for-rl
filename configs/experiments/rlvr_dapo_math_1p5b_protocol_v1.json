@@ -6,9 +6,11 @@
       "1e-5"
     ],
     "method": [
+      "dora",
       "lora",
       "nora_init",
       "nora_dora",
+      "nora_dora_continuous",
       "nora_doft",
       "rlpo"
     ],

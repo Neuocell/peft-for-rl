@@ -156,6 +156,7 @@ def test_nora_doft_validates_configuration(overrides, message):
 def test_nora_doft_launcher_and_fsdp_paths_are_wired():
     launcher = (REPO_ROOT / "examples/verl_train/run_dapo_math_boxed_nora_doft_1p5b_4gpu_8k.sh").read_text()
     base_launcher = (REPO_ROOT / "examples/verl_train/run_dapo_math_boxed_stable_lora_1p5b_4gpu_8k.sh").read_text()
+    paper_clean_launcher = (REPO_ROOT / "scripts/local/run_dapo_boxed_paper_clean_1p5b_4gpu.sh").read_text()
     worker = (REPO_ROOT / "verl/workers/fsdp_workers.py").read_text()
     engine = (REPO_ROOT / "verl/workers/engine/fsdp/transformer_impl.py").read_text()
     trainer = (REPO_ROOT / "verl/trainer/ppo/ray_trainer.py").read_text()
@@ -167,6 +168,7 @@ def test_nora_doft_launcher_and_fsdp_paths_are_wired():
     assert 'export NORA_DOFT_NORMALIZATION="${NORA_DOFT_NORMALIZATION:-init}"' in launcher
     assert 'export NORA_DOFT_USE_MAGNITUDE="${NORA_DOFT_USE_MAGNITUDE:-True}"' in launcher
     assert "+actor_rollout_ref.model.nora_doft_rank" in base_launcher
+    assert 'nora_doft)\n    PEFT_TYPE="nora_doft"\n    LORA_RANK=0' in paper_clean_launcher
     assert 'elif self._peft_type == "nora_doft":' in worker
     assert "collect_nora_doft_full_params" in worker
     assert 'self._peft_type in {"tinylora", "nora_doft", "nora_dora"}' in worker

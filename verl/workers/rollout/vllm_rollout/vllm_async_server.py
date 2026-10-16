@@ -509,6 +509,12 @@ class vLLMHttpServerBase:
         if self.model_config.lora_rank > 0:
             # Make sure we also check that the lora is already loaded in the engine
             lora_loaded = VLLM_LORA_INT_ID in await self.engine.list_loras()
+            if not lora_loaded and self.rollout_mode == RolloutMode.HYBRID:
+                raise RuntimeError(
+                    "The active training LoRA adapter is missing from the rollout engine. "
+                    "Base and adapter weights must both be synchronized before generation; "
+                    "refusing to fall back to the base policy."
+                )
             if lora_loaded:
                 lora_request = LoRARequest(
                     lora_name=VLLM_LORA_NAME, lora_int_id=VLLM_LORA_INT_ID, lora_path=VLLM_LORA_PATH

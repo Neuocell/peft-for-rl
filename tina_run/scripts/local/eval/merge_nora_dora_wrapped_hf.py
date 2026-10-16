@@ -22,7 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--rank", type=int, default=8)
     parser.add_argument("--alpha", type=float, default=8.0)
-    parser.add_argument("--normalization", choices=["init", "continuous"], default="init")
+    parser.add_argument("--normalization", choices=["standard", "init", "continuous"], default="init")
     parser.add_argument("--eps", type=float, default=1e-6)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--target_modules", default=",".join(sorted(DEFAULT_LINEAR_TARGETS)))

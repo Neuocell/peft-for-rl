@@ -1,16 +1,17 @@
-"""NoRA-initialized additive low-rank adaptation with DoRA magnitude.
+"""Additive low-rank adaptation with DoRA magnitude.
 
-The learned direction is ``W + (alpha / rank) * B @ A``. ``A`` uses NoRA
-column normalization, ``B`` starts at zero, and the trainable magnitude starts
-at the base weight's row norm. This makes the adapter exactly function
-preserving at initialization while separating direction and magnitude updates.
+The learned direction is ``W + (alpha / rank) * B @ A``. The ``init`` and
+``continuous`` modes use NoRA column normalization; ``standard`` uses the same
+Kaiming-uniform A and zero B initialization as matched PEFT LoRA. The trainable
+magnitude starts at the base weight's row norm, so every mode is exactly
+function preserving at initialization.
 """
 
 from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import dataclass
-from math import isfinite
+from math import isfinite, sqrt
 from types import MethodType
 from typing import Any
 
@@ -59,7 +60,7 @@ def _matches_target(module_name: str, target_modules: set[str]) -> bool:
 
 
 class NoRADoraLinear(nn.Module):
-    """Wrap ``nn.Linear`` with a NoRA-initialized DoRA update."""
+    """Wrap ``nn.Linear`` with a standard- or NoRA-initialized DoRA update."""
 
     def __init__(
         self,
@@ -70,6 +71,7 @@ class NoRADoraLinear(nn.Module):
         normalization_mode: str,
         eps: float,
         seed: int,
+        generator: torch.Generator | None = None,
     ) -> None:
         super().__init__()
         if rank <= 0:
@@ -84,9 +86,10 @@ class NoRADoraLinear(nn.Module):
         if not isfinite(eps) or eps <= 0:
             raise ValueError(f"NoRA-DoRA eps must be finite and positive, got {eps}")
         normalization_mode = normalization_mode.lower()
-        if normalization_mode not in {"init", "continuous"}:
+        if normalization_mode not in {"standard", "init", "continuous"}:
             raise ValueError(
-                f"Unsupported NoRA-DoRA normalization mode {normalization_mode!r}; expected 'init' or 'continuous'"
+                "Unsupported NoRA-DoRA normalization mode "
+                f"{normalization_mode!r}; expected 'standard', 'init', or 'continuous'"
             )
 
         self.base_layer = base_layer
@@ -109,20 +112,31 @@ class NoRADoraLinear(nn.Module):
         base_row_norm = torch.linalg.vector_norm(base_layer.weight.detach().float(), dim=1)
         self.nora_dora_magnitude = nn.Parameter(base_row_norm.to(**factory_kwargs))
 
-        self.reset_parameters()
+        self.reset_parameters(generator=generator)
         for parameter in self.base_layer.parameters():
             parameter.requires_grad_(False)
 
-    def reset_parameters(self) -> None:
-        generator = torch.Generator(device="cpu")
-        generator.manual_seed(self.seed)
-        initial_a = torch.randn(
-            self.nora_dora_A.shape,
-            generator=generator,
-            device="cpu",
-            dtype=torch.float32,
-        )
-        initial_a = F.normalize(initial_a, p=2.0, dim=0, eps=self.eps)
+    def reset_parameters(self, *, generator: torch.Generator | None = None) -> None:
+        if generator is None:
+            generator = torch.Generator(device="cpu")
+            generator.manual_seed(self.seed)
+        initial_a = torch.empty(self.nora_dora_A.shape, device="cpu", dtype=torch.float32)
+        if self.normalization_mode == "standard":
+            # PEFT constructs lora_A and lora_B as nn.Linear modules before it
+            # resets A. Reproduce those constructor draws so the final A is
+            # elementwise matched to the audited standard-LoRA initialization.
+            constructor_a = torch.empty_like(initial_a)
+            constructor_b = torch.empty(
+                self.nora_dora_B.shape,
+                device="cpu",
+                dtype=torch.float32,
+            )
+            nn.init.kaiming_uniform_(constructor_a, a=sqrt(5), generator=generator)
+            nn.init.kaiming_uniform_(constructor_b, a=sqrt(5), generator=generator)
+            nn.init.kaiming_uniform_(initial_a, a=sqrt(5), generator=generator)
+        else:
+            initial_a.normal_(generator=generator)
+            initial_a = F.normalize(initial_a, p=2.0, dim=0, eps=self.eps)
         base_row_norm = torch.linalg.vector_norm(self.base_layer.weight.detach().float(), dim=1)
         with torch.no_grad():
             self.nora_dora_A.copy_(initial_a.to(self.nora_dora_A))
@@ -174,7 +188,7 @@ def _set_module(root: nn.Module, module_name: str, new_module: nn.Module) -> Non
 
 
 def apply_nora_dora_adapters(model: nn.Module, config) -> NoRADoraApplyStats:
-    """Replace target linear modules with NoRA-DoRA wrappers."""
+    """Replace target linear modules with DoRA wrappers."""
 
     model.requires_grad_(False)
     rank = int(_get(config, "nora_dora_rank", 8))
@@ -196,6 +210,10 @@ def apply_nora_dora_adapters(model: nn.Module, config) -> NoRADoraApplyStats:
         raise ValueError(f"NoRA-DoRA found no target linear modules for targets={sorted(target_modules)}")
 
     stats = NoRADoraApplyStats(rank=rank)
+    standard_generator = None
+    if normalization_mode == "standard":
+        standard_generator = torch.Generator(device="cpu")
+        standard_generator.manual_seed(seed)
     for index, (name, module) in enumerate(replacements):
         wrapped = NoRADoraLinear(
             module,
@@ -204,6 +222,7 @@ def apply_nora_dora_adapters(model: nn.Module, config) -> NoRADoraApplyStats:
             normalization_mode=normalization_mode,
             eps=eps,
             seed=seed + 1000003 * index,
+            generator=standard_generator,
         )
         _set_module(model, name, wrapped)
         stats.num_layers += 1
@@ -212,9 +231,10 @@ def apply_nora_dora_adapters(model: nn.Module, config) -> NoRADoraApplyStats:
             + wrapped.nora_dora_B.numel()
             + wrapped.nora_dora_magnitude.numel()
         )
-        column_norms = torch.linalg.vector_norm(wrapped.nora_dora_A.detach().float(), dim=0)
-        error = float((column_norms - 1.0).abs().max().item())
-        stats.normalization_error_max = max(stats.normalization_error_max, error)
+        if normalization_mode != "standard":
+            column_norms = torch.linalg.vector_norm(wrapped.nora_dora_A.detach().float(), dim=0)
+            error = float((column_norms - 1.0).abs().max().item())
+            stats.normalization_error_max = max(stats.normalization_error_max, error)
 
     @contextmanager
     def disable_adapter(self):

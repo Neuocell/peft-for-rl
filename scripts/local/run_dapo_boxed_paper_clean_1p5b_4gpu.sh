@@ -206,8 +206,26 @@ RLPO_SVD_DEVICE="${RLPO_SVD_DEVICE:-auto}"
 case "${METHOD}" in
   lora) PEFT_TYPE="lora" ;;
   nora_init) PEFT_TYPE="lora"; LORA_INIT_MODE="nora_init" ;;
-  nora_doft) PEFT_TYPE="nora_doft"; USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}" ;;
-  nora_dora) PEFT_TYPE="nora_dora"; USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}" ;;
+  nora_doft)
+    PEFT_TYPE="nora_doft"
+    LORA_RANK=0
+    USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
+    ;;
+  nora_dora)
+    PEFT_TYPE="nora_dora"
+    LORA_RANK=0
+    USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
+    ;;
+  dora)
+    PEFT_TYPE="nora_dora"
+    LORA_RANK=0
+    USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
+    ;;
+  nora_dora_continuous)
+    PEFT_TYPE="nora_dora"
+    LORA_RANK=0
+    USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
+    ;;
   rlpo) PEFT_TYPE="rlpo" ;;
   adalora)
     PEFT_TYPE="adalora"

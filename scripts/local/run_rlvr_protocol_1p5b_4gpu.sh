@@ -48,17 +48,20 @@ safe_lr="${lr//-/m}"
 default_name="rlvr_v1_${method}_r${rank}_a64_lr${safe_lr}_b64m16n8_seed42"
 exp_name="${EXP_NAME:-${default_name}}"
 contract="${runtime_root}/protocol_contracts/${exp_name}.json"
-ray_temp_dir="${RAY_TEMP_BASE:-${runtime_root}/ray}/${method}_r${rank}_${safe_lr}"
+ray_temp_dir="${RAY_TEMP_DIR:-${RAY_TEMP_BASE:-${runtime_root}/ray}/${method}_r${rank}_${safe_lr}}"
 local_checkpoint_dir="${runtime_root}/ckpts/verl/peft-for-rl/${exp_name}"
 local_snapshot_dir="${runtime_root}/snapshots/rlvr_protocol/${exp_name}"
 
+mkdir -p "$(dirname -- "${contract}")"
+pending_contract="$(mktemp "${contract}.check.XXXXXX")"
+trap 'rm -f -- "${pending_contract}"' EXIT
 "${python_bin}" "${repo_root}/scripts/analysis/verify_rlvr_protocol.py" \
     --protocol "${protocol}" \
     --learning-rate "${lr}" \
     --method "${method}" \
     --rank "${rank}" \
     --target-step "${target_step}" \
-    --output "${contract}" >/dev/null
+    --output "${pending_contract}" >/dev/null
 
 lock_value() {
     local name="$1" expected="$2"
@@ -123,7 +126,13 @@ lock_value NORA_DOFT_EPS 1e-6
 lock_value NORA_DOFT_SEED 42
 lock_value NORA_DORA_RANK "${rank}"
 lock_value NORA_DORA_ALPHA 64
-lock_value NORA_DORA_NORMALIZATION init
+if [[ "${method}" == "dora" ]]; then
+    lock_value NORA_DORA_NORMALIZATION standard
+elif [[ "${method}" == "nora_dora_continuous" ]]; then
+    lock_value NORA_DORA_NORMALIZATION continuous
+else
+    lock_value NORA_DORA_NORMALIZATION init
+fi
 lock_value NORA_DORA_EPS 1e-6
 lock_value NORA_DORA_SEED 42
 lock_value NGPUS_PER_NODE 4
@@ -154,7 +163,7 @@ case "${method}" in
         lock_value USE_ORIG_PARAMS False
         lock_value USE_ORIG_PARAMS_OVERRIDE False
         ;;
-    nora_doft|nora_dora)
+    dora|nora_doft|nora_dora|nora_dora_continuous)
         lock_value LORA_INIT_MODE standard
         lock_value USE_ORIG_PARAMS True
         lock_value USE_ORIG_PARAMS_OVERRIDE True
@@ -165,6 +174,21 @@ case "${method}" in
         lock_value USE_ORIG_PARAMS_OVERRIDE False
         ;;
 esac
+
+runtime_args=(
+    --contract "${pending_contract}"
+    --manifest "${runtime_root}/protocol_contracts/${exp_name}.runtime.json"
+    --checkpoints "${local_checkpoint_dir}"
+    --snapshots "${local_snapshot_dir}"
+    --resume-mode "${resume_mode}"
+)
+if [[ "${DRY_RUN}" != "1" ]]; then
+    runtime_args+=(--record)
+fi
+"${python_bin}" "${repo_root}/scripts/analysis/record_rlvr_runtime.py" "${runtime_args[@]}"
+# Keep the previous contract intact when configuration/provenance validation fails.
+mv -- "${pending_contract}" "${contract}"
+trap - EXIT
 
 echo "Verified ${PROTOCOL_ID}: only LR=${lr}, METHOD=${method}, LORA_RANK=${rank} vary"
 echo "Contract: ${contract}"

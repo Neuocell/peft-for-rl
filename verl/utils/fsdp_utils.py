@@ -34,6 +34,9 @@ from transformers.trainer_pt_utils import get_module_class_from_name
 from verl.utils.device import get_device_id, get_device_name, get_torch_device
 from verl.utils.model import check_exclude_modules, check_target_modules
 
+# Bump when the custom rollout export semantics change; recorded with run provenance.
+CUSTOM_PEFT_ROLLOUT_EXPORT_VERSION = "fsdp-canonical-merge-v1"
+
 if version.parse(torch.__version__) >= version.parse("2.6"):
     from torch.distributed.fsdp import CPUOffloadPolicy, FSDPModule, MixedPrecisionPolicy, fully_shard
     from torch.distributed.tensor import Shard
@@ -879,41 +882,73 @@ def collect_boet_full_params(module: FSDP) -> OrderedDict:
     return params
 
 
-def collect_nora_doft_full_params(module: FSDP) -> OrderedDict:
-    """Collect base-model weights with NoRA-DOFT adapters folded in."""
+def _canonical_fsdp_name(name: str) -> str:
+    """Remove only FSDP wrapper path components from a module or state-dict name."""
+    return ".".join(part for part in name.split(".") if part != "_fsdp_wrapped_module")
 
-    from verl.utils.peft_nora_doft import NoRADoftLinear
 
+def _collect_custom_adapter_full_params(
+    module: nn.Module, wrapper_type: type[nn.Module], parameter_prefix: str
+) -> OrderedDict:
+    """Merge every custom adapter once, rejecting missing or unmatched base weights.
+
+    Nested FSDP strips wrapper components from state-dict keys but keeps them in
+    ``named_modules``. Both sides must use canonical names, or exporting a base
+    weight can silently discard the trained adapter. Returned tensors own their
+    CPU storage and remain valid after full parameters are resharded.
+    """
     params = OrderedDict()
     model = getattr(module, "_fsdp_wrapped_module", module)
 
     def _collect_from_model():
-        module_by_name = dict(model.named_modules())
-        for name, param in model.state_dict().items():
-            if "_flat_param" in name or "nora_doft_" in name:
+        module_by_name = {}
+        for raw_name, child in model.named_modules():
+            if not isinstance(child, wrapper_type):
+                continue
+            name = _canonical_fsdp_name(raw_name)
+            if name in module_by_name:
+                raise RuntimeError(f"Duplicate canonical {wrapper_type.__name__} module: {name}")
+            module_by_name[name] = child
+        if not module_by_name:
+            raise RuntimeError(f"No {wrapper_type.__name__} modules found during rollout collection")
+
+        merged_names = set()
+        seen_weights = set()
+        seen_biases = set()
+        for raw_name, param in model.state_dict().items():
+            if "_flat_param" in raw_name or parameter_prefix in raw_name:
+                continue
+            name = _canonical_fsdp_name(raw_name)
+            parts = name.split(".")
+            if len(parts) >= 2 and parts[-2] == "base_layer" and parts[-1] in {"weight", "bias"}:
+                prefix = ".".join(parts[:-2])
+                wrapped = module_by_name.get(prefix)
+                if wrapped is None:
+                    raise RuntimeError(
+                        f"Unmatched wrapped parameter during {wrapper_type.__name__} collection: {raw_name}"
+                    )
+                (seen_weights if parts[-1] == "weight" else seen_biases).add(prefix)
+                if prefix not in merged_names:
+                    weight, bias = wrapped.merged_weight_bias()
+                    output_prefix = f"{prefix}." if prefix else ""
+                    params[f"{output_prefix}weight"] = weight.detach().to(device="cpu", copy=True)
+                    if bias is not None:
+                        params[f"{output_prefix}bias"] = bias.detach().to(device="cpu", copy=True)
+                    merged_names.add(prefix)
                 continue
 
-            if name.endswith(".base_layer.weight"):
-                prefix = name[: -len(".base_layer.weight")]
-                wrapped = module_by_name.get(prefix)
-                if isinstance(wrapped, NoRADoftLinear):
-                    merged_weight, _ = wrapped.merged_weight_bias()
-                    clean_prefix = prefix.replace("_fsdp_wrapped_module.", "")
-                    params[f"{clean_prefix}.weight"] = merged_weight.detach().cpu()
-                    continue
-            if name.endswith(".base_layer.bias"):
-                prefix = name[: -len(".base_layer.bias")]
-                wrapped = module_by_name.get(prefix)
-                if isinstance(wrapped, NoRADoftLinear):
-                    _, merged_bias = wrapped.merged_weight_bias()
-                    if merged_bias is not None:
-                        clean_prefix = prefix.replace("_fsdp_wrapped_module.", "")
-                        params[f"{clean_prefix}.bias"] = merged_bias.detach().cpu()
-                    continue
-
-            clean_name = name.replace("_fsdp_wrapped_module.", "").replace(".base_layer", "")
             tensor = param.full_tensor() if hasattr(param, "full_tensor") else param
-            params[clean_name] = tensor.detach().cpu()
+            params[name] = tensor.detach().to(device="cpu", copy=True)
+
+        expected_names = set(module_by_name)
+        expected_biases = {name for name, child in module_by_name.items() if child.base_layer.bias is not None}
+        if seen_weights != expected_names or seen_biases != expected_biases:
+            raise RuntimeError(
+                f"Incomplete {wrapper_type.__name__} rollout merge: expected={len(expected_names)} "
+                f"weights={len(seen_weights)} missing_weights={sorted(expected_names - seen_weights)} "
+                f"missing_biases={sorted(expected_biases - seen_biases)} "
+                f"unexpected_biases={sorted(seen_biases - expected_biases)}"
+            )
 
     if fsdp_version(module) > 0:
         with FSDP.summon_full_params(module, writeback=False):
@@ -921,54 +956,21 @@ def collect_nora_doft_full_params(module: FSDP) -> OrderedDict:
         get_torch_device().empty_cache()
     else:
         _collect_from_model()
-
     return params
+
+
+def collect_nora_doft_full_params(module: FSDP) -> OrderedDict:
+    """Collect base-model weights with every NoRA-DOFT adapter folded in."""
+    from verl.utils.peft_nora_doft import NoRADoftLinear
+
+    return _collect_custom_adapter_full_params(module, NoRADoftLinear, "nora_doft_")
 
 
 def collect_nora_dora_full_params(module: FSDP) -> OrderedDict:
-    """Collect base-model weights with NoRA-DoRA adapters folded in."""
-
+    """Collect base-model weights with every standard/NoRA DoRA adapter folded in."""
     from verl.utils.peft_nora_dora import NoRADoraLinear
 
-    params = OrderedDict()
-    model = getattr(module, "_fsdp_wrapped_module", module)
-
-    def _collect_from_model():
-        module_by_name = dict(model.named_modules())
-        for name, param in model.state_dict().items():
-            if "_flat_param" in name or "nora_dora_" in name:
-                continue
-
-            if name.endswith(".base_layer.weight"):
-                prefix = name[: -len(".base_layer.weight")]
-                wrapped = module_by_name.get(prefix)
-                if isinstance(wrapped, NoRADoraLinear):
-                    merged_weight, _ = wrapped.merged_weight_bias()
-                    clean_prefix = prefix.replace("_fsdp_wrapped_module.", "")
-                    params[f"{clean_prefix}.weight"] = merged_weight.detach().cpu()
-                    continue
-            if name.endswith(".base_layer.bias"):
-                prefix = name[: -len(".base_layer.bias")]
-                wrapped = module_by_name.get(prefix)
-                if isinstance(wrapped, NoRADoraLinear):
-                    _, merged_bias = wrapped.merged_weight_bias()
-                    if merged_bias is not None:
-                        clean_prefix = prefix.replace("_fsdp_wrapped_module.", "")
-                        params[f"{clean_prefix}.bias"] = merged_bias.detach().cpu()
-                    continue
-
-            clean_name = name.replace("_fsdp_wrapped_module.", "").replace(".base_layer", "")
-            tensor = param.full_tensor() if hasattr(param, "full_tensor") else param
-            params[clean_name] = tensor.detach().cpu()
-
-    if fsdp_version(module) > 0:
-        with FSDP.summon_full_params(module, writeback=False):
-            _collect_from_model()
-        get_torch_device().empty_cache()
-    else:
-        _collect_from_model()
-
-    return params
+    return _collect_custom_adapter_full_params(module, NoRADoraLinear, "nora_dora_")
 
 
 def _collect_named_adapter_params(module: FSDP, parameter_prefix: str) -> OrderedDict:
