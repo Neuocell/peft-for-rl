@@ -1,0 +1,39 @@
+{
+  "status": "all_shards_verified",
+  "checked_at": "2026-10-17T04:08:12.646208+08:00",
+  "num_records": 7248,
+  "benchmark_counts": {
+    "aime24": 960,
+    "aime25": 960,
+    "amc23": 1280,
+    "hmmt_feb": 960,
+    "math500": 2000,
+    "minerva": 1088
+  },
+  "shards": [
+    {
+      "index": 0,
+      "records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/shards/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-00-of-04.jsonl",
+      "sha256": "22b2000dc11f12c3c014c5fc3ad8f0e58a132a344fc6a4019e126f6a21613067"
+    },
+    {
+      "index": 1,
+      "records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/shards/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-01-of-04.jsonl",
+      "sha256": "b77c924c284827cf7c978994f6722d35bccc0307ad734b92ddd17aa5a908f61d"
+    },
+    {
+      "index": 2,
+      "records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/shards/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-02-of-04.jsonl",
+      "sha256": "29e10c2c542ebc8ae3a6c01527c89e9536233a20617b2b3180be944a5f2f27bc"
+    },
+    {
+      "index": 3,
+      "records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/shards/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-03-of-04.jsonl",
+      "sha256": "d25ea3f2ac5e3db18362c489ec11583b268495363d57cb19489561305ca64a6f"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "zero_probe_dense_gradient_identity": true,
+  "production_onpolicy_ppo_gradient_identity": true,
+  "dynamic_microbatch_weighted_gradient_identity": true,
+  "development_checks_not_research_results": true
+}

@@ -56,7 +56,13 @@ def test_constant_velocity_prediction_has_zero_error_on_linear_path() -> None:
         scale=2.0,
     )
 
-    assert MODULE.squared_norm(error) == pytest.approx(0.0, abs=1e-12)
+    # The Gram trace cancels terms at the scale of the factors, while the
+    # actual matrix residual is near machine precision.
+    assert torch.linalg.vector_norm(error.left @ error.right).item() < 1e-12
+    roundoff_bound = torch.finfo(a.dtype).eps * (
+        error.left.square().sum() * error.right.square().sum()
+    ).item()
+    assert MODULE.squared_norm(error) == pytest.approx(0.0, abs=roundoff_bound)
 
 
 def test_compact_svd_matches_dense_singular_values() -> None:

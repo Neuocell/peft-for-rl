@@ -44,6 +44,19 @@ def make_identity(contract: dict, protocol: dict, repo: Path) -> dict:
             for name, spec in contract["assets"].items()
         },
     }
+    artifact_key = None
+    if method == "real":
+        artifact_key = "real_artifact"
+    elif method.startswith("gradtop"):
+        artifact_key = "gradtop_artifact"
+    if artifact_key is not None:
+        artifact = contract.get(artifact_key, {})
+        files = artifact.get("files", {})
+        required = {"rank_map.json", "summary.json", "subspaces.safetensors"}
+        if set(files) != required or any(not spec.get("sha256") for spec in files.values()):
+            raise ValueError(f"Verified {artifact_key} file hashes are required for runtime provenance")
+        # Bind initialization content, allowing identical artifacts to move directories.
+        identity[artifact_key] = {name: spec["sha256"] for name, spec in files.items()}
     if method in AFFECTED_METHODS:
         identity["rollout_export_version"] = exporter_version(repo / "verl/utils/fsdp_utils.py")
         implementation = "peft_nora_doft.py" if method == "nora_doft" else "peft_nora_dora.py"

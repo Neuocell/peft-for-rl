@@ -113,6 +113,10 @@ class HFModelConfig(BaseConfig):
     gradient_probe_rank_tolerance: float = 1.0
     gradient_probe_output_dir: Optional[str] = None
     gradient_probe_method: str = "energy"
+    # Fixed-budget GradTop candidates; legacy preserves archived probe behavior.
+    gradient_probe_variant: str = "legacy"
+    gradient_probe_expected_observations: int = 0
+    gradient_probe_sign_seed: int = 42
     gradient_probe_window_size: int = 3
     gradient_probe_num_windows: int = 5
     gradient_probe_calibration_windows: int = 0
@@ -127,6 +131,14 @@ class HFModelConfig(BaseConfig):
     gradient_subspace_rank_map_path: Optional[str] = None
     gradient_subspace_path: Optional[str] = None
     gradient_subspace_scaling: float = 2.0
+    # REAL observes per-prompt reward contrasts through zero-function LoRA
+    # sketches, then exports a fixed input subspace for B-only training.
+    real_probe_rank: int = 32
+    real_probe_output_width: int = 0  # 0 selects four times real_probe_rank.
+    real_probe_input_width: int = 0
+    real_probe_prompts: int = 0  # Optional group cap; 0 observes for real_probe_steps.
+    real_probe_steps: int = 64
+    real_probe_seed: int = 42
     # SPAR-LoRA v0 uses positive teacher-forced rollouts to discover and score
     # a fixed candidate atom set before ordinary heterogeneous LoRA training.
     spar_r_max: int = 32

@@ -273,6 +273,9 @@ class GradientSubspaceAccumulator:
                 rank_differences.append(abs(selected_rank - self.previous_ranks[name]))
             diagnostics[name] = {
                 "selected_rank": selected_rank,
+                "sketch_supported_rank": available,
+                "basis_completion_rank": selected_rank - available,
+                "basis_completion_method": "deterministic_coordinate_qr" if available < selected_rank else "none",
                 "raw_energy_rank": raw_rank,
                 "retained_energy": retained,
                 "observations": self.observations[name],
@@ -1275,6 +1278,18 @@ class GradientProbeCollector:
         self.overlap_threshold = float(_get(config, "gradient_probe_overlap_threshold", 0.98))
         self.rank_tolerance = float(_get(config, "gradient_probe_rank_tolerance", 1.0))
         self.probe_method = str(_get(config, "gradient_probe_method", "energy")).strip().lower()
+        self.variant = str(_get(config, "gradient_probe_variant", "legacy"))
+        self.expected_observations = int(_get(config, "gradient_probe_expected_observations", 0))
+        self.runtime_contract: dict[str, Any] | None = None
+        self.observation_metadata: list[dict[str, int]] = []
+        if self.variant not in {"legacy", "token_mean", "prompt_mean", "prompt_sign", "masked"}:
+            raise ValueError(f"Unsupported gradient_probe_variant={self.variant!r}")
+        if self.variant != "legacy" and (
+            self.probe_method != "energy"
+            or self.expected_observations <= 0
+            or self.min_steps != self.max_steps
+        ):
+            raise ValueError("GradTop candidates require energy sketches and a fixed positive observation budget")
         if self.probe_method not in {"energy", "stable_snr", "dominant_atoms"}:
             raise ValueError(f"Unsupported gradient_probe_method={self.probe_method!r}")
         if self.min_steps <= 0 or self.max_steps < self.min_steps:
@@ -1302,6 +1317,16 @@ class GradientProbeCollector:
             if isinstance(candidate, LoraLinear) and id(candidate) in self.module_names
         }
         self.parameter_costs = parameter_costs
+        self.module_dimensions = {
+            self.module_names[id(candidate)]: (int(candidate.in_features), int(candidate.out_features))
+            for candidate in model.modules()
+            if isinstance(candidate, LoraLinear) and id(candidate) in self.module_names
+        }
+        if self.variant != "legacy" and (
+            len(rank_bins) != 1
+            or any(rank_bins[0] > min(shape) for shape in self.module_dimensions.values())
+        ):
+            raise ValueError("GradTop candidates require one uniform rank fitting every target module")
         if self.probe_method in {"stable_snr", "dominant_atoms"}:
             window_size = int(_get(config, "gradient_probe_window_size", 3))
             num_windows = int(_get(config, "gradient_probe_num_windows", 5))
@@ -1349,6 +1374,14 @@ class GradientProbeCollector:
         self.last_bases: dict[str, torch.Tensor] = {}
         self.last_snapshot_metrics: dict[str, float] = {}
 
+    def set_runtime_contract(self, contract: dict[str, Any]) -> None:
+        """Record actual trainer settings, and reject drift between rollout batches."""
+        # Round-trip makes this independent of mutable DataProto/OmegaConf objects.
+        snapshot = json.loads(json.dumps(contract))
+        if self.runtime_contract is not None and self.runtime_contract != snapshot:
+            raise ValueError("GradTop probe settings changed between observations")
+        self.runtime_contract = snapshot
+
     def _units_and_contexts(self):
         if isinstance(self.model, FSDP):
             units = _leaf_fsdp_modules(self.model)
@@ -1358,9 +1391,23 @@ class GradientProbeCollector:
         return [(self.model, nullcontext())]
 
     @torch.no_grad()
-    def capture_and_refresh(self) -> dict[str, float]:
+    def capture_and_refresh(self, *, observation_metadata: dict[str, int] | None = None) -> dict[str, float]:
         from peft.tuners.lora.layer import Linear as LoraLinear
 
+        if self.variant != "legacy":
+            if self.optimizer_updates >= self.expected_observations:
+                raise ValueError("GradTop exceeded its registered observation budget")
+            if self.runtime_contract is None or observation_metadata is None:
+                raise ValueError("GradTop requires runtime settings and complete-prompt observation metadata")
+            metadata = {key: int(observation_metadata[key]) for key in ("prompt_groups", "responses", "valid_tokens")}
+            if any(value <= 0 for value in metadata.values()):
+                raise ValueError("GradTop observation counts must be positive")
+            if metadata["responses"] != metadata["prompt_groups"] * self.runtime_contract["responses_per_prompt"]:
+                raise ValueError("GradTop observation contains incomplete prompt groups")
+            if metadata["prompt_groups"] != self.runtime_contract["ppo_minibatch_size"]:
+                raise ValueError("GradTop observation does not match the configured prompt minibatch")
+            self.observation_metadata.append(metadata)
+        # Historical internal name: this counts observations, never Adam steps.
         self.optimizer_updates += 1
         rank = dist.get_rank() if dist.is_initialized() else 0
         found_names: set[str] = set()
@@ -1406,7 +1453,8 @@ class GradientProbeCollector:
         if rank == 0 and self.probe_method in {"stable_snr", "dominant_atoms"}:
             self.accumulator.finish_observation()
         return {
-            "gradient_probe/optimizer_updates": float(self.optimizer_updates),
+            "gradient_probe/optimizer_updates": float(self.optimizer_updates if self.variant == "legacy" else 0),
+            "gradient_probe/observations": float(self.optimizer_updates),
             "gradient_probe/nonfinite_modules": float(skipped),
             "gradient_probe/complete_windows": float(
                 self.optimizer_updates // self.accumulator.window_size
@@ -1416,6 +1464,10 @@ class GradientProbeCollector:
         }
 
     def finish_trainer_step(self, trainer_step: int) -> dict[str, float]:
+        if getattr(self, "variant", "legacy") != "legacy" and trainer_step >= self.max_steps and self.optimizer_updates != self.expected_observations:
+            raise ValueError(
+                f"GradTop expected {self.expected_observations} observations, captured {self.optimizer_updates}"
+            )
         rank = dist.get_rank() if dist.is_initialized() else 0
         metrics: dict[str, float] = {}
         if rank == 0:
@@ -1446,7 +1498,8 @@ class GradientProbeCollector:
                 self.last_snapshot_metrics = snapshot
                 complete = len(diagnostics) == len(self.module_names)
                 stable = (
-                    trainer_step >= self.min_steps
+                    getattr(self, "variant", "legacy") == "legacy"
+                    and trainer_step >= self.min_steps
                     and complete
                     and snapshot["overlap_p10"] >= self.overlap_threshold
                     and snapshot["rank_mae"] <= self.rank_tolerance
@@ -1506,6 +1559,8 @@ class GradientProbeCollector:
             module_summary[name] = dict(item)
             if name in parameter_costs:
                 module_summary[name]["parameter_cost_per_rank"] = parameter_costs[name]
+            if name in getattr(self, "module_dimensions", {}):
+                module_summary[name]["input_dimension"], module_summary[name]["output_dimension"] = self.module_dimensions[name]
         summary = {
             **rank_map,
             "probe_method": self.probe_method,
@@ -1519,6 +1574,30 @@ class GradientProbeCollector:
             "metrics": self.last_snapshot_metrics,
             "modules": module_summary,
         }
+        if getattr(self, "variant", "legacy") != "legacy":
+            if self.runtime_contract is None:
+                raise ValueError("Cannot export GradTop without its actual runtime contract")
+            summary.update({
+                "gradient_probe_variant": self.variant,
+                "observations": self.optimizer_updates,
+                "requested_observations": self.expected_observations,
+                "optimizer_updates": 0,
+                "source_model_path": str(Path(str(_get(self.config, "path", ""))).expanduser().resolve()),
+                "freeze_a": False,
+                "initial_b": "zero",
+                "allocation_mode": "uniform",
+                "probe_width": int(_get(self.config, "gradient_probe_width", 8)),
+                "seed": self.seed,
+                "sign_seed": int(_get(self.config, "gradient_probe_sign_seed", 42)),
+                "gradient_clipping": False,
+                "probe_contract": self.runtime_contract,
+                "observation_metadata": self.observation_metadata,
+                "sampled_prompts": trainer_step * self.runtime_contract["prompts_per_step"],
+                "sampled_rollouts": trainer_step * self.runtime_contract["prompts_per_step"] * self.runtime_contract["responses_per_prompt"],
+                "observed_prompt_groups": sum(item["prompt_groups"] for item in self.observation_metadata),
+                "formal_trainable_parameters": sum(rank_pattern[name] * cost for name, cost in parameter_costs.items()),
+                "completed_basis_directions": sum(item["basis_completion_rank"] for item in self.last_diagnostics.values()),
+            })
         if self.probe_method == "stable_snr":
             summary["stable_snr"] = {
                 "window_size": self.accumulator.window_size,

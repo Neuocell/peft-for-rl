@@ -1,0 +1,48 @@
+{
+  "torch_version": "2.8.0+cu128",
+  "device": "cpu",
+  "probe_identity": {
+    "sketch_identity_max_abs_error": 0.0,
+    "B_grad_abs_max": 0.0,
+    "zero_function_abs_max": 0.0
+  },
+  "normalization": {
+    "explicit_probe_microbatch_dp_gradient_max_abs_error": 0.0,
+    "formal_one_response_microbatch_scalar": -0.09782979955616153,
+    "global_token_mean_scalar": -0.04783667483209676,
+    "formal_global_difference": -0.049993124724064766
+  },
+  "compression": {
+    "opposite_observations_energy": 103.90473175048828,
+    "expected_opposite_observations_energy": 103.90471649169922,
+    "opposite_within_observation_energy": 0.0
+  },
+  "adam_parameterization": {
+    "equal_rowspace_projector_max_abs_error": 2.7755575615628914e-16,
+    "rotation_effective_update_relative_difference": 0.736497032087925,
+    "rotation_effective_update_cosine": 0.7287860640285182,
+    "scale_sqrt3_effective_update_norm_ratio": 1.7320508297676775,
+    "scale_sqrt3_expected": 1.7320508075688772
+  },
+  "current_gradtop_frozen_source_checks": [
+    {
+      "path": "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/plan.json",
+      "plan_sha256": "2b4ac58ed7899efcee302f59057527d18e945176c8a6f8a94c61b1edc5dc6cd6",
+      "tracked_files": 29,
+      "changed": []
+    },
+    {
+      "path": "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/plan.json",
+      "plan_sha256": "a98a83cb423040b55122855c5622491b437bab6820e6b03d688d94db65f3bdb6",
+      "tracked_files": 32,
+      "changed": []
+    }
+  ],
+  "real32_step51_worker_source_reconstruction": {
+    "description": "Only remove the six-line explicit-GradTop adapter-path guard in memory; rollout/restore code is unchanged.",
+    "guard_occurrences": 1,
+    "expected_sha256": "a2fd651564d4a2177075b651b34e0cfb3af4c147d4efab9014ac084d029ae60c",
+    "reconstructed_sha256": "a2fd651564d4a2177075b651b34e0cfb3af4c147d4efab9014ac084d029ae60c",
+    "exact_match": true
+  }
+}

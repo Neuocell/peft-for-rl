@@ -1,0 +1,104 @@
+{
+  "status": "verified",
+  "at": "2026-10-17T04:09:49.796522+08:00",
+  "steps": [
+    10,
+    50,
+    100,
+    110,
+    120,
+    130,
+    140,
+    150,
+    200,
+    250
+  ],
+  "terminal": {
+    "status": "verified",
+    "validated_at": "2026-10-17T04:09:37.392500+08:00",
+    "step": 250,
+    "checkpoint": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_250",
+    "model_optimizer_extra_files": {
+      "actor/model_world_size_4_rank_0.pt": 1814714347,
+      "actor/optim_world_size_4_rank_0.pt": 74328155,
+      "actor/extra_state_world_size_4_rank_0.pt": 15141,
+      "actor/model_world_size_4_rank_1.pt": 1814714347,
+      "actor/optim_world_size_4_rank_1.pt": 74328155,
+      "actor/extra_state_world_size_4_rank_1.pt": 15141,
+      "actor/model_world_size_4_rank_2.pt": 1814714347,
+      "actor/optim_world_size_4_rank_2.pt": 74328155,
+      "actor/extra_state_world_size_4_rank_2.pt": 15141,
+      "actor/model_world_size_4_rank_3.pt": 1814714347,
+      "actor/optim_world_size_4_rank_3.pt": 74328155,
+      "actor/extra_state_world_size_4_rank_3.pt": 15141
+    },
+    "dataloader_batches_yielded": 250,
+    "dataloader_samples_yielded": 16000,
+    "all_four_rank_rng_and_scheduler_verified": true,
+    "adapter_tensor_count": 392,
+    "adapter_sha256": "c2006b6d9b01c6c438dbe69e9a10c73fbf00c44de2246ce668aae64fd8817947",
+    "logical_optimizer_updates": 1000,
+    "all_four_optimizer_ranks_verified": true
+  },
+  "all_evaluations_reverified": true,
+  "input_evidence": {
+    "10": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.jsonl": "7e3887755a04eab37264f66fe693165151c5568201d2c1cc79824efe1923dbe8",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.json": "52b7f5df334f1a9c1757c42935e37505b8b14fcfd42e0d107fec821e422b58cd",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/verification.json": "4ed77edb3300ad51bdb35a547d0ebd190f059fb400905c54c97a42331d0d030b"
+    },
+    "50": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.jsonl": "3e0d01a61eb716f0182d87ce8da2291b2e96369c55f17a305f36f5d43c16fa7e",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.json": "6491203bfa41414c24150022d5770e80845ff67ec7241ceb2fb846af2ba4f94f",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/verification.json": "020a9b95ded2c3f0a7e74d102b08f01b8aff649dd87c5605bf79e9afc9ac8a26"
+    },
+    "100": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.jsonl": "21292812b7dab2d6df8700ea72c8b99b66a19bd2a78bb50d47df626f1fbb4ef5",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.json": "b8e65d556871898fa79339fc6b02809feaceaa18d9cbc2458e568de60c27ab70",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/verification.json": "b56746010bb930a990ebb11778b6164ed82d282332ea43940a4efd1bb52637b3"
+    },
+    "110": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.jsonl": "ed7cc1ff70db2a9978e8cc6996fc27de98414e20c13fcb68a2037580aa485f4a",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.json": "6f0e9fcfc0dd0ede95da42983e12c222a8497192ab276859e42a80aa519986a3",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/verification.json": "60590b41f6c73a97192b76504cf04e899b39d4241522676f0114186d3ee93f11"
+    },
+    "120": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.jsonl": "29bef1486ba70613ea03feeca68377713666428be1594ecfb4591e2c6ff7bc6e",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.json": "acdfd1188269e8785ac0ca1159b13a2f1b9db7db60589dc67dabbf672234ae67",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/verification.json": "1da3c5e4fd36c20d660af57e1626300a20cb217056720872318be9e1012f18e0"
+    },
+    "130": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.jsonl": "e5f1c50d660ca745447a4792f1a7353bff9ff64c45fe6ab6c5009ed352d0f783",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.json": "c1d35aa02a794e68a3bf626eb7ff72a2d6c2c426b8981fbdbfb1cb530a42ef42",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/verification.json": "938f32799ee6fbb254d539f0b294020079d73770f6da9d161447ba57ffe9016e"
+    },
+    "140": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.jsonl": "30e2ded20fdccd071d171e01e04467e7bd125fd0191ed064f5c15d8158c876e3",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.json": "2f1e7e80283ca9b43156c685c1cb2c71205595045655cde89c3163b9799a0e96",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/verification.json": "41b95bfce5cd507e452c4b7f7880ceeb62d53302cc1ee5e7922741394aae77ac"
+    },
+    "150": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.jsonl": "664505887439ce126d6018d021a54655add9eb2d1caeef3778432e8230b2dfe8",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.json": "d224b8b678bad8522fdb1229a1806c29c8cbeb1d87fcb86731365e9e091e602e",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/verification.json": "77d3cfe600274f51963d4a8cb7b6b468dac5806cfb0422bb9be2d61a3d2829ec"
+    },
+    "200": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.jsonl": "4222076b1866c97b85d9d7e0f27e77e1256fcde983bb01e27aa545a404610786",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.json": "5ba6a9ae7d0cd366a28c2c1cb39517ad3529feb78930cc2d72f2f64de185b2d1",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/verification.json": "cdc6952f258999f5fafe0c0533c73ed1ad3c461777cb30b315efcd5fd6aa3b78"
+    },
+    "250": {
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.jsonl": "2a22041da42721f3ffc9623f4d3b02fbc3a2d5acbc2a03373868981b80b7be28",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.json": "00c6e82c9c724ab55885c40796fcfc1812bd161c6154a6ae9502a16ad0ba4c12",
+      "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/verification.json": "2f371eef27c8ec3caa67f454da300eff30418a439665cc19090ac4275e5f0dfd"
+    }
+  },
+  "output_sha256": {
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume250_syncverified_20261016/results.json": "8b4308f6938f618e85a131cbd662b65882417f640c0f61d7b3c74a49044d9c19",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume250_syncverified_20261016/results.md": "d639d88b8088a2b4da20c336ca170ffb0704de45ab0ed5cddccddee96a67037f",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume250_syncverified_20261016/paired_step250_vs_step150.json": "d45da24ae860d4de15cdf812f4ae4a48587bab1fffda4312fbba2218bd36afe6",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume250_syncverified_20261016/paired_step250_vs_step200.json": "9c02657d9af0d38eacc2e4c67cf7e4487f61a10f9000380a0ef7b94b65af103c",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume250_syncverified_20261016/paired_step250_vs_step150.md": "3c28866b5af405b5c5790f2597193bbf4b19870e60d3796d5b30c0a621a492ad",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume250_syncverified_20261016/paired_step250_vs_step200.md": "e28373086b5d8ca45d79d9a26540d292b4907a9b7ae0e6798caf0fd2d1ddb7b6"
+  }
+}

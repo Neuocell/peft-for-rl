@@ -105,6 +105,7 @@ from verl.utils.peft_lora_init import create_standard_lora_model, standard_lora_
 from verl.utils.peft_nora_doft import apply_nora_doft_adapters
 from verl.utils.peft_nora_dora import apply_nora_dora_adapters
 from verl.utils.peft_oracle_lora import load_oracle_lora_patterns
+from verl.utils.peft_real import initialize_real_probe, real_probe_dimensions
 from verl.utils.peft_rlpo import apply_rlpo_initialization
 from verl.utils.peft_skew import apply_skew_adapters
 from verl.utils.peft_spar_lora import initialize_spar_probe
@@ -220,6 +221,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             self.config.model.get("lora_adapter_path") is not None
             or self._lora_rank > 0
             or self._peft_type == "adalora"
+            or self._peft_type == "real_probe"
             or (
                 self._peft_type == "oft"
                 and (self.config.model.get("oft_block_size", 0) > 0 or self.config.model.get("oft_rank", 0) > 0)
@@ -422,7 +424,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         init_context = get_init_weight_context_manager(
             use_meta_tensor=standard_lora_use_meta_tensor(
                 not actor_model_config.tie_word_embeddings
-                and self._peft_type not in ("geora", "rlpo", "grad_probe", "grad_subspace")
+                and self._peft_type not in ("geora", "rlpo", "grad_probe", "grad_subspace", "real_probe")
                 and self._peft_type != "full_gradient_probe"
                 and self._peft_type != "spar_probe"
                 and self._peft_type != "tinylora"
@@ -501,6 +503,14 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             actor_module.enable_input_require_grads()
 
             lora_adapter_path = self.config.model.get("lora_adapter_path")
+            if self._peft_type == "real_probe" and lora_adapter_path is not None:
+                raise ValueError("real_probe requires a fresh zero-function observation adapter")
+            if (
+                self._peft_type == "grad_probe"
+                and self.config.model.get("gradient_probe_variant", "legacy") != "legacy"
+                and lora_adapter_path is not None
+            ):
+                raise ValueError("GradTop candidates require a fresh zero-function observation adapter")
             if lora_adapter_path is not None:
                 from peft import PeftModel
 
@@ -627,6 +637,15 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                             f"layers={stats.num_layers}, width={stats.rank}, "
                             f"a_abs_max={stats.a_abs_max:.3e}, b_rms_mean={stats.b_rms_mean:.3e}"
                         )
+                elif self._peft_type == "real_probe":
+                    _, probe_width, _ = real_probe_dimensions(self.config.model)
+                    peft_config.update(
+                        {"r": probe_width, "lora_alpha": probe_width, "lora_dropout": 0.0}
+                    )
+                    actor_module = get_peft_model(actor_module, LoraConfig(**peft_config))
+                    initialize_real_probe(actor_module, self.config.model)
+                    if self.rank == 0:
+                        print(f"Applied REAL zero-function reward-gradient probe: width={probe_width}")
                 elif self._peft_type == "spar_probe":
                     spar_rank = int(self.config.model.get("spar_r_max", 32))
                     spar_scaling = float(self.config.model.get("gradient_subspace_scaling", 2.0))
@@ -814,7 +833,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         if self._peft_type in {"tinylora", "nora_doft", "nora_dora"}:
             # These custom wrappers mix frozen base tensors with trainable adapter parameters.
             self.use_orig_params = True
-        if self._peft_type in {"grad_probe", "spar_probe", "full_gradient_probe"}:
+        if self._peft_type in {"grad_probe", "spar_probe", "full_gradient_probe", "real_probe"}:
             # FSDP only supports summon_full_params(with_grads=True) with
             # original parameters. It also keeps each transformer layer as
             # the collection unit instead of separately wrapping LoRA A/B.
@@ -854,7 +873,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             module=actor_module,
             config=fsdp_config.get("wrap_policy", None),
             is_lora=self._is_peft and self._peft_type != "grad_probe"
-            and self._peft_type not in {"spar_probe", "full_gradient_probe"},
+            and self._peft_type not in {"spar_probe", "full_gradient_probe", "real_probe"},
         )
 
         # if self._is_rollout and self.config.rollout.name == "hf":
@@ -874,6 +893,10 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         # We force turn off CPUOffload for actor because it causes incorrect results when using grad accumulation
         cpu_offload = None if role == "actor" else CPUOffload(offload_params=True)
         fsdp_strategy = self.config.actor.strategy
+        if self._peft_type == "real_probe" and fsdp_strategy != "fsdp":
+            raise NotImplementedError("REAL gradient collection currently requires FSDP1")
+        if self._peft_type == "real_probe" and self.ulysses_sequence_parallel_size != 1:
+            raise NotImplementedError("REAL gradient collection currently requires sequence parallel size 1")
         if self._is_adalora and fsdp_strategy != "fsdp":
             raise NotImplementedError("Official AdaLoRA allocation currently requires FSDP1, not FSDP2")
         if fsdp_strategy == "fsdp":
@@ -994,7 +1017,12 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
 
         # 1. parse rollout and huggingface model config
         rollout_config: RolloutConfig = omega_conf_to_dataclass(self.config.rollout)
-        model_config: HFModelConfig = omega_conf_to_dataclass(self.config.model, dataclass_type=HFModelConfig)
+        rollout_model_config = self.config.model
+        if self._peft_type == "real_probe":
+            # Probe adapters have A=0, so generation uses the base policy. Full
+            # weight synchronization avoids imposing the sketch width on vLLM.
+            rollout_model_config = OmegaConf.merge(self.config.model, {"lora_rank": 0})
+        model_config: HFModelConfig = omega_conf_to_dataclass(rollout_model_config, dataclass_type=HFModelConfig)
         self.model_config = model_config
 
         # 2. build rollout device mesh
@@ -1121,6 +1149,33 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
                 params, getattr(self.actor_module_fsdp, "_fsdp_wrapped_module", self.actor_module_fsdp)
             )
 
+        # Optional nonzero-checkpoint acceptance gate. It executes before any
+        # base/adapter loading or generation and is reset on every restore.
+        import os as _resume_os
+
+        lora_resume_receipt = None
+        if _resume_os.environ.get("VERL_LORA_RESUME_VERIFY_SOURCE") and not getattr(
+            self, "_native_lora_resume_verified", False
+        ):
+            from verl.utils.lora_resume_verification import verify_actor_payload
+
+            if peft_config is None or self.config.rollout.name != "vllm":
+                raise RuntimeError("Native LoRA resume verification requires a vLLM LoRA rollout")
+            lora_resume_receipt = verify_actor_payload(
+                params, getattr(self, "_rollout_checkpoint_source", None)
+            )
+
+        fresh_phase = getattr(self, "_native_lora_fresh_phase", 0)
+        fresh_gate = bool(_resume_os.environ.get("VERL_LORA_FRESH_VERIFY_DIR")) and fresh_phase < 2
+        if fresh_gate:
+            from verl.utils.lora_fresh_verification import verify_actor_payload as verify_fresh_actor
+
+            if peft_config is None or self.config.rollout.name != "vllm":
+                raise RuntimeError("Fresh LoRA verification requires a vLLM LoRA rollout")
+            lora_resume_receipt = verify_fresh_actor(
+                params, peft_config, fresh_phase, getattr(self, "_rollout_checkpoint_source", None)
+            )
+
         # A dummy-loaded engine needs its base weights on the first rollout.
         # Sleep level 2 destroys them on every sleep. In either case, load the
         # base and the active adapter before allowing generation to start.
@@ -1196,7 +1251,16 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
             base_sync_done=True if peft_config is not None else self.base_sync_done,
             verify_weight_names=verify_weight_names,
             verification_context=getattr(self, "_rollout_checkpoint_source", "initial_actor"),
+            lora_resume_verification=lora_resume_receipt,
         )
+        if lora_resume_receipt is not None:
+            from verl.utils.lora_resume_verification import acknowledge_ready
+
+            acknowledge_ready(weight_update_receipt, lora_resume_receipt)
+            if fresh_gate:
+                self._native_lora_fresh_phase = fresh_phase + 1
+            else:
+                self._native_lora_resume_verified = True
         if verify_weight_names:
             if (
                 not isinstance(weight_update_receipt, dict)
@@ -1432,7 +1496,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
     def run_full_gradient_probe(self, data: DataProto):
         """Run prompt-group full-gradient backwards without an optimizer step."""
 
-        assert self._is_actor and self._peft_type == "full_gradient_probe"
+        assert self._is_actor and self._peft_type in {"full_gradient_probe", "real_probe"}
         if self._is_offload_param:
             load_fsdp_model_to_gpu(self.actor_module_fsdp)
         with self.ulysses_sharding_manager:
@@ -1771,6 +1835,7 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
         # A prior receipt belongs to the pre-restore actor. The first rollout
         # after every restore must read back the newly merged adapter weights.
         self._custom_rollout_weights_verified = False
+        self._native_lora_resume_verified = False
         self._rollout_checkpoint_source = str(local_path)
 
         if self._is_offload_param:

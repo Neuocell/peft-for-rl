@@ -228,6 +228,20 @@ case "${METHOD}" in
     USE_ORIG_PARAMS="${USE_ORIG_PARAMS_OVERRIDE:-True}"
     ;;
   rlpo) PEFT_TYPE="rlpo" ;;
+  real)
+    PEFT_TYPE="grad_subspace"
+    LORA_FREEZE_A=True
+    USE_ORIG_PARAMS=True
+    : "${GRADIENT_SUBSPACE_RANK_MAP_PATH:?METHOD=real requires a verified REAL rank map}"
+    : "${GRADIENT_SUBSPACE_PATH:?METHOD=real requires verified REAL subspaces}"
+    ;;
+  gradtop|gradtop_short|gradtop_prompt_mean|gradtop_prompt_sign|gradtop_masked)
+    PEFT_TYPE="grad_subspace"
+    LORA_FREEZE_A=False
+    USE_ORIG_PARAMS=False
+    : "${GRADIENT_SUBSPACE_RANK_MAP_PATH:?GradTop requires a verified rank map}"
+    : "${GRADIENT_SUBSPACE_PATH:?GradTop requires verified subspaces}"
+    ;;
   adalora)
     PEFT_TYPE="adalora"
     ;;
@@ -518,7 +532,7 @@ CMD=(
   "trainer.save_freq=${SAVE_FREQ}"
   "+trainer.lora_snapshot_dir=${LORA_SNAPSHOT_DIR:-null}"
   "+trainer.lora_snapshot_every=${LORA_SNAPSHOT_EVERY}"
-  "+trainer.optimizer_updates_per_step=1"
+  "+trainer.optimizer_updates_per_step=$((TRAIN_PROMPT_BSZ / TRAIN_PROMPT_MINI_BSZ))"
   "trainer.max_actor_ckpt_to_keep=${MAX_ACTOR_CKPT_TO_KEEP}"
   "trainer.total_epochs=1"
   "trainer.total_training_steps=${TOTAL_TRAINING_STEPS}"
@@ -531,6 +545,27 @@ CMD=(
   "+ray_kwargs.ray_init.include_dashboard=False"
   "+ray_kwargs.ray_init._temp_dir=${RAY_TEMP_DIR}"
 )
+
+if [[ "${PEFT_TYPE}" == "grad_subspace" ]]; then
+  CMD+=(
+    "+actor_rollout_ref.model.gradient_subspace_rank_map_path=${GRADIENT_SUBSPACE_RANK_MAP_PATH}"
+    "+actor_rollout_ref.model.gradient_subspace_path=${GRADIENT_SUBSPACE_PATH}"
+  )
+fi
+
+# Explicitly propagate the opt-in resume verifier to all Ray workers. Numeric
+# values are quoted for Hydra so Ray receives strings in runtime_env.env_vars.
+if [[ -n "${VERL_LORA_RESUME_VERIFY_SOURCE:-}" ]]; then
+  for verify_key in VERL_LORA_RESUME_VERIFY_SOURCE VERL_LORA_RESUME_VERIFY_SHA256 \
+                    VERL_LORA_RESUME_VERIFY_OUTPUT_DIR VERL_LORA_RESUME_VERIFY_TOKEN \
+                    VERL_LORA_RESUME_VERIFY_WORLD_SIZE VERL_LORA_RESUME_VERIFY_TENSOR_COUNT; do
+    if [[ -z "${!verify_key:-}" || "${!verify_key}" == *"'"* ]]; then
+      echo "Missing or unsupported resume-verification value: ${verify_key}" >&2
+      exit 2
+    fi
+    CMD+=("+ray_kwargs.ray_init.runtime_env.env_vars.${verify_key}='${!verify_key}'")
+  done
+fi
 
 if [[ "${DRY_RUN:-1}" == "1" ]]; then
   printf 'DRY_RUN=1, command not executed. Set DRY_RUN=0 to launch.\n'

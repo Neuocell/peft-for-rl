@@ -25,8 +25,42 @@
 科学变量。目标 step 必须是 `10` 的倍数且不超过 `270`；断点续跑必须恢复 model、
 optimizer、RNG、scheduler 和 data state，累计总预算仍不得超过 270 steps。
 
+**Step 计数口径（2026-10-14 核对）：** 本协议的 `step`、`trainer.global_steps` 和
+`global_step_*` checkpoint 名称均表示一次 rollout/trainer iteration：采样64个prompt，
+每题8条回答。正式训练将这批数据分成4个16-prompt PPO minibatch；`ppo_epochs=1`，
+每个minibatch梯度累积结束后更新一次参数。因此每个正式trainer step对应4次逻辑
+optimizer update，step50/100/150分别对应200/400/600次更新。多卡同步不再乘GPU数量，
+显存限制导致的microbatch拆分也不增加更新次数。非有限梯度导致的跳过更新须单独记录。
+REAL观测阶段的step只计采样批次，optimizer update恒为0；观测与正式训练预算分别报告。
+与外部论文比较时必须同时列出采样prompt数、rollout数、optimizer update数及观测预算，
+不能只依据同名step判断等预算。已核对标准LoRA step100/150 checkpoint中的Adam计数
+分别为400/600；旧snapshot manifest的`optimizer_update`因启动器标注系数写成1而少计，
+该历史字段不能代替真实optimizer state。
+
 方法实现不可避免的内部参数必须在方法首次实验前固定并记录，不能在同一轮结果出来后
 继续搜索。除方法定义和 rank 直接决定的结构外，共享训练配置不得变化。
+
+2026-10-13 注册 `METHOD=real`：先从 base policy 观察 64 个 batch，逐 prompt 使用
+二元正确性 reward contrast、每 response 长度归一化、population std，至少两正确两错误，
+输入/输出 sketch 均为 `4*rank`、seed42、无 optimizer 更新和梯度裁剪；导出均匀 rank
+子空间，随后 A 固定、B 从零开始训练。观察成本与正式 optimizer steps 分开报告。
+训练仍使用本协议的 token-mean GRPO、alpha64 和原始 seed42 sampler 起点。
+启动时显式设置 `REAL_ARTIFACT_DIR`；验证器检查完整模型模块覆盖、正交性和探测元数据，
+将三个初始化文件的 SHA256 记录到 experiment contract。
+
+2026-10-14 注册两个 GradTop 候选及三个机制对照：`gradtop_prompt_sign`
+（8次 observation、完整 prompt 组随机符号）、`gradtop_masked`（16次 observation、
+历史 surprisal50%/min128/final128 selector）；对照为 `gradtop`（16次全局token mean）、
+`gradtop_short`（8次全局token mean）和 `gradtop_prompt_mean`（8次等prompt/response mean）。
+所有 observation 使用 width8/capacity64、seed42、完整题组、不更新参数、不裁剪梯度，
+固定预算结束后导出均匀rank，正式训练A/B均可训练、B为零、alpha64。
+8/16次 observation 分别为2/4个64-prompt采样step，不能按8/16个trainer step启动。
+Prompt等权归一化和原token-mean不同，必须使用同归一化无符号对照判断sign贡献。
+新probe的分母在microbatch拆分前固定；它不逐位复现旧microbatch加权的GradTop。
+缺少信号支持的方向沿用确定性QR补齐，artifact及contract明确披露补齐维数。
+使用 `GRADTOP_ARTIFACT_DIR` 指定产物，验证器校验完整模块、实际观察设置/预算及三个文件哈希。
+正式训练共享配置及sampler起点保持本协议规定。
+入口与完整设计见 [GradTop备选实验](docs/experiments/gradtop_candidates_20261014_zh.md)。
 
 ## 2. 固定训练配置
 

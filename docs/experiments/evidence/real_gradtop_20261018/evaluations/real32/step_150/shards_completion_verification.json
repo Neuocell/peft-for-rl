@@ -1,0 +1,39 @@
+{
+  "status": "all_shards_verified",
+  "checked_at": "2026-10-15T08:36:30.628278+08:00",
+  "num_records": 7248,
+  "benchmark_counts": {
+    "aime24": 960,
+    "aime25": 960,
+    "amc23": 1280,
+    "hmmt_feb": 960,
+    "math500": 2000,
+    "minerva": 1088
+  },
+  "shards": [
+    {
+      "index": 0,
+      "records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-00-of-04.jsonl",
+      "sha256": "2e9ebbacdcce29633e4c58c5407e4f1e919656dbb24ae6d06b50e36bec269ea6"
+    },
+    {
+      "index": 1,
+      "records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-01-of-04.jsonl",
+      "sha256": "7c045f0d1b9bf891794a1f96aa607363941ab9eafc649124d125deaa9a2a64e8"
+    },
+    {
+      "index": 2,
+      "records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-02-of-04.jsonl",
+      "sha256": "ff56e58cef4b4d5136d3a373abda1f11dbb084986d8aa967d3e5c644854d1232"
+    },
+    {
+      "index": 3,
+      "records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-03-of-04.jsonl",
+      "sha256": "79f0b57c9164662e983bffc72f2dd0924e0b446c0f3e641a489655b2dc79cc93"
+    }
+  ]
+}

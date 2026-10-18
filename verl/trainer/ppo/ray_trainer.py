@@ -55,6 +55,7 @@ from verl.utils import tensordict_utils as tu
 from verl.utils.checkpoint.checkpoint_manager import find_latest_ckpt_path, should_save_ckpt_esi
 from verl.utils.config import omega_conf_to_dataclass
 from verl.utils.debug import marked_timer
+from verl.utils.gradtop_objectives import gradtop_probe_variant, validate_gradtop_actor_config
 from verl.utils.import_utils import load_class_from_fqn
 from verl.utils.metric import reduce_metrics
 from verl.utils.py_functional import rename_dict
@@ -1429,6 +1430,59 @@ class RayPPOTrainer:
             old_log_prob_mfu = 0
         return old_log_prob, old_log_prob_mfu
 
+    def _prepare_gradtop_prompt_groups(self, batch: DataProto) -> bool:
+        """Attach stable IDs before repeat and enforce intact per-rank groups."""
+        variant = gradtop_probe_variant(self.config.actor_rollout_ref.model)
+        if variant == "legacy":
+            return False
+        actor_config = self.config.actor_rollout_ref.actor
+        validate_gradtop_actor_config(actor_config)
+        if self.use_legacy_worker_impl == "disable":
+            raise ValueError("GradTop objective variants require the legacy FSDP actor worker")
+        if self.config.algorithm.adv_estimator != "grpo":
+            raise ValueError("GradTop objective variants require algorithm.adv_estimator=grpo")
+        if self.config.algorithm.get("use_kl_in_reward", False):
+            raise ValueError("GradTop objective variants require use_kl_in_reward=false")
+        correction = self.config.algorithm.get("rollout_correction", None)
+        if correction and (
+            correction.get("bypass_mode", False)
+            or any(correction.get(key, None) is not None for key in ("rollout_is", "rollout_rs", "rollout_token_veto_threshold"))
+        ):
+            raise ValueError("GradTop objective variants require rollout correction disabled")
+        rollout = self.config.actor_rollout_ref.rollout
+        dp_size = self._get_dp_size(self.actor_rollout_wg, "actor")
+        prompts_per_step = int(self.config.data.train_batch_size)
+        mini_prompts = int(actor_config.ppo_mini_batch_size)
+        if len(batch) != prompts_per_step or prompts_per_step % mini_prompts or mini_prompts % dp_size:
+            raise ValueError(
+                "GradTop requires full prompt batches, train_batch_size divisible by ppo_mini_batch_size, "
+                "and ppo_mini_batch_size divisible by actor DP size"
+            )
+        batch.batch["gradtop_prompt_id"] = (
+            torch.arange(len(batch), dtype=torch.int64) + (self.global_steps - 1) * prompts_per_step
+        )
+        batch.meta_info["gradtop_rollouts_per_prompt"] = int(rollout.n)
+        batch.meta_info["gradtop_probe_contract"] = {
+            "prompts_per_step": prompts_per_step,
+            "ppo_minibatch_size": mini_prompts,
+            "responses_per_prompt": int(rollout.n),
+            "prompt_length": int(self.config.data.max_prompt_length),
+            "completion_length": int(self.config.data.max_response_length),
+            "data_seed": self.config.data.get("seed", None),
+            "rollout_seed": rollout.get("seed", None),
+            "fsdp_seed": actor_config.fsdp_config.get("seed", None),
+            "balance_batch": False,
+            "normalization": (
+                "mean_of_per_prompt_token_means" if variant in {"prompt_mean", "prompt_sign"} else "global_token_mean"
+            ),
+            "sign_distribution": "rademacher_per_prompt" if variant == "prompt_sign" else "none",
+            "mask": (
+                {"mode": "surprisal_top_fraction_and_final", "keep_ratio": 0.5, "min_keep": 128, "keep_final": 128}
+                if variant == "masked" else {"mode": "none"}
+            ),
+        }
+        return True
+
     def _update_actor(self, batch: DataProto) -> DataProto:
         rollout_config = self.config.actor_rollout_ref.rollout
         batch.meta_info["multi_turn"] = rollout_config.multi_turn.enable
@@ -1535,14 +1589,17 @@ class RayPPOTrainer:
         return self.actor_rollout_wg.run_spar_probe(batch)
 
     def _build_full_gradient_probe_batch(self, batch: DataProto) -> tuple[DataProto | None, dict[str, float]]:
-        """Select complete, unseen prompt groups with nonzero GRPO advantages."""
+        """Select complete, unseen groups eligible for the configured probe."""
 
         seen = getattr(self, "_full_gradient_seen_prompt_ids", set())
         selected_count = int(getattr(self, "_full_gradient_selected_count", 0))
         model_config = self.config.actor_rollout_ref.model
+        is_real_probe = model_config.get("peft_type", "lora") == "real_probe"
         probe_mode = str(model_config.get("full_gradient_probe_mode", "legacy")).lower()
         window_prompts = int(model_config.get("full_gradient_probe_window_prompts", 16))
-        if probe_mode == "windowed_adam_consensus":
+        if is_real_probe:
+            target = int(model_config.get("real_probe_prompts", 0)) or float("inf")
+        elif probe_mode == "windowed_adam_consensus":
             target = window_prompts * (
                 int(model_config.get("full_gradient_probe_discovery_windows", 8))
                 + int(model_config.get("full_gradient_probe_calibration_windows", 2))
@@ -1571,7 +1628,7 @@ class RayPPOTrainer:
         # only a carrier for the RPC and temperature metadata, so it must not be
         # rejected when the newly generated rollouts happen to have zero GRPO
         # advantage.  Repeat one row so every data-parallel actor enters replay.
-        if probe_mode == "phase06_crossfit_replay":
+        if not is_real_probe and probe_mode == "phase06_crossfit_replay":
             if len(batch) == 0:
                 raise ValueError("Phase 0.6 replay requires a non-empty carrier batch")
             scores = batch.batch["token_level_scores"].sum(dim=-1)
@@ -1590,8 +1647,26 @@ class RayPPOTrainer:
 
         eligible: list[tuple[str, list[int]]] = []
         skipped_zero_advantage = 0
+        skipped_reward_balance = 0
+        skipped_empty_response = 0
         for prompt_id, indices in groups.items():
             if prompt_id in seen or selected_count + len(eligible) >= target:
+                continue
+            if is_real_probe:
+                scores = batch.batch["token_level_scores"][indices].sum(dim=-1)
+                mask = batch.batch["response_mask"][indices]
+                # REAL's binary reward contrast requires both classes to have
+                # at least two responses; precomputed PPO advantages can use
+                # different normalization and are deliberately ignored here.
+                if not bool(torch.isfinite(scores).all()) or not bool(((scores == 0) | (scores == 1)).all()):
+                    raise ValueError("REAL observation requires binary correctness scores in {0, 1}")
+                if int((scores == 1).sum().item()) < 2 or int((scores == 0).sum().item()) < 2:
+                    skipped_reward_balance += 1
+                    continue
+                if bool((mask.sum(dim=-1) <= 0).any()):
+                    skipped_empty_response += 1
+                    continue
+                eligible.append((prompt_id, indices))
                 continue
             group_indices = torch.tensor(indices, dtype=torch.long, device=batch.batch["advantages"].device)
             advantages = batch.batch["advantages"].index_select(0, group_indices).float()
@@ -1604,7 +1679,7 @@ class RayPPOTrainer:
             eligible.append((prompt_id, indices))
 
         take = min(len(eligible), target - selected_count)
-        if probe_mode == "windowed_adam_consensus":
+        if not is_real_probe and probe_mode == "windowed_adam_consensus":
             take -= take % window_prompts
         chosen = eligible[:take]
         chosen_ids = [prompt_id for prompt_id, _ in chosen]
@@ -1622,10 +1697,29 @@ class RayPPOTrainer:
             "full_gradient_probe/batch_selected_prompts": float(len(chosen_ids)),
             "full_gradient_probe/batch_zero_advantage_prompts": float(skipped_zero_advantage),
         }
+        if is_real_probe:
+            selection_metrics.update(
+                {
+                    "real_probe/batch_selected_prompts": float(len(chosen_ids)),
+                    "real_probe/batch_reward_balance_rejected": float(skipped_reward_balance),
+                    "real_probe/batch_empty_response_rejected": float(skipped_empty_response),
+                }
+            )
         if not chosen_indices:
+            if is_real_probe and len(batch):
+                # Observation budgets count rollout steps even when no prompt
+                # meets the correctness balance criterion. Enter the RPC on
+                # every rank so the collector can finish/export at the budget.
+                selected = batch.select_idxs([0])
+                selected.meta_info = dict(selected.meta_info)
+                selected.meta_info["real_probe_skip_batch"] = True
+                dp_size = self._get_dp_size(self.actor_rollout_wg, "actor")
+                return selected.repeat(repeat_times=dp_size, interleave=False), selection_metrics
             return None, selection_metrics
 
         selected = batch.select_idxs(chosen_indices)
+        if is_real_probe:
+            selected.meta_info = {**selected.meta_info, "real_probe_skip_batch": False}
         selected.non_tensor_batch["full_gradient_prompt_id"] = np.asarray(
             [prompt_ids[index] for index in chosen_indices], dtype=object
         )
@@ -1761,6 +1855,7 @@ class RayPPOTrainer:
                     )
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
                 batch.meta_info["temperature"] = self.config.actor_rollout_ref.rollout.temperature
+                explicit_gradtop = self._prepare_gradtop_prompt_groups(batch)
 
                 # add uid to batch
                 batch.non_tensor_batch["uid"] = np.array(
@@ -1832,7 +1927,7 @@ class RayPPOTrainer:
                     # NOTE: This usually changes the order of data in the `batch`,
                     # which won't affect the advantage calculation (since it's based on uid),
                     # but might affect the loss calculation (due to the change of mini-batching).
-                    if self.config.trainer.balance_batch:
+                    if self.config.trainer.balance_batch and not explicit_gradtop:
                         self._balance_batch(batch, metrics=metrics)
 
                     # compute global_valid tokens
@@ -1981,7 +2076,7 @@ class RayPPOTrainer:
                                     metrics.update(actor_output_metrics)
                                 else:
                                     metrics["spar_probe/artifact_ready"] = 0.0
-                            elif peft_type == "full_gradient_probe":
+                            elif peft_type in {"full_gradient_probe", "real_probe"}:
                                 probe_batch, selection_metrics = self._build_full_gradient_probe_batch(batch)
                                 metrics.update(selection_metrics)
                                 if probe_batch is not None:
@@ -2092,6 +2187,8 @@ class RayPPOTrainer:
                         "actor/spar_probe/artifact_ready",
                         "full_gradient_probe/artifact_ready",
                         "actor/full_gradient_probe/artifact_ready",
+                        "real_probe/artifact_ready",
+                        "actor/real_probe/artifact_ready",
                     )
                 )
                 if probe_artifact_ready:

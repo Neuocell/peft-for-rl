@@ -1,0 +1,199 @@
+{
+  "allowed_scientific_variations": {
+    "learning_rate": [
+      "1e-6",
+      "5e-6",
+      "1e-5"
+    ],
+    "method": [
+      "lora",
+      "nora_init",
+      "nora_dora",
+      "nora_doft",
+      "rlpo",
+      "real"
+    ],
+    "rank": "positive_integer"
+  },
+  "assets": {
+    "base_model_weights": {
+      "path": "runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base/model.safetensors",
+      "sha256": "58858233513d76b8703e72eed6ce16807b523328188e13329257fb9594462945"
+    },
+    "benchmark_snapshot": {
+      "path": "runs/phase1-signal-random-v1/imported-runtime/outputs/full_bench_eval/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42/records/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42.jsonl",
+      "sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+    },
+    "sampler_prefix_indices": {
+      "path": "runs/datasets/verl_dapo/data/rlvr_protocol_seed42_v1/sampler_prefix_indices.csv",
+      "sha256": "9c926a9896ac0f766a9acc640f26252bc9a6fcf8857d9d3511941003b5d97fda"
+    },
+    "source_data": {
+      "path": "runs/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet",
+      "rows": 17917,
+      "sha256": "8e3c9314db8b83c61ab62a3dc85e0a704dcc5f3a9d404d236943f719095ce82f"
+    }
+  },
+  "evaluation": {
+    "base_seed": 42,
+    "benchmarks": [
+      "aime24",
+      "aime25",
+      "amc23",
+      "hmmt_feb",
+      "math500",
+      "minerva"
+    ],
+    "max_model_len": 34816,
+    "max_new_tokens": 32768,
+    "samples_large": 4,
+    "samples_small": 32,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "total_records": 7248
+  },
+  "execution_controls": {
+    "evaluation_snapshot": {
+      "contents": "method_complete_adapter_weights_and_manifest",
+      "interval_steps": 10,
+      "purpose": "evaluation_and_best_checkpoint_selection",
+      "resumable": false,
+      "storage": "local_hot_storage"
+    },
+    "formal_evaluation_grid": [
+      10,
+      50
+    ],
+    "full_checkpoint": {
+      "contents": [
+        "model",
+        "optimizer",
+        "extra",
+        "dataloader"
+      ],
+      "force_at_planned_terminal_step": true,
+      "interval_steps": 50,
+      "max_to_keep": 2,
+      "purpose": "exact_training_resume",
+      "storage": "local_hot_storage"
+    },
+    "max_training_steps": 270,
+    "nfs_policy": "post_run_archive_only_not_training_hot_path",
+    "target_step_rule": "positive_multiple_of_10_at_most_270"
+  },
+  "protocol_id": "rlvr_dapo_math_1p5b_protocol_v1",
+  "schema_version": 1,
+  "status": "required_for_new_experiments",
+  "training": {
+    "actor_kl_loss": false,
+    "actor_shuffle": false,
+    "actor_ppo_max_tokens_per_gpu": 12288,
+    "alpha": 64,
+    "clip_ratio_c": 10.0,
+    "clip_ratio_high": 0.28,
+    "clip_ratio_low": 0.2,
+    "completion_length": 8192,
+    "data_seed": 42,
+    "dataset_rows": 17917,
+    "data_truncation": "left",
+    "dropout": 0.0,
+    "entropy_coefficient": 0.0,
+    "effective_rows_through_step_270": 17280,
+    "fsdp_seed": 42,
+    "gpus": 4,
+    "kl_reward_beta": 0.0,
+    "learning_rate_scheduler": "constant",
+    "learning_rate_warmup_steps": 0,
+    "loss_aggregation": "token-mean",
+    "method_seed": 42,
+    "model": "DeepSeek-R1-Distill-Qwen-1.5B",
+    "objective": "dapo_style_grpo",
+    "overlong_shaping": false,
+    "ppo_epochs": 1,
+    "ppo_minibatch_size": 16,
+    "precision": "bfloat16",
+    "prompt_length": 1024,
+    "prompts_per_step": 64,
+    "responses_per_prompt": 8,
+    "rollout_seed": 42,
+    "rollout_max_model_len": 9216,
+    "rollout_max_num_batched_tokens": 9216,
+    "rollout_max_num_seqs": 256,
+    "rollout_temperature": 1.0,
+    "rollout_top_k": -1,
+    "rollout_top_p": 1.0,
+    "target_modules": "all-linear",
+    "train_shuffle": true,
+    "trainer_seed": 42,
+    "weight_decay": 0.0
+  },
+  "local_asset_binding": {
+    "reason": "User clarified on 2026-10-12: train from the original public DAPO Math data with seed 42; consume at most the first 270 batches; discard the remaining rows without held-out use.",
+    "canonical_protocol_path": "/root/peft-for-rl/configs/experiments/rlvr_dapo_math_1p5b_protocol_v1.json",
+    "canonical_protocol_sha256": "6bae341f780577fa912266d3be3d0cc9467e942cdd60371b9881a57d9124579d",
+    "canonical_boxed_byte_sha256": "dc653393b0b8065a782e51745c8ee1c0a80aad64c1a36ac5cff0362b9e3d5f1e",
+    "canonical_byte_hash_reproduced": false,
+    "official_source_path": "/data/peft-for-rl-runtime/datasets/verl_dapo/data/dapo-math-17k.parquet",
+    "official_source_sha256": "534375d6bb8630d22ab46a56e11f2ffec1d288d8f7d04099bc82d68948705941",
+    "official_source_rows": 1791700,
+    "transform": "scripts/data/prepare_dapo_math_boxed.py: deduplicate by extra_info.index preserving first occurrence, convert prompts to boxed template",
+    "transform_script_sha256": "a2ae4fa4830faf6b00169599bd83cabf247c86145c99a1c38a3ee66ce2f200ed",
+    "source_transform_matches_local_boxed_rows_and_schema": true,
+    "boxed_semantic_rows_sha256": "7ae22898ba697ffd353a2a20c4cc93144e225544a80f1519e28c7d935442d244",
+    "local_boxed_byte_sha256": "8e3c9314db8b83c61ab62a3dc85e0a704dcc5f3a9d404d236943f719095ce82f",
+    "indices_role": "sampler audit only; never used as a separate dataset or pre-shuffled parquet",
+    "unused_rows": 637,
+    "heldout_rows": 0,
+    "torch_version": "2.8.0+cu128",
+    "torchdata_version": "0.11.0+cpu",
+    "pyarrow_version": "25.0.1",
+    "sampler_prefix_sha256": "9c926a9896ac0f766a9acc640f26252bc9a6fcf8857d9d3511941003b5d97fda",
+    "sampler_prefix_first_10": [
+      13448,
+      12120,
+      10503,
+      6611,
+      15226,
+      9380,
+      5021,
+      11541,
+      11814,
+      6314
+    ]
+  },
+  "method_definitions": {
+    "real": {
+      "artifact_method": "real_reward_gradient_aligned_lora",
+      "artifact_required": true,
+      "freeze_a": true,
+      "initial_b": "zero",
+      "observation": {
+        "gradient_clipping": false,
+        "input_factor_scale": 1.0,
+        "minimum_correct": 2,
+        "minimum_incorrect": 2,
+        "objective": "mean_response_length_normalized_binary_population_std_reward_contrast",
+        "optimizer_updates": 0,
+        "requested_observation_steps": 64,
+        "requested_prompt_groups": 0,
+        "second_moment": "uncentered_per_prompt_group",
+        "seed": 42,
+        "sketch_width_multiple_of_rank": 4
+      },
+      "peft_type": "grad_subspace",
+      "rank_allocation": "uniform",
+      "use_orig_params": true
+    }
+  },
+  "real_registration": {
+    "date": "2026-10-13",
+    "baseline_protocol": "/root/peft-for-rl/runs/ops/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42.local_protocol.json",
+    "baseline_protocol_sha256": "7c60df38e584c9b946982d5010bdf16dcfaa102081725ca33e42e9803bb3a1cf",
+    "training_controls_unchanged": true,
+    "observation_budget_reported_separately": true,
+    "first_screen_training_steps": 50,
+    "first_screen_evaluation_steps": [
+      50
+    ]
+  }
+}

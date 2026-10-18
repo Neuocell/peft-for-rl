@@ -1,0 +1,2790 @@
+{
+  "created_at": "2026-10-16T00:50:16.825474+08:00",
+  "audit_scope": "Read-only existing experiments; only evidence_audit.json and evidence_audit.md added",
+  "result_units": "All numeric fractions in JSON are 0..1 except lengths, seconds, counts; Markdown percentages",
+  "verification_scope": "No inference, grading, bootstrap, GPU compute, or full raw-record rehash performed. Existing verified artifacts reread; summaries and manifests freshly checked. snapshot_sha256 identifies benchmark snapshot, not adapter weights.",
+  "common_protocol": {
+    "model": "DeepSeek-R1-Distill-Qwen-1.5B",
+    "rank": 32,
+    "alpha": 64,
+    "learning_rate": 1e-05,
+    "seed": 42,
+    "formal_update_multiplier": 4,
+    "eval_temperature": 0.6,
+    "eval_top_p": 0.95,
+    "eval_max_new_tokens": 32768,
+    "benchmark_counts": {
+      "aime24": 960,
+      "aime25": 960,
+      "amc23": 1280,
+      "hmmt_feb": 960,
+      "math500": 2000,
+      "minerva": 1088
+    },
+    "benchmark_problems": {
+      "aime24": 30,
+      "aime25": 30,
+      "amc23": 40,
+      "hmmt_feb": 30,
+      "math500": 500,
+      "minerva": 272
+    },
+    "avg_definition": "sum(task_num_responses*task_avg_at_k)/7248",
+    "macro_definition": "equal-weight mean over six task metrics",
+    "REAL64_REAL32_suffix": "probe rollout steps; formal rank32 for both",
+    "trainable_parameters": {
+      "LoRA": 36929536,
+      "GradTop(new)": 36929536,
+      "REAL64": 20643840,
+      "REAL32": 20643840
+    },
+    "parameter_budget_caveat": "LoRA and GradTop train A+B; REAL freezes A and trains B. Same rank is not equal trainable parameter count."
+  },
+  "results": [
+    {
+      "method": "LoRA",
+      "step": 50,
+      "logical_optimizer_updates": 200,
+      "experiment": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42",
+      "evaluation_name": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/summary/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.json",
+        "exists": true,
+        "bytes": 3766,
+        "sha256": "92141e5844eee201139dbe477a462a6744fc265ed58914d7a79b86958985886c"
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/verification.json",
+        "exists": true,
+        "bytes": 738,
+        "sha256": "c926fa36363085f0e1141eb7a3434cd1d9be3588f723ab2e892d0ae7ef9333cf"
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/global_step_50",
+      "checkpoint_exists": true,
+      "full_checkpoint_model_shards_present": 0,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/step_050",
+      "snapshot_exists": true,
+      "status": "verified",
+      "verification_level": "Saved verification+shard completion reread; summary arithmetic/counts/4 manifests freshly checked; raw JSONL existence checked, not regraded or rehashed in this audit",
+      "num_samples": 7248,
+      "num_problems": 902,
+      "weighted_avg": 0.4446743929359823,
+      "macro_avg_at_k": 0.38722426470588234,
+      "macro_pass_at_k": 0.6520441176470588,
+      "parse_rate": 0.8850717439293598,
+      "hit_max_rate": 0.021109271523178808,
+      "mean_length": 7749.680739514349,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.3145833333333333,
+          "macro_avg_at_k": 0.3145833333333333,
+          "pass_at_k": 0.7333333333333333,
+          "parse_rate": 0.8822916666666667,
+          "hit_max_rate": 0.04375,
+          "no_answer_rate": 0.11770833333333333,
+          "length_mean": 12005.947916666666,
+          "length_median": 10793.0,
+          "maxed_unparseable_rate": 0.03958333333333333
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.2375,
+          "macro_avg_at_k": 0.2375,
+          "pass_at_k": 0.5666666666666667,
+          "parse_rate": 0.9302083333333333,
+          "hit_max_rate": 0.03854166666666667,
+          "no_answer_rate": 0.06979166666666667,
+          "length_mean": 11568.441666666668,
+          "length_median": 10711.0,
+          "maxed_unparseable_rate": 0.03125
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.7375,
+          "macro_avg_at_k": 0.7375,
+          "pass_at_k": 0.975,
+          "parse_rate": 0.9359375,
+          "hit_max_rate": 0.01484375,
+          "no_answer_rate": 0.0640625,
+          "length_mean": 6555.97890625,
+          "length_median": 4114.5,
+          "maxed_unparseable_rate": 0.01328125
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.11041666666666666,
+          "macro_avg_at_k": 0.11041666666666666,
+          "pass_at_k": 0.5,
+          "parse_rate": 0.9333333333333333,
+          "hit_max_rate": 0.030208333333333334,
+          "no_answer_rate": 0.06666666666666667,
+          "length_mean": 12491.873958333334,
+          "length_median": 11484.5,
+          "maxed_unparseable_rate": 0.029166666666666667
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.7,
+          "macro_avg_at_k": 0.7,
+          "pass_at_k": 0.788,
+          "parse_rate": 0.9545,
+          "hit_max_rate": 0.009,
+          "no_answer_rate": 0.0455,
+          "length_mean": 3877.6335,
+          "length_median": 1814.5,
+          "maxed_unparseable_rate": 0.006
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.22334558823529413,
+          "macro_avg_at_k": 0.22334558823529413,
+          "pass_at_k": 0.3492647058823529,
+          "parse_rate": 0.6176470588235294,
+          "hit_max_rate": 0.007352941176470588,
+          "no_answer_rate": 0.38235294117647056,
+          "length_mean": 4962.456801470588,
+          "length_median": 3275.0,
+          "maxed_unparseable_rate": 0.0055147058823529415
+        }
+      },
+      "records": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/records/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.jsonl",
+        "exists": true,
+        "bytes": 173130876
+      },
+      "adapter_path": "/root/peft-for-rl/runs/adapters/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/step_050",
+      "adapter_exists": true,
+      "verification": {
+        "status": "verified",
+        "evaluation_name": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+        "num_samples": 7248,
+        "benchmarks": [
+          "aime24",
+          "aime25",
+          "amc23",
+          "hmmt_feb",
+          "math500",
+          "minerva"
+        ],
+        "benchmark_record_counts": {
+          "aime24": 960,
+          "aime25": 960,
+          "amc23": 1280,
+          "hmmt_feb": 960,
+          "math500": 2000,
+          "minerva": 1088
+        },
+        "num_shards": 4,
+        "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+        "adapter_path": "/root/peft-for-rl/runs/adapters/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/step_050",
+        "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base"
+      },
+      "shards_completion_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/shards_completion_verification.json",
+        "exists": true,
+        "bytes": 1787,
+        "sha256": "c2a3d049c1b665b4a05956f88156c220b59514781e30343ec213239d5feae786"
+      },
+      "shards_completion_status": "all_shards_verified",
+      "shard_files_present": true,
+      "manifests": [
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-00-of-04.json",
+            "exists": true,
+            "bytes": 1220,
+            "sha256": "3df1c07521e09c527f685ca321adf0638312e10520bc12b612ca3b3c7f0046e4"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-01-of-04.json",
+            "exists": true,
+            "bytes": 1220,
+            "sha256": "3a169bf738006c70dfe68afbc037bf6642c59115f81c9f3f091f8474b2f79f97"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-02-of-04.json",
+            "exists": true,
+            "bytes": 1220,
+            "sha256": "415a005af1a791fb1f4823d6320575eb487ea91b72774b31b916fdf377a499b7"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-03-of-04.json",
+            "exists": true,
+            "bytes": 1220,
+            "sha256": "e4e4f07c88d5dc6900b275eca68e4a053ff462a07ae2a919475e8af6bb7e55f6"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        }
+      ]
+    },
+    {
+      "method": "LoRA",
+      "step": 100,
+      "logical_optimizer_updates": 400,
+      "experiment": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42",
+      "evaluation_name": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/summary/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.json",
+        "exists": true,
+        "bytes": 3757,
+        "sha256": "23a8d7d90199168db051e5b46ea09f10f9c625465c172a677e3bb31ec027fb0e"
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/verification.json",
+        "exists": true,
+        "bytes": 765,
+        "sha256": "62e0345db6ce1e7d83a62934d59908a6fb94349142999d18f78b83473759d522"
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/global_step_100",
+      "checkpoint_exists": true,
+      "full_checkpoint_model_shards_present": 0,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/step_100",
+      "snapshot_exists": true,
+      "status": "verified",
+      "verification_level": "Saved verification+shard completion reread; summary arithmetic/counts/4 manifests freshly checked; raw JSONL existence checked, not regraded or rehashed in this audit",
+      "num_samples": 7248,
+      "num_problems": 902,
+      "weighted_avg": 0.4450883002207506,
+      "macro_avg_at_k": 0.38338991013071894,
+      "macro_pass_at_k": 0.6273758169934641,
+      "parse_rate": 0.9163907284768212,
+      "hit_max_rate": 0.0092439293598234,
+      "mean_length": 6441.084850993378,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.27708333333333335,
+          "macro_avg_at_k": 0.27708333333333335,
+          "pass_at_k": 0.7666666666666667,
+          "parse_rate": 0.9302083333333333,
+          "hit_max_rate": 0.026041666666666668,
+          "no_answer_rate": 0.06979166666666667,
+          "length_mean": 10191.585416666667,
+          "length_median": 8973.5,
+          "maxed_unparseable_rate": 0.022916666666666665
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.23125,
+          "macro_avg_at_k": 0.23125,
+          "pass_at_k": 0.5,
+          "parse_rate": 0.95625,
+          "hit_max_rate": 0.010416666666666666,
+          "no_answer_rate": 0.04375,
+          "length_mean": 9336.071875,
+          "length_median": 8475.5,
+          "maxed_unparseable_rate": 0.008333333333333333
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.7421875,
+          "macro_avg_at_k": 0.7421875,
+          "pass_at_k": 0.95,
+          "parse_rate": 0.9640625,
+          "hit_max_rate": 0.00390625,
+          "no_answer_rate": 0.0359375,
+          "length_mean": 5309.3921875,
+          "length_median": 3413.0,
+          "maxed_unparseable_rate": 0.003125
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.09895833333333333,
+          "macro_avg_at_k": 0.09895833333333333,
+          "pass_at_k": 0.4,
+          "parse_rate": 0.9666666666666667,
+          "hit_max_rate": 0.017708333333333333,
+          "no_answer_rate": 0.03333333333333333,
+          "length_mean": 10801.965625,
+          "length_median": 10287.5,
+          "maxed_unparseable_rate": 0.014583333333333334
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.722,
+          "macro_avg_at_k": 0.722,
+          "pass_at_k": 0.802,
+          "parse_rate": 0.9785,
+          "hit_max_rate": 0.0025,
+          "no_answer_rate": 0.0215,
+          "length_mean": 3110.868,
+          "length_median": 1697.5,
+          "maxed_unparseable_rate": 0.0025
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.22886029411764705,
+          "macro_avg_at_k": 0.22886029411764705,
+          "pass_at_k": 0.34558823529411764,
+          "parse_rate": 0.6544117647058824,
+          "hit_max_rate": 0.004595588235294118,
+          "no_answer_rate": 0.34558823529411764,
+          "length_mean": 4182.708639705882,
+          "length_median": 2851.5,
+          "maxed_unparseable_rate": 0.001838235294117647
+        }
+      },
+      "records": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/records/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.jsonl",
+        "exists": true,
+        "bytes": 146340054
+      },
+      "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/global_step_100/actor/peft_adapter",
+      "adapter_exists": true,
+      "verification": {
+        "status": "verified",
+        "evaluation_name": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+        "num_samples": 7248,
+        "benchmarks": [
+          "aime24",
+          "aime25",
+          "amc23",
+          "hmmt_feb",
+          "math500",
+          "minerva"
+        ],
+        "benchmark_record_counts": {
+          "aime24": 960,
+          "aime25": 960,
+          "amc23": 1280,
+          "hmmt_feb": 960,
+          "math500": 2000,
+          "minerva": 1088
+        },
+        "num_shards": 4,
+        "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+        "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/global_step_100/actor/peft_adapter",
+        "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base"
+      },
+      "shards_completion_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/shards_completion_verification.json",
+        "exists": true,
+        "bytes": 1795,
+        "sha256": "e0b6dcae64db332a74e9903b4b9fadf99e93ef8456d5ee2624078063cc960b7e"
+      },
+      "shards_completion_status": "all_shards_verified",
+      "shard_files_present": true,
+      "manifests": [
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-00-of-04.json",
+            "exists": true,
+            "bytes": 1247,
+            "sha256": "684798d63d3c73986df81bcb6944741756b9746da7ce62fffc2f9b199ea500ed"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-01-of-04.json",
+            "exists": true,
+            "bytes": 1247,
+            "sha256": "dce957fc8e5a65fde019ec0d684546ff7a05ae22ed4f1233e5387f8fff1621d6"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-02-of-04.json",
+            "exists": true,
+            "bytes": 1247,
+            "sha256": "7de3cccb2cb8c0053448800cc2fd65bc7584b7231e145f0d2ea8333fc2987642"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-03-of-04.json",
+            "exists": true,
+            "bytes": 1247,
+            "sha256": "452a78f0f6c87e56ea7f5dd5d2cb8ab066eee7ce45628119a1b21051ff6bcd01"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        }
+      ]
+    },
+    {
+      "method": "LoRA",
+      "step": 150,
+      "logical_optimizer_updates": 600,
+      "experiment": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42",
+      "evaluation_name": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/summary/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.json",
+        "exists": true,
+        "bytes": 3735,
+        "sha256": "e3a04fac53738fcf88f4b3d23d43f47fd5eeac29d05441b5f07bd36786657584"
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/verification.json",
+        "exists": true,
+        "bytes": 765,
+        "sha256": "6534fb8338eb1a1765b24b68d34b9cb6561b0a5fe801364587e2f4bfa21318ad"
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/global_step_150",
+      "checkpoint_exists": true,
+      "full_checkpoint_model_shards_present": 4,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/step_150",
+      "snapshot_exists": true,
+      "status": "verified",
+      "verification_level": "Saved verification+shard completion reread; summary arithmetic/counts/4 manifests freshly checked; raw JSONL existence checked, not regraded or rehashed in this audit",
+      "num_samples": 7248,
+      "num_problems": 902,
+      "weighted_avg": 0.4492273730684327,
+      "macro_avg_at_k": 0.38814082924836607,
+      "macro_pass_at_k": 0.6403856209150327,
+      "parse_rate": 0.9144591611479028,
+      "hit_max_rate": 0.007588300220750552,
+      "mean_length": 5684.594508830022,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.30520833333333336,
+          "macro_avg_at_k": 0.30520833333333336,
+          "pass_at_k": 0.7333333333333333,
+          "parse_rate": 0.9260416666666667,
+          "hit_max_rate": 0.021875,
+          "no_answer_rate": 0.07395833333333333,
+          "length_mean": 8988.29375,
+          "length_median": 7923.0,
+          "maxed_unparseable_rate": 0.021875
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.228125,
+          "macro_avg_at_k": 0.228125,
+          "pass_at_k": 0.5666666666666667,
+          "parse_rate": 0.9447916666666667,
+          "hit_max_rate": 0.013541666666666667,
+          "no_answer_rate": 0.05520833333333333,
+          "length_mean": 8192.776041666666,
+          "length_median": 7522.5,
+          "maxed_unparseable_rate": 0.0125
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.74140625,
+          "macro_avg_at_k": 0.74140625,
+          "pass_at_k": 1.0,
+          "parse_rate": 0.9578125,
+          "hit_max_rate": 0.003125,
+          "no_answer_rate": 0.0421875,
+          "length_mean": 4811.959375,
+          "length_median": 3244.0,
+          "maxed_unparseable_rate": 0.003125
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.10208333333333333,
+          "macro_avg_at_k": 0.10208333333333333,
+          "pass_at_k": 0.36666666666666664,
+          "parse_rate": 0.965625,
+          "hit_max_rate": 0.0125,
+          "no_answer_rate": 0.034375,
+          "length_mean": 9096.01875,
+          "length_median": 8530.5,
+          "maxed_unparseable_rate": 0.011458333333333333
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.725,
+          "macro_avg_at_k": 0.725,
+          "pass_at_k": 0.808,
+          "parse_rate": 0.9775,
+          "hit_max_rate": 0.001,
+          "no_answer_rate": 0.0225,
+          "length_mean": 2849.854,
+          "length_median": 1654.5,
+          "maxed_unparseable_rate": 0.0005
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.2270220588235294,
+          "macro_avg_at_k": 0.2270220588235294,
+          "pass_at_k": 0.36764705882352944,
+          "parse_rate": 0.6654411764705882,
+          "hit_max_rate": 0.0027573529411764708,
+          "no_answer_rate": 0.33455882352941174,
+          "length_mean": 3783.9338235294117,
+          "length_median": 2689.0,
+          "maxed_unparseable_rate": 0.0009191176470588235
+        }
+      },
+      "records": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/records/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.jsonl",
+        "exists": true,
+        "bytes": 130679141
+      },
+      "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/global_step_150/actor/peft_adapter",
+      "adapter_exists": true,
+      "verification": {
+        "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42/global_step_150/actor/peft_adapter",
+        "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+        "benchmark_record_counts": {
+          "aime24": 960,
+          "aime25": 960,
+          "amc23": 1280,
+          "hmmt_feb": 960,
+          "math500": 2000,
+          "minerva": 1088
+        },
+        "benchmarks": [
+          "aime24",
+          "aime25",
+          "amc23",
+          "hmmt_feb",
+          "math500",
+          "minerva"
+        ],
+        "evaluation_name": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+        "num_samples": 7248,
+        "num_shards": 4,
+        "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+        "status": "verified"
+      },
+      "shards_completion_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards_completion_verification.json",
+        "exists": true,
+        "bytes": 2160,
+        "sha256": "6ab051c7a28970c5d8ee6035fb7ebe567c79dc6c791c6bf984dc106e67b03749"
+      },
+      "shards_completion_status": "all_four_shards_verified_before_exit_cleanup",
+      "shard_files_present": true,
+      "manifests": [
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-00-of-04.json",
+            "exists": true,
+            "bytes": 1247,
+            "sha256": "25f19f5fa610d0cc2d4ea17823d1be49c26a253db99156c756d405010b689839"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-01-of-04.json",
+            "exists": true,
+            "bytes": 1247,
+            "sha256": "fabb44c93d6bb8a09cf5b68e18f3f4355985248f28b8d89eff6f969c1671343f"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-02-of-04.json",
+            "exists": true,
+            "bytes": 1247,
+            "sha256": "74c21bba540b6af8a0e10554ccc91f4f3963c8511c8b1e0d7faabbe1662be723"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-03-of-04.json",
+            "exists": true,
+            "bytes": 1247,
+            "sha256": "4ee0e7c67ab45355ff41e18e052f178d40781eac8b93bd27d7461ee8b541ca53"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        }
+      ]
+    },
+    {
+      "method": "REAL64",
+      "step": 50,
+      "logical_optimizer_updates": 200,
+      "experiment": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42",
+      "evaluation_name": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/summary/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.json",
+        "exists": true,
+        "bytes": 3689,
+        "sha256": "927b7ff8d82d961987b3bd438440918f97bf99cfd0e8b0c11a6368419fc51fc3"
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/verification.json",
+        "exists": true,
+        "bytes": 763,
+        "sha256": "2e069a4131bc7735ad3e5463cec824000375cfacc3de706761b0f7376f3b9fda"
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42/global_step_50",
+      "checkpoint_exists": true,
+      "full_checkpoint_model_shards_present": 4,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42/step_050",
+      "snapshot_exists": true,
+      "status": "verified",
+      "verification_level": "Saved verification+shard completion reread; summary arithmetic/counts/4 manifests freshly checked; raw JSONL existence checked, not regraded or rehashed in this audit",
+      "num_samples": 7248,
+      "num_problems": 902,
+      "weighted_avg": 0.4615066225165563,
+      "macro_avg_at_k": 0.4003879697712418,
+      "macro_pass_at_k": 0.6025130718954248,
+      "parse_rate": 0.9237030905077263,
+      "hit_max_rate": 0.002345474613686534,
+      "mean_length": 5088.326158940397,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.30625,
+          "macro_avg_at_k": 0.30625,
+          "pass_at_k": 0.7,
+          "parse_rate": 0.890625,
+          "hit_max_rate": 0.0020833333333333333,
+          "no_answer_rate": 0.109375,
+          "length_mean": 7386.685416666666,
+          "length_median": 6861.5,
+          "maxed_unparseable_rate": 0.0020833333333333333
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.22708333333333333,
+          "macro_avg_at_k": 0.22708333333333333,
+          "pass_at_k": 0.5,
+          "parse_rate": 0.9083333333333333,
+          "hit_max_rate": 0.004166666666666667,
+          "no_answer_rate": 0.09166666666666666,
+          "length_mean": 7107.480208333333,
+          "length_median": 6682.0,
+          "maxed_unparseable_rate": 0.003125
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.75390625,
+          "macro_avg_at_k": 0.75390625,
+          "pass_at_k": 0.95,
+          "parse_rate": 0.9484375,
+          "hit_max_rate": 0.0,
+          "no_answer_rate": 0.0515625,
+          "length_mean": 4489.6546875,
+          "length_median": 3405.5,
+          "maxed_unparseable_rate": 0.0
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.1,
+          "macro_avg_at_k": 0.1,
+          "pass_at_k": 0.26666666666666666,
+          "parse_rate": 0.9479166666666666,
+          "hit_max_rate": 0.003125,
+          "no_answer_rate": 0.052083333333333336,
+          "length_mean": 7368.133333333333,
+          "length_median": 7177.0,
+          "maxed_unparseable_rate": 0.003125
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.732,
+          "macro_avg_at_k": 0.732,
+          "pass_at_k": 0.794,
+          "parse_rate": 0.9805,
+          "hit_max_rate": 0.001,
+          "no_answer_rate": 0.0195,
+          "length_mean": 2749.8795,
+          "length_median": 1647.0,
+          "maxed_unparseable_rate": 0.0005
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.28308823529411764,
+          "macro_avg_at_k": 0.28308823529411764,
+          "pass_at_k": 0.40441176470588236,
+          "parse_rate": 0.8115808823529411,
+          "hit_max_rate": 0.0055147058823529415,
+          "no_answer_rate": 0.18841911764705882,
+          "length_mean": 4270.095588235294,
+          "length_median": 3271.5,
+          "maxed_unparseable_rate": 0.001838235294117647
+        }
+      },
+      "records": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/records/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.jsonl",
+        "exists": true,
+        "bytes": 119408834
+      },
+      "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42/global_step_50/actor/peft_adapter",
+      "adapter_exists": true,
+      "verification": {
+        "status": "verified",
+        "evaluation_name": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+        "num_samples": 7248,
+        "benchmarks": [
+          "aime24",
+          "aime25",
+          "amc23",
+          "hmmt_feb",
+          "math500",
+          "minerva"
+        ],
+        "benchmark_record_counts": {
+          "aime24": 960,
+          "aime25": 960,
+          "amc23": 1280,
+          "hmmt_feb": 960,
+          "math500": 2000,
+          "minerva": 1088
+        },
+        "num_shards": 4,
+        "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+        "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42/global_step_50/actor/peft_adapter",
+        "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base"
+      },
+      "shards_completion_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/shards_completion_verification.json",
+        "exists": true,
+        "bytes": 1787,
+        "sha256": "f661970aff967cee966209cc2ecdf6fae44ef7df059c568a369d4cfda1b27128"
+      },
+      "shards_completion_status": "all_shards_verified",
+      "shard_files_present": true,
+      "manifests": [
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-00-of-04.json",
+            "exists": true,
+            "bytes": 1245,
+            "sha256": "d9ffb5bee4e303c9a81d93e5d32618256d9b1826729b4eaa0974055ad34b0289"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-01-of-04.json",
+            "exists": true,
+            "bytes": 1245,
+            "sha256": "f88dbfdecd13e351a45ae0e9f761881079348172107682eb560343b6b51be30e"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-02-of-04.json",
+            "exists": true,
+            "bytes": 1245,
+            "sha256": "6ec1641e1d1e541828cd88722b95ef91784f0796a489c6ca5caee7ebe0aa0aad"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-03-of-04.json",
+            "exists": true,
+            "bytes": 1245,
+            "sha256": "d970858020d620aa3ab210da9af182a63f9513510e4a4e5b5d6a0bc715e68fe4"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        }
+      ]
+    },
+    {
+      "method": "REAL32",
+      "step": 50,
+      "logical_optimizer_updates": 200,
+      "experiment": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42",
+      "evaluation_name": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/summary/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.json",
+        "exists": true,
+        "bytes": 3779,
+        "sha256": "efc5321f82ccb075dd8fe0eeeba6b2261547de9d1374efedae06b509b9f60e96"
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/verification.json",
+        "exists": true,
+        "bytes": 779,
+        "sha256": "06da92ca2c151193d4015c2517508dc3e0fc0d31882a24f11e1becce2d1b9703"
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_50",
+      "checkpoint_exists": true,
+      "full_checkpoint_model_shards_present": 0,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/step_050",
+      "snapshot_exists": true,
+      "status": "verified",
+      "verification_level": "Saved verification+shard completion reread; summary arithmetic/counts/4 manifests freshly checked; raw JSONL existence checked, not regraded or rehashed in this audit",
+      "num_samples": 7248,
+      "num_problems": 902,
+      "weighted_avg": 0.46426600441501104,
+      "macro_avg_at_k": 0.4033613153594771,
+      "macro_pass_at_k": 0.6288937908496732,
+      "parse_rate": 0.921771523178808,
+      "hit_max_rate": 0.009657836644591612,
+      "mean_length": 5338.080573951435,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.31666666666666665,
+          "macro_avg_at_k": 0.31666666666666665,
+          "pass_at_k": 0.7666666666666667,
+          "parse_rate": 0.928125,
+          "hit_max_rate": 0.025,
+          "no_answer_rate": 0.071875,
+          "length_mean": 8085.733333333334,
+          "length_median": 7333.0,
+          "maxed_unparseable_rate": 0.023958333333333335
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.25,
+          "macro_avg_at_k": 0.25,
+          "pass_at_k": 0.5666666666666667,
+          "parse_rate": 0.9354166666666667,
+          "hit_max_rate": 0.016666666666666666,
+          "no_answer_rate": 0.06458333333333334,
+          "length_mean": 7408.970833333334,
+          "length_median": 6914.5,
+          "maxed_unparseable_rate": 0.014583333333333334
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.7484375,
+          "macro_avg_at_k": 0.7484375,
+          "pass_at_k": 0.95,
+          "parse_rate": 0.97890625,
+          "hit_max_rate": 0.00546875,
+          "no_answer_rate": 0.02109375,
+          "length_mean": 4819.79296875,
+          "length_median": 3668.5,
+          "maxed_unparseable_rate": 0.0046875
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.10729166666666666,
+          "macro_avg_at_k": 0.10729166666666666,
+          "pass_at_k": 0.3,
+          "parse_rate": 0.94375,
+          "hit_max_rate": 0.011458333333333333,
+          "no_answer_rate": 0.05625,
+          "length_mean": 7707.260416666667,
+          "length_median": 7399.5,
+          "maxed_unparseable_rate": 0.009375
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.7395,
+          "macro_avg_at_k": 0.7395,
+          "pass_at_k": 0.804,
+          "parse_rate": 0.983,
+          "hit_max_rate": 0.003,
+          "no_answer_rate": 0.017,
+          "length_mean": 2888.075,
+          "length_median": 1876.0,
+          "maxed_unparseable_rate": 0.003
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.25827205882352944,
+          "macro_avg_at_k": 0.25827205882352944,
+          "pass_at_k": 0.3860294117647059,
+          "parse_rate": 0.7049632352941176,
+          "hit_max_rate": 0.0055147058823529415,
+          "no_answer_rate": 0.29503676470588236,
+          "length_mean": 4109.409007352941,
+          "length_median": 3222.5,
+          "maxed_unparseable_rate": 0.0027573529411764708
+        }
+      },
+      "records": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/records/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.jsonl",
+        "exists": true,
+        "bytes": 130500767
+      },
+      "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_50/actor/peft_adapter",
+      "adapter_exists": true,
+      "verification": {
+        "status": "verified",
+        "evaluation_name": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+        "num_samples": 7248,
+        "benchmarks": [
+          "aime24",
+          "aime25",
+          "amc23",
+          "hmmt_feb",
+          "math500",
+          "minerva"
+        ],
+        "benchmark_record_counts": {
+          "aime24": 960,
+          "aime25": 960,
+          "amc23": 1280,
+          "hmmt_feb": 960,
+          "math500": 2000,
+          "minerva": 1088
+        },
+        "num_shards": 4,
+        "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+        "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_50/actor/peft_adapter",
+        "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base"
+      },
+      "shards_completion_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/shards_completion_verification.json",
+        "exists": true,
+        "bytes": 1851,
+        "sha256": "d9ef4a063297a8e66c1878eb465a877d90fcd4afecc71c3ba5da8b021e2f3454"
+      },
+      "shards_completion_status": "all_shards_verified",
+      "shard_files_present": true,
+      "manifests": [
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-00-of-04.json",
+            "exists": true,
+            "bytes": 1261,
+            "sha256": "530a532238c88a0ee218b8170bebb1acb7e2936cf9a3cc751c711b5eeb720f65"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-01-of-04.json",
+            "exists": true,
+            "bytes": 1261,
+            "sha256": "556abb7ff5b59cef5ecf2610028c0f5ae4bf0e37814f33976ba74ef84fe7cb71"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-02-of-04.json",
+            "exists": true,
+            "bytes": 1261,
+            "sha256": "2067a68b6e6a0dd259b107780efb46c60b3a22aed5570399d4a5d3000ae8e22c"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-03-of-04.json",
+            "exists": true,
+            "bytes": 1261,
+            "sha256": "e0b81f3b0c42f2d955b701be914e6ab0863cd1b6f9d0ba364e3134d07030be54"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        }
+      ]
+    },
+    {
+      "method": "REAL32",
+      "step": 100,
+      "logical_optimizer_updates": 400,
+      "experiment": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42",
+      "evaluation_name": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/summary/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.json",
+        "exists": true,
+        "bytes": 3786,
+        "sha256": "48b8214574a1579e33c9ba852853c7c291637745718d0b5da6a96559320a664d"
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/verification.json",
+        "exists": true,
+        "bytes": 781,
+        "sha256": "e5f400c9ed21695406e8039cb805655b63bf742a015a996060c29ab7ba996d20"
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_100",
+      "checkpoint_exists": true,
+      "full_checkpoint_model_shards_present": 4,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/step_100",
+      "snapshot_exists": true,
+      "status": "verified",
+      "verification_level": "Saved verification+shard completion reread; summary arithmetic/counts/4 manifests freshly checked; raw JSONL existence checked, not regraded or rehashed in this audit",
+      "num_samples": 7248,
+      "num_problems": 902,
+      "weighted_avg": 0.47833885209713023,
+      "macro_avg_at_k": 0.42002093545751634,
+      "macro_pass_at_k": 0.6407483660130718,
+      "parse_rate": 0.9631622516556292,
+      "hit_max_rate": 0.016694260485651213,
+      "mean_length": 5952.610651214128,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.35104166666666664,
+          "macro_avg_at_k": 0.35104166666666664,
+          "pass_at_k": 0.7333333333333333,
+          "parse_rate": 0.9552083333333333,
+          "hit_max_rate": 0.034375,
+          "no_answer_rate": 0.04479166666666667,
+          "length_mean": 8645.494791666666,
+          "length_median": 7606.5,
+          "maxed_unparseable_rate": 0.03333333333333333
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.2625,
+          "macro_avg_at_k": 0.2625,
+          "pass_at_k": 0.5333333333333333,
+          "parse_rate": 0.9697916666666667,
+          "hit_max_rate": 0.028125,
+          "no_answer_rate": 0.030208333333333334,
+          "length_mean": 8222.184375,
+          "length_median": 7385.0,
+          "maxed_unparseable_rate": 0.026041666666666668
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.76171875,
+          "macro_avg_at_k": 0.76171875,
+          "pass_at_k": 0.95,
+          "parse_rate": 0.98203125,
+          "hit_max_rate": 0.01640625,
+          "no_answer_rate": 0.01796875,
+          "length_mean": 5257.8015625,
+          "length_median": 3770.5,
+          "maxed_unparseable_rate": 0.0140625
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.10104166666666667,
+          "macro_avg_at_k": 0.10104166666666667,
+          "pass_at_k": 0.4,
+          "parse_rate": 0.98125,
+          "hit_max_rate": 0.017708333333333333,
+          "no_answer_rate": 0.01875,
+          "length_mean": 8594.171875,
+          "length_median": 8188.0,
+          "maxed_unparseable_rate": 0.0125
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.735,
+          "macro_avg_at_k": 0.735,
+          "pass_at_k": 0.794,
+          "parse_rate": 0.995,
+          "hit_max_rate": 0.005,
+          "no_answer_rate": 0.005,
+          "length_mean": 3249.0835,
+          "length_median": 2082.0,
+          "maxed_unparseable_rate": 0.0035
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.3088235294117647,
+          "macro_avg_at_k": 0.3088235294117647,
+          "pass_at_k": 0.4338235294117647,
+          "parse_rate": 0.8676470588235294,
+          "hit_max_rate": 0.011948529411764705,
+          "no_answer_rate": 0.1323529411764706,
+          "length_mean": 5030.323529411765,
+          "length_median": 4046.0,
+          "maxed_unparseable_rate": 0.004595588235294118
+        }
+      },
+      "records": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/records/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.jsonl",
+        "exists": true,
+        "bytes": 134293764
+      },
+      "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_100/actor/peft_adapter",
+      "adapter_exists": true,
+      "verification": {
+        "status": "verified",
+        "evaluation_name": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+        "num_samples": 7248,
+        "benchmarks": [
+          "aime24",
+          "aime25",
+          "amc23",
+          "hmmt_feb",
+          "math500",
+          "minerva"
+        ],
+        "benchmark_record_counts": {
+          "aime24": 960,
+          "aime25": 960,
+          "amc23": 1280,
+          "hmmt_feb": 960,
+          "math500": 2000,
+          "minerva": 1088
+        },
+        "num_shards": 4,
+        "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+        "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_100/actor/peft_adapter",
+        "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base"
+      },
+      "shards_completion_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/shards_completion_verification.json",
+        "exists": true,
+        "bytes": 1859,
+        "sha256": "c97d21998911c8840d647395eddd67430d0bd8c5e56bb53e610d6bf739c60023"
+      },
+      "shards_completion_status": "all_shards_verified",
+      "shard_files_present": true,
+      "manifests": [
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-00-of-04.json",
+            "exists": true,
+            "bytes": 1263,
+            "sha256": "04756bfbfb44fc68bb8f0158ed77d6185c56e95471b72943a3e0d574e8ba1476"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-01-of-04.json",
+            "exists": true,
+            "bytes": 1263,
+            "sha256": "ea6cd68194b45097de523a8cba1a8bb367cd319661996acd679b6c218e8b5c39"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-02-of-04.json",
+            "exists": true,
+            "bytes": 1263,
+            "sha256": "b2c6e051edeb6c9f5b39d3e0b92d481f24a3d567d90de063962626fe61347919"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-03-of-04.json",
+            "exists": true,
+            "bytes": 1263,
+            "sha256": "08088f0aefb4a818ed0ddef4262b44f62a246440b3e5a291fbc38e47915bd962"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        }
+      ]
+    },
+    {
+      "method": "REAL32",
+      "step": 150,
+      "logical_optimizer_updates": 600,
+      "experiment": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42",
+      "evaluation_name": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/summary/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.json",
+        "exists": true,
+        "bytes": 3817,
+        "sha256": "b301ee066f61c338464e2e976239b2dfee6bc21d3686821b1cb98bfc97cb42d4"
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/verification.json",
+        "exists": true,
+        "bytes": 781,
+        "sha256": "604857c5df12b344a660c962100b5df4631bef05b89ae603190859efb4533be8"
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_150",
+      "checkpoint_exists": true,
+      "full_checkpoint_model_shards_present": 4,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/step_150",
+      "snapshot_exists": true,
+      "status": "verified",
+      "verification_level": "Saved verification+shard completion reread; summary arithmetic/counts/4 manifests freshly checked; raw JSONL existence checked, not regraded or rehashed in this audit",
+      "num_samples": 7248,
+      "num_problems": 902,
+      "weighted_avg": 0.45502207505518766,
+      "macro_avg_at_k": 0.394078227124183,
+      "macro_pass_at_k": 0.6174901960784314,
+      "parse_rate": 0.9198399558498896,
+      "hit_max_rate": 0.03076710816777042,
+      "mean_length": 5399.943294701987,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.2833333333333333,
+          "macro_avg_at_k": 0.2833333333333333,
+          "pass_at_k": 0.7333333333333333,
+          "parse_rate": 0.9291666666666667,
+          "hit_max_rate": 0.06354166666666666,
+          "no_answer_rate": 0.07083333333333333,
+          "length_mean": 8147.163541666667,
+          "length_median": 6509.0,
+          "maxed_unparseable_rate": 0.057291666666666664
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.25833333333333336,
+          "macro_avg_at_k": 0.25833333333333336,
+          "pass_at_k": 0.5666666666666667,
+          "parse_rate": 0.9364583333333333,
+          "hit_max_rate": 0.059375,
+          "no_answer_rate": 0.06354166666666666,
+          "length_mean": 7610.251041666666,
+          "length_median": 5861.5,
+          "maxed_unparseable_rate": 0.04895833333333333
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.7578125,
+          "macro_avg_at_k": 0.7578125,
+          "pass_at_k": 0.95,
+          "parse_rate": 0.9734375,
+          "hit_max_rate": 0.0203125,
+          "no_answer_rate": 0.0265625,
+          "length_mean": 4803.26171875,
+          "length_median": 3531.5,
+          "maxed_unparseable_rate": 0.01953125
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.10729166666666666,
+          "macro_avg_at_k": 0.10729166666666666,
+          "pass_at_k": 0.3,
+          "parse_rate": 0.959375,
+          "hit_max_rate": 0.0375,
+          "no_answer_rate": 0.040625,
+          "length_mean": 7437.504166666667,
+          "length_median": 6596.5,
+          "maxed_unparseable_rate": 0.034375
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.727,
+          "macro_avg_at_k": 0.727,
+          "pass_at_k": 0.802,
+          "parse_rate": 0.98,
+          "hit_max_rate": 0.0095,
+          "no_answer_rate": 0.02,
+          "length_mean": 2977.7465,
+          "length_median": 1944.0,
+          "maxed_unparseable_rate": 0.009
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.23069852941176472,
+          "macro_avg_at_k": 0.23069852941176472,
+          "pass_at_k": 0.35294117647058826,
+          "parse_rate": 0.6884191176470589,
+          "hit_max_rate": 0.022058823529411766,
+          "no_answer_rate": 0.3115808823529412,
+          "length_mean": 4382.352022058823,
+          "length_median": 3117.5,
+          "maxed_unparseable_rate": 0.007352941176470588
+        }
+      },
+      "records": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/records/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.jsonl",
+        "exists": true,
+        "bytes": 118745212
+      },
+      "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_150/actor/peft_adapter",
+      "adapter_exists": true,
+      "verification": {
+        "status": "verified",
+        "evaluation_name": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+        "num_samples": 7248,
+        "benchmarks": [
+          "aime24",
+          "aime25",
+          "amc23",
+          "hmmt_feb",
+          "math500",
+          "minerva"
+        ],
+        "benchmark_record_counts": {
+          "aime24": 960,
+          "aime25": 960,
+          "amc23": 1280,
+          "hmmt_feb": 960,
+          "math500": 2000,
+          "minerva": 1088
+        },
+        "num_shards": 4,
+        "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+        "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_150/actor/peft_adapter",
+        "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base"
+      },
+      "shards_completion_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards_completion_verification.json",
+        "exists": true,
+        "bytes": 1859,
+        "sha256": "a54ebd367767570bd52800a0a577c8d46f0c8f84fa81386182eb036180a14c7e"
+      },
+      "shards_completion_status": "all_shards_verified",
+      "shard_files_present": true,
+      "manifests": [
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-00-of-04.json",
+            "exists": true,
+            "bytes": 1263,
+            "sha256": "d640ddd681d736be88c93da1744d22142a14a3a79c7a571e8b538769070b29f2"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-01-of-04.json",
+            "exists": true,
+            "bytes": 1263,
+            "sha256": "f498972a59c45d2fab770b0b8ece65c0d2fe1cde91ee4506744ae0817f478a90"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-02-of-04.json",
+            "exists": true,
+            "bytes": 1263,
+            "sha256": "0d58931a39a9565bafa8eeb92b0e2d9e2389115df3108eeda58c99d43f2af012"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-03-of-04.json",
+            "exists": true,
+            "bytes": 1263,
+            "sha256": "cfb660c369ad87636e87774af1947357425c8c42567e00fd9e110c4b6334fe9c"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        }
+      ]
+    },
+    {
+      "method": "GradTop",
+      "step": 10,
+      "logical_optimizer_updates": 40,
+      "experiment": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015",
+      "evaluation_name": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.json",
+        "exists": true,
+        "bytes": 3867,
+        "sha256": "52b7f5df334f1a9c1757c42935e37505b8b14fcfd42e0d107fec821e422b58cd"
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/verification.json",
+        "exists": true,
+        "bytes": 734,
+        "sha256": "4ed77edb3300ad51bdb35a547d0ebd190f059fb400905c54c97a42331d0d030b"
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_10",
+      "checkpoint_exists": false,
+      "full_checkpoint_model_shards_present": 0,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/step_010",
+      "snapshot_exists": true,
+      "status": "verified",
+      "verification_level": "Saved verification+shard completion reread; summary arithmetic/counts/4 manifests freshly checked; raw JSONL existence checked, not regraded or rehashed in this audit",
+      "num_samples": 7248,
+      "num_problems": 902,
+      "weighted_avg": 0.43349889624724064,
+      "macro_avg_at_k": 0.374610089869281,
+      "macro_pass_at_k": 0.6237140522875817,
+      "parse_rate": 0.8756898454746137,
+      "hit_max_rate": 0.019177704194260486,
+      "mean_length": 7162.209988962472,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.29791666666666666,
+          "macro_avg_at_k": 0.29791666666666666,
+          "pass_at_k": 0.7666666666666667,
+          "parse_rate": 0.8875,
+          "hit_max_rate": 0.03958333333333333,
+          "no_answer_rate": 0.1125,
+          "length_mean": 10948.617708333333,
+          "length_median": 9526.5,
+          "maxed_unparseable_rate": 0.035416666666666666
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.22291666666666668,
+          "macro_avg_at_k": 0.22291666666666668,
+          "pass_at_k": 0.5666666666666667,
+          "parse_rate": 0.9083333333333333,
+          "hit_max_rate": 0.03854166666666667,
+          "no_answer_rate": 0.09166666666666666,
+          "length_mean": 10650.404166666667,
+          "length_median": 9411.0,
+          "maxed_unparseable_rate": 0.035416666666666666
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.7078125,
+          "macro_avg_at_k": 0.7078125,
+          "pass_at_k": 0.925,
+          "parse_rate": 0.92265625,
+          "hit_max_rate": 0.01171875,
+          "no_answer_rate": 0.07734375,
+          "length_mean": 6031.24609375,
+          "length_median": 3850.5,
+          "maxed_unparseable_rate": 0.0109375
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.09375,
+          "macro_avg_at_k": 0.09375,
+          "pass_at_k": 0.3333333333333333,
+          "parse_rate": 0.9083333333333333,
+          "hit_max_rate": 0.034375,
+          "no_answer_rate": 0.09166666666666666,
+          "length_mean": 11747.801041666668,
+          "length_median": 10801.0,
+          "maxed_unparseable_rate": 0.030208333333333334
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.701,
+          "macro_avg_at_k": 0.701,
+          "pass_at_k": 0.794,
+          "parse_rate": 0.955,
+          "hit_max_rate": 0.0075,
+          "no_answer_rate": 0.045,
+          "length_mean": 3624.1545,
+          "length_median": 1730.5,
+          "maxed_unparseable_rate": 0.0055
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.22426470588235295,
+          "macro_avg_at_k": 0.22426470588235295,
+          "pass_at_k": 0.35661764705882354,
+          "parse_rate": 0.6066176470588235,
+          "hit_max_rate": 0.0009191176470588235,
+          "no_answer_rate": 0.39338235294117646,
+          "length_mean": 4531.658088235294,
+          "length_median": 3232.5,
+          "maxed_unparseable_rate": 0.0009191176470588235
+        }
+      },
+      "records": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.jsonl",
+        "exists": true,
+        "bytes": 163287206
+      },
+      "adapter_path": "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/evaluation_adapters/step_010",
+      "adapter_exists": true,
+      "verification": {
+        "status": "verified",
+        "evaluation_name": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42",
+        "num_samples": 7248,
+        "benchmarks": [
+          "aime24",
+          "aime25",
+          "amc23",
+          "hmmt_feb",
+          "math500",
+          "minerva"
+        ],
+        "benchmark_record_counts": {
+          "aime24": 960,
+          "aime25": 960,
+          "amc23": 1280,
+          "hmmt_feb": 960,
+          "math500": 2000,
+          "minerva": 1088
+        },
+        "num_shards": 4,
+        "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+        "adapter_path": "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/evaluation_adapters/step_010",
+        "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base"
+      },
+      "shards_completion_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/shards_completion_verification.json",
+        "exists": true,
+        "bytes": 1883,
+        "sha256": "0923952f4e5dcd34ecf7c2ba2988f037162b495b736b74ae29a13c3a772a2311"
+      },
+      "shards_completion_status": "all_shards_verified",
+      "shard_files_present": true,
+      "manifests": [
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-00-of-04.json",
+            "exists": true,
+            "bytes": 1216,
+            "sha256": "73be76de82cc073548eb348aab734fe277fc5f6f306564c68c5580637bbf06c4"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-01-of-04.json",
+            "exists": true,
+            "bytes": 1216,
+            "sha256": "145b7ed1bb2d2c27af759830626737c801905789295f67f8335082141a259e3f"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-02-of-04.json",
+            "exists": true,
+            "bytes": 1216,
+            "sha256": "c0ae1374fa24b6e64485b2bde986357dd18db02f5872f14673f66ba4639bedc2"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-03-of-04.json",
+            "exists": true,
+            "bytes": 1216,
+            "sha256": "c2407886838009d697ef857c6ca7255f77b49102804b0a655eb269196e235d3c"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        }
+      ]
+    },
+    {
+      "method": "GradTop",
+      "step": 50,
+      "logical_optimizer_updates": 200,
+      "experiment": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015",
+      "evaluation_name": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.json",
+        "exists": true,
+        "bytes": 3829,
+        "sha256": "6491203bfa41414c24150022d5770e80845ff67ec7241ceb2fb846af2ba4f94f"
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/verification.json",
+        "exists": true,
+        "bytes": 787,
+        "sha256": "020a9b95ded2c3f0a7e74d102b08f01b8aff649dd87c5605bf79e9afc9ac8a26"
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_50",
+      "checkpoint_exists": true,
+      "full_checkpoint_model_shards_present": 4,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/step_050",
+      "snapshot_exists": true,
+      "status": "verified",
+      "verification_level": "Saved verification+shard completion reread; summary arithmetic/counts/4 manifests freshly checked; raw JSONL existence checked, not regraded or rehashed in this audit",
+      "num_samples": 7248,
+      "num_problems": 902,
+      "weighted_avg": 0.47213024282560706,
+      "macro_avg_at_k": 0.413281760620915,
+      "macro_pass_at_k": 0.639748366013072,
+      "parse_rate": 0.9782008830022075,
+      "hit_max_rate": 0.0033112582781456954,
+      "mean_length": 5002.328780353201,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.30833333333333335,
+          "macro_avg_at_k": 0.30833333333333335,
+          "pass_at_k": 0.7,
+          "parse_rate": 0.9916666666666667,
+          "hit_max_rate": 0.005208333333333333,
+          "no_answer_rate": 0.008333333333333333,
+          "length_mean": 7345.723958333333,
+          "length_median": 6524.0,
+          "maxed_unparseable_rate": 0.003125
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.253125,
+          "macro_avg_at_k": 0.253125,
+          "pass_at_k": 0.5666666666666667,
+          "parse_rate": 0.9947916666666666,
+          "hit_max_rate": 0.007291666666666667,
+          "no_answer_rate": 0.005208333333333333,
+          "length_mean": 6893.957291666667,
+          "length_median": 6165.0,
+          "maxed_unparseable_rate": 0.003125
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.76015625,
+          "macro_avg_at_k": 0.76015625,
+          "pass_at_k": 0.95,
+          "parse_rate": 0.996875,
+          "hit_max_rate": 0.0015625,
+          "no_answer_rate": 0.003125,
+          "length_mean": 4368.175,
+          "length_median": 3249.5,
+          "maxed_unparseable_rate": 0.0015625
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.10520833333333333,
+          "macro_avg_at_k": 0.10520833333333333,
+          "pass_at_k": 0.4,
+          "parse_rate": 0.9947916666666666,
+          "hit_max_rate": 0.003125,
+          "no_answer_rate": 0.005208333333333333,
+          "length_mean": 7186.032291666666,
+          "length_median": 6819.5,
+          "maxed_unparseable_rate": 0.0020833333333333333
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.7275,
+          "macro_avg_at_k": 0.7275,
+          "pass_at_k": 0.788,
+          "parse_rate": 0.997,
+          "hit_max_rate": 0.001,
+          "no_answer_rate": 0.003,
+          "length_mean": 2776.412,
+          "length_median": 1838.5,
+          "maxed_unparseable_rate": 0.001
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.32536764705882354,
+          "macro_avg_at_k": 0.32536764705882354,
+          "pass_at_k": 0.4338235294117647,
+          "parse_rate": 0.8805147058823529,
+          "hit_max_rate": 0.004595588235294118,
+          "no_answer_rate": 0.11948529411764706,
+          "length_mean": 4176.568014705882,
+          "length_median": 3124.5,
+          "maxed_unparseable_rate": 0.001838235294117647
+        }
+      },
+      "records": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/records/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.jsonl",
+        "exists": true,
+        "bytes": 119753622
+      },
+      "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_50/actor/peft_adapter",
+      "adapter_exists": true,
+      "verification": {
+        "status": "verified",
+        "evaluation_name": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+        "num_samples": 7248,
+        "benchmarks": [
+          "aime24",
+          "aime25",
+          "amc23",
+          "hmmt_feb",
+          "math500",
+          "minerva"
+        ],
+        "benchmark_record_counts": {
+          "aime24": 960,
+          "aime25": 960,
+          "amc23": 1280,
+          "hmmt_feb": 960,
+          "math500": 2000,
+          "minerva": 1088
+        },
+        "num_shards": 4,
+        "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+        "adapter_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_50/actor/peft_adapter",
+        "base_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base"
+      },
+      "shards_completion_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/shards_completion_verification.json",
+        "exists": true,
+        "bytes": 1883,
+        "sha256": "06cf91a518257f0c0ba9f1cb23a17b12f9812db23480be431588ca2cb50af2ea"
+      },
+      "shards_completion_status": "all_shards_verified",
+      "shard_files_present": true,
+      "manifests": [
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-00-of-04.json",
+            "exists": true,
+            "bytes": 1269,
+            "sha256": "eb7bdba57ad4e77057d82ea4560b52af75e5de93ddee314bf78c14bb9f69dc23"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-01-of-04.json",
+            "exists": true,
+            "bytes": 1269,
+            "sha256": "a8d67c2a9056d979768b61b337295c46032b75a4cac94085b94fd418a4c21a88"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-02-of-04.json",
+            "exists": true,
+            "bytes": 1269,
+            "sha256": "d28afb064bf8ee448d2ccf718756711f9948b31db15f845d647ba02081fd5805"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        },
+        {
+          "source": {
+            "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-03-of-04.json",
+            "exists": true,
+            "bytes": 1269,
+            "sha256": "fb2d3c5dc10b81b86b29d7bff8fe060f95a14928a2392c120c7cac5f94e5818f"
+          },
+          "contract": {
+            "seed": 42,
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_new_tokens": 32768,
+            "max_model_len": 34816,
+            "samples_small": 32,
+            "samples_large": 4,
+            "benchmark_snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+          }
+        }
+      ]
+    },
+    {
+      "method": "GradTop",
+      "step": 100,
+      "logical_optimizer_updates": 400,
+      "experiment": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015",
+      "evaluation_name": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.json",
+        "exists": false
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/verification.json",
+        "exists": false
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_100",
+      "checkpoint_exists": false,
+      "full_checkpoint_model_shards_present": 0,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/step_100",
+      "snapshot_exists": false,
+      "status": "not_yet_available",
+      "verification_level": "No summary or verified result exists at audit time"
+    },
+    {
+      "method": "GradTop",
+      "step": 150,
+      "logical_optimizer_updates": 600,
+      "experiment": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015",
+      "evaluation_name": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42",
+      "summary_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.json",
+        "exists": false
+      },
+      "verification_file": {
+        "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/verification.json",
+        "exists": false
+      },
+      "checkpoint_path": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_150",
+      "checkpoint_exists": false,
+      "full_checkpoint_model_shards_present": 0,
+      "snapshot_path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/step_150",
+      "snapshot_exists": false,
+      "status": "not_yet_available",
+      "verification_level": "No summary or verified result exists at audit time"
+    }
+  ],
+  "paired_ci": [
+    {
+      "source": {
+        "path": "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/paired_vs_lora_step50.json",
+        "exists": true,
+        "bytes": 2647,
+        "sha256": "2b546859db3bee7a05d9b27750041d4e2b18c1de7aa8d17947d362f1a72f7dca"
+      },
+      "verification_level": "Saved paired report reread; bootstrap not rerun",
+      "schema_version": 1,
+      "method": "matched_problem_cluster_bootstrap_v1",
+      "baseline_checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "candidate_checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+      "record_keys_exactly_matched": true,
+      "num_samples": 7248,
+      "num_problems": 902,
+      "bootstrap_samples": 10000,
+      "bootstrap_seed": 42,
+      "macro_delta_avg_at_k": 0.026057495915032685,
+      "ci95_low": 0.014295126123366014,
+      "ci95_high": 0.03812998366013072,
+      "probability_delta_gt_zero": 1.0,
+      "interpretation": "single_seed_screen_only"
+    },
+    {
+      "source": {
+        "path": "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/paired_vs_real32_step50.json",
+        "exists": true,
+        "bytes": 2707,
+        "sha256": "3f1e2b1ebaec7e4a81a4aab987719c4bac9b85ed2fb078508d4ad23954096aae"
+      },
+      "verification_level": "Saved paired report reread; bootstrap not rerun",
+      "schema_version": 1,
+      "method": "matched_problem_cluster_bootstrap_v1",
+      "baseline_checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "candidate_checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+      "record_keys_exactly_matched": true,
+      "num_samples": 7248,
+      "num_problems": 902,
+      "bootstrap_samples": 10000,
+      "bootstrap_seed": 42,
+      "macro_delta_avg_at_k": 0.009920445261437908,
+      "ci95_low": -0.0014834099264705875,
+      "ci95_high": 0.02132451746323529,
+      "probability_delta_gt_zero": 0.9549,
+      "interpretation": "single_seed_screen_only"
+    },
+    {
+      "source": {
+        "path": "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/paired_vs_real64_step50.json",
+        "exists": true,
+        "bytes": 2676,
+        "sha256": "5e06700c6cb132f06ce1b3a24bc0ff1ac187b4f239583e02b8e195227e46d8d4"
+      },
+      "verification_level": "Saved paired report reread; bootstrap not rerun",
+      "schema_version": 1,
+      "method": "matched_problem_cluster_bootstrap_v1",
+      "baseline_checkpoint": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "candidate_checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42",
+      "record_keys_exactly_matched": true,
+      "num_samples": 7248,
+      "num_problems": 902,
+      "bootstrap_samples": 10000,
+      "bootstrap_seed": 42,
+      "macro_delta_avg_at_k": 0.012893790849673207,
+      "ci95_low": 0.0023118668300653603,
+      "ci95_high": 0.023687438725490183,
+      "probability_delta_gt_zero": 0.9915,
+      "interpretation": "single_seed_screen_only"
+    },
+    {
+      "source": {
+        "path": "/root/peft-for-rl/runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/paired_comparison.json",
+        "exists": true,
+        "bytes": 2662,
+        "sha256": "cde371eb468fdb9e50fb115440df88da121db663be00bd4ef823a8955c176f24"
+      },
+      "verification_level": "Saved paired report reread; bootstrap not rerun",
+      "schema_version": 1,
+      "method": "matched_problem_cluster_bootstrap_v1",
+      "baseline_checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "candidate_checkpoint": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "record_keys_exactly_matched": true,
+      "num_samples": 7248,
+      "num_problems": 902,
+      "bootstrap_samples": 10000,
+      "bootstrap_seed": 42,
+      "macro_delta_avg_at_k": 0.01613705065359478,
+      "ci95_low": 0.002853760723039217,
+      "ci95_high": 0.02932039164624183,
+      "probability_delta_gt_zero": 0.9922,
+      "interpretation": "single_seed_screen_only"
+    },
+    {
+      "source": {
+        "path": "/root/peft-for-rl/runs/ops/real_r32_lr1e5_seed42_after_eval/paired_comparison.json",
+        "exists": true,
+        "bytes": 2653,
+        "sha256": "edf677546d4199e995f67a583b298f56b458b302886fcf98b40abb3fe8fbb085"
+      },
+      "verification_level": "Saved paired report reread; bootstrap not rerun",
+      "schema_version": 1,
+      "method": "matched_problem_cluster_bootstrap_v1",
+      "baseline_checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "candidate_checkpoint": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "record_keys_exactly_matched": true,
+      "num_samples": 7248,
+      "num_problems": 902,
+      "bootstrap_samples": 10000,
+      "bootstrap_seed": 42,
+      "macro_delta_avg_at_k": 0.01316370506535948,
+      "ci95_low": 0.0016460452410130713,
+      "ci95_high": 0.024711639603758166,
+      "probability_delta_gt_zero": 0.9857,
+      "interpretation": "single_seed_screen_only"
+    },
+    {
+      "source": {
+        "path": "/root/peft-for-rl/runs/ops/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42.complete_results/step100_vs_step50.json",
+        "exists": true,
+        "bytes": 2700,
+        "sha256": "ea4c0cb6bfb6bf841f25a83b8bbb3239c3924560404eaeee76e39def9e7efcc3"
+      },
+      "verification_level": "Saved paired report reread; bootstrap not rerun",
+      "schema_version": 1,
+      "method": "matched_problem_cluster_bootstrap_v1",
+      "baseline_checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "candidate_checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42",
+      "record_keys_exactly_matched": true,
+      "num_samples": 7248,
+      "num_problems": 902,
+      "bootstrap_samples": 10000,
+      "bootstrap_seed": 42,
+      "macro_delta_avg_at_k": -0.003834354575163399,
+      "ci95_low": -0.015500086805555556,
+      "ci95_high": 0.007458292483660127,
+      "probability_delta_gt_zero": 0.2528,
+      "interpretation": "single_seed_screen_only"
+    },
+    {
+      "source": {
+        "path": "/root/peft-for-rl/runs/ops/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42.complete_results/step150_vs_step50.json",
+        "exists": true,
+        "bytes": 2652,
+        "sha256": "14e57fc4764937dc21e5714a8e2c759867aa406499c35bd9df657cfa3a2ccd2f"
+      },
+      "verification_level": "Saved paired report reread; bootstrap not rerun",
+      "schema_version": 1,
+      "method": "matched_problem_cluster_bootstrap_v1",
+      "baseline_checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+      "candidate_checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42",
+      "record_keys_exactly_matched": true,
+      "num_samples": 7248,
+      "num_problems": 902,
+      "bootstrap_samples": 10000,
+      "bootstrap_seed": 42,
+      "macro_delta_avg_at_k": 0.0009165645424836685,
+      "ci95_low": -0.011236180044934641,
+      "ci95_high": 0.0125679993872549,
+      "probability_delta_gt_zero": 0.5568,
+      "interpretation": "single_seed_screen_only"
+    }
+  ],
+  "probe_costs": [
+    {
+      "method": "GradTop(new)",
+      "summary_source": {
+        "path": "/root/peft-for-rl/runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015/summary.json",
+        "exists": true,
+        "bytes": 114712,
+        "sha256": "5899d6b105331d232fd5e892944e5db61d05e52557bde05bb30527360a7d30ce"
+      },
+      "summary_scalars": {
+        "allocation_mode": "uniform",
+        "capacity": 64,
+        "completed_basis_directions": 0,
+        "constant_scaling": 2.0,
+        "formal_trainable_parameters": 36929536,
+        "freeze_a": false,
+        "gradient_clipping": false,
+        "gradient_probe_variant": "token_mean",
+        "initial_b": "zero",
+        "method": "rl_policy_gradient_subspace",
+        "observations": 16,
+        "observed_prompt_groups": 256,
+        "optimizer_updates": 0,
+        "probe_method": "energy",
+        "probe_width": 8,
+        "requested_observations": 16,
+        "sampled_prompts": 256,
+        "sampled_rollouts": 2048,
+        "schema_version": 1,
+        "seed": 42,
+        "sign_seed": 42,
+        "source_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+        "stable_windows": 0,
+        "stopped_by_stability": false,
+        "subspace_path": "/root/peft-for-rl/runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015/subspaces.safetensors",
+        "target_energy": 0.95,
+        "trainer_step": 4
+      },
+      "rollout_steps": 4,
+      "attempted_prompts": 256,
+      "sampled_rollouts": 2048,
+      "effective_groups": 256,
+      "effective_groups_definition": "all observed prompt groups (not REAL-filtered)",
+      "observation_unit": "16 PPO minibatches across 4 rollout steps",
+      "probe_wall_seconds": 2250.3307664459862,
+      "probe_execution_source": {
+        "path": "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/probe_execution.json",
+        "exists": true,
+        "bytes": 365,
+        "sha256": "9363b2def94e399d5e2b9ac77a98c164311de96832132fb6e8829fac2ae7f860"
+      },
+      "formal_step50_train_wall_seconds": 21512.503333397995,
+      "train_execution_source": {
+        "path": "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/train_execution.json",
+        "exists": true,
+        "bytes": 365,
+        "sha256": "ebb01cde8ea0198c0ff1d2c78469cad3a77bde08c68a2fab55b50cbb8a5e82e9"
+      },
+      "wall_time_caveat": "End-to-end probe command wall time, excludes waiting/formal train/evaluation"
+    },
+    {
+      "method": "REAL32",
+      "summary_source": {
+        "path": "/root/peft-for-rl/runs/analysis/real_probe_r32_s32_seed42_replayed/summary.json",
+        "exists": true,
+        "bytes": 952268,
+        "sha256": "edc7451a075cb78f2bdc72a07ee9ad444376dfe3ded55e112f0c6afe5cd13c8b"
+      },
+      "summary_scalars": {
+        "constant_scaling": 2.0,
+        "distributed_observation": "complete_prompt_group_replicated_on_data_parallel_ranks",
+        "formal_trainable_parameters": 20643840,
+        "freeze_a": true,
+        "gradient_clipping": false,
+        "input_factor_scale": 1.0,
+        "input_sketch_width": 128,
+        "method": "real_reward_gradient_aligned_lora",
+        "minimum_correct": 2,
+        "minimum_incorrect": 2,
+        "objective": "mean_response_length_normalized_binary_population_std_reward_contrast",
+        "optimizer_updates": 0,
+        "output_sketch_width": 128,
+        "persistent_accumulator_bytes": 521142272,
+        "probe_method": "real",
+        "prompt_groups": 735,
+        "relative_spectral_tolerance": 1e-06,
+        "requested_observation_steps": 32,
+        "requested_prompt_groups": 0,
+        "schema_version": 1,
+        "second_moment": "uncentered_per_prompt_group",
+        "seed": 42,
+        "source_model_path": "/root/peft-for-rl/runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+        "subspace_path": "/root/peft-for-rl/runs/analysis/real_probe_r32_s32_seed42_replayed/subspaces.safetensors",
+        "trainer_step": 32,
+        "replay_source": "/root/peft-for-rl/runs/analysis/real_probe_r32_s64_p0_seed42_20261013_cache/step_032",
+        "replay_source_metadata_sha256": "5960afc6ae597d2a8d75a51d9abcdfd696c9cf75711f087fe95834fd15f3fd0e"
+      },
+      "rollout_steps": 32,
+      "attempted_prompts": 2048,
+      "sampled_rollouts": 16384,
+      "effective_groups": 735,
+      "effective_groups_definition": "accepted mixed-correctness prompt groups (minimum 2 correct and 2 incorrect)",
+      "observation_unit": "rollout step",
+      "probe_wall_seconds": null,
+      "probe_execution_source": {
+        "path": "/root/peft-for-rl/runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/probe_execution.json",
+        "exists": false
+      },
+      "formal_step50_train_wall_seconds": 19922.433332324,
+      "train_execution_source": {
+        "path": "/root/peft-for-rl/runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/train_execution.json",
+        "exists": true,
+        "bytes": 383,
+        "sha256": "8d5807aa22e9f07ef8fe6de5b271dd3f0d2e197e85040c82a810b96d933e5888"
+      },
+      "wall_time_caveat": "Cached cumulative REAL64 step32 prefix; no independent collection wall time"
+    },
+    {
+      "method": "REAL64",
+      "summary_source": {
+        "path": "/root/peft-for-rl/runs/analysis/real_probe_r32_s64_p0_seed42_20261013/summary.json",
+        "exists": true,
+        "bytes": 985948,
+        "sha256": "4529e56e9d65b86195ff6d17239aa9cff4de472aece76630966203a9690a1f7e"
+      },
+      "summary_scalars": {
+        "constant_scaling": 2.0,
+        "distributed_observation": "complete_prompt_group_replicated_on_data_parallel_ranks",
+        "formal_trainable_parameters": 20643840,
+        "freeze_a": true,
+        "gradient_clipping": false,
+        "input_factor_scale": 1.0,
+        "input_sketch_width": 128,
+        "method": "real_reward_gradient_aligned_lora",
+        "minimum_correct": 2,
+        "minimum_incorrect": 2,
+        "objective": "mean_response_length_normalized_binary_population_std_reward_contrast",
+        "optimizer_updates": 0,
+        "output_sketch_width": 128,
+        "persistent_accumulator_bytes": 521142272,
+        "probe_method": "real",
+        "prompt_groups": 1499,
+        "relative_spectral_tolerance": 1e-06,
+        "requested_observation_steps": 64,
+        "requested_prompt_groups": 0,
+        "schema_version": 1,
+        "second_moment": "uncentered_per_prompt_group",
+        "seed": 42,
+        "source_model_path": "/root/peft-for-rl/runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+        "subspace_path": "/root/peft-for-rl/runs/analysis/real_probe_r32_s64_p0_seed42_20261013/subspaces.safetensors",
+        "trainer_step": 64
+      },
+      "rollout_steps": 64,
+      "attempted_prompts": 4096,
+      "sampled_rollouts": 32768,
+      "effective_groups": 1499,
+      "effective_groups_definition": "accepted mixed-correctness prompt groups (minimum 2 correct and 2 incorrect)",
+      "observation_unit": "rollout step",
+      "probe_wall_seconds": 40085.410959251996,
+      "probe_execution_source": {
+        "path": "/root/peft-for-rl/runs/ops/real_r32_lr1e5_seed42_after_eval/probe_execution.json",
+        "exists": true,
+        "bytes": 374,
+        "sha256": "b3cf343aff8a9fd1a71a0e5482e0743ab43735fd7842994f82509a30ac6a9d1b"
+      },
+      "formal_step50_train_wall_seconds": 20612.55121731601,
+      "train_execution_source": {
+        "path": "/root/peft-for-rl/runs/ops/real_r32_lr1e5_seed42_after_eval/train_execution.json",
+        "exists": true,
+        "bytes": 370,
+        "sha256": "adf41f2761a48d5679f1c0a07b1d2d3c035a9c6330c8a3076872cf51faad2d8f"
+      },
+      "wall_time_caveat": "End-to-end probe command wall time, excludes waiting/formal train/evaluation"
+    }
+  ],
+  "probe_cost_interpretation": {
+    "REAL64_over_GradTop_measured_wall_ratio": 17.813119545336914,
+    "budget_caveat": "REAL64 uses 16x attempted prompts and REAL32 prefix uses 8x relative to GradTop. Measured wall ratio is this selected-budget pipeline comparison, not equal-sample algorithm speedup. REAL32 standalone wall time unavailable."
+  },
+  "continuation": {
+    "status_source": {
+      "path": "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/status.json",
+      "exists": true,
+      "bytes": 1515,
+      "sha256": "878579b6793cd147f76de331d4bbfba885d44c24e2fd4f7a1d40c086ee9b07a2"
+    },
+    "status_snapshot": {
+      "experiment": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015",
+      "controller_pid": 1248678,
+      "controller_start_ticks": 27355062,
+      "plan": "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/plan.json",
+      "plan_sha256": "a98a83cb423040b55122855c5622491b437bab6820e6b03d688d94db65f3bdb6",
+      "started_at": "2026-10-15T20:47:22.109005+08:00",
+      "target_step": 100,
+      "completed_evaluations": [
+        10,
+        50
+      ],
+      "status": "train_to100",
+      "updated_at": "2026-10-16T00:49:48.893375+08:00",
+      "resume_from": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_50",
+      "stage_pid": 1248787,
+      "stage_token": "4732d5927ad9468392471bff5de8ee32",
+      "stage_log": "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/train_to100.log",
+      "disk_budget": {
+        "source_step": 50,
+        "target_step": 100,
+        "policy": {
+          "checkpoint_growth_margin": 1.1,
+          "snapshot_growth_margin": 1.1,
+          "headroom_gib": 2.0,
+          "credit_verified_retention": true
+        },
+        "measured_checkpoint_bytes": 7715457092,
+        "measured_snapshot_bytes": 147792187,
+        "projected_checkpoint_bytes": 8487002802,
+        "projected_snapshot_bytes": 812857029,
+        "verified_pre_save_retention_credit_bytes": 0,
+        "restored_adapter_bytes": 0,
+        "headroom_bytes": 2147483648,
+        "required_free_bytes": 11447343479,
+        "retention_performed_by_pinned_trainer_only": true
+      },
+      "latest_logged_step": 86,
+      "elapsed_seconds": 14523
+    },
+    "latest_complete_step_in_log": 86,
+    "log": "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/train_to100.log",
+    "log_mtime_utc": "2026-10-15T16:46:05.596863+00:00",
+    "live_resume_source": {
+      "path": "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/live_resume_verification.json",
+      "exists": true,
+      "bytes": 782,
+      "sha256": "d6f4806b7643e332982d77773a8ec795065fba846e1f8ee130147ec47fbbac96"
+    },
+    "live_resume": {
+      "checked_at": "2026-10-15T20:50:20.434105+08:00",
+      "status": "full_resume_confirmed_in_live_log",
+      "controller_pid": 1248678,
+      "controller_start_ticks": 27355062,
+      "source_checkpoint": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_50",
+      "log": "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/train_to100.log",
+      "confirmed_states": [
+        "model",
+        "optimizer",
+        "rng",
+        "lr_scheduler"
+      ],
+      "dataloader_preflight": "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/resume_step50_verification.json",
+      "observed_training_progress": "50/100; first new step still running, no completed new step claimed",
+      "runtime_contract_matches_registered_target100": true
+    },
+    "resume_preflight_source": {
+      "path": "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/resume_step50_verification.json",
+      "exists": true,
+      "bytes": 1195,
+      "sha256": "281ae49ebf12cd96d92f1cbfbd335d08a2124ba749f1522cbd46eda39af81e12"
+    },
+    "resume_preflight": {
+      "status": "verified",
+      "validated_at": "2026-10-15T20:47:42.927255+08:00",
+      "step": 50,
+      "checkpoint": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_50",
+      "model_optimizer_extra_files": {
+        "actor/model_world_size_4_rank_0.pt": 1814714347,
+        "actor/optim_world_size_4_rank_0.pt": 74327707,
+        "actor/extra_state_world_size_4_rank_0.pt": 15141,
+        "actor/model_world_size_4_rank_1.pt": 1814714347,
+        "actor/optim_world_size_4_rank_1.pt": 74327707,
+        "actor/extra_state_world_size_4_rank_1.pt": 15141,
+        "actor/model_world_size_4_rank_2.pt": 1814714347,
+        "actor/optim_world_size_4_rank_2.pt": 74327707,
+        "actor/extra_state_world_size_4_rank_2.pt": 15141,
+        "actor/model_world_size_4_rank_3.pt": 1814714347,
+        "actor/optim_world_size_4_rank_3.pt": 74327707,
+        "actor/extra_state_world_size_4_rank_3.pt": 15141
+      },
+      "dataloader_batches_yielded": 50,
+      "dataloader_samples_yielded": 3200,
+      "all_four_rank_rng_and_scheduler_verified": true,
+      "adapter_tensor_count": 392,
+      "adapter_sha256": "5d1aaa7cbb7704eab50bf2d97db25a78354db4bb11b9b42027c5a16cccea59f7",
+      "logical_optimizer_updates": 200
+    },
+    "processes": [
+      {
+        "pid": 1248678,
+        "command": "/home/node/anaconda3/envs/peft-for-rl/bin/python -u /root/peft-for-rl/scripts/local/continue_gradtop_r32.py --plan /root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/plan.json --plan-sha256 a98a83cb423040b55122855c5622491b437bab6820e6b03d688d94db65f3bdb6 "
+      },
+      {
+        "pid": 1248828,
+        "command": "/home/node/anaconda3/envs/peft-for-rl/bin/python -m verl.trainer.main_ppo data.train_files=/root/peft-for-rl/runs/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet data.val_files=/root/peft-for-rl/runs/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet data.prompt_key=prompt data.reward_fn_key=data_source data.truncation=left data.max_prompt_length=1024 data.max_response_length=8192 data.train_batch_size=64 data.val_batch_size=64 data.dataloader_num_workers=0 data.shuffle=True data.seed=42 data.validation_shuffle=False data.filter_overlong_prompts=False actor_rollout_ref.rollout.n=8 algorithm.adv_estimator=grpo algorithm.norm_adv_by_std_in_grpo=True algorithm.use_kl_in_reward=False algorithm.kl_ctrl.kl_coef=0.0 actor_rollout_ref.actor.use_kl_loss=False actor_rollout_ref.actor.kl_loss_coef=0.0 actor_rollout_ref.actor.clip_ratio_low=0.2 actor_rollout_ref.actor.clip_ratio_high=0.28 actor_rollout_ref.actor.clip_ratio_c=10.0 actor_rollout_ref.actor.ppo_epochs=1 actor_rollout_ref.actor.shuffle=False actor_rollout_ref.actor.data_loader_seed=42 actor_rollout_ref.model.use_remove_padding=True actor_rollout_ref.model.path=/root/peft-for-rl/runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base actor_rollout_ref.model.enable_gradient_checkpointing=True +actor_rollout_ref.model.peft_type=grad_subspace actor_rollout_ref.model.lora_rank=32 actor_rollout_ref.model.lora_alpha=64 +actor_rollout_ref.model.lora_freeze_a=False +actor_rollout_ref.model.lora_init_mode=standard +actor_rollout_ref.model.lora_init_seed=42 +actor_rollout_ref.model.lora_init_audit_path=/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/initialization_to100.json +actor_rollout_ref.model.lora_init_peer_audit_path=null +actor_rollout_ref.model.lora_dropout=0.0 +actor_rollout_ref.model.rlpo_svd_device=auto +actor_rollout_ref.model.tinylora_rank=2 +actor_rollout_ref.model.tinylora_projection_dim=1 +actor_rollout_ref.model.tinylora_tie_factor=16 +actor_rollout_ref.model.tinylora_tie_strategy=tiled +actor_rollout_ref.model.tinylora_seed=42 +actor_rollout_ref.model.tinylora_svd_device=auto +actor_rollout_ref.model.tinylora_svd_method=lowrank +actor_rollout_ref.model.tinylora_svd_oversample=4 +actor_rollout_ref.model.tinylora_svd_niter=2 +actor_rollout_ref.model.tinylora_projection_std=1.0 +actor_rollout_ref.model.adalora_init_r=0 +actor_rollout_ref.model.adalora_target_r=0 +actor_rollout_ref.model.adalora_tinit=0 +actor_rollout_ref.model.adalora_tfinal=0 +actor_rollout_ref.model.adalora_delta_t=20 +actor_rollout_ref.model.adalora_beta1=0.85 +actor_rollout_ref.model.adalora_beta2=0.85 +actor_rollout_ref.model.adalora_orth_reg_weight=1e-3 +actor_rollout_ref.model.oft_block_size=32 +actor_rollout_ref.model.oft_rank=0 +actor_rollout_ref.model.oft_dropout=0.0 +actor_rollout_ref.model.oft_coft=False +actor_rollout_ref.model.oft_eps=0.00006 +actor_rollout_ref.model.oft_block_share=False +actor_rollout_ref.model.oft_use_cayley_neumann=True +actor_rollout_ref.model.oft_num_cayley_neumann_terms=5 +actor_rollout_ref.model.nora_doft_rank=32 +actor_rollout_ref.model.nora_doft_block_size=32 +actor_rollout_ref.model.nora_doft_alpha=64 +actor_rollout_ref.model.nora_doft_normalization=init +actor_rollout_ref.model.nora_doft_use_magnitude=True +actor_rollout_ref.model.nora_doft_eps=1e-6 +actor_rollout_ref.model.nora_doft_seed=42 +actor_rollout_ref.model.nora_dora_rank=32 +actor_rollout_ref.model.nora_dora_alpha=64 +actor_rollout_ref.model.nora_dora_normalization=init +actor_rollout_ref.model.nora_dora_eps=1e-6 +actor_rollout_ref.model.nora_dora_seed=42 +actor_rollout_ref.model.skew_rank=32 +actor_rollout_ref.model.skew_alpha=64 +actor_rollout_ref.model.skew_dropout=0.0 +actor_rollout_ref.model.skew_init_std=0.01 +actor_rollout_ref.model.boet_rank=32 +actor_rollout_ref.model.boet_alpha=64 +actor_rollout_ref.model.boet_dropout=0.0 +actor_rollout_ref.model.boet_init_std=0.01 +actor_rollout_ref.model.boet_use_cayley_neumann=False +actor_rollout_ref.model.boet_num_cayley_neumann_terms=5 +actor_rollout_ref.model.boet_cayley_neumann_eps=0.9 +actor_rollout_ref.model.biso_block_size=32 +actor_rollout_ref.model.biso_alpha=16 +actor_rollout_ref.model.biso_init_std=0.0 +actor_rollout_ref.model.biso_parameterization=primitive_cn +actor_rollout_ref.model.biso_use_cayley_neumann=True +actor_rollout_ref.model.biso_num_cayley_neumann_terms=5 +actor_rollout_ref.model.biso_cayley_neumann_eps=0.9 +actor_rollout_ref.model.biso_selective_mode=none +actor_rollout_ref.model.biso_selective_keep_ratio=0.3 +actor_rollout_ref.model.spo_block_size=16 +actor_rollout_ref.model.spo_depth=1 +actor_rollout_ref.model.spo_alpha=8 +actor_rollout_ref.model.spo_init_std=0.0 +actor_rollout_ref.model.spo_use_cayley_neumann=True +actor_rollout_ref.model.spo_num_cayley_neumann_terms=5 +actor_rollout_ref.model.spo_cayley_neumann_eps=0.9 +actor_rollout_ref.model.spo_seed=42 +actor_rollout_ref.model.geora_sparsity_ratio=0.2 +actor_rollout_ref.model.geora_oversample=8 +actor_rollout_ref.model.geora_niter=2 +actor_rollout_ref.model.geora_svd_device=auto +actor_rollout_ref.model.geora_residual_anchor=True +actor_rollout_ref.model.geora_init_scale=1.0 +actor_rollout_ref.model.geora_seed=42 actor_rollout_ref.model.target_modules=all-linear actor_rollout_ref.actor.optim.lr=1e-5 actor_rollout_ref.actor.optim.lr_warmup_steps=0 actor_rollout_ref.actor.optim.weight_decay=0 actor_rollout_ref.actor.optim.lr_scheduler_type=constant actor_rollout_ref.actor.ppo_mini_batch_size=16 actor_rollout_ref.actor.fsdp_config.param_offload=True actor_rollout_ref.actor.fsdp_config.optimizer_offload=True actor_rollout_ref.actor.fsdp_config.use_orig_params=False actor_rollout_ref.actor.fsdp_config.fsdp_size=-1 actor_rollout_ref.actor.fsdp_config.seed=42 actor_rollout_ref.actor.fsdp_config.dtype=bfloat16 actor_rollout_ref.actor.entropy_coeff=0 +actor_rollout_ref.actor.biso_raw_l2_coef=0.0 +actor_rollout_ref.actor.biso_gate_lr_scale=1.0 actor_rollout_ref.actor.grad_clip=1.0 actor_rollout_ref.actor.loss_agg_mode=token-mean actor_rollout_ref.actor.ulysses_sequence_parallel_size=1 actor_rollout_ref.actor.use_dynamic_bsz=True actor_rollout_ref.actor.ppo_max_token_len_per_gpu=12288 actor_rollout_ref.rollout.name=vllm +actor_rollout_ref.rollout.seed=42 actor_rollout_ref.rollout.dtype=bfloat16 actor_rollout_ref.rollout.load_format=dummy actor_rollout_ref.rollout.gpu_memory_utilization=0.70 actor_rollout_ref.rollout.tensor_model_parallel_size=1 actor_rollout_ref.rollout.enable_chunked_prefill=True actor_rollout_ref.rollout.max_model_len=9216 actor_rollout_ref.rollout.max_num_batched_tokens=9216 actor_rollout_ref.rollout.max_num_seqs=256 actor_rollout_ref.rollout.temperature=1.0 actor_rollout_ref.rollout.top_p=1.0 actor_rollout_ref.rollout.top_k=-1 actor_rollout_ref.rollout.log_prob_use_dynamic_bsz=True actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu=12288 actor_rollout_ref.rollout.val_kwargs.temperature=1.0 actor_rollout_ref.rollout.val_kwargs.top_p=0.7 actor_rollout_ref.rollout.val_kwargs.top_k=-1 actor_rollout_ref.rollout.val_kwargs.do_sample=True actor_rollout_ref.rollout.val_kwargs.n=1 actor_rollout_ref.ref.fsdp_config.param_offload=True actor_rollout_ref.ref.fsdp_config.seed=42 actor_rollout_ref.ref.fsdp_config.dtype=bfloat16 actor_rollout_ref.ref.ulysses_sequence_parallel_size=1 actor_rollout_ref.ref.log_prob_use_dynamic_bsz=True actor_rollout_ref.ref.log_prob_max_token_len_per_gpu=12288 actor_rollout_ref.actor.checkpoint.save_contents=['model','optimizer','extra'] reward_model.reward_manager=dapo custom_reward_function.path=/root/peft-for-rl/verl/utils/reward_score/boxed_math_accuracy.py custom_reward_function.name=compute_score +reward_model.reward_kwargs.overlong_buffer_cfg.enable=False +reward_model.reward_kwargs.overlong_buffer_cfg.len=4096 +reward_model.reward_kwargs.overlong_buffer_cfg.penalty_factor=1.0 +reward_model.reward_kwargs.overlong_buffer_cfg.log=True +reward_model.reward_kwargs.max_resp_len=8192 trainer.logger=['console'] trainer.project_name=peft-for-rl trainer.experiment_name=rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015 trainer.n_gpus_per_node=4 trainer.nnodes=1 trainer.val_before_train=False trainer.test_freq=0 trainer.save_freq=50 +trainer.lora_snapshot_dir=/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015 +trainer.lora_snapshot_every=10 +trainer.optimizer_updates_per_step=4 trainer.max_actor_ckpt_to_keep=2 trainer.total_epochs=1 trainer.total_training_steps=100 trainer.default_local_dir=/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015 trainer.resume_mode=auto trainer.log_val_generations=0 +ray_kwargs.ray_init.address=local ray_kwargs.ray_init.num_cpus=20 +ray_kwargs.ray_init.num_gpus=4 +ray_kwargs.ray_init.include_dashboard=False +ray_kwargs.ray_init._temp_dir=/tmp/gt32_cont/gradtop_r32_1em5 +actor_rollout_ref.model.gradient_subspace_rank_map_path=/root/peft-for-rl/runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015/rank_map.json +actor_rollout_ref.model.gradient_subspace_path=/root/peft-for-rl/runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015/subspaces.safetensors "
+      }
+    ],
+    "resource_snapshot": {
+      "nvidia_smi_gpu": "0, NVIDIA L40S, 9298 MiB, 46068 MiB, 98 %\n1, NVIDIA L40S, 8498 MiB, 46068 MiB, 99 %\n2, NVIDIA L40S, 9298 MiB, 46068 MiB, 96 %\n3, NVIDIA L40S, 8498 MiB, 46068 MiB, 96 %",
+      "disk": {
+        "/": {
+          "free_bytes": 14310502400,
+          "total_bytes": 209708916736
+        },
+        "/data": {
+          "free_bytes": 1170960384,
+          "total_bytes": 52521566208
+        }
+      }
+    }
+  },
+  "limits": [
+    "All formal experiments use training seed42 only; paired CIs quantify problem sampling, not training-seed variability.",
+    "Step10 is a diagnostic observation on the same GradTop trajectory; matched primary comparison is step50.",
+    "GradTop(new) differs from historical original GradTop; do not pool as strict reproduction.",
+    "GradTop100/150 have no result at audit time and must remain pending."
+  ],
+  "scope": {
+    "gradtop_experiment": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015",
+    "gradtop_versions_included": 1,
+    "comparison_methods": [
+      "LoRA",
+      "REAL64",
+      "REAL32"
+    ],
+    "scope_basis": "current protocol; latest GradTop only"
+  }
+}

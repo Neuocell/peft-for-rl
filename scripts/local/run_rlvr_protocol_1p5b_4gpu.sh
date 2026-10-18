@@ -4,7 +4,7 @@ set -euo pipefail
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "${script_dir}/../.." && pwd -P)"
 runtime_root="${repo_root}/runs"
-protocol="${repo_root}/configs/experiments/rlvr_dapo_math_1p5b_protocol_v1.json"
+protocol="${PROTOCOL_FILE:-${repo_root}/configs/experiments/rlvr_dapo_math_1p5b_protocol_v1.json}"
 if [[ -n "${PYTHON_BIN:-}" ]]; then
     python_bin="${PYTHON_BIN}"
 elif [[ -x "${repo_root}/.venv/bin/python" ]]; then
@@ -52,6 +52,44 @@ ray_temp_dir="${RAY_TEMP_DIR:-${RAY_TEMP_BASE:-${runtime_root}/ray}/${method}_r$
 local_checkpoint_dir="${runtime_root}/ckpts/verl/peft-for-rl/${exp_name}"
 local_snapshot_dir="${runtime_root}/snapshots/rlvr_protocol/${exp_name}"
 
+verify_extra=()
+preview_mode=0
+if [[ "${method}" == "real" ]]; then
+    real_artifact_dir="${REAL_ARTIFACT_DIR:-${GRADIENT_PROBE_ARTIFACT_DIR:-}}"
+    if [[ -z "${real_artifact_dir}" ]]; then
+        echo "METHOD=real requires REAL_ARTIFACT_DIR or GRADIENT_PROBE_ARTIFACT_DIR from a completed REAL probe" >&2
+        exit 2
+    fi
+    real_artifact_dir="$(realpath -m -- "${real_artifact_dir}")"
+    if [[ -n "${REAL_ARTIFACT_DIR:-}" && -n "${GRADIENT_PROBE_ARTIFACT_DIR:-}" ]] \
+        && [[ "$(realpath -m -- "${GRADIENT_PROBE_ARTIFACT_DIR}")" != "${real_artifact_dir}" ]]; then
+        echo "REAL_ARTIFACT_DIR and GRADIENT_PROBE_ARTIFACT_DIR refer to different artifacts" >&2
+        exit 2
+    fi
+    verify_extra+=(--real-artifact-dir "${real_artifact_dir}")
+fi
+
+case "${method}" in
+    gradtop|gradtop_short|gradtop_prompt_mean|gradtop_prompt_sign|gradtop_masked)
+        gradtop_artifact_dir="${GRADTOP_ARTIFACT_DIR:-}"
+        if [[ -z "${gradtop_artifact_dir}" ]]; then
+            echo "METHOD=${method} requires GRADTOP_ARTIFACT_DIR from a completed GradTop probe" >&2
+            exit 2
+        fi
+        gradtop_artifact_dir="$(realpath -m -- "${gradtop_artifact_dir}")"
+        verify_extra+=(--gradtop-artifact-dir "${gradtop_artifact_dir}")
+        if [[ "${GRADTOP_PREVIEW_MISSING_ARTIFACT:-0}" == "1" ]]; then
+            if [[ "${DRY_RUN:-1}" != "1" ]]; then
+                echo "GRADTOP_PREVIEW_MISSING_ARTIFACT is allowed only with DRY_RUN=1" >&2
+                exit 2
+            fi
+            verify_extra+=(--preview-missing-gradtop-artifact)
+            contract="${contract%.json}.preview.json"
+            preview_mode=1
+        fi
+        ;;
+esac
+
 mkdir -p "$(dirname -- "${contract}")"
 pending_contract="$(mktemp "${contract}.check.XXXXXX")"
 trap 'rm -f -- "${pending_contract}"' EXIT
@@ -61,6 +99,7 @@ trap 'rm -f -- "${pending_contract}"' EXIT
     --method "${method}" \
     --rank "${rank}" \
     --target-step "${target_step}" \
+    "${verify_extra[@]}" \
     --output "${pending_contract}" >/dev/null
 
 lock_value() {
@@ -115,7 +154,17 @@ lock_value RAY_TEMP_DIR "${ray_temp_dir}"
 lock_value RLPO_SVD_DEVICE auto
 lock_value LORA_ALPHA 64
 lock_value LORA_DROPOUT 0.0
-lock_value LORA_FREEZE_A False
+if [[ "${method}" == "real" ]]; then
+    lock_value LORA_FREEZE_A True
+    lock_value GRADIENT_SUBSPACE_RANK_MAP_PATH "${real_artifact_dir}/rank_map.json"
+    lock_value GRADIENT_SUBSPACE_PATH "${real_artifact_dir}/subspaces.safetensors"
+else
+    lock_value LORA_FREEZE_A False
+    if [[ -n "${gradtop_artifact_dir:-}" ]]; then
+        lock_value GRADIENT_SUBSPACE_RANK_MAP_PATH "${gradtop_artifact_dir}/rank_map.json"
+        lock_value GRADIENT_SUBSPACE_PATH "${gradtop_artifact_dir}/subspaces.safetensors"
+    fi
+fi
 lock_value LORA_INIT_SEED 42
 lock_value NORA_DOFT_RANK "${rank}"
 lock_value NORA_DOFT_BLOCK_SIZE 32
@@ -164,7 +213,7 @@ case "${method}" in
         lock_value USE_ORIG_PARAMS False
         lock_value USE_ORIG_PARAMS_OVERRIDE False
         ;;
-    dora|nora_doft|nora_dora|nora_dora_continuous)
+    dora|nora_doft|nora_dora|nora_dora_continuous|real)
         lock_value LORA_INIT_MODE standard
         lock_value USE_ORIG_PARAMS True
         lock_value USE_ORIG_PARAMS_OVERRIDE True
@@ -176,21 +225,29 @@ case "${method}" in
         ;;
 esac
 
-runtime_args=(
-    --contract "${pending_contract}"
-    --manifest "${runtime_root}/protocol_contracts/${exp_name}.runtime.json"
-    --checkpoints "${local_checkpoint_dir}"
-    --snapshots "${local_snapshot_dir}"
-    --resume-mode "${resume_mode}"
-)
-if [[ "${DRY_RUN}" != "1" ]]; then
-    runtime_args+=(--record)
+# Missing-artifact previews are dry-run only (enforced above) and cannot attest
+# runtime provenance. Actual launches always validate the verified contract.
+if [[ "${preview_mode}" != "1" ]]; then
+    runtime_args=(
+        --contract "${pending_contract}"
+        --manifest "${runtime_root}/protocol_contracts/${exp_name}.runtime.json"
+        --checkpoints "${local_checkpoint_dir}"
+        --snapshots "${local_snapshot_dir}"
+        --resume-mode "${resume_mode}"
+    )
+    if [[ "${DRY_RUN}" != "1" ]]; then
+        runtime_args+=(--record)
+    fi
+    "${python_bin}" "${repo_root}/scripts/analysis/record_rlvr_runtime.py" "${runtime_args[@]}"
 fi
-"${python_bin}" "${repo_root}/scripts/analysis/record_rlvr_runtime.py" "${runtime_args[@]}"
 # Keep the previous contract intact when configuration/provenance validation fails.
 mv -- "${pending_contract}" "${contract}"
 trap - EXIT
 
-echo "Verified ${PROTOCOL_ID}: only LR=${lr}, METHOD=${method}, LORA_RANK=${rank} vary"
+if [[ "${preview_mode}" == "1" ]]; then
+    echo "Preview ${PROTOCOL_ID}: artifact validation is deferred until the probe completes"
+else
+    echo "Verified ${PROTOCOL_ID}: only LR=${lr}, METHOD=${method}, LORA_RANK=${rank} vary"
+fi
 echo "Contract: ${contract}"
 exec bash "${repo_root}/scripts/local/run_dapo_boxed_paper_clean_1p5b_4gpu.sh"

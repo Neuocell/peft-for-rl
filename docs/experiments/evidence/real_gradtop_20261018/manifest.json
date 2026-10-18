@@ -1,0 +1,1618 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-18T15:50:48.380988+08:00",
+  "timezone": "Asia/Shanghai",
+  "copy_contract": "Each listed file is a byte-identical copy of its local source at capture time. Absolute paths inside originals describe the historical machine.",
+  "large_artifacts": "Models, adapters, subspaces, datasets, raw responses, gradients, optimizer states and training logs remain in local runtime storage; only their recorded identities and compact reports are archived.",
+  "files": [
+    {
+      "source_path": "runs/ops/real_r32_lr1e5_seed42_after_eval/protocol.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/protocols/real64_r32_frozen_20261013.json",
+      "sha256": "c0e7433e0695f733043b46f600295665177fdc14f97534f8a0de70f3b2a610bb",
+      "bytes": 6936
+    },
+    {
+      "source_path": "runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/protocol.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/protocols/real32_r32_frozen_20261014.json",
+      "sha256": "d656edf6d5e20e0d75d71a9a3aa3d0111799158537cda9729df2296852804f53",
+      "bytes": 7424
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_clean_20261015/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_clean_20261015/plan.json",
+      "sha256": "2b4ac58ed7899efcee302f59057527d18e945176c8a6f8a94c61b1edc5dc6cd6",
+      "bytes": 9104
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_clean_20261015/results.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_clean_20261015/results.md",
+      "sha256": "340fa10651cdad394241564f09ac558a1dec4497d104fcf7cbc36286bda4c551",
+      "bytes": 5228
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_clean_20261015/probe_execution.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_clean_20261015/probe_execution.json",
+      "sha256": "9363b2def94e399d5e2b9ac77a98c164311de96832132fb6e8829fac2ae7f860",
+      "bytes": 365
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_continue_step150_20261015/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_continue_step150_20261015/plan.json",
+      "sha256": "a98a83cb423040b55122855c5622491b437bab6820e6b03d688d94db65f3bdb6",
+      "bytes": 12049
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_continue_step150_20261015/results.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_continue_step150_20261015/results.json",
+      "sha256": "b91544efbb5fd92ab6e7ffcd8d6bd899def0a1e24228e5b69bb3272f68cd18be",
+      "bytes": 39900
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume200_syncfix_20261016/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume200_syncfix_20261016/plan.json",
+      "sha256": "01103c48e2e90f06ae225e98c5ca9106a11268ac3414f2261403970e493a069f",
+      "bytes": 16629
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume200_syncfix_20261016/controller.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume200_syncfix_20261016/controller.py",
+      "sha256": "19550a5dd9cc76d593cd19a0b4986c1d99ccf96124c3966246cf9e241c87ea3e",
+      "bytes": 12947
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume200_syncfix_20261016/first_rollout_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume200_syncfix_20261016/first_rollout_verification.json",
+      "sha256": "5231d492be9c1c93f2b190fefb6cf1d8c9148926e82456ea9aeeb8e3d5100e26",
+      "bytes": 125769
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume200_syncfix_20261016/report_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume200_syncfix_20261016/report_verification.json",
+      "sha256": "727997d2019870ac05f22b42bf8af712b284c4b3b216b378810878b758d02386",
+      "bytes": 10704
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume250_syncverified_20261016/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume250_syncverified_20261016/plan.json",
+      "sha256": "d95d0b84930b7d2e8c4d1a43273bf5a6110392ccaf64b3d46e51cfa02368f4a5",
+      "bytes": 19223
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume250_syncverified_20261016/controller.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume250_syncverified_20261016/controller.py",
+      "sha256": "0d37c8b7a6310e927dbc4c6ba7285a329736dd07f186df1be7fc461c9f76b2f4",
+      "bytes": 12933
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume250_syncverified_20261016/first_rollout_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume250_syncverified_20261016/first_rollout_verification.json",
+      "sha256": "9fd748ea05c784bd9a732d68c5a7406d181d359a7bf37add33f62f7b778f9553",
+      "bytes": 125769
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume250_syncverified_20261016/report_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume250_syncverified_20261016/report_verification.json",
+      "sha256": "9ced6bbe6e8a12d79691a8ea111a11e3f3cf27765cc3aba1a737cde9c53cf44a",
+      "bytes": 11295
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume270_syncverified_20261017/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume270_syncverified_20261017/plan.json",
+      "sha256": "7ef61d5e7af3909fa351888cfc60deb3f2306a10f3ea5e2d65ab6884f572b6b9",
+      "bytes": 20115
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume270_syncverified_20261017/controller.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume270_syncverified_20261017/controller.py",
+      "sha256": "f4aaeec189f8de952a1254f832d383b7e5e6675b46b55573826be52effc07802",
+      "bytes": 12931
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume270_syncverified_20261017/results.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume270_syncverified_20261017/results.json",
+      "sha256": "d8889d836e0ba2a6931c06bb61bb9c10cbeaf9b7f04fde84096d721d60d14eed",
+      "bytes": 73926
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume270_syncverified_20261017/results.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume270_syncverified_20261017/results.md",
+      "sha256": "c06162a66533bdc79c8590dcfb269f2a0a6146cd5575a27df32330786366b4ef",
+      "bytes": 3109
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume270_syncverified_20261017/first_rollout_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume270_syncverified_20261017/first_rollout_verification.json",
+      "sha256": "5014b8074a5586b9dbdf6f2a8b11a84aeb8d98ee09ccbb787fd67cf4ae483b37",
+      "bytes": 125769
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_resume270_syncverified_20261017/report_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_resume270_syncverified_20261017/report_verification.json",
+      "sha256": "48b79fa7d26ea481d4d163f342acfceefc9017d2e46716d6a0eb0da8f670d451",
+      "bytes": 12527
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_continue_review_20261016/training_audit.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_continue_review_20261016/training_audit.md",
+      "sha256": "6dcae87f5cbfc65d66bbdf161a10771c8cdbcc11367c444ef2d31eb5637b90c6",
+      "bytes": 7263
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_continue_review_20261016/evidence_review.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_continue_review_20261016/evidence_review.md",
+      "sha256": "4c0d627f9fe179ec5684d550de9237eb59aceb55e7a913dec515afacfc6fb6e6",
+      "bytes": 4090
+    },
+    {
+      "source_path": "runs/ops/gradtop_r32_continue_review_20261016/paired_step150_vs_step100.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_r32_continue_review_20261016/paired_step150_vs_step100.json",
+      "sha256": "9046cfd8d90b9f2ab5e410f577e7aa265dcb651fe7c13d00b99081c10b58a633",
+      "bytes": 2673
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_handoff_20261016/evidence_audit.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_handoff_20261016/evidence_audit.json",
+      "sha256": "7d4cdba35bcbae12410fc011b1687043ea38b9fa84e1be10cdffaa12442c69c8",
+      "bytes": 134271
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_handoff_20261016/methods_audit.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_handoff_20261016/methods_audit.md",
+      "sha256": "5a57a5012a49031e61698136bfe563221203f943c55524d3b749c85437ce893a",
+      "bytes": 13056
+    },
+    {
+      "source_path": "runs/ops/gradtop_research_review_20261016/implementation_audit.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_research_review_20261016/implementation_audit.md",
+      "sha256": "1153f3d0d53bc2c1162e670a42d11c21520ac8d28a9ce507ae096143c7bad6e8",
+      "bytes": 17406
+    },
+    {
+      "source_path": "runs/ops/gradtop_research_review_20261016/results_audit.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_research_review_20261016/results_audit.md",
+      "sha256": "8ed34a7aeaedfa5e43ae7db0e2f47555a25c38a94d135959aa9fd078bf3e413d",
+      "bytes": 14020
+    },
+    {
+      "source_path": "runs/ops/gradtop_research_review_20261016/cpu_audit_checks.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_research_review_20261016/cpu_audit_checks.json",
+      "sha256": "9f65ecf510f5a58d1ac1195716b058d69e89602a00c528828dbaa41bd48be831",
+      "bytes": 1933
+    },
+    {
+      "source_path": "runs/ops/gradtop_research_review_20261016/paired_sensitivity.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_research_review_20261016/paired_sensitivity.json",
+      "sha256": "617e550707727d7d464a1b3890f39776a55808ad6328e62d179cb93f67bc1b14",
+      "bytes": 6485
+    },
+    {
+      "source_path": "runs/ops/gradtop_research_review_20261016/minerva_parse_diagnostics.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_research_review_20261016/minerva_parse_diagnostics.json",
+      "sha256": "e04324ccd3ee7f29dcf3a286fff78c7483b2e8f36e0df4fffd1f4161a1afed2f",
+      "bytes": 3495
+    },
+    {
+      "source_path": "runs/ops/gradtop_research_review_20261016/parser_consistency.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_research_review_20261016/parser_consistency.json",
+      "sha256": "f90c9e1676ca5621d82428efd02e8332e76e749e13dca3a734ba87a6b48cb631",
+      "bytes": 3646
+    },
+    {
+      "source_path": "runs/ops/real_gradtop_budget_audit_20261017/real_evaluation_summary.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_gradtop_budget_audit_20261017/real_evaluation_summary.json",
+      "sha256": "92125ff3ca814eaf4269d0bf0dd97dfb87d8ba6bc1d1aed647520ad34c759fcf",
+      "bytes": 12427
+    },
+    {
+      "source_path": "runs/ops/real_gradtop_budget_audit_20261017/real_step150_vs100.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_gradtop_budget_audit_20261017/real_step150_vs100.json",
+      "sha256": "d79bf103693c807c7efb575924c329987944ba860b6754406ef1a3ec7f1bca16",
+      "bytes": 2710
+    },
+    {
+      "source_path": "runs/ops/real_gradtop_budget_audit_20261017/adapter_geometry_audit.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_gradtop_budget_audit_20261017/adapter_geometry_audit.json",
+      "sha256": "dab32599d22b13ab4b75ed706d7cd0ed46eb87c546635e98e425511ba95bb695",
+      "bytes": 4658
+    },
+    {
+      "source_path": "runs/ops/gradtop_epoch_boundary_audit_20261017/README.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_epoch_boundary_audit_20261017/README.md",
+      "sha256": "1a7526b820febf5c99944d023df022ccc0711c380edc3c38fb2f24d989a9a4e5",
+      "bytes": 2251
+    },
+    {
+      "source_path": "runs/ops/gradtop_epoch_boundary_audit_20261017/report.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_epoch_boundary_audit_20261017/report.json",
+      "sha256": "f5973263ba220efc51b978471bbf96077c9ecd33094b5d0979762cf0afd06144",
+      "bytes": 1848
+    },
+    {
+      "source_path": "runs/ops/real_r32_lr1e5_seed42_after_eval/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_r32_lr1e5_seed42_after_eval/plan.json",
+      "sha256": "2016ec8c91a84e54494666ceae69df1ee03ec84e7228c4210ce65957b2c7cd76",
+      "bytes": 7124
+    },
+    {
+      "source_path": "runs/ops/real_r32_lr1e5_seed42_after_eval/probe_execution.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_r32_lr1e5_seed42_after_eval/probe_execution.json",
+      "sha256": "b3cf343aff8a9fd1a71a0e5482e0743ab43735fd7842994f82509a30ac6a9d1b",
+      "bytes": 374
+    },
+    {
+      "source_path": "runs/ops/real_r32_lr1e5_seed42_after_eval/paired_comparison.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_r32_lr1e5_seed42_after_eval/paired_comparison.json",
+      "sha256": "edf677546d4199e995f67a583b298f56b458b302886fcf98b40abb3fe8fbb085",
+      "bytes": 2653
+    },
+    {
+      "source_path": "runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/plan.json",
+      "sha256": "56f8f467c82d099c3e15209337e805c56fe2f28ad189d42217ae40315c34b75a",
+      "bytes": 8701
+    },
+    {
+      "source_path": "runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/paired_comparison.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/paired_comparison.json",
+      "sha256": "cde371eb468fdb9e50fb115440df88da121db663be00bd4ef823a8955c176f24",
+      "bytes": 2662
+    },
+    {
+      "source_path": "runs/ops/real_probe32_early_step100/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_probe32_early_step100/plan.json",
+      "sha256": "c645243b015ab5fe6c24711bf0607141eedfacd575f501215486e50e5c9ad6fc",
+      "bytes": 11281
+    },
+    {
+      "source_path": "runs/ops/real_probe32_early_step100/status.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_probe32_early_step100/status.json",
+      "sha256": "a2dbf2b10a79f9ec5b42f05552a5a8fa35f76a5b4756846485c55e07a02e830a",
+      "bytes": 1583
+    },
+    {
+      "source_path": "runs/ops/real_probe32_early_step100/results.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_probe32_early_step100/results.json",
+      "sha256": "fabd4e576931b89f162c468dbcd43687913f9a9848e2dc5cdbe884a4187eec7b",
+      "bytes": 12395
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/plan.json",
+      "sha256": "abc30c0a1341a365bf3cb1c327eeca2cf4f2b958688e15b3356ec8fc151e7514",
+      "bytes": 10657
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/controller.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/controller.py",
+      "sha256": "cd3063bea982299cbc28548b46de5b065bd5ccf38f97fcb65739f72655c0bd90",
+      "bytes": 15376
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/probe_execution.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/probe_execution.json",
+      "sha256": "ab9d7b5d79875af24369324d041fbe34fd3ceeeedd0e4023e16f96f765a18793",
+      "bytes": 375
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/probe_artifact_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/probe_artifact_verification.json",
+      "sha256": "15e98887ba523741bcbad2ca9da074e3f7a870c122c3b39ad23382c1fb801455",
+      "bytes": 3063
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/initial_sync_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/initial_sync_verification.json",
+      "sha256": "c6f877daaa18f59953168b6dee52f8df8082c3b33bfeeb3e262bbea4bc48bcbf",
+      "bytes": 124563
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/after_step1_sync_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/after_step1_sync_verification.json",
+      "sha256": "b075ac013ba83fb82c537077fe2d0369fef482d344cf199733f54a5a9b63e9ea",
+      "bytes": 124739
+    },
+    {
+      "source_path": "runs/ops/real_p256_stop210_eval_20261018/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_stop210_eval_20261018/plan.json",
+      "sha256": "fa15873f097123f826c14cab09339e9e4ecb7bdb81d272da334143fec3310286",
+      "bytes": 11243
+    },
+    {
+      "source_path": "runs/ops/real_p256_stop210_eval_20261018/controller.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_stop210_eval_20261018/controller.py",
+      "sha256": "08b4ac32d953086d0d65e1bf9a1bbc216b12216e670f6c3827e46f8e2f33f3e0",
+      "bytes": 8147
+    },
+    {
+      "source_path": "runs/ops/real_p256_stop210_eval_20261018/status.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_stop210_eval_20261018/status.json",
+      "sha256": "c4f83b88e7e5ecb77a21b571ae04b98c2530e1c9946188671a13c9d0b4d2ce20",
+      "bytes": 1768
+    },
+    {
+      "source_path": "runs/ops/real_p256_stop210_eval_20261018/results.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_stop210_eval_20261018/results.json",
+      "sha256": "fe18622ac231afa1b28285890dfc4e78bdcd65593d5ffda404498141e168e177",
+      "bytes": 4304
+    },
+    {
+      "source_path": "runs/ops/real_p256_stop210_eval_20261018/results.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_stop210_eval_20261018/results.md",
+      "sha256": "84ba88f3c79bd61911ab41e8afbb55512f249068a73f61f2fac3917a2d3afc69",
+      "bytes": 465
+    },
+    {
+      "source_path": "runs/ops/real_p256_stop210_eval_20261018/terminal_snapshot_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_stop210_eval_20261018/terminal_snapshot_verification.json",
+      "sha256": "18239d81256a33f37d8bbc53fff75dce29d9988ddff9c7679f3deb7c3af07bc8",
+      "bytes": 11973
+    },
+    {
+      "source_path": "runs/ops/real_p256_stop210_eval_20261018/speed_audit_adapter_and_config.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_stop210_eval_20261018/speed_audit_adapter_and_config.json",
+      "sha256": "60c8935c40ea7e3e8d515845b8c393b41240b8488ea8e4d0d1b233635039cf60",
+      "bytes": 1339
+    },
+    {
+      "source_path": "runs/ops/real_p256_stop210_eval_20261018/speed_audit_progress.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_stop210_eval_20261018/speed_audit_progress.json",
+      "sha256": "5b518027650ae2420e9a88aaed1df3eea56063b04f82234651a9bfa6315bb137",
+      "bytes": 8689
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/plan.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/plan.json",
+      "sha256": "b597862eb2e4fb24795ee59e7193862f42aa4ef2525005ddae0586bf6af018db",
+      "bytes": 8166
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/results.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/results.json",
+      "sha256": "6b8eaab3175c89b342eeb7f206e4162d6e1aefd89816f15eea9267f73eb49bb1",
+      "bytes": 620
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/results.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/results.md",
+      "sha256": "ff716b2d4969e8f2bf066dc4ca9a6e85829bc3a862ad66438a0555f30debc889",
+      "bytes": 4814
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/trajectory.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/trajectory.json",
+      "sha256": "5442bdada409f7d8b70be72ff1766a8e40c5070af8e1cd630ede42dd9fd93d96",
+      "bytes": 15233
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/completion_verification.json",
+      "sha256": "b1e8988d9c4ab49e7ccd03245232811ca42cde58f958b0b970fa18dde200417c",
+      "bytes": 986
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/math_checks.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/math_checks.json",
+      "sha256": "aa1d8e806632aeab6f1f38bb548c2e09e5cf75bd9f41fe43627bd4d7944692be",
+      "bytes": 232
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/analysis_checks.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/analysis_checks.json",
+      "sha256": "d25915baed292ebb1cb4170f29c154debe35e29ebc2c99400f292a9824267694",
+      "bytes": 164
+    },
+    {
+      "source_path": "runs/ops/rlvr_protocol/evaluate_steps100_50.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/rlvr_protocol/evaluate_steps100_50.py",
+      "sha256": "fa09eedc26d48669363f5f703107b7d3123f3e21525ed9f0f7288198c376f972",
+      "bytes": 17677
+    },
+    {
+      "source_path": "runs/ops/rlvr_protocol/step150_control.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/rlvr_protocol/step150_control.py",
+      "sha256": "7a879ad53f78e61dda6e2850f56d7317cd1f2b870c892a4b61b63bdb83d97ae4",
+      "bytes": 11379
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/gradtop100/analysis.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/gradtop100/analysis.json",
+      "sha256": "2ad16be425aa69e0ecf1748f18727dd3e95d11f7b292ad3a08c544c588bb41d5",
+      "bytes": 142826
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/gradtop150/analysis.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/gradtop150/analysis.json",
+      "sha256": "067c1092dc54075aaead42f4191288defd1108256e1da1c082c0ac4d0441de84",
+      "bytes": 142869
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/real100/analysis.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/real100/analysis.json",
+      "sha256": "16b8a94cdbce58231cc6bb2ad7cdc4a7725e8061858427a3db4b5b82a5134483",
+      "bytes": 142632
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/gradtop270/analysis.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/gradtop270/analysis.json",
+      "sha256": "1d57eef10b696e781e224c75a6ccef5a83eae860b62ca8c7a734dab31227431b",
+      "bytes": 142905
+    },
+    {
+      "source_path": "runs/ops/gradtop_real_gradient_diagnostics_20261017/real150/analysis.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/gradtop_real_gradient_diagnostics_20261017/real150/analysis.json",
+      "sha256": "f02014f1326337f283f424163a3364c0800d2fb22cc68868dc412cbc51ec4249",
+      "bytes": 142799
+    },
+    {
+      "source_path": "runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015/summary.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/probe/gradtop-r32-o16-v20261015/summary.json",
+      "sha256": "5899d6b105331d232fd5e892944e5db61d05e52557bde05bb30527360a7d30ce",
+      "bytes": 114712
+    },
+    {
+      "source_path": "runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015/rank_map.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/probe/gradtop-r32-o16-v20261015/rank_map.json",
+      "sha256": "2ea5532e86dccdb11e3b70a42b700b77adb272adc87c144c4720055303b57a41",
+      "bytes": 16752
+    },
+    {
+      "source_path": "runs/analysis/real_probe_r32_s32_seed42_replayed/summary.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/probe/real32-r32-prefix-v20261014/summary.json",
+      "sha256": "edc7451a075cb78f2bdc72a07ee9ad444376dfe3ded55e112f0c6afe5cd13c8b",
+      "bytes": 952268
+    },
+    {
+      "source_path": "runs/analysis/real_probe_r32_s32_seed42_replayed/rank_map.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/probe/real32-r32-prefix-v20261014/rank_map.json",
+      "sha256": "232c3500701dd5552e8de9d93b83b4ffc6fc25506d209e2f09cb2d13e06f6e30",
+      "bytes": 16984
+    },
+    {
+      "source_path": "runs/analysis/real_probe_r32_s64_p0_seed42_20261013/summary.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/probe/real64-r32-v20261013/summary.json",
+      "sha256": "4529e56e9d65b86195ff6d17239aa9cff4de472aece76630966203a9690a1f7e",
+      "bytes": 985948
+    },
+    {
+      "source_path": "runs/analysis/real_probe_r32_s64_p0_seed42_20261013/rank_map.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/probe/real64-r32-v20261013/rank_map.json",
+      "sha256": "b4cfcee8f3567c366fd2fa5645c7b37dbcda23a5c0c850b51ffbab115df4c7f6",
+      "bytes": 16777
+    },
+    {
+      "source_path": "runs/analysis/real_probe_r32_s4_p0_seed42_20261017/summary.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/probe/real-p256-r32-v20261017/summary.json",
+      "sha256": "b1f3247156580a58ce1f326a609f2c1636ae7670d6fc9ec2bb44129e106f79e8",
+      "bytes": 922993
+    },
+    {
+      "source_path": "runs/analysis/real_probe_r32_s4_p0_seed42_20261017/rank_map.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/probe/real-p256-r32-v20261017/rank_map.json",
+      "sha256": "2eba5fe6fb2f3d27b50523bace21507e57dd098c7f2f463e6d41495862c700d5",
+      "bytes": 16776
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/summary/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_050/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.json",
+      "sha256": "92141e5844eee201139dbe477a462a6744fc265ed58914d7a79b86958985886c",
+      "bytes": 3766
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_050/verification.json",
+      "sha256": "c926fa36363085f0e1141eb7a3434cd1d9be3588f723ab2e892d0ae7ef9333cf",
+      "bytes": 738
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_050/shards_completion_verification.json",
+      "sha256": "c2a3d049c1b665b4a05956f88156c220b59514781e30343ec213239d5feae786",
+      "bytes": 1787
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_050/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "3df1c07521e09c527f685ca321adf0638312e10520bc12b612ca3b3c7f0046e4",
+      "bytes": 1220
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_050/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "3a169bf738006c70dfe68afbc037bf6642c59115f81c9f3f091f8474b2f79f97",
+      "bytes": 1220
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_050/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "415a005af1a791fb1f4823d6320575eb487ea91b72774b31b916fdf377a499b7",
+      "bytes": 1220
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_050/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "e4e4f07c88d5dc6900b275eca68e4a053ff462a07ae2a919475e8af6bb7e55f6",
+      "bytes": 1220
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/summary/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_100/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.json",
+      "sha256": "23a8d7d90199168db051e5b46ea09f10f9c625465c172a677e3bb31ec027fb0e",
+      "bytes": 3757
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_100/verification.json",
+      "sha256": "62e0345db6ce1e7d83a62934d59908a6fb94349142999d18f78b83473759d522",
+      "bytes": 765
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_100/shards_completion_verification.json",
+      "sha256": "e0b6dcae64db332a74e9903b4b9fadf99e93ef8456d5ee2624078063cc960b7e",
+      "bytes": 1795
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_100/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "684798d63d3c73986df81bcb6944741756b9746da7ce62fffc2f9b199ea500ed",
+      "bytes": 1247
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_100/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "dce957fc8e5a65fde019ec0d684546ff7a05ae22ed4f1233e5387f8fff1621d6",
+      "bytes": 1247
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_100/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "7de3cccb2cb8c0053448800cc2fd65bc7584b7231e145f0d2ea8333fc2987642",
+      "bytes": 1247
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_100/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "452a78f0f6c87e56ea7f5dd5d2cb8ab066eee7ce45628119a1b21051ff6bcd01",
+      "bytes": 1247
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/summary/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_150/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.json",
+      "sha256": "e3a04fac53738fcf88f4b3d23d43f47fd5eeac29d05441b5f07bd36786657584",
+      "bytes": 3735
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_150/verification.json",
+      "sha256": "6534fb8338eb1a1765b24b68d34b9cb6561b0a5fe801364587e2f4bfa21318ad",
+      "bytes": 765
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_150/shards_completion_verification.json",
+      "sha256": "6ab051c7a28970c5d8ee6035fb7ebe567c79dc6c791c6bf984dc106e67b03749",
+      "bytes": 2160
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_150/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "25f19f5fa610d0cc2d4ea17823d1be49c26a253db99156c756d405010b689839",
+      "bytes": 1247
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_150/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "fabb44c93d6bb8a09cf5b68e18f3f4355985248f28b8d89eff6f969c1671343f",
+      "bytes": 1247
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_150/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "74c21bba540b6af8a0e10554ccc91f4f3963c8511c8b1e0d7faabbe1662be723",
+      "bytes": 1247
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/lora/step_150/manifests/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "4ee0e7c67ab45355ff41e18e052f178d40781eac8b93bd27d7461ee8b541ca53",
+      "bytes": 1247
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/summary/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real64/step_050/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.json",
+      "sha256": "927b7ff8d82d961987b3bd438440918f97bf99cfd0e8b0c11a6368419fc51fc3",
+      "bytes": 3689
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real64/step_050/verification.json",
+      "sha256": "2e069a4131bc7735ad3e5463cec824000375cfacc3de706761b0f7376f3b9fda",
+      "bytes": 763
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real64/step_050/shards_completion_verification.json",
+      "sha256": "f661970aff967cee966209cc2ecdf6fae44ef7df059c568a369d4cfda1b27128",
+      "bytes": 1787
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real64/step_050/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "d9ffb5bee4e303c9a81d93e5d32618256d9b1826729b4eaa0974055ad34b0289",
+      "bytes": 1245
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real64/step_050/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "f88dbfdecd13e351a45ae0e9f761881079348172107682eb560343b6b51be30e",
+      "bytes": 1245
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real64/step_050/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "6ec1641e1d1e541828cd88722b95ef91784f0796a489c6ca5caee7ebe0aa0aad",
+      "bytes": 1245
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real64/step_050/manifests/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "d970858020d620aa3ab210da9af182a63f9513510e4a4e5b5d6a0bc715e68fe4",
+      "bytes": 1245
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/summary/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_050/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.json",
+      "sha256": "efc5321f82ccb075dd8fe0eeeba6b2261547de9d1374efedae06b509b9f60e96",
+      "bytes": 3779
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_050/verification.json",
+      "sha256": "06da92ca2c151193d4015c2517508dc3e0fc0d31882a24f11e1becce2d1b9703",
+      "bytes": 779
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_050/shards_completion_verification.json",
+      "sha256": "d9ef4a063297a8e66c1878eb465a877d90fcd4afecc71c3ba5da8b021e2f3454",
+      "bytes": 1851
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_050/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "530a532238c88a0ee218b8170bebb1acb7e2936cf9a3cc751c711b5eeb720f65",
+      "bytes": 1261
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_050/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "556abb7ff5b59cef5ecf2610028c0f5ae4bf0e37814f33976ba74ef84fe7cb71",
+      "bytes": 1261
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_050/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "2067a68b6e6a0dd259b107780efb46c60b3a22aed5570399d4a5d3000ae8e22c",
+      "bytes": 1261
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_050/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "e0b81f3b0c42f2d955b701be914e6ab0863cd1b6f9d0ba364e3134d07030be54",
+      "bytes": 1261
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/summary/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_100/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.json",
+      "sha256": "48b8214574a1579e33c9ba852853c7c291637745718d0b5da6a96559320a664d",
+      "bytes": 3786
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_100/verification.json",
+      "sha256": "e5f400c9ed21695406e8039cb805655b63bf742a015a996060c29ab7ba996d20",
+      "bytes": 781
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_100/shards_completion_verification.json",
+      "sha256": "c97d21998911c8840d647395eddd67430d0bd8c5e56bb53e610d6bf739c60023",
+      "bytes": 1859
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_100/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "04756bfbfb44fc68bb8f0158ed77d6185c56e95471b72943a3e0d574e8ba1476",
+      "bytes": 1263
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_100/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "ea6cd68194b45097de523a8cba1a8bb367cd319661996acd679b6c218e8b5c39",
+      "bytes": 1263
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_100/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "b2c6e051edeb6c9f5b39d3e0b92d481f24a3d567d90de063962626fe61347919",
+      "bytes": 1263
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_100/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step100_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "08088f0aefb4a818ed0ddef4262b44f62a246440b3e5a291fbc38e47915bd962",
+      "bytes": 1263
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/summary/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_150/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.json",
+      "sha256": "b301ee066f61c338464e2e976239b2dfee6bc21d3686821b1cb98bfc97cb42d4",
+      "bytes": 3817
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_150/verification.json",
+      "sha256": "604857c5df12b344a660c962100b5df4631bef05b89ae603190859efb4533be8",
+      "bytes": 781
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_150/shards_completion_verification.json",
+      "sha256": "a54ebd367767570bd52800a0a577c8d46f0c8f84fa81386182eb036180a14c7e",
+      "bytes": 1859
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_150/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "d640ddd681d736be88c93da1744d22142a14a3a79c7a571e8b538769070b29f2",
+      "bytes": 1263
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_150/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "f498972a59c45d2fab770b0b8ece65c0d2fe1cde91ee4506744ae0817f478a90",
+      "bytes": 1263
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_150/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "0d58931a39a9565bafa8eeb92b0e2d9e2389115df3108eeda58c99d43f2af012",
+      "bytes": 1263
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real32/step_150/manifests/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "cfb660c369ad87636e87774af1947357425c8c42567e00fd9e110c4b6334fe9c",
+      "bytes": 1263
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_010/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.json",
+      "sha256": "52b7f5df334f1a9c1757c42935e37505b8b14fcfd42e0d107fec821e422b58cd",
+      "bytes": 3867
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_010/verification.json",
+      "sha256": "4ed77edb3300ad51bdb35a547d0ebd190f059fb400905c54c97a42331d0d030b",
+      "bytes": 734
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_010/shards_completion_verification.json",
+      "sha256": "0923952f4e5dcd34ecf7c2ba2988f037162b495b736b74ae29a13c3a772a2311",
+      "bytes": 1883
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_010/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "73be76de82cc073548eb348aab734fe277fc5f6f306564c68c5580637bbf06c4",
+      "bytes": 1216
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_010/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "145b7ed1bb2d2c27af759830626737c801905789295f67f8335082141a259e3f",
+      "bytes": 1216
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_010/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "c0ae1374fa24b6e64485b2bde986357dd18db02f5872f14673f66ba4639bedc2",
+      "bytes": 1216
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_010/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step10_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "c2407886838009d697ef857c6ca7255f77b49102804b0a655eb269196e235d3c",
+      "bytes": 1216
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_050/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.json",
+      "sha256": "6491203bfa41414c24150022d5770e80845ff67ec7241ceb2fb846af2ba4f94f",
+      "bytes": 3829
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_050/verification.json",
+      "sha256": "020a9b95ded2c3f0a7e74d102b08f01b8aff649dd87c5605bf79e9afc9ac8a26",
+      "bytes": 787
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_050/shards_completion_verification.json",
+      "sha256": "06cf91a518257f0c0ba9f1cb23a17b12f9812db23480be431588ca2cb50af2ea",
+      "bytes": 1883
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_050/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "eb7bdba57ad4e77057d82ea4560b52af75e5de93ddee314bf78c14bb9f69dc23",
+      "bytes": 1269
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_050/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "a8d67c2a9056d979768b61b337295c46032b75a4cac94085b94fd418a4c21a88",
+      "bytes": 1269
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_050/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "d28afb064bf8ee448d2ccf718756711f9948b31db15f845d647ba02081fd5805",
+      "bytes": 1269
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_050/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step50_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "fb2d3c5dc10b81b86b29d7bff8fe060f95a14928a2392c120c7cac5f94e5818f",
+      "bytes": 1269
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_100/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.json",
+      "sha256": "b8e65d556871898fa79339fc6b02809feaceaa18d9cbc2458e568de60c27ab70",
+      "bytes": 3811
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_100/verification.json",
+      "sha256": "b56746010bb930a990ebb11778b6164ed82d282332ea43940a4efd1bb52637b3",
+      "bytes": 789
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_100/shards_completion_verification.json",
+      "sha256": "de4aa311ad6fab6cc1eeb8c29249d9fcca030dd608d1fccc3a3b8a86f9d75bea",
+      "bytes": 1891
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_100/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "4f0e2f07bd39b5e1fee574090b048903a6b2a55f0a5486d30873ba7759bd35c8",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_100/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "15eedece628b564cb92089d591c6099b21dfce99b03927cfd3efd9b3c2800f62",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_100/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "1449d69b11b2135766f765983bcdf51aa1f94e3f37bb2ff26b6a222bd77beab8",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_100/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "ed8b45652a2b251d10d77badcf114241a217c5c45a575a9f1d9b4c23cfa7f6c3",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_110/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.json",
+      "sha256": "6f0e9fcfc0dd0ede95da42983e12c222a8497192ab276859e42a80aa519986a3",
+      "bytes": 3784
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_110/verification.json",
+      "sha256": "60590b41f6c73a97192b76504cf04e899b39d4241522676f0114186d3ee93f11",
+      "bytes": 739
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_110/shards_completion_verification.json",
+      "sha256": "ec241fb8f4f2fd742f40fdd38cb6196ac21d3e965f6680c3d3ffda8154dc5c10",
+      "bytes": 1891
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_110/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "b7532124f24b4bfb8f7c451fabdc5155e1f5d703c5f43bcbfc76253665afcbae",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_110/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "dcfe36f997eed18f627a7eb6e42dc32ee01a8aed292096b970c36babae0115ab",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_110/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "ee99f1a575da496066a436deed79487e14e585b07a6474b7ba1d99ff8d2b1852",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_110/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step110_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "048232dacc33ffcc23b462bfa1c7e4fbc5a6cc85acaf026b67a6754d56c1672c",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_120/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.json",
+      "sha256": "acdfd1188269e8785ac0ca1159b13a2f1b9db7db60589dc67dabbf672234ae67",
+      "bytes": 3826
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_120/verification.json",
+      "sha256": "1da3c5e4fd36c20d660af57e1626300a20cb217056720872318be9e1012f18e0",
+      "bytes": 739
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_120/shards_completion_verification.json",
+      "sha256": "5b60b03aab02641f70daee11d4671ad2e5d63140fde3b3f3dbff8d84253b208a",
+      "bytes": 1891
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_120/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "26ef0678c5e81508719efa97c5de227d9af8534d990492aa9815ad84ffff9360",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_120/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "3e659aaae7b292ff45029232979c100076ee361643f70ef98ed0e39a93bf7264",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_120/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "40fec99c901c302e1c5899e053e1eb3abb8c0781949fd4605d9bb3659d551d01",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_120/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step120_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "35852bf1e206c0687b57bca69cce8529dca93a5cbf774d4c1a41caf833736e46",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_130/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.json",
+      "sha256": "c1d35aa02a794e68a3bf626eb7ff72a2d6c2c426b8981fbdbfb1cb530a42ef42",
+      "bytes": 3775
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_130/verification.json",
+      "sha256": "938f32799ee6fbb254d539f0b294020079d73770f6da9d161447ba57ffe9016e",
+      "bytes": 739
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_130/shards_completion_verification.json",
+      "sha256": "6db11ee84903f9417172640557cfca72e11640c8882bd1f83c736004aa79a0f0",
+      "bytes": 1891
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_130/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "87aaf9d15e89e0ee6288766454c1ae4e29fab83abdd4a653a6c09818ecc2568d",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_130/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "bc713d03499bb9fe3c1789146fbcdad1cc7f35194824eb0aab3972e8c5b131ff",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_130/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "ca1996447daa633c93a14d59f7c7ea69c41a884e39688796ce4800730e79f9ba",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_130/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step130_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "607287660c699303cba7308827adb530f9aca26fde02930988b9cc67c35bcc3d",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_140/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.json",
+      "sha256": "2f1e7e80283ca9b43156c685c1cb2c71205595045655cde89c3163b9799a0e96",
+      "bytes": 3881
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_140/verification.json",
+      "sha256": "41b95bfce5cd507e452c4b7f7880ceeb62d53302cc1ee5e7922741394aae77ac",
+      "bytes": 739
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_140/shards_completion_verification.json",
+      "sha256": "350bdfc2f038fca11881872ee664d520851af023225367516c3ac998e64ebe4a",
+      "bytes": 1891
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_140/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "2963d9135a6e6dcae3f405b65813de96e0b960673a2a583b66120a53b7601e58",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_140/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "1ab48f66e83b57a682cba15d408249a87d4eb0a8449e3c20de6acc55f7fdbaf9",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_140/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "8a12878595c9d0b6b18b84746c6549b34c1f3e63e6aa4dfee4182e17130dee6e",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_140/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step140_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "0076728be85982788dc5550d0d9e87046a07f734df2163f26559f132ceb6faa6",
+      "bytes": 1221
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_150/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.json",
+      "sha256": "d224b8b678bad8522fdb1229a1806c29c8cbeb1d87fcb86731365e9e091e602e",
+      "bytes": 3786
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_150/verification.json",
+      "sha256": "77d3cfe600274f51963d4a8cb7b6b468dac5806cfb0422bb9be2d61a3d2829ec",
+      "bytes": 789
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_150/shards_completion_verification.json",
+      "sha256": "d9eb1a0bb9bba4965ac213dabc633640a8fd1b14b2fcce86085c95bf0c9b592e",
+      "bytes": 1891
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_150/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "a0fc7c89459bc6eb6513d4792c5e78e1e7b20c20c209cf93091c82f6e3b3d918",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_150/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "7a7f58090709ba152ac66d56aa3fe6bd0271614e9667740394d2a940c9dd10c9",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_150/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "c2ac388349c87461bd0e539db27bef2db37f53f2c67dbe4a29b738d4324e0334",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_150/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "2ff30ac986689284394459d96a8ed28cc5c31cbd1dd766875cc8dc7534f37514",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_200/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.json",
+      "sha256": "5ba6a9ae7d0cd366a28c2c1cb39517ad3529feb78930cc2d72f2f64de185b2d1",
+      "bytes": 3820
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_200/verification.json",
+      "sha256": "cdc6952f258999f5fafe0c0533c73ed1ad3c461777cb30b315efcd5fd6aa3b78",
+      "bytes": 789
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_200/shards_completion_verification.json",
+      "sha256": "b7b92b46da512b22f99254b5f2451db8523a4fd194649e8cd9b28878168f3052",
+      "bytes": 1891
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_200/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "0dffa0389f9b7029dcbdbec04f69cb923045485efe104123d73d904a8d7dcedf",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_200/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "84ed5912a365a8be9551e1a6afaf9b17879bc4128fa7f9fc93d68c450afdcdc0",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_200/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "87c21319fb09013c4ed29b1f6ff3761bd49185beb5a25f855d96955d6123cb6f",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_200/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step200_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "caeb88fd115969a91073b0105ff33c49a665ce2d5bd858a419342c3549e1b4f6",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_250/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.json",
+      "sha256": "00c6e82c9c724ab55885c40796fcfc1812bd161c6154a6ae9502a16ad0ba4c12",
+      "bytes": 3760
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_250/verification.json",
+      "sha256": "2f371eef27c8ec3caa67f454da300eff30418a439665cc19090ac4275e5f0dfd",
+      "bytes": 789
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_250/shards_completion_verification.json",
+      "sha256": "1e85aaf4116a2bbfcdb1e1f99ccb84fb18bfe7c4250c4907ab67f7c788ad1f08",
+      "bytes": 1891
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_250/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "5ef78e249976d1953cefcc9946354eff08029a27e92c8bbb0e5bbe150ce2cfbb",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_250/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "b459ffa609105833458bdc6cd5dafa79b8200aa8ed4ea278e4ef28f740232474",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_250/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "bde3c5c091d63d0910fc68ee0eee5b9e28ab138e3ecfbab10177a1f52639d44f",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_250/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step250_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "0cae067442e7ee7cde10bfda6177201310d015b15f3f66d3c1e00a0034dc44e0",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/summary/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_270/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.json",
+      "sha256": "c60fe5675130d9423623886203df9dc03dc82ab88aa2b775d3703aa290c9b4e5",
+      "bytes": 3778
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_270/verification.json",
+      "sha256": "1ca8dfd35f77f5e646d1d34035e11e50a37a18adcef18d4c60f80ef9837bfd12",
+      "bytes": 789
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_270/shards_completion_verification.json",
+      "sha256": "11ed1f133b450eb17ceeedaec5998001fa77a12bb241c00276a9e649379f55d4",
+      "bytes": 1891
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_270/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "f3f17107b41e29bb97ed5d7793b704188eb5f926ca074e57000cf1a62c003243",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_270/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "021f4b53b554411ca88ca376b77e69a42ecb953289a9be603daf6cfb0d5b9d42",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_270/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "84aa30a116558886c9efdf9b20e0c433507e420b8d367150d1d81479ed2021fb",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/gradtop/step_270/manifests/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "4e2d36dd5e3e224acd47eb668fdd048b1fb4467d1bfe9bf4ff69b83074fa1278",
+      "bytes": 1271
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/summary/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real-p256/step_210/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.json",
+      "sha256": "3e56b5d485e616d7bb8c42c28ad5a1beb4191d28e7a53ceda9458c21e8f3fa66",
+      "bytes": 3853
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real-p256/step_210/verification.json",
+      "sha256": "ffd9b31a9817693263e1b4dd5403f9a485ec2a91921261de6361758b1c49e458",
+      "bytes": 742
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/shards_completion_verification.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real-p256/step_210/shards_completion_verification.json",
+      "sha256": "6e7a24bd01cf083bec04063d6dca6bae78cbef581539582bb3669ef219706d3f",
+      "bytes": 1907
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/manifests/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-00-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real-p256/step_210/manifests/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-00-of-04.json",
+      "sha256": "820d8d6c38811357c3a18884fe51346aae36627aed182800ae08847072a2ca89",
+      "bytes": 1224
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/manifests/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-01-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real-p256/step_210/manifests/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-01-of-04.json",
+      "sha256": "fd777922266b2014ba3f0f411ca43f1656454d58aea0242a12145b578eaf1b40",
+      "bytes": 1224
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/manifests/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-02-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real-p256/step_210/manifests/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-02-of-04.json",
+      "sha256": "42881c9beabe2545be781b18ca0c76e8b16ada58e5225bb1df6289042409e564",
+      "bytes": 1224
+    },
+    {
+      "source_path": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/manifests/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-03-of-04.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/evaluations/real-p256/step_210/manifests/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-03-of-04.json",
+      "sha256": "09901c2790452e0688f6f017a23262bdac2fbf52a7a6e58901db7d7431cbe1fa",
+      "bytes": 1224
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/configs/experiments/gradtop_r32_clean_20261015.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/configs/experiments/gradtop_r32_clean_20261015.json",
+      "sha256": "49118b5cf37ca3c22faa24fa5b54f6e84f3cc7405e523e3bf93d8e0108ce1649",
+      "bytes": 15107
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/configs/experiments/real_p256_r32_longrun270_20261017.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/configs/experiments/real_p256_r32_longrun270_20261017.json",
+      "sha256": "f4c4aa0cc0bf413d6c9311b466dc09ff1166a638cddb2de8a735e82a0b5ae34f",
+      "bytes": 15151
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/examples/verl_train/run_dapo_math_boxed_stable_lora_1p5b_4gpu_8k.sh",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/examples/verl_train/run_dapo_math_boxed_stable_lora_1p5b_4gpu_8k.sh",
+      "sha256": "9836b89e6aa099bd314112f8d546204de4095c996873847921fbf2665a7ead02",
+      "bytes": 21054
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/runs/ops/real_p256_r32_longrun270_20261017/controller.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/runs/ops/real_p256_r32_longrun270_20261017/controller.py",
+      "sha256": "cd3063bea982299cbc28548b46de5b065bd5ccf38f97fcb65739f72655c0bd90",
+      "bytes": 15376
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/runs/ops/rlvr_protocol/evaluate_steps100_50.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/runs/ops/rlvr_protocol/evaluate_steps100_50.py",
+      "sha256": "fa09eedc26d48669363f5f703107b7d3123f3e21525ed9f0f7288198c376f972",
+      "bytes": 17677
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/runs/ops/rlvr_protocol/step150_control.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/runs/ops/rlvr_protocol/step150_control.py",
+      "sha256": "7a879ad53f78e61dda6e2850f56d7317cd1f2b870c892a4b61b63bdb83d97ae4",
+      "bytes": 11379
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/compare_full_bench_and_select_next.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/compare_full_bench_and_select_next.py",
+      "sha256": "cde6e49597e51ef6e5de5ca2aac6be7452e2b5be2b8aeb48c7ffe3ca4a44b394",
+      "bytes": 6891
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/compare_paired_full_bench.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/compare_paired_full_bench.py",
+      "sha256": "5764621d26742238f77a4e8d47d5c37b14ca80ae2b65e6ea4bd3865cf2041fc8",
+      "bytes": 8561
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/record_rlvr_runtime.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/record_rlvr_runtime.py",
+      "sha256": "5da7b58446c3167a860df260fb673305201810063b530344aeca6e53406574fe",
+      "bytes": 6331
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/verify_full_bench_run.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/verify_full_bench_run.py",
+      "sha256": "248ef1cfe13ccddc1adec5e2ab9c63ec76416d1a892b7f0ade1437ea9974e96b",
+      "bytes": 9892
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/verify_rlvr_protocol.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/analysis/verify_rlvr_protocol.py",
+      "sha256": "b414e9882fcc9d16316a393dfcd26bd27e52727cc8f0a32ed201f66f1a00e963",
+      "bytes": 25473
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/continue_gradtop_r32.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/continue_gradtop_r32.py",
+      "sha256": "566f7859d2ba2c2a33792e948824836c1951b086ec6b933fab534238384caae4",
+      "bytes": 29481
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/real_experiment_eval.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/real_experiment_eval.py",
+      "sha256": "fc6b272e00be3fe24332f5982337052836724551bfbc9de5a626b7a79740b3e6",
+      "bytes": 10178
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_dapo_boxed_paper_clean_1p5b_4gpu.sh",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_dapo_boxed_paper_clean_1p5b_4gpu.sh",
+      "sha256": "45215f04b7b941f0e73b05cbf78a34e87ddb90fe0001d1b179cdb774cd6e3cbc",
+      "bytes": 26190
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_gradtop_candidates_4gpu.sh",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_gradtop_candidates_4gpu.sh",
+      "sha256": "23cffc3c3108b22cd00d7683cbce508e1e6ba9e0583aa3522bec0c75b19ad753",
+      "bytes": 11472
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_gradtop_clean_after_real.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_gradtop_clean_after_real.py",
+      "sha256": "865486a3ee71ed203e6f942949bd07a71e20c752a612ad0cec8f7e35e2d82d55",
+      "bytes": 23904
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_real_after_eval.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_real_after_eval.py",
+      "sha256": "729d95bfd06f36c327f982cbb7bcdd27e0779c71f47d566a9d52bf93c84c5553",
+      "bytes": 14130
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_real_cached_after_eval.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_real_cached_after_eval.py",
+      "sha256": "c2aa64c5f3ece724515eac18af2ad41fc907f5d7c9d9f77d9dbc38c3d9aa9177",
+      "bytes": 7894
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_rlvr_protocol_1p5b_4gpu.sh",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/run_rlvr_protocol_1p5b_4gpu.sh",
+      "sha256": "09165d99a63ea50805387e9acf4bf1ce080c48d6f8fe3ec6fd680c20036de107",
+      "bytes": 9377
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/start_real_fixed_a_4gpu.sh",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/start_real_fixed_a_4gpu.sh",
+      "sha256": "d732eb5b77a288d812e9df116030f60fb7412b6e562677744783c0dac6ab4bc5",
+      "bytes": 2281
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/start_real_gradient_probe_4gpu.sh",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/scripts/local/start_real_gradient_probe_4gpu.sh",
+      "sha256": "15e250facc4e8decff6da6b96235bb2e24250df0bcd86d68799ff6f8b9b4de80",
+      "bytes": 2591
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tests/test_lora_resume_verification.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tests/test_lora_resume_verification.py",
+      "sha256": "c69458ec6e50aad561e36680c652f137a727d0fb0b55e113d960fa4526217a8e",
+      "bytes": 13867
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tina_run/scripts/local/eval/eval_full_bench_vllm.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tina_run/scripts/local/eval/eval_full_bench_vllm.py",
+      "sha256": "09e67123d5f345a5899b5299a1f046859d199a8d12dec2e25d03e0605b2e404a",
+      "bytes": 20722
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tina_run/scripts/local/eval/run_full_bench_vllm_4gpu.sh",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tina_run/scripts/local/eval/run_full_bench_vllm_4gpu.sh",
+      "sha256": "cd97c96d374b4ac8e1628be81ecb36c429996e4ccc6b56d695e3a897601473ed",
+      "bytes": 3249
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tina_run/tina/analysis/plan_utils.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tina_run/tina/analysis/plan_utils.py",
+      "sha256": "9a8790a41d08c2091737950e3f3464523a69c794576edd0028fc9966b531db23",
+      "bytes": 8316
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tina_run/tina/analysis/rollout_utils.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/tina_run/tina/analysis/rollout_utils.py",
+      "sha256": "5f7483e0c330980bd115550dd2f8f11c759566c9dc1151a346721c9493d61d3f",
+      "bytes": 15840
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/experimental/agent_loop/agent_loop.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/experimental/agent_loop/agent_loop.py",
+      "sha256": "cf9fa73556b2c5d7143330ceef880ddcec24cb3ad4900e2b70c1c116376072dc",
+      "bytes": 45387
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/config/ppo_trainer.yaml",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/config/ppo_trainer.yaml",
+      "sha256": "ae4655067015d0974613d831d3bb044d0d120e0b1e895f8961c391201f1a60ee",
+      "bytes": 10547
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/constants_ppo.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/constants_ppo.py",
+      "sha256": "00e3f817dddd68a37edd25290d12c2fe6f01c70e815f5bc3d31895d7d955da91",
+      "bytes": 2484
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/main_ppo.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/main_ppo.py",
+      "sha256": "b66dc31f07bf7e19de91a24d3263cce78a9f723e0a861bb191af617d9f849a55",
+      "bytes": 18536
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/ppo/core_algos.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/ppo/core_algos.py",
+      "sha256": "5a9ac50f7fd1c5fcc1d9a6fea3a6f47cdd9ea716f752fa501915661b1cfbef2f",
+      "bytes": 77001
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/ppo/ray_trainer.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/trainer/ppo/ray_trainer.py",
+      "sha256": "44047990d44a87cd004511d8a972a5bc909779c54425b4eeabb8c48b19a061bd",
+      "bytes": 111551
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/checkpoint/checkpoint_manager.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/checkpoint/checkpoint_manager.py",
+      "sha256": "86bbd39c21e2630e0392676be5066b82cf945afcf9dfdf3316229b547a169830",
+      "bytes": 8781
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/checkpoint/fsdp_checkpoint_manager.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/checkpoint/fsdp_checkpoint_manager.py",
+      "sha256": "48836f8c30140465d9de5342a4b29d6ff0fa4067d4f02d90e5eff6d2d7cc0d5e",
+      "bytes": 18453
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/fsdp_utils.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/fsdp_utils.py",
+      "sha256": "10246786290198ea4ea7cb2beabad37026132cd30811f5c606230b354e530de8",
+      "bytes": 49826
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/gradtop_objectives.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/gradtop_objectives.py",
+      "sha256": "7768d1d38fe2b8410de86aa5e70d9a1a1efabb36741815f27847e5fe6c6a5d6d",
+      "bytes": 8074
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/lora_fresh_verification.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/lora_fresh_verification.py",
+      "sha256": "d525c991f474b7c9aabc10b933cf5a0c6ad70a630af0f58a417b84a028bc7f55",
+      "bytes": 4497
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/lora_resume_verification.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/lora_resume_verification.py",
+      "sha256": "8a08109b80045e99c17f13e06c2a3f9c6629cab4d17d94096f0439ca279d7701",
+      "bytes": 16810
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/peft_gradient_subspace.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/peft_gradient_subspace.py",
+      "sha256": "4807a8d12c7d245636867f0d4f174c419958ea8b14349ff8f03c6582fdc14ae5",
+      "bytes": 85102
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/peft_real.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/peft_real.py",
+      "sha256": "096021ba32c580658e946e4ffa3b6094d93ac20e4731ca925d889bb46b36285e",
+      "bytes": 23628
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/real_probe_mode.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/real_probe_mode.py",
+      "sha256": "d0df4d8b786806d01e5f3aa6288b5490a704f30143bc58eb8444b1bf0a3ac901",
+      "bytes": 2008
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/reward_score/boxed_math_accuracy.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/reward_score/boxed_math_accuracy.py",
+      "sha256": "39b319390cd1745458b8ba366c41585aad7c6ff1734ed6b98b2e224833d5696b",
+      "bytes": 3602
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/rollout_weight_verification.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/utils/rollout_weight_verification.py",
+      "sha256": "8b24713c4fe178c0368713bef9964e6e925f3a7bfb739813a074ccd1a3e8ab0d",
+      "bytes": 3539
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/actor/dp_actor.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/actor/dp_actor.py",
+      "sha256": "928ad2838a63cb4ac86657c46573e8217b9305d756fbfbd2829e09128d78987d",
+      "bytes": 81747
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/config/model.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/config/model.py",
+      "sha256": "7fe49a35b7b930144cdc8b933fe09ebebef208619d95937030648092aa82e4ce",
+      "bytes": 13854
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/fsdp_workers.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/fsdp_workers.py",
+      "sha256": "3b637b81fa8a8d4cf4a047f0215044735317142201afdd57c27ea8293ca20cfe",
+      "bytes": 135972
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/rollout/replica.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/rollout/replica.py",
+      "sha256": "1f71cb1449c61389ee628fae5cd87d19b29547135e7f89f2a2497319d1ba6cce",
+      "bytes": 10736
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/rollout/vllm_rollout/vllm_async_server.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/rollout/vllm_rollout/vllm_async_server.py",
+      "sha256": "37b7fe2ed5f52e0173f222778ba9179670290e6d44514749374e3c992633efc3",
+      "bytes": 36876
+    },
+    {
+      "source_path": "runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/rollout/vllm_rollout/vllm_rollout.py",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_r32_longrun270_20261017/source_snapshot/verl/workers/rollout/vllm_rollout/vllm_rollout.py",
+      "sha256": "a08c89168cea6573241c9cd9015d82513163bc70bead77c1ac90bb00e2a80115",
+      "bytes": 14055
+    },
+    {
+      "source_path": "runs/ops/real_p256_early_checkpoint_audit_20261018/GradTop_latest_training.csv",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_early_checkpoint_audit_20261018/GradTop_latest_training.csv",
+      "sha256": "f43ad84eb5313a1b9971d03e2dd985f0cb27932d8b01ad73e64fe228f155977c",
+      "bytes": 6880
+    },
+    {
+      "source_path": "runs/ops/real_p256_early_checkpoint_audit_20261018/REAL_P256_training.csv",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_early_checkpoint_audit_20261018/REAL_P256_training.csv",
+      "sha256": "994077ffbf8bdd2f755906cac7b711222108e3105aa66f9403ddd3890b6d6e27",
+      "bytes": 28525
+    },
+    {
+      "source_path": "runs/ops/real_p256_early_checkpoint_audit_20261018/audit.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_early_checkpoint_audit_20261018/audit.json",
+      "sha256": "30d27bc289749ba7dc1a6005bcd001734541316bd1799438f7a8a80d79992ff6",
+      "bytes": 20353
+    },
+    {
+      "source_path": "runs/ops/real_p256_early_checkpoint_audit_20261018/audit.md",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_early_checkpoint_audit_20261018/audit.md",
+      "sha256": "043e79f3d1738ab75fa4ac973f3aa327b68fac67cb551c5c1b567440b05985f8",
+      "bytes": 3298
+    },
+    {
+      "source_path": "runs/ops/real_p256_stop210_eval_20261018/status.json",
+      "archive_path": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_stop210_eval_20261018/status_after_early_audit.json",
+      "sha256": "0cdefaba21cba19c589a6813ba95eb1391aa4a53d22b0f7ea880cd9555fc9d08",
+      "bytes": 1861
+    }
+  ],
+  "supplemented_at": "2026-10-18T15:59:22.992675+08:00"
+}

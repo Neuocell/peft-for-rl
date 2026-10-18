@@ -1,0 +1,520 @@
+{
+  "at": "2026-10-18T15:50:22.357332+08:00",
+  "training": {
+    "REAL_P256": {
+      "step_count": 210,
+      "windows": [
+        {
+          "start": 1,
+          "end": 10,
+          "means": {
+            "critic/score/mean": 0.3892578125,
+            "reward_extra/parse_success/mean": 0.6087890625,
+            "response_length/mean": 6251.1564453125,
+            "response_length/clip_ratio": 0.4392578125,
+            "actor/entropy": 0.9092362582683563,
+            "actor/grad_norm": 0.07984354523941875,
+            "actor/ppo_kl": 0.00010207821939116076,
+            "actor/pg_clipfrac": 0.0001964393093668855
+          }
+        },
+        {
+          "start": 11,
+          "end": 30,
+          "means": {
+            "critic/score/mean": 0.44560546875,
+            "reward_extra/parse_success/mean": 0.77998046875,
+            "response_length/mean": 5597.59111328125,
+            "response_length/clip_ratio": 0.2751953125,
+            "actor/entropy": 0.8802748441696167,
+            "actor/grad_norm": 0.07722348556853831,
+            "actor/ppo_kl": 1.2396998718728182e-05,
+            "actor/pg_clipfrac": 5.294570360391133e-05
+          }
+        },
+        {
+          "start": 31,
+          "end": 50,
+          "means": {
+            "critic/score/mean": 0.48173828125,
+            "reward_extra/parse_success/mean": 0.88857421875,
+            "response_length/mean": 5051.39345703125,
+            "response_length/clip_ratio": 0.15302734375,
+            "actor/entropy": 0.8427637398242951,
+            "actor/grad_norm": 0.07683287169784307,
+            "actor/ppo_kl": 9.859398541896357e-06,
+            "actor/pg_clipfrac": 4.6827041380789255e-05
+          }
+        },
+        {
+          "start": 51,
+          "end": 80,
+          "means": {
+            "critic/score/mean": 0.494921875,
+            "reward_extra/parse_success/mean": 0.9115885416666667,
+            "response_length/mean": 5073.165885416666,
+            "response_length/clip_ratio": 0.13834635416666666,
+            "actor/entropy": 0.8380910098552704,
+            "actor/grad_norm": 0.07735067239652077,
+            "actor/ppo_kl": 1.4219588193630716e-05,
+            "actor/pg_clipfrac": 4.843317844468231e-05
+          }
+        },
+        {
+          "start": 81,
+          "end": 100,
+          "means": {
+            "critic/score/mean": 0.493359375,
+            "reward_extra/parse_success/mean": 0.891796875,
+            "response_length/mean": 5093.00712890625,
+            "response_length/clip_ratio": 0.160546875,
+            "actor/entropy": 0.8122283756732941,
+            "actor/grad_norm": 0.07673156061209738,
+            "actor/ppo_kl": 1.6565016714008837e-05,
+            "actor/pg_clipfrac": 5.3777812624523936e-05
+          }
+        },
+        {
+          "start": 101,
+          "end": 130,
+          "means": {
+            "critic/score/mean": 0.5004557291666667,
+            "reward_extra/parse_success/mean": 0.9104817708333334,
+            "response_length/mean": 5232.0576171875,
+            "response_length/clip_ratio": 0.13268229166666667,
+            "actor/entropy": 0.9085189878940583,
+            "actor/grad_norm": 0.07568490660438935,
+            "actor/ppo_kl": 1.509505843182312e-05,
+            "actor/pg_clipfrac": 4.401268364899299e-05
+          }
+        },
+        {
+          "start": 131,
+          "end": 150,
+          "means": {
+            "critic/score/mean": 0.493359375,
+            "reward_extra/parse_success/mean": 0.9556640625,
+            "response_length/mean": 4856.91748046875,
+            "response_length/clip_ratio": 0.0744140625,
+            "actor/entropy": 0.8736146062612533,
+            "actor/grad_norm": 0.07787356488406658,
+            "actor/ppo_kl": 1.820283434798487e-05,
+            "actor/pg_clipfrac": 5.60478765297121e-05
+          }
+        },
+        {
+          "start": 151,
+          "end": 180,
+          "means": {
+            "critic/score/mean": 0.5235026041666667,
+            "reward_extra/parse_success/mean": 0.9620442708333333,
+            "response_length/mean": 4760.919075520834,
+            "response_length/clip_ratio": 0.06438802083333334,
+            "actor/entropy": 0.7553408344586691,
+            "actor/grad_norm": 0.08104754655311505,
+            "actor/ppo_kl": 1.801253300623401e-05,
+            "actor/pg_clipfrac": 5.979202718362505e-05
+          }
+        },
+        {
+          "start": 181,
+          "end": 200,
+          "means": {
+            "critic/score/mean": 0.5025390625,
+            "reward_extra/parse_success/mean": 0.93271484375,
+            "response_length/mean": 4997.75986328125,
+            "response_length/clip_ratio": 0.09736328125,
+            "actor/entropy": 0.8653492212295533,
+            "actor/grad_norm": 0.07614454203285277,
+            "actor/ppo_kl": 1.705085897864945e-05,
+            "actor/pg_clipfrac": 5.022028848372717e-05
+          }
+        },
+        {
+          "start": 201,
+          "end": 210,
+          "means": {
+            "critic/score/mean": 0.504296875,
+            "reward_extra/parse_success/mean": 0.9185546875,
+            "response_length/mean": 5025.1021484375,
+            "response_length/clip_ratio": 0.1123046875,
+            "actor/entropy": 0.9386678457260131,
+            "actor/grad_norm": 0.07782958643510937,
+            "actor/ppo_kl": 3.6616782326161836e-05,
+            "actor/pg_clipfrac": 5.2265393497359895e-05
+          }
+        }
+      ],
+      "step1": {
+        "critic/score/mean": 0.341796875,
+        "reward_extra/parse_success/mean": 0.53125,
+        "response_length/mean": 6315.0,
+        "response_length/clip_ratio": 0.501953125,
+        "actor/entropy": 0.8751259446144104,
+        "actor/grad_norm": 0.09201926738023758,
+        "actor/ppo_kl": 0.00019079710856644024,
+        "actor/pg_clipfrac": 0.0005873118097952101
+      }
+    },
+    "GradTop_latest": {
+      "step_count": 50,
+      "windows": [
+        {
+          "start": 1,
+          "end": 10,
+          "means": {
+            "critic/score/mean": 0.36953125,
+            "reward_extra/parse_success/mean": 0.5705078125,
+            "response_length/mean": 6406.821484375,
+            "response_length/clip_ratio": 0.4787109375,
+            "actor/entropy": 0.8832812488079071,
+            "actor/grad_norm": 0.06813696762546897,
+            "actor/ppo_kl": 3.7558258231552456e-05,
+            "actor/pg_clipfrac": 0.0001057182139379622
+          }
+        },
+        {
+          "start": 11,
+          "end": 30,
+          "means": {
+            "critic/score/mean": 0.44365234375,
+            "reward_extra/parse_success/mean": 0.7353515625,
+            "response_length/mean": 5931.17275390625,
+            "response_length/clip_ratio": 0.323828125,
+            "actor/entropy": 0.8579001575708389,
+            "actor/grad_norm": 0.07192207500338554,
+            "actor/ppo_kl": 1.8151708224659263e-05,
+            "actor/pg_clipfrac": 5.234142868264688e-05
+          }
+        },
+        {
+          "start": 31,
+          "end": 50,
+          "means": {
+            "critic/score/mean": 0.47900390625,
+            "reward_extra/parse_success/mean": 0.87470703125,
+            "response_length/mean": 5341.045703125,
+            "response_length/clip_ratio": 0.17734375,
+            "actor/entropy": 0.9147400707006454,
+            "actor/grad_norm": 0.07291051992215217,
+            "actor/ppo_kl": 2.3940379969160893e-05,
+            "actor/pg_clipfrac": 4.917084302631727e-05
+          }
+        }
+      ],
+      "step1": {
+        "critic/score/mean": 0.35546875,
+        "reward_extra/parse_success/mean": 0.51953125,
+        "response_length/mean": 6253.583984375,
+        "response_length/clip_ratio": 0.515625,
+        "actor/entropy": 0.8718767762184143,
+        "actor/grad_norm": 0.08297385927289724,
+        "actor/ppo_kl": 0.0001929461582961648,
+        "actor/pg_clipfrac": 0.000462149109433299
+      }
+    }
+  },
+  "source_sha256": {
+    "/root/peft-for-rl/runs/ops/real_p256_r32_longrun270_20261017/train.log": "e361a611a565cfacb3a8c272d67aad7ca9a55c9fc8c33b0d315ea46b7ad819c0",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/train.log": "e7b4e82ea7a41a0390eb65b4250760438cc91fc76f5f442737c1d0a2dfa47dba"
+  },
+  "snapshots": [
+    {
+      "step": 0,
+      "optimizer_updates": 0,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_000",
+      "sha256": "746f1100b567d7b472200e56db9738f208b0e552831f7ad91d5fedfc12e5ee69",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 0.0,
+      "b_frobenius": 0.0,
+      "evaluation_ready": true
+    },
+    {
+      "step": 10,
+      "optimizer_updates": 40,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_010",
+      "sha256": "b50d667cdd7dfb3e281ed30c93c90365702899f95b68e223590989f30d797abe",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 0.6070688892117666,
+      "b_frobenius": 0.3035344446193855,
+      "evaluation_ready": true
+    },
+    {
+      "step": 20,
+      "optimizer_updates": 80,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_020",
+      "sha256": "7ae7389d1b7fa9c1b93ebd31e400d579ea6e11e6ff0d857e61fa28af22241701",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 0.8173441424909941,
+      "b_frobenius": 0.4086720712645652,
+      "evaluation_ready": true
+    },
+    {
+      "step": 30,
+      "optimizer_updates": 120,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_030",
+      "sha256": "f87884ea9a1c26dd7a1144521951c158c5f6d00dc8cda73a83f87b74cc533566",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.0011455257493425,
+      "b_frobenius": 0.5005727628998651,
+      "evaluation_ready": true
+    },
+    {
+      "step": 40,
+      "optimizer_updates": 160,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_040",
+      "sha256": "dae63eff48e73ee67f7045905a18db64d8ade47414869b83534bf17a4e863a80",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.153515160420325,
+      "b_frobenius": 0.5767575802363718,
+      "evaluation_ready": true
+    },
+    {
+      "step": 50,
+      "optimizer_updates": 200,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_050",
+      "sha256": "9c5bbd0cfe38d0f5bd87f3ac7aa4b152269ae5f9f918614d7cb5b15de3f7aa77",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.2835421957654263,
+      "b_frobenius": 0.6417710979106773,
+      "evaluation_ready": true
+    },
+    {
+      "step": 60,
+      "optimizer_updates": 240,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_060",
+      "sha256": "138c5ef55d9b69ddac278e9643a711e2fd927bef6ca059fdae919a1fc5720fc4",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.409838432150975,
+      "b_frobenius": 0.7049192161110712,
+      "evaluation_ready": true
+    },
+    {
+      "step": 70,
+      "optimizer_updates": 280,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_070",
+      "sha256": "093b59819e5f34b3a5d737ee86bc4acd9a2140ec04724f00b707b3f8c5cbe99b",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.5156687975081844,
+      "b_frobenius": 0.757834398788088,
+      "evaluation_ready": true
+    },
+    {
+      "step": 80,
+      "optimizer_updates": 320,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_080",
+      "sha256": "df5e6e5fdbcfbe1f25e3559cd7b72d0f7206068fd4a17e817b545aba13d5aac3",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.6205252144148288,
+      "b_frobenius": 0.8102626072430463,
+      "evaluation_ready": true
+    },
+    {
+      "step": 90,
+      "optimizer_updates": 360,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_090",
+      "sha256": "2d40a498640576677fe154ec543b0ac3f4e70ccce2af5591df5570851f736563",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.7192878343747127,
+      "b_frobenius": 0.8596439172240284,
+      "evaluation_ready": true
+    },
+    {
+      "step": 100,
+      "optimizer_updates": 400,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_100",
+      "sha256": "5c2cb870fdc6813d6ffc94ffdf337c81548fdbe4e89cbf57bff6ed15e43b8202",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.8114656438071353,
+      "b_frobenius": 0.9057328219398993,
+      "evaluation_ready": true
+    },
+    {
+      "step": 110,
+      "optimizer_updates": 440,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_110",
+      "sha256": "ba6facb7b19926800fd5e1f80acd8e5c3f6e388becb925284a39bfb540ab3a14",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.8959959284155625,
+      "b_frobenius": 0.9479979642410832,
+      "evaluation_ready": true
+    },
+    {
+      "step": 120,
+      "optimizer_updates": 480,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_120",
+      "sha256": "936dd422acf2ad8f5b85d5594ecf6d7c3a2eecdee0e381561ee1be4beaa86da0",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 1.9757348235651495,
+      "b_frobenius": 0.9878674118156228,
+      "evaluation_ready": true
+    },
+    {
+      "step": 130,
+      "optimizer_updates": 520,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_130",
+      "sha256": "cabb9b6832fb8d82b8f304d8c93bd06341567ee0ed989fbd3aae1bd2c1f91486",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 2.0558201401806624,
+      "b_frobenius": 1.0279100701271373,
+      "evaluation_ready": true
+    },
+    {
+      "step": 140,
+      "optimizer_updates": 560,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_140",
+      "sha256": "0e487398ebc21ccd934a1408d605abee5166fbae91ad1c1312bf466077baddd5",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 2.1402136423706324,
+      "b_frobenius": 1.0701068212248661,
+      "evaluation_ready": true
+    },
+    {
+      "step": 150,
+      "optimizer_updates": 600,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_150",
+      "sha256": "6ba4fedaa548f5a172d89caf9c413cb3788588068e965767bb1ba9c873d3b36d",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 2.2229785960891095,
+      "b_frobenius": 1.111489298088057,
+      "evaluation_ready": true
+    },
+    {
+      "step": 160,
+      "optimizer_updates": 640,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_160",
+      "sha256": "fa0406f8f4f3aa601851a86efca62cfe3891e367e7588d89835542e8548c5d18",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 2.3044739379889085,
+      "b_frobenius": 1.1522369690401657,
+      "evaluation_ready": true
+    },
+    {
+      "step": 170,
+      "optimizer_updates": 680,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_170",
+      "sha256": "cd17cda20bad37dd6f061dc920b0148e14c73ebcc16ac631542d50eb1cd926d0",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 2.386180273415557,
+      "b_frobenius": 1.193090136756718,
+      "evaluation_ready": true
+    },
+    {
+      "step": 180,
+      "optimizer_updates": 720,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_180",
+      "sha256": "0f1d6d57bae56f7a356cec898c5a3b4512faff5a496058ef259e546db924f699",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 2.465446604038928,
+      "b_frobenius": 1.2327233020700992,
+      "evaluation_ready": true
+    },
+    {
+      "step": 190,
+      "optimizer_updates": 760,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_190",
+      "sha256": "cefc89c2cf76710bc717f25cd3b44fbc7cd3db4367848c9b508c1dedaf99fd59",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 2.5304975349629797,
+      "b_frobenius": 1.2652487675379982,
+      "evaluation_ready": true
+    },
+    {
+      "step": 200,
+      "optimizer_updates": 800,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_200",
+      "sha256": "a40f729b43c1f071a8e73a6f0c1f4e874682145c68627a7bc17059532e10e139",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 2.596616663692134,
+      "b_frobenius": 1.298308331907866,
+      "evaluation_ready": true
+    },
+    {
+      "step": 210,
+      "optimizer_updates": 840,
+      "path": "/root/peft-for-rl/runs/snapshots/rlvr_protocol/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017/step_210",
+      "sha256": "1619447857f6a19ff740f7d973ac0c02a3ea78579b91e287d7f3510c5c38553c",
+      "tensor_count": 392,
+      "fixed_a_matches_probe": true,
+      "all_finite": true,
+      "effective_delta_w_frobenius": 2.6631110819642356,
+      "b_frobenius": 1.3315555410467512,
+      "evaluation_ready": true
+    }
+  ],
+  "evaluation_status": {
+    "210": "complete",
+    "200": "interrupted_by_user_not_valid",
+    "150": "cancelled"
+  },
+  "limitations": [
+    "Training metrics use changing batches and response limit8192, not evaluation limit32768.",
+    "Only REAL210 has a full evaluation on this trajectory; a late decline is not yet demonstrated.",
+    "The GradTop comparison uses only its latest trajectory and steps1-50, before historical resume errors."
+  ],
+  "probe": {
+    "attempted_prompts": 256,
+    "accepted_groups": 87,
+    "optimizer_updates": 0,
+    "module_count": 196,
+    "nystrom_core_rank_min": 128.0,
+    "nystrom_factor_rank_min": 128.0,
+    "orthogonality_error_max": 1.3709068298339844e-06
+  },
+  "recommended_priority": [
+    {
+      "step": 50,
+      "reason": "First established learning stage; matched latest GradTop50 exists. Primary choice if only one full evaluation is affordable."
+    },
+    {
+      "step": 10,
+      "reason": "If50 is already weak, test whether weakness is present after40 Adam updates; matched GradTop10 exists."
+    },
+    {
+      "step": 100,
+      "reason": "If50 is healthy, locate subsequent decline before210; postpone150/200 until this distinction is resolved."
+    }
+  ]
+}

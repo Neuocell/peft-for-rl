@@ -1,0 +1,56 @@
+{
+  "experiment": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017",
+  "controller_pid": 2183265,
+  "controller_start_ticks": 49883290,
+  "target_step": 210,
+  "evaluations": [
+    210,
+    200,
+    150
+  ],
+  "started_at": "2026-10-18T11:22:04.243620+08:00",
+  "completed_evaluations": [
+    210
+  ],
+  "plan_sha256": "fa15873f097123f826c14cab09339e9e4ecb7bdb81d272da334143fec3310286",
+  "status": "stopped_by_user",
+  "updated_at": "2026-10-18T15:48:21.149130+08:00",
+  "latest_logged_step": 210,
+  "stage_log": "/root/peft-for-rl/runs/ops/real_p256_r32_longrun270_20261017/train.log",
+  "terminal_adapter_verified": true,
+  "gpu_pids": [],
+  "terminal_full_checkpoint": false,
+  "latest_resumable_step": 200,
+  "current_step": null,
+  "evaluation_pid": null,
+  "evaluation_output": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step200_fullbench_32768_seed42",
+  "completed_shards": [],
+  "num_records": 7248,
+  "cleanup_engine_pids": [
+    2184995,
+    2185036,
+    2185041
+  ],
+  "summary": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/summary/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.json",
+  "macro_avg_at_k": 0.3584013480392157,
+  "auto_resume": false,
+  "queued_evaluations_cancelled": [
+    150
+  ],
+  "interrupted_evaluation": 200,
+  "stop_reason": "User requested early-checkpoint audit; no further GPU work queued",
+  "terminated_pids": [
+    2211294,
+    2211298,
+    2211299,
+    2211300,
+    2211301,
+    2211501,
+    2211507,
+    2211514,
+    2211525
+  ],
+  "force_killed_pids": [],
+  "interrupted_evaluation_pid": 2211294,
+  "early_checkpoint_audit": "/root/peft-for-rl/runs/ops/real_p256_early_checkpoint_audit_20261018/audit.md"
+}

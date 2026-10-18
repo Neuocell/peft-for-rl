@@ -111,3 +111,36 @@ def test_shared_initializer_drift_is_part_of_runtime_identity(tmp_path, method):
     after = runtime.make_identity(contract, protocol, tmp_path)
     assert before != after
     assert before["initialization_source_sha256"] != after["initialization_source_sha256"]
+
+
+@pytest.mark.parametrize("method", ["real", "gradtop"])
+def test_probe_artifact_content_is_immutable_across_resume(tmp_path, method):
+    key = "real_artifact" if method == "real" else "gradtop_artifact"
+    contract = {
+        "status": "verified", "protocol_id": "v1", "experiment_variables": {"method": method},
+        "assets": {}, "data_order": {},
+        key: {"files": {
+            name: {"path": f"/original/{name}", "sha256": name + "-original-content"}
+            for name in ["rank_map.json", "summary.json", "subspaces.safetensors"]
+        }},
+    }
+    protocol = {"protocol_id": "v1", "training": {"seed": 42}}
+    identity = runtime.make_identity(contract, protocol, tmp_path)
+    manifest = tmp_path / "runtime.json"
+    record(identity, manifest)
+    checkpoints = tmp_path / "checkpoints"
+    (checkpoints / "global_step_50").mkdir(parents=True)
+    # Relocating unchanged files is safe; changing any verified content is not.
+    for spec in contract[key]["files"].values():
+        spec["path"] = spec["path"].replace("original", "relocated")
+    assert runtime.make_identity(contract, protocol, tmp_path) == identity
+    for name, spec in contract[key]["files"].items():
+        before = spec["sha256"]
+        spec["sha256"] = "changed"
+        changed = runtime.make_identity(contract, protocol, tmp_path)
+        with pytest.raises(ValueError, match="Runtime identity changed"):
+            runtime.validate_run(changed, manifest, checkpoints, tmp_path / "snapshots", "auto")
+        spec["sha256"] = before
+    contract.pop(key)
+    with pytest.raises(ValueError, match="file hashes are required"):
+        runtime.make_identity(contract, protocol, tmp_path)

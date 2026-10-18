@@ -1,0 +1,12 @@
+{
+  "status": "completed",
+  "finished_at": "2026-10-15T11:06:14.343780+08:00",
+  "wall_seconds": 2250.3307664459862,
+  "process_returncode": 0,
+  "command": [
+    "bash",
+    "/root/peft-for-rl/scripts/local/run_gradtop_candidates_4gpu.sh"
+  ],
+  "log": "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/probe.log",
+  "cleaned_after_complete_output": false
+}

@@ -1,0 +1,48 @@
+{
+  "status": "verified_cpu_index_replay",
+  "checked_at": "2026-10-17T00:03:55.589646+08:00",
+  "dataset_rows": 17917,
+  "batch_size": 64,
+  "drop_last": true,
+  "batches_per_epoch": 279,
+  "unused_tail_per_epoch": 61,
+  "source_data_state": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_200/data.pt",
+  "source_sha256": "993102e7f0f3fb39dace1b8893961e2cb5c9f1eb705843167734108b414c816a",
+  "source_counters": {
+    "batches_in_current_epoch": 200,
+    "sampler_batches_in_current_epoch": 200,
+    "samples_in_current_epoch": 12800,
+    "sampler_yielded": 12800,
+    "iterator_finished": false
+  },
+  "simulated250_counters": {
+    "batches_in_current_epoch": 250,
+    "sampler_batches_in_current_epoch": 250,
+    "samples_in_current_epoch": 16000,
+    "sampler_yielded": 16000,
+    "iterator_finished": false
+  },
+  "one_epoch_setting": {
+    "steps_emitted": 29,
+    "last_step": 279,
+    "target300_reached": false
+  },
+  "two_epoch_setting": {
+    "steps_emitted": 50,
+    "last_step": 300,
+    "target300_reached": true,
+    "exact_index_sequence_matches_uninterrupted_training": true,
+    "first_step_second_epoch": 280,
+    "second_epoch_permutation_differs": true
+  },
+  "step300_counters": {
+    "batches_in_current_epoch": 21,
+    "sampler_batches_in_current_epoch": 21,
+    "samples_in_current_epoch": 1344,
+    "sampler_yielded": 1344,
+    "iterator_finished": false
+  },
+  "resume300_to310_matches_uninterrupted": true,
+  "legacy_step300_checkpoint_counter_assertions_would_fail": true,
+  "scope": "Production torchdata sampler and StatefulDataLoader with identical row count, batch size, drop_last, workers and seed. Real step200 state; CPU simulated250 state, not a completed model250 checkpoint. Dataset payload replaced by row indices; no model/GPU rollout."
+}

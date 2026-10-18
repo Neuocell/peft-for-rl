@@ -1,0 +1,3 @@
+# Keep compact source snapshots in this archive despite the root runs/ rule.
+!sources/runs/
+!sources/runs/**

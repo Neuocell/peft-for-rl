@@ -153,6 +153,20 @@ def test_first_rollout_uses_nonzero_restored_adapter(adalora, preloaded, free_ca
     assert worker.rollout.events[-1] == ("generate",)
 
 
+@pytest.mark.parametrize("freeze_a", [False, True], ids=["gradtop", "real"])
+@pytest.mark.parametrize("sleep_level", [1, 2])
+def test_gradient_subspace_restored_policy_uses_adapter(freeze_a, sleep_level):
+    worker, method, _ = _worker_and_method(sleep_level=sleep_level)
+    worker._peft_type = "grad_subspace"
+    worker.actor_module_fsdp.base_model.model.proj.lora_A["default"].weight.requires_grad_(not freeze_a)
+    inputs = torch.tensor([[0.5, -0.1, 0.9]])
+    expected = worker.actor_module_fsdp(inputs)
+    assert not torch.allclose(expected, worker.actor_module_fsdp.base_model.model.proj.base_layer(inputs))
+    asyncio.run(method(worker))
+    torch.testing.assert_close(worker.rollout.generate(inputs), expected)
+    assert [event[0] for event in worker.rollout.events if event[0] in {"base", "adapter"}] == ["base", "adapter"]
+
+
 @pytest.mark.parametrize("sleep_level", [1, 2])
 def test_subsequent_rollout_refreshes_adapter_and_reloads_destroyed_base(sleep_level):
     worker, method, _ = _worker_and_method(sleep_level=sleep_level)

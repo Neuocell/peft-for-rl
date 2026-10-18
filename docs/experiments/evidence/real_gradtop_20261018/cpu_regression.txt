@@ -1,0 +1,18 @@
+........................................................................ [ 14%]
+........................................................................ [ 29%]
+........................................................................ [ 43%]
+........................................................................ [ 58%]
+.....................................................................s.. [ 73%]
+........................................................................ [ 87%]
+.............................................................            [100%]
+=============================== warnings summary ===============================
+../../home/node/anaconda3/envs/peft-for-rl/lib/python3.12/site-packages/ray/util/state/util.py:55
+  /home/node/anaconda3/envs/peft-for-rl/lib/python3.12/site-packages/ray/util/state/util.py:55: DeprecationWarning: Ray state API is no longer experimental. Please import from `ray.util.state`. instead. Importing from `ray.experimental` will be deprecated in future releases. 
+    warnings.warn(
+
+tests/test_verl_adalora.py::test_vllm_export_folds_e_into_a_and_restores_actor_parameters
+  /home/node/anaconda3/envs/peft-for-rl/lib/python3.12/site-packages/peft/utils/save_and_load.py:372: UserWarning: Could not find a config file in  - will assume that the vocabulary was not modified.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+492 passed, 1 skipped, 2 warnings in 34.73s

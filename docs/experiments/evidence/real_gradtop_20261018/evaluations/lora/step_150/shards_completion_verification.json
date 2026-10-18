@@ -1,0 +1,47 @@
+{
+  "status": "all_four_shards_verified_before_exit_cleanup",
+  "checked_at": "2026-10-13T15:05:45.688869+08:00",
+  "num_records": 7248,
+  "benchmark_counts": {
+    "aime24": 960,
+    "aime25": 960,
+    "amc23": 1280,
+    "hmmt_feb": 960,
+    "math500": 2000,
+    "minerva": 1088
+  },
+  "shards": [
+    {
+      "shard": 0,
+      "num_records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-00-of-04.jsonl",
+      "bytes": 32728248,
+      "sha256": "9439b8576b8a72f2849b464b7eda86e87b753fead8caff0c4c3a837465ef176e",
+      "written_at": "2026-10-13T13:05:50.885417+08:00"
+    },
+    {
+      "shard": 1,
+      "num_records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-01-of-04.jsonl",
+      "bytes": 33459071,
+      "sha256": "840dacda1cd78e3818cc5fbb7dcb4db6e1c2355430a391892c1d4e568a7c1021",
+      "written_at": "2026-10-13T13:10:11.416739+08:00"
+    },
+    {
+      "shard": 2,
+      "num_records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-02-of-04.jsonl",
+      "bytes": 32456972,
+      "sha256": "5228cf29c0e6682858480a2ee0f0e808bc0ec79ee5f30d4f0abf1de71548e5d5",
+      "written_at": "2026-10-13T13:09:05.646861+08:00"
+    },
+    {
+      "shard": 3,
+      "num_records": 1812,
+      "path": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42/shards/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step150_fullbench_32768_seed42.shard-03-of-04.jsonl",
+      "bytes": 32034850,
+      "sha256": "edee709f9182a846a4468aea0bea57a11886bd0ea6daac586da79b2ac1362890",
+      "written_at": "2026-10-13T13:04:53.503650+08:00"
+    }
+  ]
+}

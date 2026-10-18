@@ -1,0 +1,402 @@
+{
+  "at": "2026-10-17T12:42:33.293718+08:00",
+  "comparisons": [
+    {
+      "before": "gradtop100",
+      "after": "gradtop150",
+      "coverage_changes": [
+        {
+          "branch": "equal",
+          "space": "gradtop_init",
+          "individual_retention_delta": 0.01201873664948897,
+          "paired_prompt_ci95": [
+            -0.007498707441039261,
+            0.032387320657007036
+          ],
+          "bootstrap_samples": 2000
+        },
+        {
+          "branch": "equal",
+          "space": "real_init",
+          "individual_retention_delta": 0.00924642281369754,
+          "paired_prompt_ci95": [
+            -0.009278504303856915,
+            0.028206514811094697
+          ],
+          "bootstrap_samples": 2000
+        },
+        {
+          "branch": "global_token",
+          "space": "gradtop_init",
+          "individual_retention_delta": 0.010793323071982212,
+          "paired_prompt_ci95": [
+            -0.0047053406497636245,
+            0.025728061017228368
+          ],
+          "bootstrap_samples": 2000
+        },
+        {
+          "branch": "global_token",
+          "space": "real_init",
+          "individual_retention_delta": 0.009059083791971064,
+          "paired_prompt_ci95": [
+            -0.005712103721032116,
+            0.023413429544364338
+          ],
+          "bootstrap_samples": 2000
+        }
+      ],
+      "mean_gradient_rotation": [
+        {
+          "module": "model.layers.0.self_attn.q_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.07037115636052971,
+          "within_after_repeat_mean_cosine": 0.06946859743537008,
+          "cross_policy_pooled_mean_cosine": 0.3824705096728996
+        },
+        {
+          "module": "model.layers.0.self_attn.q_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.07901769063873572,
+          "within_after_repeat_mean_cosine": -0.042562782279043324,
+          "cross_policy_pooled_mean_cosine": 0.30208168058539264
+        },
+        {
+          "module": "model.layers.0.mlp.down_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.004153795378914025,
+          "within_after_repeat_mean_cosine": 0.0204023959362273,
+          "cross_policy_pooled_mean_cosine": -0.023528025005202968
+        },
+        {
+          "module": "model.layers.0.mlp.down_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": -0.010583547321374401,
+          "within_after_repeat_mean_cosine": 0.011532060144491539,
+          "cross_policy_pooled_mean_cosine": 0.005320967462802527
+        },
+        {
+          "module": "model.layers.13.self_attn.q_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": -0.006884709574788786,
+          "within_after_repeat_mean_cosine": -0.0423524348748759,
+          "cross_policy_pooled_mean_cosine": 0.04135129677785524
+        },
+        {
+          "module": "model.layers.13.self_attn.q_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.013444922561273939,
+          "within_after_repeat_mean_cosine": -0.01146762409816037,
+          "cross_policy_pooled_mean_cosine": 0.038858134312877664
+        },
+        {
+          "module": "model.layers.13.mlp.down_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.00401154049122645,
+          "within_after_repeat_mean_cosine": -0.004188637635158687,
+          "cross_policy_pooled_mean_cosine": 0.003406247544604139
+        },
+        {
+          "module": "model.layers.13.mlp.down_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.010717644917568443,
+          "within_after_repeat_mean_cosine": 0.0021005656561118905,
+          "cross_policy_pooled_mean_cosine": -0.000581182070422131
+        },
+        {
+          "module": "model.layers.27.self_attn.q_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.057822966399965384,
+          "within_after_repeat_mean_cosine": -0.06753947548267648,
+          "cross_policy_pooled_mean_cosine": -0.00812661804341802
+        },
+        {
+          "module": "model.layers.27.self_attn.q_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": -0.029489583294897755,
+          "within_after_repeat_mean_cosine": -0.0385199657375441,
+          "cross_policy_pooled_mean_cosine": -0.012478511917822396
+        },
+        {
+          "module": "model.layers.27.mlp.down_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": -0.20086231437006385,
+          "within_after_repeat_mean_cosine": -0.03186575953101094,
+          "cross_policy_pooled_mean_cosine": -0.006609265962538372
+        },
+        {
+          "module": "model.layers.27.mlp.down_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": -0.12320731727351097,
+          "within_after_repeat_mean_cosine": -0.10537331982386991,
+          "cross_policy_pooled_mean_cosine": 0.15469052467008024
+        }
+      ]
+    },
+    {
+      "before": "real100",
+      "after": "real150",
+      "coverage_changes": [
+        {
+          "branch": "equal",
+          "space": "gradtop_init",
+          "individual_retention_delta": -0.03231749270404113,
+          "paired_prompt_ci95": [
+            -0.044676484842951066,
+            -0.014600815297265216
+          ],
+          "bootstrap_samples": 2000
+        },
+        {
+          "branch": "equal",
+          "space": "real_init",
+          "individual_retention_delta": -0.03800073922853001,
+          "paired_prompt_ci95": [
+            -0.054688331055667526,
+            -0.013822532435779796
+          ],
+          "bootstrap_samples": 2000
+        },
+        {
+          "branch": "global_token",
+          "space": "gradtop_init",
+          "individual_retention_delta": -0.029392451090888685,
+          "paired_prompt_ci95": [
+            -0.03879320316135848,
+            -0.018978841844781682
+          ],
+          "bootstrap_samples": 2000
+        },
+        {
+          "branch": "global_token",
+          "space": "real_init",
+          "individual_retention_delta": -0.03208287627387522,
+          "paired_prompt_ci95": [
+            -0.0442451033389837,
+            -0.01828366148888365
+          ],
+          "bootstrap_samples": 2000
+        }
+      ],
+      "mean_gradient_rotation": [
+        {
+          "module": "model.layers.0.self_attn.q_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.20160181453083237,
+          "within_after_repeat_mean_cosine": -0.06300971204691425,
+          "cross_policy_pooled_mean_cosine": 0.027494681331781144
+        },
+        {
+          "module": "model.layers.0.self_attn.q_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.12490933766466585,
+          "within_after_repeat_mean_cosine": 0.0782025920491137,
+          "cross_policy_pooled_mean_cosine": -0.11269907692292903
+        },
+        {
+          "module": "model.layers.0.mlp.down_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.009502266227830054,
+          "within_after_repeat_mean_cosine": 0.015766601963261795,
+          "cross_policy_pooled_mean_cosine": -0.014878511449438995
+        },
+        {
+          "module": "model.layers.0.mlp.down_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.039658763258383294,
+          "within_after_repeat_mean_cosine": 0.017274909894320244,
+          "cross_policy_pooled_mean_cosine": -0.03128397209003457
+        },
+        {
+          "module": "model.layers.13.self_attn.q_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.09506352745690551,
+          "within_after_repeat_mean_cosine": 0.08485752284547904,
+          "cross_policy_pooled_mean_cosine": -0.00499790269364533
+        },
+        {
+          "module": "model.layers.13.self_attn.q_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.036648107733852686,
+          "within_after_repeat_mean_cosine": 0.007167499798711268,
+          "cross_policy_pooled_mean_cosine": -0.013237728480104911
+        },
+        {
+          "module": "model.layers.13.mlp.down_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.008892835140394063,
+          "within_after_repeat_mean_cosine": -0.017956282862424428,
+          "cross_policy_pooled_mean_cosine": -0.01033677319636743
+        },
+        {
+          "module": "model.layers.13.mlp.down_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.002467555338525114,
+          "within_after_repeat_mean_cosine": -0.0013186048587671346,
+          "cross_policy_pooled_mean_cosine": 0.0036513010445743655
+        },
+        {
+          "module": "model.layers.27.self_attn.q_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": -0.02610778339588936,
+          "within_after_repeat_mean_cosine": -0.006643139223007186,
+          "cross_policy_pooled_mean_cosine": 0.0072594439339988244
+        },
+        {
+          "module": "model.layers.27.self_attn.q_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": -0.02918603206828457,
+          "within_after_repeat_mean_cosine": 0.04351213766078643,
+          "cross_policy_pooled_mean_cosine": 0.022579681055506458
+        },
+        {
+          "module": "model.layers.27.mlp.down_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": -0.28534666892372673,
+          "within_after_repeat_mean_cosine": -0.0524107823537247,
+          "cross_policy_pooled_mean_cosine": -0.056219252499068624
+        },
+        {
+          "module": "model.layers.27.mlp.down_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.017621149727144257,
+          "within_after_repeat_mean_cosine": -0.07747531151028553,
+          "cross_policy_pooled_mean_cosine": -0.1422827262683782
+        }
+      ]
+    },
+    {
+      "before": "gradtop150",
+      "after": "gradtop270",
+      "coverage_changes": [
+        {
+          "branch": "equal",
+          "space": "gradtop_init",
+          "individual_retention_delta": 0.03762557290449418,
+          "paired_prompt_ci95": [
+            0.021623003875151005,
+            0.052729703831770294
+          ],
+          "bootstrap_samples": 2000
+        },
+        {
+          "branch": "equal",
+          "space": "real_init",
+          "individual_retention_delta": 0.041511881559648696,
+          "paired_prompt_ci95": [
+            0.026222316365029683,
+            0.05576980159733516
+          ],
+          "bootstrap_samples": 2000
+        },
+        {
+          "branch": "global_token",
+          "space": "gradtop_init",
+          "individual_retention_delta": 0.02923769369636824,
+          "paired_prompt_ci95": [
+            0.01569825952318811,
+            0.04257765011515656
+          ],
+          "bootstrap_samples": 2000
+        },
+        {
+          "branch": "global_token",
+          "space": "real_init",
+          "individual_retention_delta": 0.03364247859438848,
+          "paired_prompt_ci95": [
+            0.021081334524055268,
+            0.0468611433361017
+          ],
+          "bootstrap_samples": 2000
+        }
+      ],
+      "mean_gradient_rotation": [
+        {
+          "module": "model.layers.0.self_attn.q_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.06946859743537008,
+          "within_after_repeat_mean_cosine": 0.3026162665743819,
+          "cross_policy_pooled_mean_cosine": 0.3010985856075736
+        },
+        {
+          "module": "model.layers.0.self_attn.q_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": -0.042562782279043324,
+          "within_after_repeat_mean_cosine": 0.16452754198677497,
+          "cross_policy_pooled_mean_cosine": 0.2882421823619554
+        },
+        {
+          "module": "model.layers.0.mlp.down_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": 0.0204023959362273,
+          "within_after_repeat_mean_cosine": -0.007506298302796268,
+          "cross_policy_pooled_mean_cosine": 0.029195995934225397
+        },
+        {
+          "module": "model.layers.0.mlp.down_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.011532060144491539,
+          "within_after_repeat_mean_cosine": -0.010847165783124037,
+          "cross_policy_pooled_mean_cosine": -0.009043326726932085
+        },
+        {
+          "module": "model.layers.13.self_attn.q_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": -0.0423524348748759,
+          "within_after_repeat_mean_cosine": 0.026941113903685917,
+          "cross_policy_pooled_mean_cosine": -0.012873481923874696
+        },
+        {
+          "module": "model.layers.13.self_attn.q_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": -0.01146762409816037,
+          "within_after_repeat_mean_cosine": 0.022327804176912006,
+          "cross_policy_pooled_mean_cosine": 0.020981801698884243
+        },
+        {
+          "module": "model.layers.13.mlp.down_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": -0.004188637635158687,
+          "within_after_repeat_mean_cosine": 0.008348146006558817,
+          "cross_policy_pooled_mean_cosine": -0.0008819767336802453
+        },
+        {
+          "module": "model.layers.13.mlp.down_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": 0.0021005656561118905,
+          "within_after_repeat_mean_cosine": -0.0027520903343743017,
+          "cross_policy_pooled_mean_cosine": 0.017223835380721954
+        },
+        {
+          "module": "model.layers.27.self_attn.q_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": -0.06753947548267648,
+          "within_after_repeat_mean_cosine": -0.07401917866038622,
+          "cross_policy_pooled_mean_cosine": 0.001309195981197191
+        },
+        {
+          "module": "model.layers.27.self_attn.q_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": -0.0385199657375441,
+          "within_after_repeat_mean_cosine": 0.001045199486915778,
+          "cross_policy_pooled_mean_cosine": -0.05464272531428749
+        },
+        {
+          "module": "model.layers.27.mlp.down_proj",
+          "projection": "A",
+          "within_before_repeat_mean_cosine": -0.03186575953101094,
+          "within_after_repeat_mean_cosine": -0.004313209033418607,
+          "cross_policy_pooled_mean_cosine": -0.03298042034117353
+        },
+        {
+          "module": "model.layers.27.mlp.down_proj",
+          "projection": "B",
+          "within_before_repeat_mean_cosine": -0.10537331982386991,
+          "within_after_repeat_mean_cosine": -0.17467783982770638,
+          "cross_policy_pooled_mean_cosine": 0.16725568303166247
+        }
+      ]
+    }
+  ],
+  "interpretation": "paired fixed prompts, two independent rollout groups; conditional on single training trajectory and fixed diagnostic projections"
+}

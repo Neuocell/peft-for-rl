@@ -48,11 +48,20 @@ from verl.utils.full_gradient_rl_probe import (
     probe_token_keep_count,
     unbiased_single_response_scale,
 )
+from verl.utils.gradtop_objectives import (
+    build_gradtop_normalization,
+    gradtop_policy_loss,
+    gradtop_probe_variant,
+    gradtop_prompt_signs,
+    validate_gradtop_actor_config,
+)
 from verl.utils.peft_adalora import find_adalora_model, update_and_allocate
 from verl.utils.peft_gradient_subspace import GradientProbeCollector
+from verl.utils.peft_real import RealProbeCollector, reward_contrast_coefficients
 from verl.utils.peft_spar_lora import SparPositiveProbeCollector
 from verl.utils.profiler import GPUMemoryLogger
 from verl.utils.py_functional import append_to_dict
+from verl.utils.real_probe_mode import real_probe_mode
 from verl.utils.seqlen_balancing import prepare_dynamic_batch, restore_dynamic_batch
 from verl.utils.torch_dtypes import PrecisionType
 from verl.utils.torch_functional import logprobs_from_logits
@@ -200,6 +209,7 @@ class DataParallelPPOActor(BasePPOActor):
         self._gradient_probe_collector = None
         self._spar_probe_collector = None
         self._full_gradient_probe_collector = None
+        self._real_probe_collector = None
         if (
             actor_optimizer is not None
             and model_config is not None
@@ -236,6 +246,14 @@ class DataParallelPPOActor(BasePPOActor):
             self._full_gradient_probe_collector = build_full_gradient_probe_collector(
                 actor_module, model_config
             )
+        if (
+            actor_optimizer is not None
+            and model_config is not None
+            and model_config.get("peft_type", "lora") == "real_probe"
+        ):
+            if self.scaler is not None:
+                raise NotImplementedError("real_probe requires bf16 or fp32, not fp16 scaling")
+            self._real_probe_collector = RealProbeCollector(actor_module, model_config)
 
         trainable_parameters = sum(
             parameter.numel()
@@ -308,6 +326,8 @@ class DataParallelPPOActor(BasePPOActor):
     ) -> dict[str, list[float] | float]:
         """Accumulate one signed-GRPO full-weight gradient per prompt group."""
 
+        if getattr(self, "_real_probe_collector", None) is not None:
+            return self._run_real_probe(data)
         collector = self._full_gradient_probe_collector
         if collector is None:
             raise RuntimeError(
@@ -492,6 +512,59 @@ class DataParallelPPOActor(BasePPOActor):
                     prompt_id,
                 )
         self.actor_optimizer.zero_grad()
+        return metrics
+
+    def _run_real_probe(self, data: DataProto) -> dict[str, float]:
+        """Observe sequence-normalized prompt contrasts without policy updates."""
+
+        collector = self._real_probe_collector
+        metrics = dict(self._static_actor_metrics)
+        groups: dict[str, list[int]] = {}
+        if not data.meta_info.get("real_probe_skip_batch", False):
+            prompt_ids = data.non_tensor_batch.get("full_gradient_prompt_id")
+            if prompt_ids is None:
+                raise ValueError("REAL probe batch is missing full_gradient_prompt_id")
+            for index, prompt_id in enumerate(prompt_ids):
+                groups.setdefault(str(prompt_id), []).append(index)
+
+        with real_probe_mode(self.actor_module):
+            try:
+                for prompt_id, indices in groups.items():
+                    if collector.complete:
+                        break
+                    group = data.select_idxs(indices)
+                    coefficients = reward_contrast_coefficients(
+                        group.batch["token_level_scores"].sum(dim=-1),
+                        group.batch["response_mask"],
+                        min_correct=2,
+                        min_incorrect=2,
+                    )
+                    self.actor_optimizer.zero_grad()
+                    group_loss = 0.0
+                    # Keeping Psi fixed for all responses makes this one prompt
+                    # sketch. Squaring each response separately would lose the
+                    # correct/incorrect cross terms required by the paper.
+                    for offset, index in enumerate(indices):
+                        sample = data.select_idxs([index]).to(get_device_id())
+                        model_inputs = {**sample.batch, **sample.non_tensor_batch}
+                        _, log_prob = self._forward_micro_batch(
+                            model_inputs,
+                            temperature=float(data.meta_info["temperature"]),
+                            calculate_entropy=False,
+                        )
+                        coefficient = coefficients[offset].to(log_prob.device)
+                        sample_loss = -coefficient * (
+                            log_prob.float() * model_inputs["response_mask"].float()
+                        ).sum()
+                        if not bool(torch.isfinite(sample_loss)):
+                            raise FloatingPointError("REAL reward-contrast loss is non-finite")
+                        group_loss += float(sample_loss.detach().item())
+                        sample_loss.backward()
+                    metrics.update(collector.capture_and_refresh(prompt_id=prompt_id))
+                    metrics["real_probe/last_group_loss"] = group_loss
+                metrics.update(collector.finish_trainer_step(int(data.meta_info.get("global_steps", 0))))
+            finally:
+                self.actor_optimizer.zero_grad()
         return metrics
 
     def _run_phase0_full_gradient_probe(
@@ -1367,6 +1440,16 @@ class DataParallelPPOActor(BasePPOActor):
         temperature = data.meta_info[
             "temperature"
         ]  # temperature must be in the data.meta_info to avoid silent error
+        model_config = getattr(self.config, "model_config", None)
+        gradtop_variant = gradtop_probe_variant(model_config)
+        explicit_gradtop = gradtop_variant != "legacy"
+        if explicit_gradtop:
+            validate_gradtop_actor_config(self.config)
+            if self._gradient_probe_collector is None:
+                raise RuntimeError("Explicit GradTop objectives require a gradient probe collector")
+            if "rollout_is_weights" in data.batch:
+                raise ValueError("GradTop objective variants require rollout correction disabled")
+            self._gradient_probe_collector.set_runtime_contract(data.meta_info["gradtop_probe_contract"])
 
         select_keys = [
             "responses",
@@ -1377,6 +1460,8 @@ class DataParallelPPOActor(BasePPOActor):
             "old_log_probs",
             "advantages",
         ]
+        if explicit_gradtop:
+            select_keys.append("gradtop_prompt_id")
         if self.config.use_kl_loss:
             select_keys.append("ref_log_prob")
         # Include pre-computed IS weights if present in batch
@@ -1429,6 +1514,16 @@ class DataParallelPPOActor(BasePPOActor):
         )
         for _ in range(self.config.ppo_epochs):
             for batch_idx, mini_batch in enumerate(mini_batches):
+                gradtop_normalization = None
+                if explicit_gradtop:
+                    # Fix global denominators before dynamic packing rearranges or
+                    # splits responses. All prompt groups remain local to one DP rank.
+                    gradtop_normalization = build_gradtop_normalization(
+                        mini_batch.batch["gradtop_prompt_id"],
+                        mini_batch.batch["response_mask"],
+                        expected_rollouts=int(data.meta_info["gradtop_rollouts_per_prompt"]),
+                        collective_device=get_device_id(),
+                    )
                 if self.config.use_dynamic_bsz:
                     max_token_len = (
                         self.config.ppo_max_token_len_per_gpu
@@ -1474,6 +1569,10 @@ class DataParallelPPOActor(BasePPOActor):
                         )
                     else:
                         loss_scale_factor = 1 / self.gradient_accumulation
+                    if explicit_gradtop:
+                        # The probe objective already includes global minibatch
+                        # normalization and compensation for DP gradient averaging.
+                        loss_scale_factor = 1.0
 
                     # all return: (bsz, response_length)
                     entropy, log_prob = self._forward_micro_batch(
@@ -1507,15 +1606,46 @@ class DataParallelPPOActor(BasePPOActor):
                     policy_loss_fn = get_policy_loss_fn(loss_mode)
 
                     # Compute policy loss (any function is expected to return 2 values)
-                    pg_loss, pg_metrics = policy_loss_fn(
-                        old_log_prob=old_log_prob,
-                        log_prob=log_prob,
-                        advantages=advantages,
-                        response_mask=response_mask,
-                        loss_agg_mode=loss_agg_mode,
-                        config=self.config,
-                        rollout_is_weights=rollout_is_weights,
-                    )
+                    if explicit_gradtop:
+                        signs = None
+                        token_keep_mask = None
+                        if gradtop_variant == "prompt_sign":
+                            signs = gradtop_prompt_signs(
+                                model_inputs["gradtop_prompt_id"],
+                                seed=int(model_config.get("gradient_probe_sign_seed", 42)),
+                                trainer_step=int(data.meta_info["global_steps"]),
+                                minibatch_index=batch_idx,
+                            )
+                        if gradtop_variant == "masked":
+                            token_keep_mask = build_probe_token_mask(
+                                log_prob,
+                                response_mask,
+                                mode="top_surprisal",
+                                keep_ratio=0.5,
+                                min_keep=128,
+                                final_tokens=128,
+                            )
+                        pg_loss, pg_metrics = gradtop_policy_loss(
+                            old_log_prob=old_log_prob,
+                            log_prob=log_prob,
+                            advantages=advantages,
+                            response_mask=response_mask,
+                            variant=gradtop_variant,
+                            normalization=gradtop_normalization,
+                            config=self.config,
+                            signs=signs,
+                            token_keep_mask=token_keep_mask,
+                        )
+                    else:
+                        pg_loss, pg_metrics = policy_loss_fn(
+                            old_log_prob=old_log_prob,
+                            log_prob=log_prob,
+                            advantages=advantages,
+                            response_mask=response_mask,
+                            loss_agg_mode=loss_agg_mode,
+                            config=self.config,
+                            rollout_is_weights=rollout_is_weights,
+                        )
                     micro_batch_metrics.update(pg_metrics)
 
                     # Skip if using bypass_mode loss (metrics already computed in pg_metrics)
@@ -1624,11 +1754,19 @@ class DataParallelPPOActor(BasePPOActor):
                     append_to_dict(metrics, micro_batch_metrics)
 
                 probe_metrics = {}
-                if is_gradient_probe:
-                    probe_metrics = self._gradient_probe_collector.capture_and_refresh()
-                grad_norm = self._optimizer_step(apply_update=not is_gradient_probe)
-                mini_batch_metrics = {"actor/grad_norm": grad_norm.detach().item()}
-                mini_batch_metrics.update(probe_metrics)
+                if explicit_gradtop:
+                    probe_metrics = self._gradient_probe_collector.capture_and_refresh(
+                        observation_metadata=gradtop_normalization.metadata()
+                    )
+                    # Capture raw gradients without invoking clipping or Adam.
+                    # The next minibatch (or final cleanup) clears these gradients.
+                    mini_batch_metrics = dict(probe_metrics)
+                else:
+                    if is_gradient_probe:
+                        probe_metrics = self._gradient_probe_collector.capture_and_refresh()
+                    grad_norm = self._optimizer_step(apply_update=not is_gradient_probe)
+                    mini_batch_metrics = {"actor/grad_norm": grad_norm.detach().item()}
+                    mini_batch_metrics.update(probe_metrics)
                 if adalora_loss_weight_sum > 0:
                     mini_batch_metrics.update(
                         _aggregate_adalora_loss_metrics(

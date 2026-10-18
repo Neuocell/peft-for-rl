@@ -1,0 +1,23 @@
+{
+  "status": "verified",
+  "at": "2026-10-17T12:43:05.455870+08:00",
+  "policies": [
+    "gradtop100",
+    "real100",
+    "gradtop150",
+    "real150",
+    "gradtop270"
+  ],
+  "total_sampled_responses": 5120,
+  "all5120_backward_records_finite": true,
+  "engine_checks": 20,
+  "hf_checks": 20,
+  "all_retained_sketch_and_gram_hashes_match": true,
+  "analyses_and_frozen_code_hashes_match": true,
+  "all_rollout_shard_hashes_preverified_in": "recovery_jsonl_unicode/verification.json",
+  "output_sha256": {
+    "/root/peft-for-rl/runs/ops/gradtop_real_gradient_diagnostics_20261017/results.md": "ff716b2d4969e8f2bf066dc4ca9a6e85829bc3a862ad66438a0555f30debc889",
+    "/root/peft-for-rl/runs/ops/gradtop_real_gradient_diagnostics_20261017/results.json": "6b8eaab3175c89b342eeb7f206e4162d6e1aefd89816f15eea9267f73eb49bb1",
+    "/root/peft-for-rl/runs/ops/gradtop_real_gradient_diagnostics_20261017/trajectory.json": "5442bdada409f7d8b70be72ff1766a8e40c5070af8e1cd630ede42dd9fd93d96"
+  }
+}

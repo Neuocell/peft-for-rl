@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "method": "matched_problem_cluster_bootstrap_v1",
+  "baseline_checkpoint": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+  "candidate_checkpoint": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+  "record_keys_exactly_matched": true,
+  "num_samples": 7248,
+  "num_problems": 902,
+  "bootstrap_samples": 10000,
+  "bootstrap_seed": 42,
+  "macro_delta_avg_at_k": 0.01316370506535948,
+  "ci95_low": 0.0016460452410130713,
+  "ci95_high": 0.024711639603758166,
+  "probability_delta_gt_zero": 0.9857,
+  "benchmarks": [
+    {
+      "benchmark": "aime24",
+      "num_problems": 30,
+      "num_samples": 960,
+      "baseline_avg_at_k": 0.3145833333333333,
+      "candidate_avg_at_k": 0.30625,
+      "delta_avg_at_k": -0.008333333333333304,
+      "ci95_low": -0.05625,
+      "ci95_high": 0.03854166666666667,
+      "probability_delta_gt_zero": 0.36105
+    },
+    {
+      "benchmark": "aime25",
+      "num_problems": 30,
+      "num_samples": 960,
+      "baseline_avg_at_k": 0.2375,
+      "candidate_avg_at_k": 0.22708333333333333,
+      "delta_avg_at_k": -0.010416666666666657,
+      "ci95_low": -0.029166666666666667,
+      "ci95_high": 0.007291666666666667,
+      "probability_delta_gt_zero": 0.1306
+    },
+    {
+      "benchmark": "amc23",
+      "num_problems": 40,
+      "num_samples": 1280,
+      "baseline_avg_at_k": 0.7375,
+      "candidate_avg_at_k": 0.75390625,
+      "delta_avg_at_k": 0.016406249999999956,
+      "ci95_low": -0.01875,
+      "ci95_high": 0.05,
+      "probability_delta_gt_zero": 0.82925
+    },
+    {
+      "benchmark": "hmmt_feb",
+      "num_problems": 30,
+      "num_samples": 960,
+      "baseline_avg_at_k": 0.11041666666666666,
+      "candidate_avg_at_k": 0.1,
+      "delta_avg_at_k": -0.010416666666666657,
+      "ci95_low": -0.030208333333333334,
+      "ci95_high": 0.010416666666666666,
+      "probability_delta_gt_zero": 0.16075
+    },
+    {
+      "benchmark": "math500",
+      "num_problems": 500,
+      "num_samples": 2000,
+      "baseline_avg_at_k": 0.7,
+      "candidate_avg_at_k": 0.732,
+      "delta_avg_at_k": 0.03200000000000003,
+      "ci95_low": 0.018,
+      "ci95_high": 0.0465,
+      "probability_delta_gt_zero": 1.0
+    },
+    {
+      "benchmark": "minerva",
+      "num_problems": 272,
+      "num_samples": 1088,
+      "baseline_avg_at_k": 0.22334558823529413,
+      "candidate_avg_at_k": 0.28308823529411764,
+      "delta_avg_at_k": 0.05974264705882351,
+      "ci95_low": 0.03676470588235294,
+      "ci95_high": 0.08272058823529412,
+      "probability_delta_gt_zero": 1.0
+    }
+  ],
+  "interpretation": "single_seed_screen_only"
+}

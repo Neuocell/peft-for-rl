@@ -156,7 +156,7 @@ def test_rlpo_launcher_and_fsdp_integration_are_isolated_and_lora_compatible():
 
     for peft_type in ("lora", "rlpo", "adalora", "geora", "grad_probe", "grad_subspace"):
         assert f'"{peft_type}",' in worker_source
-    assert 'self._peft_type not in ("geora", "rlpo", "grad_probe", "grad_subspace")' in worker_source
+    assert 'self._peft_type not in ("geora", "rlpo", "grad_probe", "grad_subspace", "real_probe")' in worker_source
     assert 'elif self._peft_type == "rlpo":' in worker_source
     assert "apply_rlpo_initialization(actor_module, self.config.model)" in worker_source
     assert "if self.rank == 0:" in worker_source

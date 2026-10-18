@@ -1,0 +1,12 @@
+{
+  "status": "completed",
+  "finished_at": "2026-10-14T06:13:35.002066+08:00",
+  "wall_seconds": 40085.410959251996,
+  "process_returncode": 0,
+  "command": [
+    "bash",
+    "/root/peft-for-rl/scripts/local/start_real_gradient_probe_4gpu.sh"
+  ],
+  "log": "/root/peft-for-rl/runs/ops/real_r32_lr1e5_seed42_after_eval/probe.log",
+  "cleaned_after_complete_output": false
+}

@@ -1,0 +1,462 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-18T15:50:48.380988+08:00",
+  "timezone": "Asia/Shanghai",
+  "scope": "Completed method versions with verified artifacts and at least one full benchmark; successful execution does not mean consistent scientific superiority.",
+  "shared_frozen_sections_source": "configs/experiments/gradtop_r32_clean_20261015.json",
+  "shared_assets": {
+    "base_model_weights": {
+      "path": "runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base/model.safetensors",
+      "sha256": "58858233513d76b8703e72eed6ce16807b523328188e13329257fb9594462945"
+    },
+    "benchmark_snapshot": {
+      "path": "runs/phase1-signal-random-v1/imported-runtime/outputs/full_bench_eval/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42/records/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42.jsonl",
+      "sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da"
+    },
+    "sampler_prefix_indices": {
+      "path": "runs/datasets/verl_dapo/data/rlvr_protocol_seed42_v1/sampler_prefix_indices.csv",
+      "sha256": "9c926a9896ac0f766a9acc640f26252bc9a6fcf8857d9d3511941003b5d97fda"
+    },
+    "source_data": {
+      "path": "runs/datasets/verl_dapo/data/dapo-math-17k-boxed.parquet",
+      "rows": 17917,
+      "sha256": "8e3c9314db8b83c61ab62a3dc85e0a704dcc5f3a9d404d236943f719095ce82f"
+    }
+  },
+  "shared_training": {
+    "actor_kl_loss": false,
+    "actor_ppo_max_tokens_per_gpu": 12288,
+    "actor_shuffle": false,
+    "alpha": 64,
+    "clip_ratio_c": 10.0,
+    "clip_ratio_high": 0.28,
+    "clip_ratio_low": 0.2,
+    "completion_length": 8192,
+    "data_seed": 42,
+    "data_truncation": "left",
+    "dataset_rows": 17917,
+    "dropout": 0.0,
+    "effective_rows_through_step_270": 17280,
+    "entropy_coefficient": 0.0,
+    "fsdp_seed": 42,
+    "gpus": 4,
+    "kl_reward_beta": 0.0,
+    "learning_rate_scheduler": "constant",
+    "learning_rate_warmup_steps": 0,
+    "loss_aggregation": "token-mean",
+    "method_seed": 42,
+    "model": "DeepSeek-R1-Distill-Qwen-1.5B",
+    "objective": "dapo_style_grpo",
+    "overlong_shaping": false,
+    "ppo_epochs": 1,
+    "ppo_minibatch_size": 16,
+    "precision": "bfloat16",
+    "prompt_length": 1024,
+    "prompts_per_step": 64,
+    "responses_per_prompt": 8,
+    "rollout_max_model_len": 9216,
+    "rollout_max_num_batched_tokens": 9216,
+    "rollout_max_num_seqs": 256,
+    "rollout_seed": 42,
+    "rollout_temperature": 1.0,
+    "rollout_top_k": -1,
+    "rollout_top_p": 1.0,
+    "target_modules": "all-linear",
+    "train_shuffle": true,
+    "trainer_seed": 42,
+    "weight_decay": 0.0
+  },
+  "shared_evaluation": {
+    "base_seed": 42,
+    "benchmarks": [
+      "aime24",
+      "aime25",
+      "amc23",
+      "hmmt_feb",
+      "math500",
+      "minerva"
+    ],
+    "max_model_len": 34816,
+    "max_new_tokens": 32768,
+    "samples_large": 4,
+    "samples_small": 32,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "total_records": 7248
+  },
+  "runtime_environment_observed_at_archive": {
+    "python": "3.12.14",
+    "torch": "2.8.0",
+    "transformers": "4.57.1",
+    "peft": "0.19.1",
+    "vllm": "0.11.0",
+    "ray": "2.56.0",
+    "torchdata": "0.11.0",
+    "pyarrow": "25.0.1",
+    "safetensors": "0.8.0"
+  },
+  "evidence_index": "docs/experiments/evidence/real_gradtop_20261018/README.md",
+  "versions": [
+    {
+      "version_id": "gradtop-r32-o16-v20261015",
+      "label": "GradTop",
+      "method": "gradtop",
+      "experiment": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015",
+      "protocol_file": "configs/experiments/gradtop_r32_clean_20261015.json",
+      "protocol_sha256": "49118b5cf37ca3c22faa24fa5b54f6e84f3cc7405e523e3bf93d8e0108ce1649",
+      "artifact": {
+        "source_directory": "runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015",
+        "files": {
+          "rank_map.json": {
+            "sha256": "2ea5532e86dccdb11e3b70a42b700b77adb272adc87c144c4720055303b57a41",
+            "bytes": 16752,
+            "archived": true
+          },
+          "summary.json": {
+            "sha256": "5899d6b105331d232fd5e892944e5db61d05e52557bde05bb30527360a7d30ce",
+            "bytes": 114712,
+            "archived": true
+          },
+          "subspaces.safetensors": {
+            "sha256": "74a57cf4f84718cfc3265639fc8b2eae2fb3382f593302a1da403d042f9258cc",
+            "bytes": 65162736,
+            "archived": false
+          }
+        }
+      },
+      "probe": {
+        "rollout_steps": 4,
+        "attempted_prompts": 256,
+        "generated_responses": 2048,
+        "accepted_or_observed_groups": 256,
+        "wall_seconds": 2250.3307664459862,
+        "observation_unit": "global_16_prompt_minibatch",
+        "configuration": {
+          "allocation_mode": "uniform",
+          "capacity": 64,
+          "completed_basis_directions": 0,
+          "constant_scaling": 2.0,
+          "formal_trainable_parameters": 36929536,
+          "freeze_a": false,
+          "gradient_clipping": false,
+          "gradient_probe_variant": "token_mean",
+          "initial_b": "zero",
+          "method": "rl_policy_gradient_subspace",
+          "observations": 16,
+          "observed_prompt_groups": 256,
+          "optimizer_updates": 0,
+          "probe_method": "energy",
+          "probe_width": 8,
+          "requested_observations": 16,
+          "sampled_prompts": 256,
+          "sampled_rollouts": 2048,
+          "schema_version": 1,
+          "seed": 42,
+          "sign_seed": 42,
+          "source_model_path": "/data/peft-for-rl-runtime/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+          "stable_windows": 0,
+          "stopped_by_stability": false,
+          "subspace_path": "/root/peft-for-rl/runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015/subspaces.safetensors",
+          "target_energy": 0.95,
+          "trainer_step": 4
+        }
+      },
+      "formal_adapter": {
+        "rank": 32,
+        "alpha": 64,
+        "scaling": 2,
+        "dropout": 0,
+        "module_count": 196,
+        "initial_b": "zero",
+        "freeze_a": false,
+        "trainable_factors": "A+B",
+        "trainable_parameters": 36929536,
+        "use_orig_params": false
+      },
+      "completed_training_step": 270,
+      "logical_optimizer_updates": 1080,
+      "completed_full_benchmark_steps": [
+        10,
+        50,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        200,
+        250,
+        270
+      ],
+      "status_at_capture": "complete",
+      "interpretation_caveat": "Original observations reused throughout. Step51/101 have the historical base-only resume path; first rollouts151/201/251 passed actual 4-GPU verification."
+    },
+    {
+      "version_id": "real64-r32-v20261013",
+      "label": "REAL64",
+      "method": "real",
+      "experiment": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42",
+      "protocol_file": "configs/experiments/real64_r32_frozen_20261013.json",
+      "protocol_sha256": "c0e7433e0695f733043b46f600295665177fdc14f97534f8a0de70f3b2a610bb",
+      "artifact": {
+        "source_directory": "runs/analysis/real_probe_r32_s64_p0_seed42_20261013",
+        "files": {
+          "rank_map.json": {
+            "sha256": "b4cfcee8f3567c366fd2fa5645c7b37dbcda23a5c0c850b51ffbab115df4c7f6",
+            "bytes": 16777,
+            "archived": true
+          },
+          "summary.json": {
+            "sha256": "4529e56e9d65b86195ff6d17239aa9cff4de472aece76630966203a9690a1f7e",
+            "bytes": 985948,
+            "archived": true
+          },
+          "subspaces.safetensors": {
+            "sha256": "ea567a82c4c05070ae67a735bebb393d492d1eec7ae8c7b52c660a2b0255404f",
+            "bytes": 65162736,
+            "archived": false
+          }
+        }
+      },
+      "probe": {
+        "rollout_steps": 64,
+        "attempted_prompts": 4096,
+        "generated_responses": 32768,
+        "accepted_or_observed_groups": 1499,
+        "wall_seconds": 40085.41,
+        "observation_unit": "accepted_complete_K8_prompt_group",
+        "configuration": {
+          "constant_scaling": 2.0,
+          "distributed_observation": "complete_prompt_group_replicated_on_data_parallel_ranks",
+          "formal_trainable_parameters": 20643840,
+          "freeze_a": true,
+          "gradient_clipping": false,
+          "input_factor_scale": 1.0,
+          "input_sketch_width": 128,
+          "method": "real_reward_gradient_aligned_lora",
+          "minimum_correct": 2,
+          "minimum_incorrect": 2,
+          "objective": "mean_response_length_normalized_binary_population_std_reward_contrast",
+          "optimizer_updates": 0,
+          "output_sketch_width": 128,
+          "persistent_accumulator_bytes": 521142272,
+          "probe_method": "real",
+          "prompt_groups": 1499,
+          "relative_spectral_tolerance": 1e-06,
+          "requested_observation_steps": 64,
+          "requested_prompt_groups": 0,
+          "schema_version": 1,
+          "second_moment": "uncentered_per_prompt_group",
+          "seed": 42,
+          "source_model_path": "/root/peft-for-rl/runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+          "subspace_path": "/root/peft-for-rl/runs/analysis/real_probe_r32_s64_p0_seed42_20261013/subspaces.safetensors",
+          "trainer_step": 64
+        }
+      },
+      "formal_adapter": {
+        "rank": 32,
+        "alpha": 64,
+        "scaling": 2,
+        "dropout": 0,
+        "module_count": 196,
+        "initial_b": "zero",
+        "freeze_a": true,
+        "trainable_factors": "B-only",
+        "trainable_parameters": 20643840,
+        "use_orig_params": true
+      },
+      "completed_training_step": 50,
+      "logical_optimizer_updates": 200,
+      "completed_full_benchmark_steps": [
+        50
+      ],
+      "status_at_capture": "complete",
+      "interpretation_caveat": "Local binary-reward REAL implementation; 64 is probe steps, adapter rank is32."
+    },
+    {
+      "version_id": "real32-r32-prefix-v20261014",
+      "label": "REAL32",
+      "method": "real",
+      "experiment": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42",
+      "protocol_file": "configs/experiments/real32_r32_frozen_20261014.json",
+      "protocol_sha256": "d656edf6d5e20e0d75d71a9a3aa3d0111799158537cda9729df2296852804f53",
+      "artifact": {
+        "source_directory": "runs/analysis/real_probe_r32_s32_seed42_replayed",
+        "files": {
+          "rank_map.json": {
+            "sha256": "232c3500701dd5552e8de9d93b83b4ffc6fc25506d209e2f09cb2d13e06f6e30",
+            "bytes": 16984,
+            "archived": true
+          },
+          "summary.json": {
+            "sha256": "edc7451a075cb78f2bdc72a07ee9ad444376dfe3ded55e112f0c6afe5cd13c8b",
+            "bytes": 952268,
+            "archived": true
+          },
+          "subspaces.safetensors": {
+            "sha256": "50e8b7467be73f0f25a984715746d0be9ff6dd474340fe37abf3f744e8924ed8",
+            "bytes": 65162736,
+            "archived": false
+          }
+        }
+      },
+      "probe": {
+        "rollout_steps": 32,
+        "attempted_prompts": 2048,
+        "generated_responses": 16384,
+        "accepted_or_observed_groups": 735,
+        "wall_seconds": null,
+        "observation_unit": "accepted_complete_K8_prompt_group",
+        "configuration": {
+          "constant_scaling": 2.0,
+          "distributed_observation": "complete_prompt_group_replicated_on_data_parallel_ranks",
+          "formal_trainable_parameters": 20643840,
+          "freeze_a": true,
+          "gradient_clipping": false,
+          "input_factor_scale": 1.0,
+          "input_sketch_width": 128,
+          "method": "real_reward_gradient_aligned_lora",
+          "minimum_correct": 2,
+          "minimum_incorrect": 2,
+          "objective": "mean_response_length_normalized_binary_population_std_reward_contrast",
+          "optimizer_updates": 0,
+          "output_sketch_width": 128,
+          "persistent_accumulator_bytes": 521142272,
+          "probe_method": "real",
+          "prompt_groups": 735,
+          "relative_spectral_tolerance": 1e-06,
+          "requested_observation_steps": 32,
+          "requested_prompt_groups": 0,
+          "schema_version": 1,
+          "second_moment": "uncentered_per_prompt_group",
+          "seed": 42,
+          "source_model_path": "/root/peft-for-rl/runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+          "subspace_path": "/root/peft-for-rl/runs/analysis/real_probe_r32_s32_seed42_replayed/subspaces.safetensors",
+          "trainer_step": 32,
+          "replay_source": "/root/peft-for-rl/runs/analysis/real_probe_r32_s64_p0_seed42_20261013_cache/step_032",
+          "replay_source_metadata_sha256": "5960afc6ae597d2a8d75a51d9abcdfd696c9cf75711f087fe95834fd15f3fd0e"
+        }
+      },
+      "formal_adapter": {
+        "rank": 32,
+        "alpha": 64,
+        "scaling": 2,
+        "dropout": 0,
+        "module_count": 196,
+        "initial_b": "zero",
+        "freeze_a": true,
+        "trainable_factors": "B-only",
+        "trainable_parameters": 20643840,
+        "use_orig_params": true
+      },
+      "completed_training_step": 150,
+      "logical_optimizer_updates": 600,
+      "completed_full_benchmark_steps": [
+        50,
+        100,
+        150
+      ],
+      "status_at_capture": "complete",
+      "interpretation_caveat": "Exact step032 sufficient-statistic prefix of REAL64; no independent32-step collection timing. Historical base-only path affects resume rollouts51/101."
+    },
+    {
+      "version_id": "real-p256-r32-v20261017",
+      "label": "REAL-P256",
+      "method": "real",
+      "experiment": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017",
+      "protocol_file": "configs/experiments/real_p256_r32_longrun270_20261017.json",
+      "protocol_sha256": "f4c4aa0cc0bf413d6c9311b466dc09ff1166a638cddb2de8a735e82a0b5ae34f",
+      "artifact": {
+        "source_directory": "runs/analysis/real_probe_r32_s4_p0_seed42_20261017",
+        "files": {
+          "rank_map.json": {
+            "sha256": "2eba5fe6fb2f3d27b50523bace21507e57dd098c7f2f463e6d41495862c700d5",
+            "bytes": 16776,
+            "archived": true
+          },
+          "summary.json": {
+            "sha256": "b1f3247156580a58ce1f326a609f2c1636ae7670d6fc9ec2bb44129e106f79e8",
+            "bytes": 922993,
+            "archived": true
+          },
+          "subspaces.safetensors": {
+            "sha256": "6e6b8cfd8719f28fa901dced909ff249bac5e41f1422ed6d96693a092ca46f6d",
+            "bytes": 65162736,
+            "archived": false
+          }
+        }
+      },
+      "probe": {
+        "rollout_steps": 4,
+        "attempted_prompts": 256,
+        "generated_responses": 2048,
+        "accepted_or_observed_groups": 87,
+        "wall_seconds": 2520.4911007590126,
+        "observation_unit": "accepted_complete_K8_prompt_group",
+        "configuration": {
+          "constant_scaling": 2.0,
+          "distributed_observation": "complete_prompt_group_replicated_on_data_parallel_ranks",
+          "formal_trainable_parameters": 20643840,
+          "freeze_a": true,
+          "gradient_clipping": false,
+          "input_factor_scale": 1.0,
+          "input_sketch_width": 128,
+          "method": "real_reward_gradient_aligned_lora",
+          "minimum_correct": 2,
+          "minimum_incorrect": 2,
+          "objective": "mean_response_length_normalized_binary_population_std_reward_contrast",
+          "optimizer_updates": 0,
+          "output_sketch_width": 128,
+          "persistent_accumulator_bytes": 521142272,
+          "probe_method": "real",
+          "prompt_groups": 87,
+          "relative_spectral_tolerance": 1e-06,
+          "requested_observation_steps": 4,
+          "requested_prompt_groups": 0,
+          "schema_version": 1,
+          "second_moment": "uncentered_per_prompt_group",
+          "seed": 42,
+          "source_model_path": "/root/peft-for-rl/runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+          "subspace_path": "/root/peft-for-rl/runs/analysis/real_probe_r32_s4_p0_seed42_20261017/subspaces.safetensors",
+          "trainer_step": 4
+        }
+      },
+      "formal_adapter": {
+        "rank": 32,
+        "alpha": 64,
+        "scaling": 2,
+        "dropout": 0,
+        "module_count": 196,
+        "initial_b": "zero",
+        "freeze_a": true,
+        "trainable_factors": "B-only",
+        "trainable_parameters": 20643840,
+        "use_orig_params": true
+      },
+      "completed_training_step": 210,
+      "logical_optimizer_updates": 840,
+      "completed_full_benchmark_steps": [
+        210
+      ],
+      "status_at_capture": "stopped_by_user_after210_evaluation",
+      "interpretation_caveat": "Original target270 overridden to210. Fresh probe and uninterrupted training0–210. Step210 adapter snapshot is not resumable; latest full checkpoint200. Only210 full benchmark complete; evaluation200 interrupted, queue150 cancelled by user at15:48; no new GPU work queued.",
+      "early_checkpoint_audit": "docs/experiments/evidence/real_gradtop_20261018/sources/runs/ops/real_p256_early_checkpoint_audit_20261018/audit.json"
+    }
+  ],
+  "historical_gradtop_boundary": {
+    "version": "September GradTop-v1, mean-rank31.63",
+    "observations": 12,
+    "attempted_prompts": 192,
+    "formal_trainable_factors": "A+B",
+    "description": "Heterogeneous energy-based rank, historical reduction and stopping. Separate protocol; excluded from the current matched-results table.",
+    "reference": "docs/experiments/local_a6000_full_benchmark_comparison_2026_10_zh.md"
+  },
+  "uncompleted_candidates": [
+    "gradtop_short",
+    "gradtop_prompt_mean",
+    "gradtop_prompt_sign",
+    "gradtop_masked",
+    "REAL-P2048-repaired"
+  ],
+  "reproduction_contract": "Use the exact protocol, artifact file hashes and execution code_sha256 in archived plans. Published source also includes later adapter initialization integration. Archived controller files preserve local execution and absolute paths; migrate prerequisites explicitly before execution."
+}

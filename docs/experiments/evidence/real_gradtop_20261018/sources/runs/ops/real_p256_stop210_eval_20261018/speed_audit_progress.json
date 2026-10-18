@@ -1,0 +1,194 @@
+{
+  "at": "2026-10-18T12:59:32.859284+08:00",
+  "runs": {
+    "REAL_P256_210": [
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/logs/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-0-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 5265,
+          "completed_output_tokens_per_second": 1538.03,
+          "estimated_mean_completed_length": 10122.1599375
+        },
+        "latest": {
+          "completed": 812,
+          "elapsed_seconds": 5375,
+          "completed_output_tokens_per_second": 1527.82
+        },
+        "runtime_error_or_preemption_lines": []
+      },
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/logs/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-1-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 5284,
+          "completed_output_tokens_per_second": 1539.75,
+          "estimated_mean_completed_length": 10170.04875
+        },
+        "latest": {
+          "completed": 805,
+          "elapsed_seconds": 5340,
+          "completed_output_tokens_per_second": 1533.58
+        },
+        "runtime_error_or_preemption_lines": []
+      },
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/logs/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-2-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 5378,
+          "completed_output_tokens_per_second": 1510.08,
+          "estimated_mean_completed_length": 10151.512799999999
+        },
+        "latest": {
+          "completed": 800,
+          "elapsed_seconds": 5378,
+          "completed_output_tokens_per_second": 1510.08
+        },
+        "runtime_error_or_preemption_lines": []
+      },
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42/logs/rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42.shard-3-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 5061,
+          "completed_output_tokens_per_second": 1567.56,
+          "estimated_mean_completed_length": 9916.77645
+        },
+        "latest": {
+          "completed": 854,
+          "elapsed_seconds": 5369,
+          "completed_output_tokens_per_second": 1577.67
+        },
+        "runtime_error_or_preemption_lines": []
+      }
+    ],
+    "GradTop270": [
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/logs/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-0-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 1437,
+          "completed_output_tokens_per_second": 2751.1,
+          "estimated_mean_completed_length": 4941.663375
+        },
+        "latest": {
+          "completed": 1812,
+          "elapsed_seconds": 3088,
+          "completed_output_tokens_per_second": 2757.62
+        },
+        "runtime_error_or_preemption_lines": []
+      },
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/logs/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-1-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 1481,
+          "completed_output_tokens_per_second": 2706.16,
+          "estimated_mean_completed_length": 5009.7787
+        },
+        "latest": {
+          "completed": 1812,
+          "elapsed_seconds": 3144,
+          "completed_output_tokens_per_second": 2773.2
+        },
+        "runtime_error_or_preemption_lines": []
+      },
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/logs/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-2-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 1450,
+          "completed_output_tokens_per_second": 2772.77,
+          "estimated_mean_completed_length": 5025.645625
+        },
+        "latest": {
+          "completed": 1812,
+          "elapsed_seconds": 3194,
+          "completed_output_tokens_per_second": 2741.27
+        },
+        "runtime_error_or_preemption_lines": []
+      },
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42/logs/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42.shard-3-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 1468,
+          "completed_output_tokens_per_second": 2679.04,
+          "estimated_mean_completed_length": 4916.0383999999995
+        },
+        "latest": {
+          "completed": 1812,
+          "elapsed_seconds": 3041,
+          "completed_output_tokens_per_second": 2799.3
+        },
+        "runtime_error_or_preemption_lines": []
+      }
+    ],
+    "GradTop150": [
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/logs/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-0-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 1942,
+          "completed_output_tokens_per_second": 2419.41,
+          "estimated_mean_completed_length": 5873.117775
+        },
+        "latest": {
+          "completed": 1812,
+          "elapsed_seconds": 3718,
+          "completed_output_tokens_per_second": 2656.35
+        },
+        "runtime_error_or_preemption_lines": []
+      },
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/logs/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-1-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 1920,
+          "completed_output_tokens_per_second": 2435.87,
+          "estimated_mean_completed_length": 5846.088
+        },
+        "latest": {
+          "completed": 1812,
+          "elapsed_seconds": 3732,
+          "completed_output_tokens_per_second": 2680.4
+        },
+        "runtime_error_or_preemption_lines": []
+      },
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/logs/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-2-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 1890,
+          "completed_output_tokens_per_second": 2488.15,
+          "estimated_mean_completed_length": 5878.254375
+        },
+        "latest": {
+          "completed": 1812,
+          "elapsed_seconds": 3775,
+          "completed_output_tokens_per_second": 2631.65
+        },
+        "runtime_error_or_preemption_lines": []
+      },
+      {
+        "log": "runs/outputs/full_bench_eval/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42/logs/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42.shard-3-of-4.log",
+        "near800": {
+          "completed": 800,
+          "elapsed_seconds": 1927,
+          "completed_output_tokens_per_second": 2463.67,
+          "estimated_mean_completed_length": 5934.3651125
+        },
+        "latest": {
+          "completed": 1812,
+          "elapsed_seconds": 3707,
+          "completed_output_tokens_per_second": 2684.15
+        },
+        "runtime_error_or_preemption_lines": []
+      }
+    ]
+  },
+  "interpretation": "vLLM tqdm counts output tokens only when requests finish. Derived lengths describe completed subsets, not full datasets or matched question subsets. Active unfinished generation is excluded from displayed token throughput; hardware throughput cannot be inferred from it alone.",
+  "hardware": "4 L40S occupied only by4 evaluation engines; memory bandwidth utilization100%; no swap use; available RAM231GiB; free disk~11GiB",
+  "configuration_audit": "speed_audit_adapter_and_config.json"
+}

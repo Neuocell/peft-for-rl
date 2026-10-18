@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "gram_vs_direct_energy": true,
+  "paired_decomposition_identity": true,
+  "svd_same_stream_exercised": true,
+  "development_only": true
+}

@@ -1,0 +1,111 @@
+{
+  "experiment": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017",
+  "probe_attempted_prompts": 256,
+  "accepted_prompt_groups": 87,
+  "steps": {
+    "210": {
+      "checkpoint": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42",
+      "weighted_avg": 0.4110099337748344,
+      "num_samples": 7248,
+      "benchmarks": {
+        "aime24": {
+          "checkpoint": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42",
+          "benchmark": "aime24",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.30520833333333336,
+          "macro_avg_at_k": 0.30520833333333336,
+          "pass_at_k": 0.7333333333333333,
+          "parse_rate": 0.8395833333333333,
+          "hit_max_rate": 0.125,
+          "no_answer_rate": 0.16041666666666668,
+          "length_mean": 11860.602083333333,
+          "length_median": 8210.0,
+          "maxed_unparseable_rate": 0.11041666666666666
+        },
+        "aime25": {
+          "checkpoint": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42",
+          "benchmark": "aime25",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.2125,
+          "macro_avg_at_k": 0.2125,
+          "pass_at_k": 0.4666666666666667,
+          "parse_rate": 0.7760416666666666,
+          "hit_max_rate": 0.16041666666666668,
+          "no_answer_rate": 0.22395833333333334,
+          "length_mean": 13794.338541666666,
+          "length_median": 8435.0,
+          "maxed_unparseable_rate": 0.12916666666666668
+        },
+        "amc23": {
+          "checkpoint": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42",
+          "benchmark": "amc23",
+          "num_problems": 40,
+          "num_samples": 1280,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.6421875,
+          "macro_avg_at_k": 0.6421875,
+          "pass_at_k": 0.95,
+          "parse_rate": 0.84296875,
+          "hit_max_rate": 0.0953125,
+          "no_answer_rate": 0.15703125,
+          "length_mean": 9857.8953125,
+          "length_median": 4770.5,
+          "maxed_unparseable_rate": 0.07734375
+        },
+        "hmmt_feb": {
+          "checkpoint": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42",
+          "benchmark": "hmmt_feb",
+          "num_problems": 30,
+          "num_samples": 960,
+          "samples_per_problem": 32,
+          "avg_at_k": 0.08541666666666667,
+          "macro_avg_at_k": 0.08541666666666667,
+          "pass_at_k": 0.2,
+          "parse_rate": 0.8114583333333333,
+          "hit_max_rate": 0.15,
+          "no_answer_rate": 0.18854166666666666,
+          "length_mean": 13201.697916666666,
+          "length_median": 8957.0,
+          "maxed_unparseable_rate": 0.12708333333333333
+        },
+        "math500": {
+          "checkpoint": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42",
+          "benchmark": "math500",
+          "num_problems": 500,
+          "num_samples": 2000,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.6505,
+          "macro_avg_at_k": 0.6505,
+          "pass_at_k": 0.756,
+          "parse_rate": 0.9065,
+          "hit_max_rate": 0.051,
+          "no_answer_rate": 0.0935,
+          "length_mean": 6359.793,
+          "length_median": 2289.0,
+          "maxed_unparseable_rate": 0.036
+        },
+        "minerva": {
+          "checkpoint": "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42",
+          "benchmark": "minerva",
+          "num_problems": 272,
+          "num_samples": 1088,
+          "samples_per_problem": 4,
+          "avg_at_k": 0.2545955882352941,
+          "macro_avg_at_k": 0.2545955882352941,
+          "pass_at_k": 0.3786764705882353,
+          "parse_rate": 0.6681985294117647,
+          "hit_max_rate": 0.125,
+          "no_answer_rate": 0.3318014705882353,
+          "length_mean": 13415.601102941177,
+          "length_median": 8115.5,
+          "maxed_unparseable_rate": 0.08823529411764706
+        }
+      },
+      "macro_avg": 0.3584013480392157
+    }
+  }
+}

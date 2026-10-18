@@ -1,0 +1,152 @@
+{
+  "LoRA_50": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 1,
+    "differences": [
+      {
+        "line": 5346,
+        "benchmark": "math500",
+        "id": "test/intermediate_algebra/754.json",
+        "sample_index": 1,
+        "eval_pred": "B",
+        "train_pred": null,
+        "stored_correct": false
+      }
+    ]
+  },
+  "LoRA_100": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 0,
+    "differences": []
+  },
+  "LoRA_150": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 3,
+    "differences": [
+      {
+        "line": 1866,
+        "benchmark": "aime25",
+        "id": "28",
+        "sample_index": 9,
+        "eval_pred": "A",
+        "train_pred": null,
+        "stored_correct": false
+      },
+      {
+        "line": 5346,
+        "benchmark": "math500",
+        "id": "test/intermediate_algebra/754.json",
+        "sample_index": 1,
+        "eval_pred": "B",
+        "train_pred": null,
+        "stored_correct": false
+      },
+      {
+        "line": 6495,
+        "benchmark": "minerva",
+        "id": "83",
+        "sample_index": 2,
+        "eval_pred": "A",
+        "train_pred": "A=2 and \u03c6=-\u03c0/3",
+        "stored_correct": false
+      }
+    ]
+  },
+  "REAL32_50": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 2,
+    "differences": [
+      {
+        "line": 1797,
+        "benchmark": "aime25",
+        "id": "26",
+        "sample_index": 4,
+        "eval_pred": "D",
+        "train_pred": null,
+        "stored_correct": false
+      },
+      {
+        "line": 5348,
+        "benchmark": "math500",
+        "id": "test/intermediate_algebra/754.json",
+        "sample_index": 3,
+        "eval_pred": "B",
+        "train_pred": null,
+        "stored_correct": false
+      }
+    ]
+  },
+  "REAL32_100": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 0,
+    "differences": []
+  },
+  "REAL32_150": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 2,
+    "differences": [
+      {
+        "line": 1247,
+        "benchmark": "aime25",
+        "id": "8",
+        "sample_index": 30,
+        "eval_pred": "a",
+        "train_pred": null,
+        "stored_correct": false
+      },
+      {
+        "line": 6585,
+        "benchmark": "minerva",
+        "id": "106",
+        "sample_index": 0,
+        "eval_pred": "A",
+        "train_pred": null,
+        "stored_correct": false
+      }
+    ]
+  },
+  "REAL64_50": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 0,
+    "differences": []
+  },
+  "GradTop_10": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 2,
+    "differences": [
+      {
+        "line": 5347,
+        "benchmark": "math500",
+        "id": "test/intermediate_algebra/754.json",
+        "sample_index": 2,
+        "eval_pred": "B",
+        "train_pred": null,
+        "stored_correct": false
+      },
+      {
+        "line": 7163,
+        "benchmark": "minerva",
+        "id": "250",
+        "sample_index": 2,
+        "eval_pred": "D",
+        "train_pred": null,
+        "stored_correct": false
+      }
+    ]
+  },
+  "GradTop_50": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 0,
+    "differences": []
+  },
+  "GradTop_100": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 0,
+    "differences": []
+  },
+  "GradTop_150": {
+    "eval_extract_matches_stored": true,
+    "different_train_eval_extract_count": 0,
+    "differences": []
+  }
+}

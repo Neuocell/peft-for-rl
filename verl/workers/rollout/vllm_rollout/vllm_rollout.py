@@ -261,6 +261,15 @@ class vLLMAsyncRollout(BaseRollout):
             added = self.inference_engine.worker.add_lora(lora_request)
             if added is False:
                 raise RuntimeError("vLLM rejected the active LoRA adapter; refusing to generate with base weights")
+            if kwargs.get("lora_resume_verification") is not None:
+                from verl.utils.lora_resume_verification import verify_engine_adapter
+
+                return verify_engine_adapter(
+                    self.inference_engine.worker,
+                    asdict(peft_config),
+                    kwargs["lora_resume_verification"],
+                    VLLM_LORA_INT_ID,
+                )
             logger.info(f"vLLM load weights, loaded_params: {len(weights)}")
         else:
             from verl.utils.vllm.patch import patch_vllm_moe_model_weight_loader

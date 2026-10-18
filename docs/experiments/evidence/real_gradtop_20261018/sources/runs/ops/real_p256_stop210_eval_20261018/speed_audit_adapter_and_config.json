@@ -1,0 +1,48 @@
+{
+  "recorded_at": "2026-10-18T12:59:02.772371+08:00",
+  "step210_export_sha_matches_snapshot": true,
+  "config_sha_matches_launch": true,
+  "step210_tensor_count": 392,
+  "all_finite": true,
+  "fixed_a_matches_probe": true,
+  "b_nonzero": true,
+  "step200_snapshot_equals_full_checkpoint_all_tensors": true,
+  "adapter_config_differences_from_full_checkpoint": {
+    "runtime_config": [
+      {
+        "ephemeral_gpu_offload": false
+      },
+      null
+    ],
+    "target_modules": [
+      [
+        "down_proj",
+        "o_proj",
+        "up_proj",
+        "v_proj",
+        "gate_proj",
+        "k_proj",
+        "q_proj"
+      ],
+      [
+        "v_proj",
+        "k_proj",
+        "gate_proj",
+        "q_proj",
+        "up_proj",
+        "o_proj",
+        "down_proj"
+      ]
+    ]
+  },
+  "eval_manifest_differences_from_gradtop270": {
+    "lora_adapter": [
+      "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_270/actor/peft_adapter",
+      "/root/peft-for-rl/runs/ops/real_p256_stop210_eval_20261018/evaluation_adapters/step_210"
+    ],
+    "checkpoint": [
+      "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step270_fullbench_32768_seed42",
+      "rlvr_v1_real_p256_r32_a64_lr1em5_b64m16n8_seed42_20261017_step210_fullbench_32768_seed42"
+    ]
+  }
+}

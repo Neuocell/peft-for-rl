@@ -1,0 +1,80 @@
+{
+  "REAL32": {
+    "50": {
+      "source": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_50/actor/peft_adapter/adapter_model.safetensors",
+      "source_sha256": "f9e2e9fa7cbdc5803846a94dbeb4e792736913bdc7654a8c22e586b29c2068bd",
+      "a_sha256": "5d84bd4bf039c981be850431df6965b878305852f75febf4a5ffe05629d7f5e4",
+      "b_sha256": "d0cd3b40383b3824685eeb803d82e5293504c478a17a98f2d53c2bf67088b02c",
+      "a_frobenius": 79.19595949545209,
+      "b_frobenius": 0.6711724535875854,
+      "effective_deltaW_frobenius": 1.3423449071577345,
+      "largest_module_deltaW_frobenius": 0.16216678742739216,
+      "largest_module": "model.layers.14.mlp.up_proj.lora_A.weight",
+      "tensor_count": 392
+    },
+    "100": {
+      "source": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_100/actor/peft_adapter/adapter_model.safetensors",
+      "source_sha256": "7b2c8e65efb27d73a1c8591e3f31688ddd8bdeec733598d99d4c2d41931bd5c5",
+      "a_sha256": "5d84bd4bf039c981be850431df6965b878305852f75febf4a5ffe05629d7f5e4",
+      "b_sha256": "81fda7845c956ee68a311fb9ba01cba5346e1a1cfeac0ff7adb59df5b15ed0a3",
+      "a_frobenius": 79.19595949545209,
+      "b_frobenius": 0.9194253073984946,
+      "effective_deltaW_frobenius": 1.838850614789189,
+      "largest_module_deltaW_frobenius": 0.2210712521813986,
+      "largest_module": "model.layers.14.mlp.up_proj.lora_A.weight",
+      "tensor_count": 392
+    },
+    "150": {
+      "source": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_150/actor/peft_adapter/adapter_model.safetensors",
+      "source_sha256": "698f86b4f66b57f3783b1b5ef8bda23c798c70863d48d6d309381816a8b425fc",
+      "a_sha256": "5d84bd4bf039c981be850431df6965b878305852f75febf4a5ffe05629d7f5e4",
+      "b_sha256": "ac8adee1efadfaea3ebcb335eefad8aa5bc41bbb1c87474f5d75d95b2146e8b8",
+      "a_frobenius": 79.19595949545209,
+      "b_frobenius": 1.1532699695047184,
+      "effective_deltaW_frobenius": 2.3065399390095185,
+      "largest_module_deltaW_frobenius": 0.2762297849255692,
+      "largest_module": "model.layers.13.mlp.up_proj.lora_A.weight",
+      "tensor_count": 392
+    },
+    "A_exactly_unchanged_50_100_150": true
+  },
+  "GradTop": {
+    "50": {
+      "source": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_50/actor/peft_adapter/adapter_model.safetensors",
+      "source_sha256": "5d1aaa7cbb7704eab50bf2d97db25a78354db4bb11b9b42027c5a16cccea59f7",
+      "a_sha256": "d700a7f733e84f586b12bd90a153762888050e202bc919a4e6148e917efb9c2b",
+      "b_sha256": "fa7695fc32117af9df491c4fcb547ddf36438b4ee61a324eb64d9458a2f08bf9",
+      "a_frobenius": 79.19885659189865,
+      "b_frobenius": 0.6539830940676671,
+      "effective_deltaW_frobenius": 1.3082254047645911,
+      "largest_module_deltaW_frobenius": 0.158890754670689,
+      "largest_module": "model.layers.19.mlp.up_proj.lora_A.weight",
+      "tensor_count": 392
+    },
+    "100": {
+      "source": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_100/actor/peft_adapter/adapter_model.safetensors",
+      "source_sha256": "ba60c0a98d1f5819edae5ac2279598c6f0fe576a1ec68dbf5f30a2fa6ae26345",
+      "a_sha256": "7cde52a4946f7ba3ba4c93f44e0475b81c61193204733ecef994c6d8e88e3aaf",
+      "b_sha256": "242f75e0b466bcc05d368808a0c5300f0636355ec9ce023cf5a559ba3068dfe7",
+      "a_frobenius": 79.20611206339171,
+      "b_frobenius": 0.9034057065267382,
+      "effective_deltaW_frobenius": 1.807577040326766,
+      "largest_module_deltaW_frobenius": 0.2191985477660384,
+      "largest_module": "model.layers.14.mlp.up_proj.lora_A.weight",
+      "tensor_count": 392
+    },
+    "150": {
+      "source": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_150/actor/peft_adapter/adapter_model.safetensors",
+      "source_sha256": "1e7c3d825fd1775d101468d60fcbd917894d664a9890988936740b789a4c8051",
+      "a_sha256": "635d8ea1a3ff7ae67c3025141a107c577b46b79692fe107d58e1d835c6242038",
+      "b_sha256": "30a75a6b2539d6a76decd1386be1fc837cf00ca189a56dd06f3047ee9fffa081",
+      "a_frobenius": 79.20930515298943,
+      "b_frobenius": 1.1029145207340159,
+      "effective_deltaW_frobenius": 2.207025765760822,
+      "largest_module_deltaW_frobenius": 0.2661454000639943,
+      "largest_module": "model.layers.14.mlp.up_proj.lora_A.weight",
+      "tensor_count": 392
+    },
+    "A_exactly_unchanged_50_100_150": false
+  }
+}

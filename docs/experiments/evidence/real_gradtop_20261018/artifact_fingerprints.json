@@ -1,0 +1,82 @@
+{
+  "gradtop-r32-o16-v20261015": {
+    "source_directory": "runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015",
+    "files": {
+      "rank_map.json": {
+        "sha256": "2ea5532e86dccdb11e3b70a42b700b77adb272adc87c144c4720055303b57a41",
+        "bytes": 16752,
+        "archived": true
+      },
+      "summary.json": {
+        "sha256": "5899d6b105331d232fd5e892944e5db61d05e52557bde05bb30527360a7d30ce",
+        "bytes": 114712,
+        "archived": true
+      },
+      "subspaces.safetensors": {
+        "sha256": "74a57cf4f84718cfc3265639fc8b2eae2fb3382f593302a1da403d042f9258cc",
+        "bytes": 65162736,
+        "archived": false
+      }
+    }
+  },
+  "real32-r32-prefix-v20261014": {
+    "source_directory": "runs/analysis/real_probe_r32_s32_seed42_replayed",
+    "files": {
+      "rank_map.json": {
+        "sha256": "232c3500701dd5552e8de9d93b83b4ffc6fc25506d209e2f09cb2d13e06f6e30",
+        "bytes": 16984,
+        "archived": true
+      },
+      "summary.json": {
+        "sha256": "edc7451a075cb78f2bdc72a07ee9ad444376dfe3ded55e112f0c6afe5cd13c8b",
+        "bytes": 952268,
+        "archived": true
+      },
+      "subspaces.safetensors": {
+        "sha256": "50e8b7467be73f0f25a984715746d0be9ff6dd474340fe37abf3f744e8924ed8",
+        "bytes": 65162736,
+        "archived": false
+      }
+    }
+  },
+  "real64-r32-v20261013": {
+    "source_directory": "runs/analysis/real_probe_r32_s64_p0_seed42_20261013",
+    "files": {
+      "rank_map.json": {
+        "sha256": "b4cfcee8f3567c366fd2fa5645c7b37dbcda23a5c0c850b51ffbab115df4c7f6",
+        "bytes": 16777,
+        "archived": true
+      },
+      "summary.json": {
+        "sha256": "4529e56e9d65b86195ff6d17239aa9cff4de472aece76630966203a9690a1f7e",
+        "bytes": 985948,
+        "archived": true
+      },
+      "subspaces.safetensors": {
+        "sha256": "ea567a82c4c05070ae67a735bebb393d492d1eec7ae8c7b52c660a2b0255404f",
+        "bytes": 65162736,
+        "archived": false
+      }
+    }
+  },
+  "real-p256-r32-v20261017": {
+    "source_directory": "runs/analysis/real_probe_r32_s4_p0_seed42_20261017",
+    "files": {
+      "rank_map.json": {
+        "sha256": "2eba5fe6fb2f3d27b50523bace21507e57dd098c7f2f463e6d41495862c700d5",
+        "bytes": 16776,
+        "archived": true
+      },
+      "summary.json": {
+        "sha256": "b1f3247156580a58ce1f326a609f2c1636ae7670d6fc9ec2bb44129e106f79e8",
+        "bytes": 922993,
+        "archived": true
+      },
+      "subspaces.safetensors": {
+        "sha256": "6e6b8cfd8719f28fa901dced909ff249bac5e41f1422ed6d96693a092ca46f6d",
+        "bytes": 65162736,
+        "archived": false
+      }
+    }
+  }
+}

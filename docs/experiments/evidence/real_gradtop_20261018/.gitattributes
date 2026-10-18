@@ -1,0 +1,5 @@
+# Preserve historical evidence bytes, including CSV CRLF and source whitespace.
+sources/** -text -whitespace
+probe/** -text
+protocols/** -text
+cpu_regression.txt -text -whitespace

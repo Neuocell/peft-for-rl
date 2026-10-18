@@ -170,6 +170,9 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.model.gradient_probe_rank_tolerance=${GRADIENT_PROBE_RANK_TOLERANCE:-1.0} \
     +actor_rollout_ref.model.gradient_probe_output_dir=${GRADIENT_PROBE_OUTPUT_DIR:-null} \
     +actor_rollout_ref.model.gradient_probe_method=${GRADIENT_PROBE_METHOD:-energy} \
+    +actor_rollout_ref.model.gradient_probe_variant=${GRADIENT_PROBE_VARIANT:-legacy} \
+    +actor_rollout_ref.model.gradient_probe_expected_observations=${GRADIENT_PROBE_EXPECTED_OBSERVATIONS:-0} \
+    +actor_rollout_ref.model.gradient_probe_sign_seed=${GRADIENT_PROBE_SIGN_SEED:-42} \
     +actor_rollout_ref.model.gradient_probe_window_size=${GRADIENT_PROBE_WINDOW_SIZE:-3} \
     +actor_rollout_ref.model.gradient_probe_num_windows=${GRADIENT_PROBE_NUM_WINDOWS:-5} \
     +actor_rollout_ref.model.gradient_probe_calibration_windows=${GRADIENT_PROBE_CALIBRATION_WINDOWS:-0} \
@@ -181,6 +184,12 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.model.gradient_probe_balance_rank_by_module_type=${GRADIENT_PROBE_BALANCE_RANK_BY_MODULE_TYPE:-False} \
     +actor_rollout_ref.model.gradient_probe_local_atoms=${GRADIENT_PROBE_LOCAL_ATOMS:-2} \
     +actor_rollout_ref.model.gradient_probe_gap_cap=${GRADIENT_PROBE_GAP_CAP:-4.0} \
+    +actor_rollout_ref.model.real_probe_rank=${REAL_PROBE_RANK:-32} \
+    +actor_rollout_ref.model.real_probe_output_width=${REAL_PROBE_OUTPUT_WIDTH:-0} \
+    +actor_rollout_ref.model.real_probe_input_width=${REAL_PROBE_INPUT_WIDTH:-0} \
+    +actor_rollout_ref.model.real_probe_steps=${REAL_PROBE_STEPS:-64} \
+    +actor_rollout_ref.model.real_probe_prompts=${REAL_PROBE_PROMPTS:-0} \
+    +actor_rollout_ref.model.real_probe_seed=${REAL_PROBE_SEED:-42} \
     +actor_rollout_ref.model.gradient_subspace_rank_map_path=${GRADIENT_SUBSPACE_RANK_MAP_PATH:-null} \
     +actor_rollout_ref.model.gradient_subspace_path=${GRADIENT_SUBSPACE_PATH:-null} \
     +actor_rollout_ref.model.gradient_subspace_scaling=${GRADIENT_SUBSPACE_SCALING:-2.0} \
@@ -287,6 +296,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.ref.log_prob_use_dynamic_bsz=${use_dynamic_bsz} \
     actor_rollout_ref.ref.log_prob_max_token_len_per_gpu=${infer_ppo_max_token_len} \
     actor_rollout_ref.actor.fsdp_config.fsdp_size=${fsdp_size} \
+    actor_rollout_ref.actor.fsdp_config.seed=${FSDP_SEED:-42} \
     actor_rollout_ref.actor.checkpoint.save_contents="${save_contents}" \
     reward_model.reward_manager=dapo \
     custom_reward_function.path="${CUSTOM_REWARD_PATH}" \

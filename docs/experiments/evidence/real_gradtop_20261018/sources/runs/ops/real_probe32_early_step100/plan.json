@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-15T00:27:39.531957+08:00",
+  "root": "/root/peft-for-rl",
+  "python": "/home/node/anaconda3/envs/peft-for-rl/bin/python",
+  "job_dir": "/root/peft-for-rl/runs/ops/real_probe32_early_step100",
+  "experiment": "rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42",
+  "probe_experiment": "real_probe_r32_s32_seed42_replayed",
+  "artifact_dir": "/root/peft-for-rl/runs/analysis/real_probe_r32_s32_seed42_replayed",
+  "checkpoint_root": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42",
+  "target_step": 150,
+  "protocol_file": "/root/peft-for-rl/runs/ops/real_probe32_continue_step150/protocol.json",
+  "baseline_experiment": "rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42",
+  "prerequisite_locks": [
+    "/root/peft-for-rl/runs/ops/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42.eval100_50.lock",
+    "/root/peft-for-rl/runs/ops/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42.step150_controller.lock"
+  ],
+  "code_sha256": {
+    "/root/peft-for-rl/scripts/local/run_real_after_eval.py": "729d95bfd06f36c327f982cbb7bcdd27e0779c71f47d566a9d52bf93c84c5553",
+    "/root/peft-for-rl/scripts/local/real_experiment_eval.py": "fc6b272e00be3fe24332f5982337052836724551bfbc9de5a626b7a79740b3e6",
+    "/root/peft-for-rl/scripts/local/start_real_gradient_probe_4gpu.sh": "15e250facc4e8decff6da6b96235bb2e24250df0bcd86d68799ff6f8b9b4de80",
+    "/root/peft-for-rl/scripts/local/run_rlvr_protocol_1p5b_4gpu.sh": "05c45e68459087778d64320e95b11cdba1b165e470ffd3f8d0c7d88292b10963",
+    "/root/peft-for-rl/scripts/local/run_dapo_boxed_paper_clean_1p5b_4gpu.sh": "c97af17c9638a3e00ebcfa1eb225d9ac8fdf6d369b819a5c5b23fafceb20ce4b",
+    "/root/peft-for-rl/examples/verl_train/run_dapo_math_boxed_stable_lora_1p5b_4gpu_8k.sh": "9836b89e6aa099bd314112f8d546204de4095c996873847921fbf2665a7ead02",
+    "/root/peft-for-rl/scripts/analysis/verify_rlvr_protocol.py": "b414e9882fcc9d16316a393dfcd26bd27e52727cc8f0a32ed201f66f1a00e963",
+    "/root/peft-for-rl/scripts/analysis/verify_full_bench_run.py": "248ef1cfe13ccddc1adec5e2ab9c63ec76416d1a892b7f0ade1437ea9974e96b",
+    "/root/peft-for-rl/scripts/analysis/compare_paired_full_bench.py": "5764621d26742238f77a4e8d47d5c37b14ca80ae2b65e6ea4bd3865cf2041fc8",
+    "/root/peft-for-rl/scripts/analysis/compare_full_bench_and_select_next.py": "cde6e49597e51ef6e5de5ca2aac6be7452e2b5be2b8aeb48c7ffe3ca4a44b394",
+    "/root/peft-for-rl/verl/utils/peft_real.py": "096021ba32c580658e946e4ffa3b6094d93ac20e4731ca925d889bb46b36285e",
+    "/root/peft-for-rl/verl/utils/real_probe_mode.py": "d0df4d8b786806d01e5f3aa6288b5490a704f30143bc58eb8444b1bf0a3ac901",
+    "/root/peft-for-rl/verl/utils/peft_gradient_subspace.py": "4807a8d12c7d245636867f0d4f174c419958ea8b14349ff8f03c6582fdc14ae5",
+    "/root/peft-for-rl/verl/utils/reward_score/boxed_math_accuracy.py": "39b319390cd1745458b8ba366c41585aad7c6ff1734ed6b98b2e224833d5696b",
+    "/root/peft-for-rl/verl/trainer/ppo/ray_trainer.py": "44047990d44a87cd004511d8a972a5bc909779c54425b4eeabb8c48b19a061bd",
+    "/root/peft-for-rl/verl/workers/actor/dp_actor.py": "928ad2838a63cb4ac86657c46573e8217b9305d756fbfbd2829e09128d78987d",
+    "/root/peft-for-rl/verl/workers/fsdp_workers.py": "109c3297fd6ffa5ffbfda5f5d7a22a7012af83a0447cee5861096a146fdf3298",
+    "/root/peft-for-rl/verl/workers/config/model.py": "7fe49a35b7b930144cdc8b933fe09ebebef208619d95937030648092aa82e4ce",
+    "/root/peft-for-rl/verl/trainer/config/ppo_trainer.yaml": "ae4655067015d0974613d831d3bb044d0d120e0b1e895f8961c391201f1a60ee",
+    "/root/peft-for-rl/configs/experiments/rlvr_dapo_math_1p5b_protocol_v1.json": "b233668b10127158226cf49e3b35f35689a8176df35aa969501224c77c2e8166",
+    "/root/peft-for-rl/tina_run/scripts/local/eval/run_full_bench_vllm_4gpu.sh": "cd97c96d374b4ac8e1628be81ecb36c429996e4ccc6b56d695e3a897601473ed",
+    "/root/peft-for-rl/tina_run/scripts/local/eval/eval_full_bench_vllm.py": "09e67123d5f345a5899b5299a1f046859d199a8d12dec2e25d03e0605b2e404a",
+    "/root/peft-for-rl/runs/ops/real_r32_lr1e5_seed42_after_eval/protocol.json": "c0e7433e0695f733043b46f600295665177fdc14f97534f8a0de70f3b2a610bb",
+    "/root/peft-for-rl/runs/ops/rlvr_protocol/evaluate_steps100_50.py": "fa09eedc26d48669363f5f703107b7d3123f3e21525ed9f0f7288198c376f972",
+    "/root/peft-for-rl/runs/ops/rlvr_protocol/step150_control.py": "7a879ad53f78e61dda6e2850f56d7317cd1f2b870c892a4b61b63bdb83d97ae4",
+    "/root/peft-for-rl/runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/protocol.json": "d656edf6d5e20e0d75d71a9a3aa3d0111799158537cda9729df2296852804f53",
+    "/root/peft-for-rl/scripts/local/run_real_cached_after_eval.py": "c2aa64c5f3ece724515eac18af2ad41fc907f5d7c9d9f77d9dbc38c3d9aa9177",
+    "/root/peft-for-rl/scripts/local/real_probe_cache.py": "34909593265530fb45492621ec72b866ad99c89af09e8b518e7716d2789447cc",
+    "/root/peft-for-rl/runs/analysis/real_probe_r32_s64_p0_seed42_20261013_cache/step_032/metadata.json": "5960afc6ae597d2a8d75a51d9abcdfd696c9cf75711f087fe95834fd15f3fd0e",
+    "/root/peft-for-rl/runs/analysis/real_probe_r32_s64_p0_seed42_20261013_cache/step_032/y_sum.safetensors": "8e3155ad25d12588d27d10283deeb36d4094a67279660d4965116b36bc285a2a",
+    "/root/peft-for-rl/runs/analysis/real_probe_r32_s64_p0_seed42_20261013_cache/omega.safetensors": "f7b608470ab0c2583a279701ab7f2b55155ff7c6556fc718e9905559615e0819",
+    "/root/peft-for-rl/runs/analysis/real_probe_r32_s32_seed42_replayed/summary.json": "edc7451a075cb78f2bdc72a07ee9ad444376dfe3ded55e112f0c6afe5cd13c8b",
+    "/root/peft-for-rl/runs/analysis/real_probe_r32_s32_seed42_replayed/rank_map.json": "232c3500701dd5552e8de9d93b83b4ffc6fc25506d209e2f09cb2d13e06f6e30",
+    "/root/peft-for-rl/runs/analysis/real_probe_r32_s32_seed42_replayed/subspaces.safetensors": "50e8b7467be73f0f25a984715746d0be9ff6dd474340fe37abf3f744e8924ed8",
+    "/root/peft-for-rl/scripts/local/continue_real_probe32.py": "842f6bd06087cdcc81a630a077786b12d74b6b3da2a4528a0a0d2d9e37101752",
+    "/root/peft-for-rl/verl/utils/checkpoint/fsdp_checkpoint_manager.py": "48836f8c30140465d9de5342a4b29d6ff0fa4067d4f02d90e5eff6d2d7cc0d5e",
+    "/root/peft-for-rl/verl/utils/checkpoint/checkpoint_manager.py": "86bbd39c21e2630e0392676be5066b82cf945afcf9dfdf3316229b547a169830",
+    "/root/peft-for-rl/runs/ops/real_probe32_continue_step150/protocol.json": "78aa1d52ca47d337e350908ebde8860f701e317b79bbee0044db1af8d9eae1bc",
+    "/root/peft-for-rl/runs/ops/real_probe32_continue_step150/step50_adapter_backup/adapter_model.safetensors": "f9e2e9fa7cbdc5803846a94dbeb4e792736913bdc7654a8c22e586b29c2068bd",
+    "/root/peft-for-rl/runs/ops/real_probe32_continue_step150/step50_adapter_backup/adapter_config.json": "1b2219c888bec074583d20abe1cc592154b335796d5836c3f2c2a67acb35ab17",
+    "/root/peft-for-rl/scripts/local/real_early_step100.py": "6d9cb451a284277a8f8004a7ba13f367bfb9c3a52994017038360aad520c14f9",
+    "/root/peft-for-rl/verl/utils/gradtop_objectives.py": "7768d1d38fe2b8410de86aa5e70d9a1a1efabb36741815f27847e5fe6c6a5d6d"
+  },
+  "base_model": "/root/peft-for-rl/runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+  "base_model_weights_sha256": "58858233513d76b8703e72eed6ce16807b523328188e13329257fb9594462945",
+  "snapshot": "/root/peft-for-rl/runs/phase1-signal-random-v1/imported-runtime/outputs/full_bench_eval/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42/records/full_gradient_mean_gain_lcb_uniform_r8_b64m16n8_step50_fullbench_32768_seed42.jsonl",
+  "snapshot_sha256": "3416ba93286b324a9663777fa472d0b568af5446319f27f876a63b59b3e863da",
+  "baseline_eval_dir": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+  "eval_output_dir": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+  "eval_controller_path": "/root/peft-for-rl/runs/ops/rlvr_protocol/evaluate_steps100_50.py",
+  "eval_controller_sha256": "fa09eedc26d48669363f5f703107b7d3123f3e21525ed9f0f7288198c376f972",
+  "eval_support_path": "/root/peft-for-rl/runs/ops/rlvr_protocol/step150_control.py",
+  "eval_support_sha256": "7a879ad53f78e61dda6e2850f56d7317cd1f2b870c892a4b61b63bdb83d97ae4",
+  "observation": {
+    "steps": 32,
+    "rank": 32,
+    "input_width": 128,
+    "output_width": 128,
+    "prompts_per_step": 64,
+    "responses_per_prompt": 8,
+    "seed": 42,
+    "optimizer_updates": 0,
+    "prompt_groups": 735,
+    "reused_cache": true,
+    "attempted_prompts": 2048
+  },
+  "formal_training": {
+    "steps": 150,
+    "rank": 32,
+    "alpha": 64,
+    "learning_rate": 1e-05,
+    "freeze_a": true,
+    "seed": 42,
+    "logical_optimizer_updates": 600
+  },
+  "comparison": {
+    "baseline_step": 50,
+    "benchmarks": [
+      "aime24",
+      "aime25",
+      "amc23",
+      "hmmt_feb",
+      "math500",
+      "minerva"
+    ],
+    "total_records": 7248,
+    "bootstrap_samples": 10000,
+    "unit": "problem"
+  },
+  "execution": {
+    "ray_probe_temp_dir": "/tmp/realp_1013",
+    "ray_train_temp_base": "/tmp/real32_post100",
+    "ray_num_cpus": 20,
+    "auto_resume": false
+  },
+  "cache_snapshot": "/root/peft-for-rl/runs/analysis/real_probe_r32_s64_p0_seed42_20261013_cache/step_032",
+  "predecessor": {
+    "experiment": "rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42",
+    "status": "/root/peft-for-rl/runs/ops/real_r32_lr1e5_seed42_after_eval/status.json",
+    "result": "/root/peft-for-rl/runs/ops/real_r32_lr1e5_seed42_after_eval/evaluation_result.json",
+    "eval_output_dir": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+    "lock": "/root/peft-for-rl/runs/ops/real_r32_lr1e5_seed42_after_eval/controller.lock",
+    "process": {
+      "pid": 432507,
+      "start_ticks": 9418259
+    }
+  },
+  "step50_eval_dir": "/root/peft-for-rl/runs/outputs/full_bench_eval/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42_step50_fullbench_32768_seed42",
+  "step50_adapter_backup": "/root/peft-for-rl/runs/ops/real_probe32_continue_step150/step50_adapter_backup",
+  "run_locks": [
+    "/root/peft-for-rl/runs/ops/real_probe32_continue_step150/controller.lock",
+    "/root/peft-for-rl/runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/controller.lock"
+  ],
+  "continuation": {
+    "resume_from": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_50",
+    "evaluation_steps": [
+      100,
+      150
+    ],
+    "train_continuously_to": 150,
+    "optimizer_updates_per_trainer_step": 4,
+    "preserve_step50_adapter": true,
+    "evaluation_order": [
+      "save100",
+      "evaluate100",
+      "resume100_to150",
+      "evaluate150"
+    ],
+    "early_evaluation_requested_at": "2026-10-15T00:27:39.532136+08:00"
+  },
+  "takeover": {
+    "controller": {
+      "pid": 883029,
+      "state": "S",
+      "start_ticks": 18419772
+    },
+    "training": {
+      "pid": 883104,
+      "state": "S",
+      "start_ticks": 18420815
+    },
+    "stage_token": "48b5fb7a350d4af1942e6fb5a89d61c1",
+    "status_path": "/root/peft-for-rl/runs/ops/real_probe32_continue_step150/status.json",
+    "train_log": "/root/peft-for-rl/runs/ops/real_probe32_continue_step150/train.log"
+  }
+}

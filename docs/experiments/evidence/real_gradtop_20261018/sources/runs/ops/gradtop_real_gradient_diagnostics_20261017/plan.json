@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "registered_at": "2026-10-17T11:06:03.486421+08:00",
+  "python": "/home/node/anaconda3/envs/peft-for-rl/bin/python",
+  "base_model": "/root/peft-for-rl/runs/ckpts/models/DeepSeek-R1-Distill-Qwen-1.5B/base",
+  "base_model_sha256": "58858233513d76b8703e72eed6ce16807b523328188e13329257fb9594462945",
+  "policies": [
+    {
+      "key": "gradtop100",
+      "method": "gradtop",
+      "step": 100,
+      "adapter": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_100/actor/peft_adapter",
+      "adapter_sha256": "ba60c0a98d1f5819edae5ac2279598c6f0fe576a1ec68dbf5f30a2fa6ae26345",
+      "adapter_config_sha256": "11603425b6594298139c1ca7969bea4ffd6b3092c2d8587630c3d70f8df50f08"
+    },
+    {
+      "key": "real100",
+      "method": "real",
+      "step": 100,
+      "adapter": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_100/actor/peft_adapter",
+      "adapter_sha256": "7b2c8e65efb27d73a1c8591e3f31688ddd8bdeec733598d99d4c2d41931bd5c5",
+      "adapter_config_sha256": "4507cbf24bfcc933c29b23f791010383e3c7c9c87e38eb74dab6c7d03f3e4213"
+    },
+    {
+      "key": "gradtop150",
+      "method": "gradtop",
+      "step": 150,
+      "adapter": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_150/actor/peft_adapter",
+      "adapter_sha256": "1e7c3d825fd1775d101468d60fcbd917894d664a9890988936740b789a4c8051",
+      "adapter_config_sha256": "f64fa32a56381565900865e7b07db74f114d41b743a43926c0ea68bc8587936c"
+    },
+    {
+      "key": "real150",
+      "method": "real",
+      "step": 150,
+      "adapter": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_real_probe32_r32_a64_lr1em5_b64m16n8_seed42/global_step_150/actor/peft_adapter",
+      "adapter_sha256": "698f86b4f66b57f3783b1b5ef8bda23c798c70863d48d6d309381816a8b425fc",
+      "adapter_config_sha256": "776220d0add20e2bb9ea9352293dd967cf0946092a5c33000de1c5077832134c"
+    },
+    {
+      "key": "gradtop270",
+      "method": "gradtop",
+      "step": 270,
+      "adapter": "/root/peft-for-rl/runs/ckpts/verl/peft-for-rl/rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015/global_step_270/actor/peft_adapter",
+      "adapter_sha256": "b5397e686a81fc3058c39e7b798b4516c5b960b1ed2a9b5a95d4e7bcc9643fd1",
+      "adapter_config_sha256": "5790cf424c808bd975b5c1f2885cc59b1a8f41d7bbf5d6168f24eb2e3c6866d7"
+    }
+  ],
+  "modules": [
+    "model.layers.0.self_attn.q_proj",
+    "model.layers.0.mlp.down_proj",
+    "model.layers.13.self_attn.q_proj",
+    "model.layers.13.mlp.down_proj",
+    "model.layers.27.self_attn.q_proj",
+    "model.layers.27.mlp.down_proj"
+  ],
+  "subspaces": {
+    "gradtop_init": "/root/peft-for-rl/runs/analysis/gradtop_r32_o16_w8_c64_seed42_20261015/subspaces.safetensors",
+    "real_init": "/root/peft-for-rl/runs/analysis/real_probe_r32_s32_seed42_replayed/subspaces.safetensors"
+  },
+  "subspace_sha256": {
+    "gradtop_init": "74a57cf4f84718cfc3265639fc8b2eae2fb3382f593302a1da403d042f9258cc",
+    "real_init": "50e8b7467be73f0f25a984715746d0be9ff6dd474340fe37abf3f744e8924ed8"
+  },
+  "prompts_sha256": "a689a4371cf623f13f15a3a12f0ffbb3c00412c2a467ee8da474f93c254642a0",
+  "prompt_count": 64,
+  "groups_per_prompt": 2,
+  "responses_per_group": 8,
+  "total_responses": 5120,
+  "max_response_tokens": 8192,
+  "max_prompt_tokens": 1024,
+  "temperature": 1.0,
+  "top_p": 1.0,
+  "top_k": -1,
+  "output_projection_width": 64,
+  "projection_halves": {
+    "A": 32,
+    "B": 32
+  },
+  "formal_world_size": 4,
+  "formal_local_minibatch_responses": 32,
+  "formal_max_tokens": 12288,
+  "formal_updates_per_rollout": 4,
+  "optimizer_updates": 0,
+  "real270": "unavailable_not_synthesized",
+  "sampling_exclusion": "first4096 production sampler rows, covering both original probes",
+  "main_target": "fixed-policy on-policy clipped-PPO gradient at ratio=1; actual dynamic microbatch reduction replay",
+  "branches": [
+    "equal_prompt_token_mean",
+    "global_token_mean16",
+    "formal_dynamic_replay",
+    "real_contrast_sensitivity_first32"
+  ],
+  "formal_caveat": "fixed policy for all four updates; does not reconstruct actual historical Adam inputs",
+  "raw_retention": "keep equal-prompt sketches; REAL first32 and formal partial sketches reduce to full paired Gram matrices then delete temporary shards; all response tokens and coefficients retained",
+  "resource_locks": [
+    "/root/peft-for-rl/runs/ops/gradtop_r32_clean_20261015/controller.lock",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_continue_step150_20261015/controller.lock",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_fine_eval_20261016/controller.lock",
+    "/root/peft-for-rl/runs/ops/real_probe32_continue_step150/controller.lock",
+    "/root/peft-for-rl/runs/ops/real_probe32_early_step100/controller.lock",
+    "/root/peft-for-rl/runs/ops/real_probe32_r32_lr1e5_seed42_after_real64_eval/controller.lock",
+    "/root/peft-for-rl/runs/ops/real_r32_lr1e5_seed42_after_eval/controller.lock",
+    "/root/peft-for-rl/runs/ops/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42.eval100_50.lock",
+    "/root/peft-for-rl/runs/ops/rlvr_protocol/rlvr_v1_lora_r32_a64_lr1em5_b64m16n8_seed42.step150_controller.lock",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume200_syncfix_20261016/controller.lock",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume200_syncfix_20261016/reporter.lock",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume250_syncverified_20261016/controller.lock",
+    "/root/peft-for-rl/runs/ops/gradtop_r32_resume270_syncverified_20261017/controller.lock"
+  ],
+  "source_sha256": {
+    "/root/peft-for-rl/scripts/analysis/run_gradtop_real_diagnostics.py": "e22681a5ca4c8a193435511f2fb3bc3dfc03c856d57174628ee3e68edb08167b",
+    "/root/peft-for-rl/scripts/analysis/summarize_gradtop_real_diagnostics.py": "012b23713826680bc2c6d58231b50815f158da6f9717d9207345135f33997730",
+    "/root/peft-for-rl/verl/utils/seqlen_balancing.py": "23f2bf5f3adb0be4a4e675bf918569537377c5c9b37d4f1da83aecd4a5c5f54b",
+    "/root/peft-for-rl/verl/workers/actor/dp_actor.py": "928ad2838a63cb4ac86657c46573e8217b9305d756fbfbd2829e09128d78987d",
+    "/root/peft-for-rl/verl/trainer/ppo/core_algos.py": "5a9ac50f7fd1c5fcc1d9a6fea3a6f47cdd9ea716f752fa501915661b1cfbef2f",
+    "/root/peft-for-rl/verl/trainer/ppo/ray_trainer.py": "44047990d44a87cd004511d8a972a5bc909779c54425b4eeabb8c48b19a061bd",
+    "/root/peft-for-rl/verl/utils/lora_resume_verification.py": "b887edf2f0b72ccf77d064d460e7ed27ba8cfec1ceaf34689a2fb69b284a6b89",
+    "/root/peft-for-rl/verl/utils/reward_score/boxed_math_accuracy.py": "39b319390cd1745458b8ba366c41585aad7c6ff1734ed6b98b2e224833d5696b"
+  },
+  "recovery": {
+    "at": "2026-10-17T11:29:08.590858+08:00",
+    "prior_plan_sha256": "1a5e84759a56643bc859a45a7227f96ab8dfa94db9bbfc037102e2bff67ede7d",
+    "change": "canonicalize PEFT adapter tensor names before current-A lookup; no sampling or gradient changes",
+    "old_analyzer_sha256": "d4d3e088b0b6447abe57b9cf5b5cb64c4041c3e104f6a133d296b5cdaaead493",
+    "new_analyzer_sha256": "dd1bb5aa492cb4334b6149a88a8fb7015b76bf71dcb0599ab6a3d268021bd539",
+    "reuse": "completed GradTop100 4 rollout shards and 4 backward shards"
+  },
+  "jsonl_recovery": {
+    "at": "2026-10-17T12:38:15.072492+08:00",
+    "prior_plan_sha256": "47d3b78530b9fc49cafadf860cf78e72ef7b5727b924f4df3f7acbfb63cdcfff",
+    "changes": {
+      "/root/peft-for-rl/scripts/analysis/run_gradtop_real_diagnostics.py": {
+        "old": "0abfcf5b45cbd6f519aa768fef62112c32d2ce317ee68425442ae8df689b6f80",
+        "new": "e22681a5ca4c8a193435511f2fb3bc3dfc03c856d57174628ee3e68edb08167b"
+      },
+      "/root/peft-for-rl/scripts/analysis/summarize_gradtop_real_diagnostics.py": {
+        "old": "dd1bb5aa492cb4334b6149a88a8fb7015b76bf71dcb0599ab6a3d268021bd539",
+        "new": "012b23713826680bc2c6d58231b50815f158da6f9717d9207345135f33997730"
+      }
+    },
+    "reason": "physical JSONL line parsing; stage-specific exact array disk budget with2GiB headroom; no scientific changes",
+    "reuse": "all5120 sampled answers plus4 completed policy analyses"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "baseline_checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step100_fullbench_32768_seed42",
+  "benchmarks": [
+    {
+      "baseline_avg_at_k": 0.2989583333333333,
+      "benchmark": "aime24",
+      "candidate_avg_at_k": 0.3302083333333333,
+      "ci95_high": 0.075,
+      "ci95_low": -0.009375,
+      "delta_avg_at_k": 0.03125,
+      "num_problems": 30,
+      "num_samples": 960,
+      "probability_delta_gt_zero": 0.9314
+    },
+    {
+      "baseline_avg_at_k": 0.23854166666666668,
+      "benchmark": "aime25",
+      "candidate_avg_at_k": 0.25625,
+      "ci95_high": 0.058333333333333334,
+      "ci95_low": -0.022916666666666665,
+      "delta_avg_at_k": 0.017708333333333298,
+      "num_problems": 30,
+      "num_samples": 960,
+      "probability_delta_gt_zero": 0.81425
+    },
+    {
+      "baseline_avg_at_k": 0.78046875,
+      "benchmark": "amc23",
+      "candidate_avg_at_k": 0.78046875,
+      "ci95_high": 0.0421875,
+      "ci95_low": -0.04142578124999998,
+      "delta_avg_at_k": 0.0,
+      "num_problems": 40,
+      "num_samples": 1280,
+      "probability_delta_gt_zero": 0.4952
+    },
+    {
+      "baseline_avg_at_k": 0.09895833333333333,
+      "benchmark": "hmmt_feb",
+      "candidate_avg_at_k": 0.1,
+      "ci95_high": 0.020833333333333332,
+      "ci95_low": -0.015625,
+      "delta_avg_at_k": 0.0010416666666666768,
+      "num_problems": 30,
+      "num_samples": 960,
+      "probability_delta_gt_zero": 0.5363
+    },
+    {
+      "baseline_avg_at_k": 0.7355,
+      "benchmark": "math500",
+      "candidate_avg_at_k": 0.7405,
+      "ci95_high": 0.01651249999999982,
+      "ci95_low": -0.007,
+      "delta_avg_at_k": 0.0050000000000000044,
+      "num_problems": 500,
+      "num_samples": 2000,
+      "probability_delta_gt_zero": 0.7982
+    },
+    {
+      "baseline_avg_at_k": 0.328125,
+      "benchmark": "minerva",
+      "candidate_avg_at_k": 0.33639705882352944,
+      "ci95_high": 0.029411764705882353,
+      "ci95_low": -0.011948529411764705,
+      "delta_avg_at_k": 0.008272058823529438,
+      "num_problems": 272,
+      "num_samples": 1088,
+      "probability_delta_gt_zero": 0.77795
+    }
+  ],
+  "bootstrap_samples": 10000,
+  "bootstrap_seed": 42,
+  "candidate_checkpoint": "rlvr_v1_gradtop_r32_a64_lr1em5_b64m16n8_seed42_20261015_step150_fullbench_32768_seed42",
+  "ci95_high": 0.02355425347222222,
+  "ci95_low": -0.002528709660947712,
+  "interpretation": "single_seed_screen_only",
+  "macro_delta_avg_at_k": 0.010545343137254902,
+  "method": "matched_problem_cluster_bootstrap_v1",
+  "num_problems": 902,
+  "num_samples": 7248,
+  "probability_delta_gt_zero": 0.9431,
+  "record_keys_exactly_matched": true,
+  "schema_version": 1
+}

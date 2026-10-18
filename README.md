@@ -18,6 +18,16 @@ For the complete experiment history, evidence grades, current Phase-1 results,
 failed branches, and paper-planning map, start with the
 [experiment documentation index](docs/experiments/README.md).
 
+For the current REAL / GradTop experiments, start with the
+[October 18 summary and exact configurations](docs/experiments/real_gradtop_summary_20261018_zh.md),
+[machine-readable method versions](configs/experiments/real_gradtop_versions_20261018.json),
+and [implementation audit and repair status](audits/real_gradtop_implementation_audit_20261018_zh.md).
+The [committed evidence archive](docs/experiments/evidence/real_gradtop_20261018/README.md)
+contains 19 completed full-benchmark points, frozen execution plans, artifact
+fingerprints, and actual adapter synchronization reports. GradTop completed
+270 training steps; fresh REAL-P256 stopped at 210, with its 210 benchmark
+complete; the 200 evaluation was interrupted and the 150 queue cancelled by the user.
+
 ## Layout
 
 ```text
@@ -135,6 +145,30 @@ bash scripts/local/start_gradient_subspace_init_4gpu.sh
 See [the Chinese design and implementation notes](docs/verl_rl_gradient_subspace_init_zh.md)
 for the gradient identity, stability criterion, FSDP boundary, artifact format,
 overhead, and first-run checks.
+
+The REAL reward-gradient probe implements per-prompt correctness contrasts and
+two-sided streaming Nyström subspace estimation without full weight gradients.
+Its observation launcher defaults to a dry run:
+
+```bash
+bash scripts/local/start_real_gradient_probe_4gpu.sh
+```
+
+See [the REAL implementation and comparison notes](docs/real_reward_gradient_probe_zh.md)
+for the paper equations, fixed-A initialization, differences from existing probes,
+and the distinction between implementation debugging and registered RLVR experiments.
+
+Two fixed-budget GradTop candidates, prompt-sign aggregation and surprisal token
+selection, have matched normalization and budget controls registered in the RLVR
+protocol. Preview a probe-to-training run with:
+
+```bash
+METHOD=gradtop_prompt_sign TARGET_STEP=50 \
+  bash scripts/local/run_gradtop_candidates_4gpu.sh
+```
+
+This defaults to a dry run. See the [design review, controls, and commands](docs/experiments/gradtop_candidates_20261014_zh.md)
+for the exact observation counts, artifact validation, and remaining GPU validation.
 
 ## Evaluation
 

@@ -1,0 +1,221 @@
+{
+  "design": "Exploratory, question-cluster paired bootstrap of parser sensitivity.\n\nSame 10,000 resamples per task, seed42, equal six-task macro average; no claim\nabout training-seed variation. One diagnostic parser rule only, fixed in the\nminerva_answer_sensitivity.py source before scoring candidates.\n",
+  "comparisons": {
+    "GradTop_50_minus_REAL32_50": {
+      "original": {
+        "macro_delta": 0.009920445261437908,
+        "macro_ci95": [
+          -0.001620506535947712,
+          0.02155252502042484
+        ],
+        "macro_without_minerva_delta": -0.0015145833333333335,
+        "macro_without_minerva_ci95": [
+          -0.013718958333333331,
+          0.011005312499999982
+        ],
+        "minerva_delta": 0.06709558823529412,
+        "minerva_ci95": [
+          0.03768382352941176,
+          0.0974264705882353
+        ]
+      },
+      "minerva_answer_extension": {
+        "macro_delta": 0.001954758986928105,
+        "macro_ci95": [
+          -0.009399042585784315,
+          0.013289550142973852
+        ],
+        "macro_without_minerva_delta": -0.0015145833333333335,
+        "macro_without_minerva_ci95": [
+          -0.013718958333333331,
+          0.011005312499999982
+        ],
+        "minerva_delta": 0.019301470588235295,
+        "minerva_ci95": [
+          -0.007352941176470588,
+          0.04595588235294118
+        ]
+      }
+    },
+    "GradTop_100_minus_REAL32_100": {
+      "original": {
+        "macro_delta": -0.006595588235294118,
+        "macro_ci95": [
+          -0.021344467422385622,
+          0.007958478860294115
+        ],
+        "macro_without_minerva_delta": -0.011775,
+        "macro_without_minerva_ci95": [
+          -0.02913369791666667,
+          0.005060416666666666
+        ],
+        "minerva_delta": 0.019301470588235295,
+        "minerva_ci95": [
+          -0.003676470588235294,
+          0.042279411764705885
+        ]
+      },
+      "minerva_answer_extension": {
+        "macro_delta": -0.008433823529411766,
+        "macro_ci95": [
+          -0.023324336192810456,
+          0.00597712673611111
+        ],
+        "macro_without_minerva_delta": -0.011775,
+        "macro_without_minerva_ci95": [
+          -0.02913369791666667,
+          0.005060416666666666
+        ],
+        "minerva_delta": 0.008272058823529412,
+        "minerva_ci95": [
+          -0.011948529411764705,
+          0.02849264705882353
+        ]
+      }
+    },
+    "GradTop_150_minus_REAL32_150": {
+      "original": {
+        "macro_delta": 0.029892463235294115,
+        "macro_ci95": [
+          0.01645760825163399,
+          0.04384134497549019
+        ],
+        "macro_without_minerva_delta": 0.014731249999999998,
+        "macro_without_minerva_ci95": [
+          6.348958333333415e-05,
+          0.03039807291666666
+        ],
+        "minerva_delta": 0.1056985294117647,
+        "minerva_ci95": [
+          0.07536764705882353,
+          0.13786764705882354
+        ]
+      },
+      "minerva_answer_extension": {
+        "macro_delta": 0.018250306372549017,
+        "macro_ci95": [
+          0.005226008476307191,
+          0.03200084763071894
+        ],
+        "macro_without_minerva_delta": 0.014731249999999998,
+        "macro_without_minerva_ci95": [
+          6.348958333333415e-05,
+          0.03039807291666666
+        ],
+        "minerva_delta": 0.035845588235294115,
+        "minerva_ci95": [
+          0.011029411764705883,
+          0.06158088235294118
+        ]
+      }
+    },
+    "GradTop_150_minus_LoRA_150": {
+      "original": {
+        "macro_delta": 0.03582986111111111,
+        "macro_ci95": [
+          0.02252214562908497,
+          0.05002086141748366
+        ],
+        "macro_without_minerva_delta": 0.021120833333333332,
+        "macro_without_minerva_ci95": [
+          0.00670203125,
+          0.036962499999999995
+        ],
+        "minerva_delta": 0.109375,
+        "minerva_ci95": [
+          0.07904411764705882,
+          0.140625
+        ]
+      },
+      "minerva_answer_extension": {
+        "macro_delta": 0.02633231209150327,
+        "macro_ci95": [
+          0.01317701184640523,
+          0.040156030433006536
+        ],
+        "macro_without_minerva_delta": 0.021120833333333332,
+        "macro_without_minerva_ci95": [
+          0.00670203125,
+          0.036962499999999995
+        ],
+        "minerva_delta": 0.05238970588235294,
+        "minerva_ci95": [
+          0.024816176470588234,
+          0.07996323529411764
+        ]
+      }
+    },
+    "REAL32_150_minus_REAL32_100": {
+      "original": {
+        "macro_delta": -0.02594270833333333,
+        "macro_ci95": [
+          -0.0380039879493464,
+          -0.014253219464869281
+        ],
+        "macro_without_minerva_delta": -0.01550625,
+        "macro_without_minerva_ci95": [
+          -0.029023072916666667,
+          -0.002628697916666673
+        ],
+        "minerva_delta": -0.078125,
+        "minerva_ci95": [
+          -0.10661764705882353,
+          -0.05238970588235294
+        ]
+      },
+      "minerva_answer_extension": {
+        "macro_delta": -0.018283394607843135,
+        "macro_ci95": [
+          -0.030275441687091505,
+          -0.0069641595179738575
+        ],
+        "macro_without_minerva_delta": -0.01550625,
+        "macro_without_minerva_ci95": [
+          -0.029023072916666667,
+          -0.002628697916666673
+        ],
+        "minerva_delta": -0.03216911764705882,
+        "minerva_ci95": [
+          -0.05514705882352941,
+          -0.01011029411764706
+        ]
+      }
+    },
+    "GradTop_150_minus_GradTop_100": {
+      "original": {
+        "macro_delta": 0.010545343137254902,
+        "macro_ci95": [
+          -0.0022514246323529405,
+          0.023952382046568625
+        ],
+        "macro_without_minerva_delta": 0.011,
+        "macro_without_minerva_ci95": [
+          -0.003831979166666666,
+          0.026421354166666664
+        ],
+        "minerva_delta": 0.008272058823529412,
+        "minerva_ci95": [
+          -0.012867647058823529,
+          0.029411764705882353
+        ]
+      },
+      "minerva_answer_extension": {
+        "macro_delta": 0.008400735294117648,
+        "macro_ci95": [
+          -0.004246665645424837,
+          0.021742353451797383
+        ],
+        "macro_without_minerva_delta": 0.011,
+        "macro_without_minerva_ci95": [
+          -0.003831979166666666,
+          0.026421354166666664
+        ],
+        "minerva_delta": -0.004595588235294118,
+        "minerva_ci95": [
+          -0.02389705882352941,
+          0.015625
+        ]
+      }
+    }
+  }
+}

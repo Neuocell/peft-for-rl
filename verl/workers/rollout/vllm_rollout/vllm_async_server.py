@@ -520,6 +520,35 @@ class vLLMHttpServerBase:
                     lora_name=VLLM_LORA_NAME, lora_int_id=VLLM_LORA_INT_ID, lora_path=VLLM_LORA_PATH
                 )
 
+        import os as _resume_os
+
+        if _resume_os.environ.get("VERL_LORA_RESUME_VERIFY_SOURCE") and not getattr(
+            self, "_native_lora_first_request_verified", False
+        ):
+            from verl.utils.lora_resume_verification import verify_first_request
+
+            if self.rollout_mode != RolloutMode.HYBRID or lora_request is None:
+                raise RuntimeError("Verified native LoRA resume requires a hybrid request with its adapter")
+            verify_first_request(
+                self.replica_rank, request_id, lora_request.lora_int_id, await self.engine.list_loras()
+            )
+            self._native_lora_first_request_verified = True
+
+        if _resume_os.environ.get("VERL_LORA_FRESH_VERIFY_DIR") and not getattr(
+            self, "_native_lora_fresh_requests_complete", False
+        ):
+            from verl.utils.lora_resume_verification import settings, verify_first_request
+
+            cfg = settings()
+            if getattr(self, "_native_lora_fresh_request_token", None) != cfg["token"]:
+                if self.rollout_mode != RolloutMode.HYBRID or lora_request is None:
+                    raise RuntimeError("Fresh LoRA verification requires an attached hybrid adapter")
+                verify_first_request(
+                    self.replica_rank, request_id, lora_request.lora_int_id, await self.engine.list_loras()
+                )
+                self._native_lora_fresh_request_token = cfg["token"]
+                self._native_lora_fresh_requests_complete = cfg["fresh_phase"] == 1
+
         generator = self.engine.generate(
             prompt=prompt, sampling_params=sampling_params, request_id=request_id, lora_request=lora_request
         )

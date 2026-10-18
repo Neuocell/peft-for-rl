@@ -1,0 +1,152 @@
+{
+  "LoRA_150": {
+    "counts": {
+      "unparsed": 364,
+      "hit_max": 1,
+      "length_le8192": 312,
+      "has_literal_boxed": 1,
+      "has_answer_colon": 363,
+      "has_final_answer": 167
+    },
+    "examples": [
+      {
+        "id": "0",
+        "sample_index": 2,
+        "length": 3697,
+        "last_nonempty_line": "**ANSWER: 94 cm**"
+      },
+      {
+        "id": "1",
+        "sample_index": 3,
+        "length": 4240,
+        "last_nonempty_line": "ANSWER: 4.5e33"
+      },
+      {
+        "id": "2",
+        "sample_index": 0,
+        "length": 2807,
+        "last_nonempty_line": "**ANSWER: 41.8°**"
+      }
+    ]
+  },
+  "REAL32_100": {
+    "counts": {
+      "unparsed": 144,
+      "hit_max": 5,
+      "length_le8192": 112,
+      "has_literal_boxed": 0,
+      "has_answer_colon": 138,
+      "has_final_answer": 51
+    },
+    "examples": [
+      {
+        "id": "1",
+        "sample_index": 2,
+        "length": 4652,
+        "last_nonempty_line": "**ANSWER: 4.5e33**"
+      },
+      {
+        "id": "10",
+        "sample_index": 2,
+        "length": 2100,
+        "last_nonempty_line": "**ANSWER: 3.83 × 10³¹ ergs/s**"
+      },
+      {
+        "id": "11",
+        "sample_index": 2,
+        "length": 12119,
+        "last_nonempty_line": "ANSWER: 60 km/s"
+      }
+    ]
+  },
+  "REAL32_150": {
+    "counts": {
+      "unparsed": 339,
+      "hit_max": 8,
+      "length_le8192": 320,
+      "has_literal_boxed": 1,
+      "has_answer_colon": 332,
+      "has_final_answer": 122
+    },
+    "examples": [
+      {
+        "id": "0",
+        "sample_index": 0,
+        "length": 7440,
+        "last_nonempty_line": "ANSWER: 498,465 cm"
+      },
+      {
+        "id": "0",
+        "sample_index": 1,
+        "length": 2509,
+        "last_nonempty_line": "ANSWER: 94 cm"
+      },
+      {
+        "id": "0",
+        "sample_index": 3,
+        "length": 7678,
+        "last_nonempty_line": "ANSWER: 29.3 cm"
+      }
+    ]
+  },
+  "GradTop_100": {
+    "counts": {
+      "unparsed": 170,
+      "hit_max": 4,
+      "length_le8192": 134,
+      "has_literal_boxed": 0,
+      "has_answer_colon": 165,
+      "has_final_answer": 78
+    },
+    "examples": [
+      {
+        "id": "0",
+        "sample_index": 0,
+        "length": 4167,
+        "last_nonempty_line": "ANSWER: 94 cm"
+      },
+      {
+        "id": "0",
+        "sample_index": 2,
+        "length": 6924,
+        "last_nonempty_line": "ANSWER: 209 cm"
+      },
+      {
+        "id": "1",
+        "sample_index": 3,
+        "length": 5048,
+        "last_nonempty_line": "ANSWER: 4.4 × 10³³"
+      }
+    ]
+  },
+  "GradTop_150": {
+    "counts": {
+      "unparsed": 22,
+      "hit_max": 4,
+      "length_le8192": 15,
+      "has_literal_boxed": 0,
+      "has_answer_colon": 18,
+      "has_final_answer": 8
+    },
+    "examples": [
+      {
+        "id": "16",
+        "sample_index": 2,
+        "length": 32768,
+        "last_nonempty_line": "967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, 967, "
+      },
+      {
+        "id": "43",
+        "sample_index": 0,
+        "length": 32768,
+        "last_nonempty_line": "Thus, the answer is 2e"
+      },
+      {
+        "id": "138",
+        "sample_index": 2,
+        "length": 9495,
+        "last_nonempty_line": "ANSWER: \\( 2 m_p c^2 \\sqrt{\\sin^2\\theta + \\frac{\\cos^2\\theta}{\\gamma^2}} \\)"
+      }
+    ]
+  }
+}
