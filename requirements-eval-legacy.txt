@@ -1,0 +1,4 @@
+# Optional: exact local runtime pins for replaying the historical Math-Verify judge.
+-r requirements-eval-perl.txt
+math-verify==0.9.0
+latex2sympy2-extended==1.11.0

@@ -1,5 +1,7 @@
 # RLVR 实验协议（强制）
 
+> **2026-10-20 离线评测版本说明：**训练配置与训练 reward 继续按本文件执行。历史本地 `legacy_local_fullbench_v1` 和当前正式 `perl_release_judge_v1` 的完整定义、重放命令及比较边界见 [两版评测协议](docs/evaluation_protocols_zh.md)；[本机结果重报告](docs/experiments/local_results_dual_protocol_20261020_zh.md)并列保留原评分与当前评分。该修订不改写已冻结的训练配置 JSON。
+
 > **生效日期：2026-10-12。状态：新实验唯一有效协议。**
 >
 > 从本协议生效后，所有可进入主对比表的 `DeepSeek-R1-Distill-Qwen-1.5B`

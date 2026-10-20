@@ -23,6 +23,7 @@ GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-0.85}"
 LIMIT_PER_BENCHMARK="${LIMIT_PER_BENCHMARK:-}"
 DRY_RUN_NO_MODEL="${DRY_RUN_NO_MODEL:-0}"
 BENCHMARK_SNAPSHOT_RECORDS="${BENCHMARK_SNAPSHOT_RECORDS:-}"
+EVAL_PUBLIC_STANDARD="${EVAL_PUBLIC_STANDARD:-1}"
 
 IFS=',' read -r -a GPU_IDS <<< "${CUDA_VISIBLE_DEVICES}"
 NUM_SHARDS="${#GPU_IDS[@]}"
@@ -96,6 +97,15 @@ if [[ "${DRY_RUN_NO_MODEL}" != "1" ]]; then
     --num_shards "${NUM_SHARDS}" \
     --aggregate_only \
     > "${OUTPUT_DIR}/logs/${CHECKPOINT_NAME}.aggregate.log" 2>&1
+  if [[ "${EVAL_PUBLIC_STANDARD}" == "1" ]]; then
+    # Keep the inline judge outputs as diagnostics. Formal scoring runs on CPU
+    # with fixed PeRL release code and recorded dependencies after generation.
+    "${PYTHON_BIN}" "${PROJECT_ROOT}/../scripts/analysis/rescore_perl_public.py" \
+      --records "${OUTPUT_DIR}/records/${CHECKPOINT_NAME}.jsonl" \
+      --output-dir "${OUTPUT_DIR}/perl_release_judge" \
+      > "${OUTPUT_DIR}/logs/${CHECKPOINT_NAME}.public_standard.log" 2>&1
+    echo "PeRL public judge (saved generation protocol retained): ${OUTPUT_DIR}/perl_release_judge/summary/${CHECKPOINT_NAME}.json"
+  fi
 fi
 
 echo "Done: ${OUTPUT_DIR}"

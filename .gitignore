@@ -34,7 +34,14 @@ evaluation/
 **/*.arrow
 **/*.whl
 
+# Small, pinned public gold snapshot required for portable CPU-only rescoring.
+!configs/evaluation/
+!configs/evaluation/assets/
+!configs/evaluation/assets/README.md
+!configs/evaluation/assets/minerva_mathai.jsonl
+
 # Local environment files
+.venv-eval-perl/
 .env
 **/.env
 *.log

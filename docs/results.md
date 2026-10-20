@@ -1,5 +1,7 @@
 # 实验结果入口
 
+2026-10-20 当前数学评测入口：[两版评测协议](evaluation_protocols_zh.md)、[本机实验双协议重报告](experiments/local_results_dual_protocol_20261020_zh.md)。重报告保留历史分数，并另列 PeRL 发布版 judge 的复评分；下文 Phase-1 数字属于原判分口径，不与新表混用。
+
 更新时间：2026-10-06 UTC
 
 `docs/` 中的实验结果现已统一整理到 [实验文档总入口](experiments/README.md)。请从以下三份文档阅读：

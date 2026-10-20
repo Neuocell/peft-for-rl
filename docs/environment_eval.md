@@ -1,5 +1,7 @@
 # 评测环境
 
+两版协议的权威说明与重放命令见 [数学评测的两版协议](evaluation_protocols_zh.md)。本页旧 inline parser 的安装说明保留作历史环境参考；当前正式判分使用 PeRL CPU 复评分，原生成和旧分数继续保存。[本机双协议报告](experiments/local_results_dual_protocol_20261020_zh.md)汇总新旧值。
+
 评测侧使用 `vLLM` 做多 shard 采样，并使用 Tina 中抽出的最小 parser 计算数学答案正确率。评测环境可以和训练环境相同，但建议独立记录版本，因为 vLLM/torch 的组合对稳定性影响很大。
 
 ## 推荐环境

@@ -1,0 +1,4 @@
+# CPU-only PeRL paper-release scoring; these are local reproducibility pins.
+# Install into an evaluation environment; vLLM/torch are not required to rescore.
+sympy==1.14.0
+pylatexenc==2.10
